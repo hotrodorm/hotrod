@@ -30,7 +30,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   private String forceJDBCTypeOnWrite = null;
 
   private DynamicExpression testExpression = null;
-  private DynamicExpression testResultSetExpression = null;
   private ConverterTag converterTag = null;
   private JDBCType jdbcType = null;
 
@@ -155,10 +154,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   public DynamicExpression getTestExpression() {
     return this.testExpression;
-  }
-
-  public DynamicExpression getTestResultSetExpression() {
-    return testResultSetExpression;
   }
 
   // Simple Caption

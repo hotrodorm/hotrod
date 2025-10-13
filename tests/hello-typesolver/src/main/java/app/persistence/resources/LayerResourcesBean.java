@@ -7,17 +7,25 @@ import org.hotrod.livesql.LayerConfiguration;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.YNBooleanConverter;
+
 @Configuration
 public class LayerResourcesBean {
+
+  // CONVERTERS
+
+  @Autowired
+  private YNBooleanConverter converter0;
 
   @Bean
   public LayerConfiguration layerConfig() {
     List<TypeRule> rules = new ArrayList<>();
     rules.add(TypeRule.of("columnName == 'dom'", TypeHandler.forClass(Long.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT1")));
-    rules.add(TypeRule.of("columnName.endsWith('_jld')", TypeHandler.forClass(Float.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT2")));
+    rules.add(TypeRule.of("columnName.endsWith('Branch')", TypeHandler.forConverter(this.converter0, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT2")));
     return () -> rules;
   }
 

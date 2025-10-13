@@ -3,11 +3,13 @@ package org.hotrod.generator.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.hotrod.config.ConverterTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.RuntimeTypeSolverTag;
 import org.hotrod.config.TypeSolverWhenTag;
@@ -66,6 +68,7 @@ public class LayerResourcesBeanWriter {
       this.w = new ClassWriter(this.jdbcTag.getLayerResources().getAssembledPackage());
 
       this.writeHeader();
+      this.writeConverterBeans();
       this.writeLayerConfig();
 
       if (this.qualifier != null) {
@@ -95,6 +98,32 @@ public class LayerResourcesBeanWriter {
     w.println("public class " + this.className + " {");
   }
 
+  private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();
+
+  private void writeConverterBeans() {
+    int n = 0;
+    for (TypeSolverWhenTag when : this.runtimeTypeSolver.getWhens()) {
+      if (when.getConverterTag() != null) {
+        ConverterTag ct = when.getConverterTag();
+        if (ct != null) {
+          boolean found = this.converterProperties.containsKey(ct.getName());
+          if (!found) {
+            if (n == 0) {
+              w.println();
+              w.println("  // CONVERTERS");
+            }
+            String property = "converter" + n++;
+            this.converterProperties.put(ct.getName(), property);
+            w.println();
+            w.println("  @", Const.AUTOWIRED);
+            ExternalClass cc = ExternalClass.of(ct.getConverterClass());
+            w.println("  private ", cc, " " + property + ";");
+          }
+        }
+      }
+    }
+  }
+
   private void writeLayerConfig() {
     w.println("");
     if (this.getLayerConfigQualifier() == null) {
@@ -110,8 +139,17 @@ public class LayerResourcesBeanWriter {
       w.print("    rules.add(", TypeRule.class, ".of(\"" + SUtil.escapeJavaString(when.getTest()) + "\", ",
           TypeHandler.class);
       String ruleNumber = TypeSolverConst.RUNTIME_TYPESOLVER_NAMESPACE + n;
-      w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
-          "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
+
+      if (when.getConverterTag() != null) {
+        ConverterTag ct = when.getConverterTag();
+        String property = this.converterProperties.get(ct.getName());
+        w.println(".forConverter(this." + property + ", ", TypeSource.class,
+            "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
+      } else {
+        w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
+            "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
+      }
+
       n++;
     }
     w.println("    return () -> rules;");

@@ -7,7 +7,7 @@
 
   <runtime-type-solver>
     <when test="columnName == 'dom'" java-type="Long" />
-    <when test="columnName.endsWith('_jld')" java-type="Float" />
+    <when test="columnName.endsWith('Branch')" converter="YNConverter" />
   </runtime-type-solver>
 
   <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"

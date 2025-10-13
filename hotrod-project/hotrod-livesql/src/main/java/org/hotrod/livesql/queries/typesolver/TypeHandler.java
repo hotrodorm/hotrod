@@ -73,9 +73,9 @@ public class TypeHandler<R, D> {
   }
 
   protected String render() {
-    return (this.converter == null ? "" + this.javaClass
-        : "[" + this.rawClass + " -> " + this.converter.getClass() + " -> " + this.javaClass + "]") + ", source: "
-        + this.typeSource;
+    return this.javaClass.getName() //
+        + (this.converter == null ? "" : " (\u2699" + this.converter.getClass().getSimpleName() + ")") //
+        + ", source: " + this.typeSource;
   }
 
   public String toString() {

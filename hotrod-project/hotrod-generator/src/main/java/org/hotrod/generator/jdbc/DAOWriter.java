@@ -182,7 +182,7 @@ public class DAOWriter {
 
     writeClassHeader();
 
-    writeConverterProperties();
+    writeConverterBeans();
 
     if (!this.isExecutor()) {
 
@@ -1635,7 +1635,7 @@ public class DAOWriter {
 
   private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();
 
-  private void writeConverterProperties() {
+  private void writeConverterBeans() {
     int n = 0;
 
     // Table or View columns

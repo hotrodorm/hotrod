@@ -33,8 +33,11 @@ a blank Maven project.
 Add the `pom.xml` file:
 
 ```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns=
+    "http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation=
+    "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>examples</groupId>
@@ -100,7 +103,7 @@ Add the `pom.xml` file:
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
-          <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
+          <jdbcurl>jdbc:h2:mem:DB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
           <jdbcpassword>""</jdbcpassword>
           <jdbcschema>PUBLIC</jdbcschema>
@@ -178,7 +181,7 @@ Create the file `layer.xml` with the following content:
 
   <runtime-type-solver>
     <when test="columnName == 'dom'" java-type="Long" />
-    <when test="columnName.endsWith('_jld')" java-type="Float" />
+    <when test="columnName.endsWith('Branch')" converter="YNConverter" />
   </runtime-type-solver>
 
   <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"
@@ -220,7 +223,7 @@ We see the code generation details:
 [INFO] HotRod Generator version 5.1.4 (build 20251011-230958) - Generate
 [INFO] 
 [INFO] Configuration File: ./layer.xml
-[INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
+[INFO] Database URL: jdbc:h2:mem:DB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.2 (2.2.224 (2023-09-17))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.2 (2.2.224 (2023-09-17)) - implements JDBC
        Specification 4.2
@@ -250,9 +253,9 @@ HotRod connected to the database schema, discovered the tables in the schema, re
 In this part we write a simple app that shows all the type solver options.
 
 
-### The Main Spring Boot Application
+### 1. The Main Spring Boot Application
 
-Let's write a simple application that performs two searches in the table. Create the application 
+Let's write a simple application that performs two searches in the table. Create the application
 class `src/main/java/app/App.java` as:
 
 ```java
@@ -343,14 +346,14 @@ public class App {
           i.active,
           i.category,
           i.amount.mult(1.30).as("gross").type(Double.class),
-          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end().as("vip")
-            .type(this.ynBooleanConverter),
+          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end()
+            .as("vip").type(this.ynBooleanConverter),
           i.created.extract(DateTimeField.DAY).as("dom"),
-          i.amount.mult(i.category).as("score_jld"),
+          sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
           sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end()
             .as("paidAmount"),
           h2.randomUUID().as("globalId")
-         )
+        )
         .from(i)
         .where(i.status.eq(InvoiceStatus.DRAFT))
         .execute(LIVESQL_LOG);
@@ -362,9 +365,9 @@ public class App {
 }
 ```
 
-### One Converter
+### 2. One Converter
 
-Create the converter class `app.YNBooleanConverter.java` as:
+Create the converter class `src/main/java/app/YNBooleanConverter.java` as:
 
 ```java
 package app;
@@ -401,9 +404,9 @@ public class YNBooleanConverter implements TypeConverter<String, Boolean> {
 }
 ```
 
-### The Other Converter
+### 3. The Other Converter
 
-Create the domain class `app.InvoiceStatus.java` as:
+Create the domain class `src/main/java/app/InvoiceStatus.java` as:
 
 ```java
 package app;
@@ -425,7 +428,7 @@ public enum InvoiceStatus {
 }
 ```
 
-And its converter class `app.InvoiceStatusConverter.java` as:
+And its converter class `src/main/java/app/InvoiceStatusConverter.java` as:
 
 ```java
 package app;
@@ -460,9 +463,9 @@ public class InvoiceStatusConverter implements TypeConverter<Integer, InvoiceSta
 }
 ```
 
-### A Custom LiveSQL Function
+### 4. A Custom LiveSQL Function
 
-Finally, define an H2 function in the class `app.H2Functions.java`:
+Finally, define an H2 function in the class `src/main/java/app/H2Functions.java`:
 
 ```java
 package app;
@@ -481,13 +484,15 @@ public class H2Functions {
 }
 ```
 
-### Prepare the Runtime Properties File
+This is just a simple Bean class that can implement multiple LiveSQL functions. We implement a single function in this case to demonstrate the JDBC driver default class for a non-traditional column type.
 
-The runtime properties are used when running the application. Create the file `application.properties` as:
+### 5. The Runtime Properties File
+
+The runtime properties are used when running the application. Create the file `./application.properties` as:
 
 ```properties
 spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
+spring.datasource.url=jdbc:h2:mem:DB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
 
@@ -495,8 +500,9 @@ logging.level.app.App=DEBUG
 logging.level.app.persistence.dao=DEBUG
 ```
 
+Note that we enable logging to see the actual queries being run. We do this in the App itself for the LiveSQL SELECTs and, separately, in the DAOs for the CRUD and Nitro SELECTs.
 
-### Run the Application
+## Running the Application
 
 Now, let's run the application. Type:
 
@@ -506,7 +512,7 @@ mvn spring-boot:run
 
 The Spring Boot application starts, connects to the database and runs the three demo examples. The first one shows:
 
-#### The CRUD Select
+#### 1. The CRUD Select
 
 The log shows:
 
@@ -519,6 +525,7 @@ SELECT
   category
 FROM invoice
 WHERE status = ?
+== Returns ==
 1. Unpaid invoice: app.persistence.model.Invoice@478b0739
 - amount=51.99
 - status=UNPAID
@@ -527,12 +534,13 @@ WHERE status = ?
 - category=2001
 ```
 
-#### The Nitro Select
+#### 2. The Nitro Select
 
 ```log
-      SELECT *
-      FROM invoice
-      WHERE amount > 200
+SELECT *
+FROM invoice
+WHERE amount > 200
+== Returns ==
 2. Big Invoice: app.persistence.model.BigInvoice@3f63a513
 - amount=480.14
 - status=DRAFT
@@ -547,7 +555,7 @@ WHERE status = ?
 - category=1023
 ```
 
-#### The LiveSQL Select
+#### 3. The LiveSQL Select
 
 ```log
 SELECT
@@ -573,19 +581,22 @@ WHERE a.status = ?
  * 6 (java.lang.Integer): 0
  * 7 (java.lang.Integer): 1
 --- Query Columns (11) ---
- * 1 amount: class java.lang.Double, source: STATIC_DESIGNATED
- * 2 status: [class java.lang.Integer -> class app.InvoiceStatusConverter -> class app.InvoiceStatus], source: STATIC_DESIGNATED
- * 3 created: class java.time.LocalDateTime, source: STATIC_TYPESOLVER_RULE, rule #T1
- * 4 active: [class java.lang.String -> class app.YNBooleanConverter -> class java.lang.Boolean], source: STATIC_TYPESOLVER_RULE, rule #T2
- * 5 category: class java.lang.Short, source: STATIC_DIALECT_RULE, rule #D3
- * 6 gross: class java.lang.Double, source: RUNTIME_DESIGNATED
- * 7 vip: [class java.lang.String -> class app.YNBooleanConverter -> class java.lang.Boolean], source: RUNTIME_DESIGNATED
- * 8 dom: class java.lang.Long, source: RUNTIME_TYPESOLVER_RULE, rule #RT1
- * 9 score_jld: class java.lang.Float, source: RUNTIME_TYPESOLVER_RULE, rule #RT2
- * 10 paidAmount: class java.math.BigDecimal, source: RUNTIME_DIALECT_RULE, rule #RD1
- * 11 globalId: class java.util.UUID, source: RUNTIME_JDBC_DRIVER_DEFAULT
+ * 1 amount: java.lang.Double, source: STATIC_DESIGNATED
+ * 2 status: app.InvoiceStatus (⚙InvoiceStatusConverter), source: STATIC_DESIGNATED
+ * 3 created: java.time.LocalDateTime, source: STATIC_TYPESOLVER_RULE, rule #T1
+ * 4 active: java.lang.Boolean (⚙YNBooleanConverter), source: STATIC_TYPESOLVER_RULE, rule #T2
+ * 5 category: java.lang.Short, source: STATIC_DIALECT_RULE, rule #D3
+ * 6 gross: java.lang.Double, source: RUNTIME_DESIGNATED
+ * 7 vip: java.lang.Boolean (⚙YNBooleanConverter), source: RUNTIME_DESIGNATED
+ * 8 dom: java.lang.Long, source: RUNTIME_TYPESOLVER_RULE, rule #RT1
+ * 9 mainBranch: java.lang.Boolean (⚙YNBooleanConverter), source: RUNTIME_TYPESOLVER_RULE, rule #RT2
+ * 10 paidAmount: java.math.BigDecimal, source: RUNTIME_DIALECT_RULE, rule #RD1
+ * 11 globalId: java.util.UUID, source: RUNTIME_JDBC_DRIVER_DEFAULT
 ---------------------
-3. row={amount=480.14, dom=3, gross=624.182, created=2024-02-03T07:32:23, globalId=ee2fdaf1-d7a6-4abb-9032-35c2fbee3e81, active=true, category=1018, vip=true, paidAmount=0, status=DRAFT, score_jld=488782.53}
+== Returns ==
+3. row={amount=480.14, dom=3, gross=624.182, created=2024-02-03T07:32:23,
+globalId=ee2fdaf1-d7a6-4abb-9032-35c2fbee3e81, active=true, category=1018,
+vip=true, paidAmount=0, status=DRAFT, score_jld=488782.53}
 ```
 
 That's it! You just generated the persistence code from the database and ran an app using it.

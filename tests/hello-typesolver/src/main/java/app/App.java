@@ -63,6 +63,7 @@ public class App {
     Invoice filter = new Invoice();
     filter.setStatus(InvoiceStatus.UNPAID);
     List<Invoice> unpaid = this.invoiceDAO.select(filter);
+    System.out.println("== Returns ==");
     for (Invoice inv : unpaid) {
       System.out.println("1. Unpaid invoice: " + inv);
     }
@@ -70,6 +71,7 @@ public class App {
 
   private void demoTypeSolverNitroSelect() {
     List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
+    System.out.println("== Returns ==");
     for (BigInvoice i : bi) {
       System.out.println("2. Big Invoice: " + i);
     }
@@ -85,15 +87,18 @@ public class App {
           i.active,
           i.category,
           i.amount.mult(1.30).as("gross").type(Double.class),
-          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter),
+          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end()
+            .as("vip").type(this.ynBooleanConverter),
           i.created.extract(DateTimeField.DAY).as("dom"),
-          i.amount.mult(i.category).as("score_jld"),
-          sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end().as("paidAmount"),
+          sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
+          sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end()
+            .as("paidAmount"),
           h2.randomUUID().as("globalId")
          )
         .from(i)
         .where(i.status.eq(InvoiceStatus.DRAFT))
         .execute(LIVESQL_LOG);
+    System.out.println("== Returns ==");
     for (Row r : rows) {
       System.out.println("3. row=" + r);
     }
