@@ -1,22 +1,24 @@
 # Hello Type Solver
 
-This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows the basic idea of how the data type for columns retrieved from the database are modeled in the app. In short, it demonstrates the complete type solver strategy.
+This guide runs a Spring Boot project with Maven and an H2 in-memory database. It shows the details on how the data types for the SELECT query columns are decided for your app.
+
+It demonstrates all 11 type solver cases described in [Type Solver Cases](./type-solver-cases.md).
 
 You'll need:
 
 - Java
 - Maven
-- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer
-- No database installation necessary. We'll use a non-persistent in-memory H2 database in this example
+- A text editor. `Notepad` or `vi` will do, or you can use your favorite IDE if you prefer
+- No database installation necessary. We'll use an in-memory H2 database in this example
 
 After following all the steps of this guide our main project folder will include the files and folders shown below:
 
 ```bash
+application.properties     # The runtime properties of your app
+layer.xml                  # The configuration details of your persistence layer
 pom.xml                    # The Maven project file
 schema.sql                 # A SQL script that creates a table and data for this example
-layer.xml                  # The configuration details of the persistence layer
-src/main/java              # Your Java app and the generated persistence layer classes
-application.properties     # The runtime properties of your app
+src/main/java              # Your app, your converters, and the generated persistence layer
 ```
 
 
@@ -131,7 +133,7 @@ Also, create the empty source folder. In linux you can do:
 mkdir -p src/main/java/app
 ```
 
-Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
+Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create it.
 
 To check the `pom.xml` file is correct, run Maven once using:
 
@@ -144,7 +146,7 @@ It should report `BUILD SUCCESS` at the end.
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Layer
 
-In this part we create an in-memory table in H2 database and we generate the persistence layer from it.
+In this part we create an in-memory table in an H2 database and we generate the persistence layer from it.
 
 
 ### Preparing the Database Script that Creates the Database
@@ -211,7 +213,7 @@ Create the file `layer.xml` with the following content:
 
 ### Generating the Persistence Layer
 
-Now, let's use HotRod to generate the persistence layer. Type:
+Now, let's use generate the persistence layer. Type:
 
 ```bash
 mvn hotrod:gen
@@ -245,7 +247,7 @@ We see the code generation details:
 [INFO] BUILD SUCCESS
 ```
 
-HotRod connected to the database schema, discovered the tables in the schema, retrieved their details, and generated the persistence layer.
+HotRod connected to the database schema, discovered the tables in it, retrieved their details, and generated the persistence layer accordingly.
 
 
 ## Part 3 &mdash; The Application
@@ -255,8 +257,7 @@ In this part we write a simple app that shows all the type solver options.
 
 ### 1. The Main Spring Boot Application
 
-Let's write a simple application that performs two searches in the table. Create the application
-class `src/main/java/app/App.java` as:
+Now we write a simple app that uses CRUD, Nitro, and LiveSQL to run SELECT queries in the database. Create the main application class `src/main/java/app/App.java` as:
 
 ```java
 package app;
@@ -370,7 +371,7 @@ public class App {
 
 ### 2. One Converter
 
-Create the converter class `src/main/java/app/YNBooleanConverter.java` as:
+The first converter needs a single class. Create the converter class `src/main/java/app/YNBooleanConverter.java` as:
 
 ```java
 package app;
@@ -409,7 +410,7 @@ public class YNBooleanConverter implements TypeConverter<String, Boolean> {
 
 ### 3. The Other Converter
 
-First, create the domain enum `src/main/java/app/InvoiceStatus.java` as:
+For the second converter, create the domain enum `src/main/java/app/InvoiceStatus.java` as:
 
 ```java
 package app;
@@ -431,7 +432,7 @@ public enum InvoiceStatus {
 }
 ```
 
-And the corresponding converter class `src/main/java/app/InvoiceStatusConverter.java` as:
+And then the corresponding converter class `src/main/java/app/InvoiceStatusConverter.java` as:
 
 ```java
 package app;
@@ -468,7 +469,7 @@ public class InvoiceStatusConverter implements TypeConverter<Integer, InvoiceSta
 
 ### 4. A Custom LiveSQL Function
 
-Finally, define an H2 function in the class `src/main/java/app/H2Functions.java`:
+Finally, define an H2 custom function in the class `src/main/java/app/H2Functions.java`:
 
 ```java
 package app;
@@ -487,7 +488,7 @@ public class H2Functions {
 }
 ```
 
-This is just a simple Bean class that can implement multiple LiveSQL functions. We implement a single function in this case to demonstrate the JDBC driver default class for a non-traditional column type.
+This bean implements a single function to demonstrate the JDBC driver default class when using a non-trivial column type.
 
 ### 5. The Runtime Properties File
 
@@ -536,6 +537,31 @@ WHERE status = ?
 - active=false
 - category=2001
 ```
+
+All CRUD SELECT queries retreive the table column using the types defined in the
+layout class for the table. In this case, the class `app.persistence.model.Invoice`.
+If we inspect this class we can see the columns as app properties with the types:
+
+```java
+  protected Double amount = null; // Type Source: STATIC_DESIGNATED
+  protected InvoiceStatus status = null; // Type Source: STATIC_DESIGNATED
+  protected LocalDateTime created = null; // Type Source: STATIC_TYPESOLVER_RULE, rule #T1
+  protected Boolean active = null; // Type Source: STATIC_TYPESOLVER_RULE, rule #T2
+  protected Short category = null; // Type Source: STATIC_DIALECT_RULE, rule #D3
+```
+
+All types are computed during the persistence layer generation and don't change at runtime;
+therefore, they are all `STATIC`. In this case:
+
+- The `amount` column's type was designated as `Double` using a `<column>` tag, that we can find in the `layer.xml` file in line 19.
+- The `status` column's type was also designated, this time using the converter `InvoiceStatusConverter`. This is defined in
+a `<column>` tag, that we can find in the `layer.xml` file in line 20.
+- The `created` column's type was not designated. It was computed as `java.time.LocalDateTime` in the static type solver's rule #1 (aka #T1),
+that we can find in the `layer.xml` file in line 4.
+- The `active` column's type was computed by the static type solver for the `YNConverter`, using the second rule in it (aka #T2);
+we can find this rule in the `layer.xml` file in line 5.
+- The `category` column's type was not designated nor computed by the static type solver; it was decided by a dialect rule. In this case,
+by rule #D3. The rules for the dialect are described in [H2's Static Dialect Rules]](../database-support/h2.md#1-static-dialect-rules).
 
 #### 2. The Nitro Select
 
