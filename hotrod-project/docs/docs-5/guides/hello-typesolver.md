@@ -324,6 +324,7 @@ public class App {
     Invoice filter = new Invoice();
     filter.setStatus(InvoiceStatus.UNPAID);
     List<Invoice> unpaid = this.invoiceDAO.select(filter);
+    System.out.println("== Returns ==");
     for (Invoice inv : unpaid) {
       System.out.println("1. Unpaid invoice: " + inv);
     }
@@ -331,6 +332,7 @@ public class App {
 
   private void demoTypeSolverNitroSelect() {
     List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
+    System.out.println("== Returns ==");
     for (BigInvoice i : bi) {
       System.out.println("2. Big Invoice: " + i);
     }
@@ -357,7 +359,8 @@ public class App {
         .from(i)
         .where(i.status.eq(InvoiceStatus.DRAFT))
         .execute(LIVESQL_LOG);
-    for (Row r : rows) {
+   System.out.println("== Returns ==");
+   for (Row r : rows) {
       System.out.println("3. row=" + r);
     }
   }
@@ -406,7 +409,7 @@ public class YNBooleanConverter implements TypeConverter<String, Boolean> {
 
 ### 3. The Other Converter
 
-Create the domain class `src/main/java/app/InvoiceStatus.java` as:
+First, create the domain enum `src/main/java/app/InvoiceStatus.java` as:
 
 ```java
 package app;
@@ -428,7 +431,7 @@ public enum InvoiceStatus {
 }
 ```
 
-And its converter class `src/main/java/app/InvoiceStatusConverter.java` as:
+And the corresponding converter class `src/main/java/app/InvoiceStatusConverter.java` as:
 
 ```java
 package app;
@@ -558,7 +561,7 @@ WHERE amount > 200
 #### 3. The LiveSQL Select
 
 ```log
-SELECT
+ELECT
   a.amount as "amount", 
   a.status as "status", 
   a.created as "created", 
@@ -567,19 +570,22 @@ SELECT
   a.amount * ? as "gross", 
   case when (a.amount >= ?) then ? else ? end as "vip", 
   extract(day from a.created) as "dom", 
-  a.amount * a.category as "score_jld", 
+  case when (a.category <= ?) then ? else ? end as "mainBranch", 
   case when (a.status = ?) then a.amount else ? end as "paidAmount", 
   RANDOM_UUID() as "globalId"
 FROM invoice a
 WHERE a.status = ?
---- Parameters (7) -------
+--- Parameters (10) -------
  * 1 (java.lang.Double): 1.3
  * 2 (java.lang.Integer): 300
  * 3 (java.lang.String, length=1): Y
  * 4 (java.lang.String, length=1): N
- * 5 (java.lang.Integer): 3
- * 6 (java.lang.Integer): 0
- * 7 (java.lang.Integer): 1
+ * 5 (java.lang.Integer): 1999
+ * 6 (java.lang.String, length=1): Y
+ * 7 (java.lang.String, length=1): N
+ * 8 (java.lang.Integer): 3
+ * 9 (java.lang.Integer): 0
+ * 10 (java.lang.Integer): 1
 --- Query Columns (11) ---
  * 1 amount: java.lang.Double, source: STATIC_DESIGNATED
  * 2 status: app.InvoiceStatus (⚙InvoiceStatusConverter), source: STATIC_DESIGNATED
@@ -595,8 +601,8 @@ WHERE a.status = ?
 ---------------------
 == Returns ==
 3. row={amount=480.14, dom=3, gross=624.182, created=2024-02-03T07:32:23,
-globalId=ee2fdaf1-d7a6-4abb-9032-35c2fbee3e81, active=true, category=1018,
-vip=true, paidAmount=0, status=DRAFT, score_jld=488782.53}
+globalId=1009b80f-a05a-4de9-9fec-6577aa5c0390, active=true, mainBranch=true,
+category=1018, vip=true, paidAmount=0, status=DRAFT}
 ```
 
 That's it! You just generated the persistence code from the database and ran an app using it.
