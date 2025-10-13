@@ -561,7 +561,7 @@ that we can find in the `layer.xml` file in line 4.
 - The `active` column's type was computed by the static type solver for the `YNConverter`, using the second rule in it (aka #T2);
 we can find this rule in the `layer.xml` file in line 5.
 - The `category` column's type was not designated nor computed by the static type solver; it was decided by a dialect rule. In this case,
-by rule #D3. The rules for the dialect are described in [H2's Static Dialect Rules](../database-support/h2.md#1-static-dialect-rules).
+by rule #D3. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules).
 
 #### 2. The Nitro Select
 
