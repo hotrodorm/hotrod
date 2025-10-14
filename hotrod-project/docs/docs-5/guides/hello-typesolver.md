@@ -538,8 +538,8 @@ WHERE status = ?
 - category=2001
 ```
 
-All CRUD SELECT queries retreive the table column using the types defined in the
-layout class for the table. In this case, the class `app.persistence.model.InvoiceLayout`.
+All CRUD SELECT queries retrieve the table column using the types defined in the
+layout class for the table. In this case, the class `app.persistence.layout.InvoiceLayout`.
 If we inspect this class we can see the columns as app properties with the types:
 
 ```java
@@ -585,7 +585,21 @@ WHERE amount > 200
 ```
 
 The types for the columns of Nitro SELECTs are also computed during the generation of
-the persistence layer and don't change at runtime; therefore, they are all `STATIC` too. Let's review them.
+the persistence layer and don't change at runtime; therefore, they are all `STATIC` as well.
+
+
+Even though a Nitro SELECT can combine any number of columns in this case we chose to select the same columns as the CRUD example above, for comparison purposes. Each Nitro SELECT queries defines a separate layout class to retrieve the query columns. In
+this case, the class `app.persistence.layout.BigInvoiceLayout`.
+
+If we inspect this class we can see the columns as app properties with the types:
+
+```java
+  protected Double amount = null; // Source Type: STATIC_DESIGNATED
+  protected InvoiceStatus status = null; // Source Type: STATIC_DESIGNATED
+  protected LocalDateTime created = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T1
+  protected Boolean active = null; // Source Type: STATIC_TYPESOLVER_RULE, rule #T2
+  protected Short category = null; // Source Type: STATIC_DIALECT_RULE, rule #D3
+```
 
 The following table describes how they are computed using the 5 types of STATIC type solver forms:
 
@@ -601,7 +615,7 @@ The following table describes how they are computed using the 5 types of STATIC 
 #### 3. The LiveSQL Select
 
 ```log
-ELECT
+SELECT
   a.amount as "amount", 
   a.status as "status", 
   a.created as "created", 
