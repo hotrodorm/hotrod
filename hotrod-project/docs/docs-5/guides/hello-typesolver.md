@@ -551,17 +551,17 @@ If we inspect this class we can see the columns as app properties with the types
 ```
 
 All types are computed during the persistence layer generation and don't change at runtime;
-therefore, they are all `STATIC`. In this case:
+therefore, they are all `STATIC`. Let's review them.
 
-- The `amount` column's type was designated as `Double` using a `<column>` tag, that we can find in the `layer.xml` file in line 19.
-- The `status` column's type was also designated, this time using the converter `InvoiceStatusConverter`. This is defined in
-a `<column>` tag, that we can find in the `layer.xml` file in line 20.
-- The `created` column's type was not designated. It was computed as `java.time.LocalDateTime` in the static type solver's rule #1 (aka #T1),
-that we can find in the `layer.xml` file in line 4.
-- The `active` column's type was computed by the static type solver for the `YNConverter`, using the second rule in it (aka #T2);
-we can find this rule in the `layer.xml` file in line 5.
-- The `category` column's type was not designated nor computed by the static type solver; it was decided as a `Short` by a dialect rule. In this case,
-by rule #D3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules).
+The following table describes how they are computed using the 5 types of STATIC type solver forms:
+
+| Property | Type or Converter | Type Solver Mechanics | Description |
+| :-- | :-- | :-- | :-- |
+| `amount` | `Double` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 19 |
+| `status` | *Converter* `InvoiceStatusConverter` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 20 |
+| `created` | `java.time.LocalDateTime` | STATIC_TYPESOLVER_RULE, rule #T1 | Computed in the static type solver's rule #1 (aka #T1), that we can find in the `layer.xml` file in line 4 |
+| `active` | *Converter* `YNConverter` | STATIC_TYPESOLVER_RULE, rule #T2 | Computed by the static type solver using the second rule in it (aka #T2), that we can find in the `layer.xml` file in line 5 |
+| `category` | `Short` | STATIC_DIALECT_RULE, rule #D3 | Computed by a dialect rule; in this case, by rule #D3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules) |
 
 #### 2. The Nitro Select
 
