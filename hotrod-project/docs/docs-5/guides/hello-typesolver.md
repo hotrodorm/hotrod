@@ -539,7 +539,7 @@ WHERE status = ?
 ```
 
 All CRUD SELECT queries retreive the table column using the types defined in the
-layout class for the table. In this case, the class `app.persistence.model.Invoice`.
+layout class for the table. In this case, the class `app.persistence.model.InvoiceLayout`.
 If we inspect this class we can see the columns as app properties with the types:
 
 ```java
@@ -550,8 +550,8 @@ If we inspect this class we can see the columns as app properties with the types
   protected Short category = null; // Type Source: STATIC_DIALECT_RULE, rule #D3
 ```
 
-All types are computed during the persistence layer generation and don't change at runtime;
-therefore, they are all `STATIC`. Let's review them.
+The types for tables and views are computed during the generation of the persistence layer
+and don't change at runtime; therefore, they are all `STATIC`. Let's review them.
 
 The following table describes how they are computed using the 5 types of STATIC type solver forms:
 
@@ -559,9 +559,9 @@ The following table describes how they are computed using the 5 types of STATIC 
 | :-- | :-- | :-- | :-- |
 | `amount` | `Double` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 19 |
 | `status` | *Converter* `InvoiceStatusConverter` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 20 |
-| `created` | `java.time.LocalDateTime` | STATIC_TYPESOLVER_RULE, rule #T1 | Computed in the static type solver's rule #1 (aka #T1), that we can find in the `layer.xml` file in line 4 |
-| `active` | *Converter* `YNConverter` | STATIC_TYPESOLVER_RULE, rule #T2 | Computed by the static type solver using the second rule in it (aka #T2), that we can find in the `layer.xml` file in line 5 |
-| `category` | `Short` | STATIC_DIALECT_RULE, rule #D3 | Computed by a dialect rule; in this case, by rule #D3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules) |
+| `created` | `java.time.LocalDateTime` | STATIC_TYPESOLVER_RULE,<br/>rule #T1 | Computed in the static type solver's rule #1 (aka #T1), that we can find in the `layer.xml` file in line 4 |
+| `active` | *Converter* `YNConverter` | STATIC_TYPESOLVER_RULE,<br/>rule #T2 | Computed by the static type solver using the second rule in it (aka #T2), that we can find in the `layer.xml` file in line 5 |
+| `category` | `Short` | STATIC_DIALECT_RULE,<br/>rule #D3 | Computed by a dialect rule; in this case, by rule #D3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules) |
 
 #### 2. The Nitro Select
 
@@ -583,6 +583,20 @@ WHERE amount > 200
 - active=false
 - category=1023
 ```
+
+The types for the columns of Nitro SELECTs are also computed during the generation of
+the persistence layer and don't change at runtime; therefore, they are all `STATIC` too. Let's review them.
+
+The following table describes how they are computed using the 5 types of STATIC type solver forms:
+
+| Property | Type or Converter | Type Solver Mechanics | Description |
+| :-- | :-- | :-- | :-- |
+| `amount` | `Double` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 26 |
+| `status` | *Converter* `InvoiceStatusConverter` | STATIC_DESIGNATED | Designated using a `<column>` tag that we can find in the `layer.xml` file in line 27 |
+| `created` | `java.time.LocalDateTime` | STATIC_TYPESOLVER_RULE,<br/>rule #T1 | Computed in the static type solver's rule #1 (aka #T1), that we can find in the `layer.xml` file in line 4 |
+| `active` | *Converter* `YNConverter` | STATIC_TYPESOLVER_RULE,<br/>rule #T2 | Computed by the static type solver using the second rule in it (aka #T2), that we can find in the `layer.xml` file in line 5 |
+| `category` | `Short` | STATIC_DIALECT_RULE,<br/>rule #D3 | Computed by a dialect rule; in this case, by rule #D3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Static Dialect Rules](../config/database-support/h2.md#1-static-dialect-rules) |
+
 
 #### 3. The LiveSQL Select
 
@@ -631,8 +645,34 @@ globalId=1009b80f-a05a-4de9-9fec-6577aa5c0390, active=true, mainBranch=true,
 category=1018, vip=true, paidAmount=0, status=DRAFT}
 ```
 
-That's it! You just generated the persistence code from the database and ran an app using it.
+The types for the columns of LiveSQL SELECTs fall into two categories:
 
-Later on, when the database suffers changes &mdash; it will &mdash; you can just
-rerun the generation step `mvn hotrod:gen` to retrieve the latest changes to columns, tables, views, etc. and to apply
-them automatically to the persistence layer.
+- For columns of tables or views used in a LiveSQL SELECT, their types are always computed during the generation of the persistence layer so they are `STATIC`.
+- For other LiveSQL expressions, their types are computed during the execution of the query so they are `RUNTIME`.
+
+The following table describes how they are computed using the 11 type solver forms:
+
+| Property | Type or Converter | Type Solver Mechanics | Description |
+| :-- | :-- | :-- | :-- |
+| `amount` | `Double` | STATIC_DESIGNATED | This static type is already explained in the CRUD SELECT above |
+| `status` | *Converter* `InvoiceStatusConverter` | STATIC_DESIGNATED | This static type is already explained in the CRUD SELECT above |
+| `created` | `java.time.LocalDateTime` | STATIC_TYPESOLVER_RULE,<br/>rule #T1 | This static type is already explained in the CRUD SELECT above |
+| `active` | *Converter* `YNConverter` | STATIC_TYPESOLVER_RULE,<br/>rule #T2 | This static type is already explained in the CRUD SELECT above |
+| `category` | `Short` | STATIC_DIALECT_RULE,<br/>rule #D3 | This static type is already explained in the CRUD SELECT above |
+| `gross` | `Double` | RUNTIME_DESIGNATED | Designated using the `.type(<class>)` method in the LiveSQL query |
+| `vip` | `Boolean` | RUNTIME_DESIGNATED | Designated using the `.type(<converter-bean>)` method in the LiveSQL query |
+| `dom` | `Long` | RUNTIME_TYPESOLVER_RULE,<br/>rule #RT1 | Computed by the runtime type solver's rule #1 (aka #RT1), that we can find in the `layer.xml` file in line 9 |
+| `mainBranch` | `Boolean` |  RUNTIME_TYPESOLVER_RULE,<br/>rule #RT2| Computed by the runtime type solver using the second rule in it (aka #RT2), that we can find in the `layer.xml` file in line 10 |
+| `paidAmount` | `java.math.BigDecimal` | RUNTIME_DIALECT_RULE,<br/>rule #RD1 | Computed by a *runtime* dialect rule; in this case, by rule #RD3 of the H2 Dialect Rules, to be precise. The rules for the dialect are described in [H2's Runtime Dialect Rules](../config/database-support/h2.md#1-runtime-dialect-rules) |
+| `globalId` | `java.util.UUID` | RUNTIME_JDBC_DRIVER_DEFAULT | When all else fails, the JDBC driver suggests a data type to retrieve the data of this column |
+
+The LiveSQL query above shows all possible combinations of designated types and converters for the data columns that are being retrieved by your app; these types and converters are either designated, computed by custom rules, computed by default dialect rules, or provided by the JDBC Driver.
+
+That's it!
+
+The full understanding of this example should allow you to fully control the type solving of your app in a simple manner. Again, to fully examine the precedence of the mechanics at play in this example, please review [Type Solver Cases](./type-solver-cases.md).
+
+
+
+
+
