@@ -2,7 +2,7 @@
 
 When a SELECT query is run the persistence layer models the columns of it with specific data types in your app. These data types typically take the form of statically defined properties in the Layout classes, but can also appear as dynamic columns in LiveSQL queries.
 
-See the [Hello Type Solver](./hello-typesolver.md) runnable example to see all the type resolution cases described below in action.
+The [Hello Type Solver](./hello-typesolver.md) runnable example shows all the type resolution cases described below in action.
 
 ## 1. The Rules and Their Precedence
 
