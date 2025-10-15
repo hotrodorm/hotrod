@@ -122,22 +122,17 @@ public class PostgreSQLDialect extends LiveSQLDialect {
         // TIME WITH TIME ZONE
         return RuntimeType.ofDialect(java.time.OffsetTime.class, 18);
       }
-    case java.sql.Types.OTHER: // 1111
-      if ("interval".equals(typeName)) {
-        // INTERVAL
-        return null;
-      } else if (typeName != null && typeName.endsWith("range")) {
-        // INT4RANGE, INT8RANGE, NUMRANGE, TSRANGE, TSTZRANGE, DATERANGE
-        return null;
-      } else {
-        // POINT, LINE, LSEG, BOX, PATH, POLYGON, CIRCLE
-        // CIDR, INET, MACADDR
-        // UUID
-        // JSON, JSONB
-        return null;
-      }
 
-      // Boolean
+    case java.sql.Types.OTHER: // 1111
+      // INTERVAL
+      // INT4RANGE, INT8RANGE, NUMRANGE, TSRANGE, TSTZRANGE, DATERANGE
+      // POINT, LINE, LSEG, BOX, PATH, POLYGON, CIRCLE
+      // CIDR, INET, MACADDR
+      // UUID
+      // JSON, JSONB
+      return null;
+
+    // Boolean
 
     case java.sql.Types.BIT: // -7
       // BOOLEAN
