@@ -31,7 +31,7 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
 
   // Properties
 
-  private List<TypeSolverWhenTag> whens = new ArrayList<TypeSolverWhenTag>();
+  private List<TypeSolverWhenTag> whens = new ArrayList<>();
   private TreeSet<RetrievedColumn> retrievedColumns = new TreeSet<>();
 
   // Constructor
@@ -86,7 +86,7 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
           } else {
             resultClassName = result.getClass().getName();
           }
-          Boolean test = (Boolean) result;
+          boolean test = (Boolean) result;
           if (test) {
             JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
             if (jdbcTypeOnWrite == null) {

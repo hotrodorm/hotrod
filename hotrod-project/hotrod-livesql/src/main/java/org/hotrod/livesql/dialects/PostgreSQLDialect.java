@@ -128,6 +128,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
         return null;
       } else if (typeName != null && typeName.endsWith("range")) {
         // INT4RANGE, INT8RANGE, NUMRANGE, TSRANGE, TSTZRANGE, DATERANGE
+        return null;
       } else {
         // POINT, LINE, LSEG, BOX, PATH, POLYGON, CIRCLE
         // CIDR, INET, MACADDR
@@ -169,7 +170,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
 
   @Override
   public WithRenderer getWithRenderer() {
-    return (c) -> "WITH" + (c ? " RECURSIVE" : "");
+    return c -> "WITH" + (c ? " RECURSIVE" : "");
   }
 
   // DISTINCT ON rendering
@@ -206,7 +207,7 @@ public class PostgreSQLDialect extends LiveSQLDialect {
 
   @Override
   public TableExpressionRenderer getTableExpressionRenderer() {
-    return (columns) -> " ("
+    return columns -> " ("
         + Arrays.stream(columns).map(c -> this.canonicalToNatural(c)).collect(Collectors.joining(", ")) + ")";
   }
 
@@ -521,8 +522,8 @@ public class PostgreSQLDialect extends LiveSQLDialect {
 
   // New SQL Identifier rendering
 
-  private final String UNQUOTED_NATURAL = "[A-Za-z][A-Za-z0-9_]*";
-  private final String UNQUOTED_CANONICAL = "[a-z][a-z0-9_]*";
+  private static final String UNQUOTED_NATURAL = "[A-Za-z][A-Za-z0-9_]*+";
+  private static final String UNQUOTED_CANONICAL = "[a-z][a-z0-9_]*+";
 
   @Override
   public String naturalToCanonical(final String natural) {

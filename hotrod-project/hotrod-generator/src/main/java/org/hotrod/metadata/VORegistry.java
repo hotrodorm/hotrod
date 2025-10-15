@@ -89,9 +89,9 @@ public class VORegistry {
 
     public FragmentRegistry(final ClassPackage classPackage) {
       this.classPackage = classPackage;
-      this.vosByMetadata = new LinkedHashMap<DataSetMetadata, EntityVOClass>();
-      this.vosByName = new LinkedHashMap<String, EntityVOClass>();
-      this.structuredVOsByName = new LinkedHashMap<String, SelectVOClass>();
+      this.vosByMetadata = new LinkedHashMap<>();
+      this.vosByName = new LinkedHashMap<>();
+      this.structuredVOsByName = new LinkedHashMap<>();
     }
 
     // Behavior
@@ -474,9 +474,9 @@ public class VORegistry {
 
   public static class VOProperty {
 
-    public static enum EnclosingTagType {
+    public enum EnclosingTagType {
       NON_STRUCTURED_SELECT, ENTITY_VO, EXPRESSIONS, ASSOCIATION, COLLECTION
-    };
+    }
 
     private String name;
     private StructuredColumnMetadata cm;

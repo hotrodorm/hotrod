@@ -23,6 +23,7 @@ public class AliasedExpression extends Expression {
     super.register(this.referencedExpression);
   }
 
+  @Override
   protected Expression asSubqueryExpression(final Subquery subquery, final String alias) {
     return this.referencedExpression.asSubqueryExpression(subquery, alias);
   }

@@ -21,16 +21,19 @@ public class CastUtil {
   private static final String SEGMENTS = "((" + WORD + "|" + PRECISION + "|" + BRACKETS + "|" + TIME_OFFSET
       + ")\\ *+)++";
 
-  private static Pattern TYPE_PATTERN = Pattern.compile("^" + SEGMENTS + "$");
+  private static final Pattern TYPE_PATTERN = Pattern.compile("^" + SEGMENTS + "$");
+
+  private CastUtil() {
+  }
 
   // Oracle:
   // VARCHAR2(50)
   // varchar2(50)
   // DECIMAL(10,2)
-  
+
   // PostgreSQL:
   // INTEGER[]
-  
+
   // SQL Server:
   // Integer
 

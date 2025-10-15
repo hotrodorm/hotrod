@@ -25,13 +25,9 @@ public class RuntimeTypeSolver {
 
     // 1. Try the runtime type solver rules from the type-solver tag.
 
-//    log.info("Runtime TypeSolver 1");
     if (this.runtimeTypeSolverRules != null) {
       for (TypeRule r : this.runtimeTypeSolverRules) {
-//        log.info("Runtime TypeSolver RULE...");
         if (r.applies(cm)) {
-//          log.info("Runtime TypeSolver FOUND RULE: #" + r.getTypeHandler().getRuleNumber() + " class="
-//              + r.getTypeHandler().getClass().getName());
           return r.getTypeHandler();
         }
       }
@@ -39,16 +35,13 @@ public class RuntimeTypeSolver {
 
     // 2. Try the dialect rules (provided by default per the dialect)
 
-//    log.info("Runtime TypeSolver 2");
     RuntimeType rt = this.dialect.resolveRuntimeType(cm);
     if (rt != null) {
-//      log.info("DIALECT rt=" + rt.getType() + " : " + rt.getRuleNumber());
       return TypeHandler.forClass(rt.getType(), TypeSource.RUNTIME_DIALECT_RULE, rt.getRuleNumber());
     }
 
     // 3. Use the class proposed by the JDBC driver, if available
 
-//    log.info("Runtime TypeSolver 3");
     String className = cm.getColumnClassName();
     if (className == null) {
       // The JDBC driver does not propose a default class;
@@ -56,7 +49,6 @@ public class RuntimeTypeSolver {
       return null;
     }
 
-//    log.info("Runtime TypeSolver 4");
     try {
       return TypeHandler.forClass(Class.forName(className), TypeSource.RUNTIME_JDBC_DRIVER_DEFAULT, null);
     } catch (ClassNotFoundException e) {

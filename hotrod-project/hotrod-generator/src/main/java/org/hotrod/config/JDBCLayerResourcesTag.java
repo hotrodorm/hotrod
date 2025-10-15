@@ -31,8 +31,6 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
   private String className = null;
 
   private File baseDir;
-  private ClassPackage basePackage;
-  private ClassPackage subpackage;
   private ClassPackage assembledPackage;
 
   // Constructor
@@ -93,10 +91,10 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
 
     // package
 
-    this.basePackage = jdbcPackage;
+    ClassPackage basePackage = jdbcPackage;
     if (this.sPackage != null) {
       try {
-        this.basePackage = ClassPackage.parse(this.sPackage);
+        basePackage = ClassPackage.parse(this.sPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this,
             "Invalid package '" + this.sPackage + "' in the attribute 'package' of the tag <" + super.getTagName()
@@ -106,11 +104,12 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
 
     // sub-package
 
+    ClassPackage subpackage;
     if (this.sSubPackage == null) {
       String ds = DEFAULT_SUBPACKAGE;
-      this.subpackage = null;
+      subpackage = null;
       try {
-        this.subpackage = ClassPackage.parse(ds);
+        subpackage = ClassPackage.parse(ds);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this,
             "Invalid default subpackage '" + ds
@@ -119,14 +118,14 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
       }
     } else {
       try {
-        this.subpackage = ClassPackage.parse(this.sSubPackage);
+        subpackage = ClassPackage.parse(this.sSubPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(this, "Invalid sub-package '" + this.sSubPackage
             + "' on attribute 'sub-package' of the tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     }
 
-    this.assembledPackage = this.basePackage.append(this.subpackage);
+    this.assembledPackage = basePackage.append(subpackage);
 
     // name
 
