@@ -1,4 +1,4 @@
-# Hello CRUD!
+# Hello CRUD
 
 This example sets up a Spring Boot project with Maven and H2 in-memory database to show the entire set up needed to run
 a simple CRUD functionality. This demonstrates the case of selecting a row by primary key using the CRUD module.

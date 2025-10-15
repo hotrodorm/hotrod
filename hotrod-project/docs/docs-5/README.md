@@ -163,7 +163,7 @@ See [Hello CRUD](./crud/hello-crud.md) for the out-of-the-box functionality and 
 
 The [Hello Nitro](./guides/hello-nitro.md) expands on previous example to implement custom native queries, including DynamicSQL.
 
-The [Hello Type Solver](./guides/hello-typesolver.md) shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
+The [Hello Type Resolution](./guides/hello-type-resolution.md) shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
 
 <!--
 For the basic usage of each module and more examples of each one see:

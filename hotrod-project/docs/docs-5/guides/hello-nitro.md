@@ -1,4 +1,4 @@
-# Hello Nitro!
+# Hello Nitro
 
 This example runs four Nitro queries in the database. It shows the basics on how to define and use them from your application, including the use of parameters and Dynamic SQL.
 
