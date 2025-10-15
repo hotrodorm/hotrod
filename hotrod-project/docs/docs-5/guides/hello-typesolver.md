@@ -2,7 +2,7 @@
 
 This guide runs a Spring Boot project with Maven and an H2 in-memory database. It shows the details on how the data types for the SELECT query columns are decided for your app.
 
-It demonstrates all 11 type solver cases described in [Type Solver Cases](./type-solver-cases.md).
+It demonstrates all 11 type solver cases described in [Type Resolution Mechanics](./type-resolution-mechanics.md).
 
 You'll need:
 
@@ -684,7 +684,7 @@ The LiveSQL query above shows all possible combinations of designated types and 
 
 That's it!
 
-The full understanding of this example should allow you to fully control the type solving of your app in a simple manner. Again, to fully examine the precedence of the mechanics at play in this example, please review [Type Solver Cases](./type-solver-cases.md).
+The full understanding of this example should allow you to fully control the type solving of your app in a simple manner. Again, to fully examine the precedence of the mechanics at play in this example, please review [Type Resolution Mechanics](./type-resolution-mechanics.md).
 
 
 

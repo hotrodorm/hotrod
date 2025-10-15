@@ -1,2 +1,0 @@
-# Type Solver Cases
-
