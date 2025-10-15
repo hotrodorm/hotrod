@@ -201,6 +201,7 @@ Tuning the Persistence Layer:
 
 - [Organizing the Persistence Layer Folders](./guides/organizing-persistence-layer-folders.md)
 - [Tuning Column Types](./guides/type-resolution-mechanics.md)
+- [Exporting Column Properties](./guides/exporting-column-properties.md)
 - [Mapping Table, Views, and Column Names](./guides/mapping-table-and-column-names.md)
 
 Debugging:

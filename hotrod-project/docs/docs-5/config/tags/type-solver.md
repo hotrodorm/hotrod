@@ -1,9 +1,9 @@
 # The `<type-solver>` Tag
 
-HotRod's configuration can include a rule based static type solver that can assign types
-or converters to VO properties according to custom logic specified by the developer.
+HotRod's configuration can include a rule based static type solver that can decide on the types
+of the columns for tables, views, and Nitro select queries. These data type are used when producing the layout classes of the persistence layer.
 
-You can Run the [Hello Type Resolution](../../guides/hello-type-resolution.md) example to see the static type solver in action, along with the rest of the type resolution rules.
+The static type solver is an integral part of the [Type Resolution Mechanics](../../guides/type-resolution-mechanics.md). The [Hello Type Resolution](../../guides/hello-type-resolution.md) show the static type solver in action, along with the rest of the type resolution rules.
 
 In order to do this the developer can add the `<type-solver>` tag. For example:
 
@@ -18,7 +18,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of 
 the property, and no further rules are evaluated. 
 
-The avalable properties (such as `scale`, `name`, and `size` above) depend on each specific database. To find the full list of available
+The available properties (such as `scale`, `name`, and `size` above) depend on each specific database. To find the full list of available
 properties on your specific database schema get the column metadata using the [Export Columns](../../maven/goal-export-columns-txt.md) 
 command (in TXT or XLSX format).
 

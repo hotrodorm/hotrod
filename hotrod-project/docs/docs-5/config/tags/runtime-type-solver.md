@@ -2,6 +2,8 @@
 
 The Runtime Type Solver can apply rules to decide the types of expressions in LiveSQL SELECT queries.
 
+The runtime type solver is an integral part of the [Type Resolution Mechanics](../../guides/type-resolution-mechanics.md). The [Hello Type Resolution](../../guides/hello-type-resolution.md) show the runtime type solver in action, along with the rest of the type resolution rules.
+
 These rules do not affect columns from tables or views since their type is resolved in a static manner during the layer generation. These rules do not affect expressions which type has been designated using the `.type(<class>)` or `.type(<converter-bean>)` clauses.
 
 The rules are expressed in JEXL syntax and can use all the properties of the `java.sql.ResultSetMetaData` class. For example:
@@ -13,9 +15,6 @@ The rules are expressed in JEXL syntax and can use all the properties of the `ja
     <when ... />
 </type-solver>
 ```
-
-You can Run the [Hello Type Resolution](../../guides/hello-type-resolution.md) example to see the runtime type solver in action, along with the rest of the type resolution rules.
-
 
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of the property, and no further rules are evaluated.
 

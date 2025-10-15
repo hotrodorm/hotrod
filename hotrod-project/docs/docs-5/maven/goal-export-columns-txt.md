@@ -3,6 +3,8 @@
 The database exposes a set of properties for each column. These properties can be
 used to assemble rules in the `<type-solver>` tag that may help to greatly reduce the configuration effort.
 
+You can run the [Exporting Column Properties](../guides/exporting-column-properties.md) example to see this feature in action.
+
 Column metadata can also be exported in XLSX format. See [Export Columns to XLSX](./goal-export-columns-xlsx.md).
 
 ## Configuring the Metadata Report Generation

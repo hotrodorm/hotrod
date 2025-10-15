@@ -1,4 +1,4 @@
-# Retrieving Column Properties
+# Exporting Column Properties
 
 This guide retrieves the column properties of al the columns of a table, a view, and a nitro select. It's run using Maven and uses an H2 in-memory database.
 
