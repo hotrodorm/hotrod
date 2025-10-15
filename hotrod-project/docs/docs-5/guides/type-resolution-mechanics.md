@@ -108,6 +108,8 @@ These aspects combined make all 11 cases, as depicted in the image below:
 
 ![Type Resolution Mechanics Image](./type-resolution-mechanics.png)
 
+&nbsp;
+
 The following table describes their name as shown in the application, as well as their precedence, nature, and usage:
 
 | Case | Name | Nature | Precedence | Usage |
@@ -128,7 +130,5 @@ Due to their identical precedence the syntax of the configuration file makes cas
 
 On the other hand, the LiveSQL syntax makes cases #6 and #7 mutually exclusive, as well as cases #8 and #9.
 
-`Again, the [Hello Type Solver](./hello-typesolver.md) example shows all the type resolution cases in action.
-
-
+Again, you can inspect and run the [Hello Type Solver](./hello-typesolver.md) example to see all the type resolution cases in action.
 
