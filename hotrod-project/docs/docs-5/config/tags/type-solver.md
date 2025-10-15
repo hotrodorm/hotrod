@@ -1,7 +1,9 @@
 # The `<type-solver>` Tag
 
-HotRod's configuration can include a rule based type solver that can assign types or converters to VO properties according 
-to custom logic specified by the developer. 
+HotRod's configuration can include a rule based static type solver that can assign types
+or converters to VO properties according to custom logic specified by the developer.
+
+You can Run the [Hello Type Resolution](../../guides/hello-type-resolution.md) example to see the static type solver in action, along with the rest of the type resolution rules.
 
 In order to do this the developer can add the `<type-solver>` tag. For example:
 
@@ -44,7 +46,7 @@ Every query column is read as a property on the Layout class. The property class
 
 This expression declares a predicate to be evaluated. If found true that rule is selected and no further rules are processed.
 
-These expressions are written in JEXL syntax. For details on the JEXL's syntax see[Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/).
+These expressions are written in JEXL syntax. For details on the JEXL's syntax see [Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/).
 
 The available properties for the column metadata are described in [TXT Column Metadata](../../maven/goal-export-columns-txt.md). *Standard properties*
 are available across all databases, while *native properties* enhance the column metadata, but depend on each specific database.

@@ -5,7 +5,7 @@ HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high per
 The persistence layer provides ready-to-use CRUD and LiveSQL functionalities to quickly start prototyping an application for
 any of the world-class [supported databases](./config/supported-databases.md).
 
-See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md). For documentation on the previous versions see [HotRod 4 Documentation](../docs-4/README.md) and [HotRod 3 Documentation](../docs-3/README.md).
+See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md).
 
 ## LiveSQL
 
@@ -141,7 +141,7 @@ Torcs discovers slow queries at runtime by providing rankings by impact, slowest
 
 ## Hello World
 
-See HotRod in action with the [Hello World](./guides/hello-world.md) and [Hello Nitro](./guides/hello-nitro.md).
+See HotRod in action with the [Hello World](./guides/hello-world.md) example.
 
 
 ## Modules
@@ -159,7 +159,11 @@ These modules are:
 
 ## Examples
 
-See [Hello CRUD!](./crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+See [Hello CRUD](./crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+
+The [Hello Nitro](./guides/hello-nitro.md) expands on previous example to implement custom native queries, including DynamicSQL.
+
+The [Hello Type Solver](./guides/hello-typesolver.md) shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
 
 <!--
 For the basic usage of each module and more examples of each one see:
@@ -196,7 +200,7 @@ Getting Started:
 Tuning the Persistence Layer:
 
 - [Organizing the Persistence Layer Folders](./guides/organizing-persistence-layer-folders.md)
-- [Tuning Column Types](./guides/mapping-column-types.md)
+- [Tuning Column Types](./guides/type-resolution-mechanics.md)
 - [Mapping Table, Views, and Column Names](./guides/mapping-table-and-column-names.md)
 
 Debugging:

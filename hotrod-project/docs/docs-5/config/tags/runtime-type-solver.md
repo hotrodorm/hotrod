@@ -2,9 +2,7 @@
 
 The Runtime Type Solver can apply rules to decide the types of expressions in LiveSQL SELECT queries.
 
-These rules do not affect columns from tables or views since their type is resolved in a static manner during the layer generation.
-
-These rules do not affect expressions which type has been designated using the `.type(<class>)` or `.type(<converter-bean>)` clauses.
+These rules do not affect columns from tables or views since their type is resolved in a static manner during the layer generation. These rules do not affect expressions which type has been designated using the `.type(<class>)` or `.type(<converter-bean>)` clauses.
 
 The rules are expressed in JEXL syntax and can use all the properties of the `java.sql.ResultSetMetaData` class. For example:
 
@@ -15,6 +13,9 @@ The rules are expressed in JEXL syntax and can use all the properties of the `ja
     <when ... />
 </type-solver>
 ```
+
+You can Run the [Hello Type Resolution](../../guides/hello-type-resolution.md) example to see the runtime type solver in action, along with the rest of the type resolution rules.
+
 
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of the property, and no further rules are evaluated.
 
@@ -49,7 +50,7 @@ The following properties, exposed by the JDBC driver, can be used in the JEXL ex
 
 This expression declares a predicate to be evaluated. If found true that rule is selected and no further rules are processed.
 
-These expressions are written in JEXL syntax. For details on the JEXL's syntax see[Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/).
+These expressions are written in JEXL syntax. For details on the JEXL's syntax see [Apache Commons JEXL](https://commons.apache.org/proper/commons-jexl/).
 
 ## Resulting Type
 

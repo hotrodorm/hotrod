@@ -1,6 +1,6 @@
-# Hello Type Solver
+# Hello Type Resolution
 
-This guide runs a Spring Boot project with Maven and an H2 in-memory database. It shows the details on how the data types for the SELECT query columns are decided for your app.
+This guide runs a Spring Boot project with Maven and an H2 in-memory database. It shows the details on how the data types are decided for your app when queryinh tables, views, native queries, and LiveSQL queries.
 
 It demonstrates all 11 type solver cases described in [Type Resolution Mechanics](./type-resolution-mechanics.md).
 
