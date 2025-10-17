@@ -3,7 +3,7 @@
   <target name="loc">
     <taskdef name="loc"
              classname="loc.LocCounterAntTask"
-             classpath="../attic/hotrod/lib/loc.jar" />
+             classpath="../tests/attic/hotrod/lib/loc.jar" />
     <tstamp>
       <format property="now" pattern="yyyy.MM.dd-HH.mm" />
     </tstamp>

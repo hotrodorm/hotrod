@@ -15,19 +15,19 @@ parenthesis to group them.
 A simple example that combines two rows can take the form:
 
 ```sql
-select id, name from employee where region = 1201
-union
-select cid, contractor_name from contractor where region_id = 1201
+SELECT id, name FROM employee WHERE region = 1201
+UNION
+SELECT cid, contractor_name FROM contractor WHERE region_id = 1201
 ```
 
 This can be written in LiveSQL as:
 
 ```java
-AccountTable a = AccountDAO.newTable("a");
+EmployeeTable e = EmployeeDAO.newTable("e");
 ContractorTable c = ContractorDAO.newTable("c");
 
 List<Row> rows = sql
-    .select(a.id, a.name).from(a).where(a.region.eq(1201))
+    .select(e.id, e.name).from(e).where(e.region.eq(1201))
     .union()
     .select(c.cid, c.contractorName).from(c).where(c.regionId.eq(1201))
     .execute();
@@ -36,17 +36,19 @@ List<Row> rows = sql
 A more complex multi-level query (purposedly concise for brevity) with set algebra can take the form:
 
 ```sql
-select 101 as n
-union all select 250
-except (
-  select 400
-  intersect all (
-    select 500
-    except all select 600
+SELECT 101 AS n
+UNOIN ALL
+SELECT 250
+EXCEPT (
+  SELECT 400
+  INTERSECT ALL (
+    SELECT 500
+    EXCEPT all
+    SELECT 600
   )
 )
-order by n
-limit 3
+ORDER BY n
+LIMIT 3
 ```
 
 This can be written in LiveSQL as:
@@ -67,13 +69,13 @@ List<Row> rows = sql
 ```
 
 **Note**: For brevity in the example above, the SELECT subqueries were typed in the most concise way
-only (e.g. as `select 300`). Keep in mind that each SELECT subquery can take the full query form, including the `FROM`, `JOIN`, `WHERE`, `GROUP BY`, `HAVING`, `ORDER BY`, `OFFSET`, `LIMIT` clauses,
+only (e.g. as `select 300`). Keep in mind that each SELECT subquery can take the full query form, including the FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, OFFSET, LIMIT clauses,
 as well as subqueries, and the full LiveSQL expression language.
 
 
 ## SQL Set Operators
 
-The SQL Standard defined the following six standard operators:
+The SQL Standard defined the following three standard operators in six forms:
 
 - UNION [DISTINCT]
 - UNION ALL
@@ -122,11 +124,11 @@ List<Row> rows = sql
 Always produces the query:
 
 ```sql
-select 100
-union (
-  select 200
-  intersect
-  select 300
+SELECT 100
+UNION (
+  SELECT 200
+  INTERSECT
+  SELECT 300
 )
 ```
 
@@ -143,12 +145,12 @@ The following query:
 
 ```sql
 (
-  select 100
-  union
-  select 200
+  SELECT 100
+  UNION
+  SELECT 200
 )
-intersect
-select 300
+INTERSECT
+SELECT 300
 ```
 
 Can be written as:
@@ -251,14 +253,14 @@ When combining multiple SELECTs using set operators, the ordering, offsets, and 
 to the combined set, not each inner SELECT individually. For example, consider the following query:
 
 ```sql
-select a as k, b from t
-union all
-select c, d from u
-union all
-select e, f from v
-union all
-select g, h from w
-order by k, b desc
+SELECT a AS k, b FROM t
+UNION ALL
+SELECT c, d FROM u
+UNION ALL
+SELECT e, f FROM v
+UNION ALL
+SELECT g, h FROM w
+ORDER BY k, b DESC
 ```
 
 The ORDER BY (as well as LIMIT/OFFSET) is applied to the *combined set* and, thus, appears at the
@@ -271,14 +273,14 @@ you can use `sql.enclose(select)` (for the first SELECT) or nest the subsequent 
 For example, if the first and second queries need to be limited, as in:
 
 ```sql
-(select a as k, b from t order by b offset 50 limit 10)
-union all
-(select c, d from u order by c offset 30 limit 5)
-union all
-select e, f from v
-union all
-select g, h from w
-order by k, b desc
+(SELECT a AS k, b FROM t ORDER BY b OFFSET 50 LIMIT 10)
+UNION ALL
+(SELECT c, d FROM u ORDER BY c OFSSET 30 LIMIT 5)
+UNION ALL
+SELECT e, f FROM v
+UNION ALL
+SELECT g, h FROM w
+ORDER BY k, b DESC
 ```
 
 You can write the corresponding LiveSQL query as:
