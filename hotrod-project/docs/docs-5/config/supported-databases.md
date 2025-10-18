@@ -2,52 +2,70 @@
 
 HotRod supports the following Databases:
 
-- Oracle
-- Db2 LUW
-- PostgreSQL &amp; Aurora/PostgreSQL
-- SQL Server
-- MySQL &amp; Aurora/MySQL
-- MariaDB
-- Sybase/SAP ASE
-- H2
-- HyperSQL
-- Apache Derby
+- [Oracle](./database-support/oracle.md)
+- [Db2 LUW](./database-support/db2-luw.md)
+- [PostgreSQL &amp; Aurora/PostgreSQL](./database-support/postgresql.md)
+- [SQL Server](./database-support/sql-server.md)
+- [MariaDB](./database-support/mariadb.md)
+- [MySQL &amp; Aurora/MySQL](./database-support/mysql.md)
+- [SAP ASE (Sybase)](./database-support/sap-ase.md)
+- [H2](./database-support/h2.md)
+- [HyperSQL (HSQLDB)](./database-support/hsqldb.md)
+- [Apache Derby](./database-support/apache-derby.md)
 
+## Dialect Features
 
-## Default Data Types
+The databases listed above implement different subsets of the SQL Standard and they also implement
+their own additional extensions. When it comes to the generated persistence layer not all the
+possible features defined in the layer configuration may be available in each specific database,
+edition, or version.
 
-HotRod maps the data type of each database column with a default Java type.
+The following list enumerates the most important differences that you may encounter. There are more
+subtle differences as well, but these cover the most common ones you may find, for example, when
+migrating from one database to another.
 
-The default Java type can be superseded by the user defined data type, specified by a `<column>` tag in
-the `<table>`, `<view>`, or `<select>` query or, alternatively, by a `<type-solver>` rule. 
+### 1. Type Resolution Mechanics
 
-Explicit types or rules are sometimes needed if the database uses an exotic type that HotRod doesn't 
-know how to handle by default.
+The data type for each column is determined by the [Type Resolution Mechanics](../guides/type-resolution-mechanics.md). These mechanics use the Static Dialect Rules as well as the Runtime Dialect Rules. These rules vary per database. See the section of each database above to see the specific dialect rules.
 
-For more complex cases a `<converter>` can manipulate data with tailored Java logic when reading from 
-and writing to the database.
+### 2. LiveSQL Clauses and Expressions
 
-The default data type for each column depends on the specific database. See sections below:
+Although LiveSQL tries to encompass the common clauses in the SQL Standard, not all LiveSQL
+features are implemented by all databases. Depending on their version some databases
+may implement more SQL clauses and SQL expressions than others. If parts of a LiveSQL are not
+available in the specific database, LiveSQL will throw an exception indicating the details of the
+clause or expression that cannot be translated into the current SQL dialect.
 
-- [Support for Oracle Database](./database-support/oracle.md)
-- [Support for Db2 LUW Database](./database-support/db2-luw.md)
-- [Support for PostgreSQL Database](./database-support/postgresql.md)
-- [Support for SQL Server Database](./database-support/sql-server.md)
-- [Support for MariaDB Database](./database-support/mariadb.md)
-- [Support for MySQL Database](./database-support/mysql.md)
-- [Support for SAP ASE (ex-Sybase) Database](./database-support/sap-ase.md)
-- [Support for H2 Database](./database-support/h2.md)
-- [Support for HSQLDB Database](./database-support/hsqldb.md)
-- [Support for Apache Derby Database](./database-support/apache-derby.md)
+As anexample, the features that may not be implemented in all databases include (but it's not limited to):
 
+- CTEs and Recursive CTEs
+- Window Functions
+- Full Outer Joins
+- Offset and Limit Clauses
+- Functions such as GROUP_CONCAT(), TRUNC(), EXTRACT(), etc.
+- Row Locking Clauses
+
+### 3. Sequences and Identities
+
+Database sequences as well as identities may be implemented only partially or not at all by some
+databases. The persistence layer generator validates the database engine and its version to
+determine if a sequence or identity declaration can be implemented; if it cannot, it will
+display an error message with the specifics.
+
+### 4. Catalogs &amp; Schemas
+
+Each database organizes database objects using schemas and catalogs. The schemas and catalogs are used
+during the persistence layer generation, as a parameter indicating the default schema and in the layer configuration file to indicate non-default schemas for specific database objects. Namely:
+
+- When specifying the default schema during the persistence layer generation
+- When using multiple schemas and specifying tables and views in other schemas
+- When implementing schema discovery rules
+
+See [JDBC Catalogs &amp; Schemas](./jdbc-catalogs-and-schemas.md) for details on which ones
+are supported by each database.
 
 ## Example of JDBC Drivers
 
 For a list of example JDBC Drivers for each database see [JDBC Drivers Examples](./jdbc-drivers-examples.md).
 
-
-## Catalogs &amp; Schemas
-
-Each database organizes database objects using schemas and catalogs. See [JDBC Catalogs &amp; Schemas](./jdbc-catalogs-and-schemas.md)
-for details on which ones are supported by each database.
 
