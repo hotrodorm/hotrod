@@ -113,46 +113,53 @@ public class OracleAdapter extends DatabaseAdapter {
 
       // Character types
 
-    case Types.CHAR:
+    case Types.CHAR: // 1
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 15);
-
-    case Types.VARCHAR:
+    case Types.NCHAR: // -15
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
-
-    case Types.CLOB:
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 17);
-
-    case Types.LONGVARCHAR: // No default java type on HotRod yet.
-      // byte[] nor String types do not work on MyBatis out of the box.
+    case Types.VARCHAR: // 12
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
+    case Types.NVARCHAR: // -9
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
+    case Types.CLOB: // 2005
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 19);
+    case Types.NCLOB: // 2011
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 20);
+    case Types.LONGVARCHAR: // -1
       throw new UnresolvableDataTypeException(m);
 
     // Date/time types
 
-    case Types.TIMESTAMP:
+    case Types.TIMESTAMP: // 93
       return "DATE".equalsIgnoreCase(m.getTypeName())
-          ? new PropertyType(java.util.Date.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18)
-          : new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
-
+          ? new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 21)
+          : new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 22);
     case -101: // timestamp with time zone.
       // Invalid JDBC type (-101) reported by the Oracle JDBC Driver.
       return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
-          20);
-
+          23);
     case -102: // timestamp with local time zone.
       // Invalid JDBC type (-102) reported by the Oracle JDBC Driver.
       return new PropertyType(java.time.ZonedDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
-          21);
+          24);
+    case -103: // interval year to month
+      throw new UnresolvableDataTypeException(m);
+    case -104: // interval day to second
+      // Invalid JDBC type (-104) reported by the Oracle JDBC Driver.
+      throw new UnresolvableDataTypeException(m);
 
     // Binary types
 
-    case Types.VARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 22);
+    case Types.VARBINARY: // -3
+      // RAW
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 25);
 
-    case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 23);
+    case Types.LONGVARBINARY: // -4
+      // LONG RAW
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 26);
 
-    case Types.BLOB:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 24);
+    case Types.BLOB: // 2004
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 27);
 
     case -13: // BFILE
       // Invalid JDBC type (-13) reported by the Oracle JDBC Driver.
@@ -162,39 +169,18 @@ public class OracleAdapter extends DatabaseAdapter {
 
     // Other
 
-    case Types.SQLXML:
+    case Types.SQLXML: // 2009
       // No default java type on HotRod yet.
       throw new UnresolvableDataTypeException(m);
 
-    case -103: // interval year to month
-      // Invalid JDBC type (-103) reported by the Oracle JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 25);
-
-    case -104: // interval day to second
-      // Invalid JDBC type (-104) reported by the Oracle JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 26);
-
     case Types.OTHER:
-
-      // String types
-
-      if ("NCHAR".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 27);
-      } else if ("NVARCHAR2".equalsIgnoreCase(m.getTypeName())) {
+      if ("ROWID".equals(m.getTypeName())) {
         return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 28);
-      } else if ("NCLOB".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 29);
-
-      } else if ("URITYPE".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 30);
-      } else if ("ROWID".equals(m.getTypeName())) {
-        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 31);
-      } else { // varray, struct, ref: fall here
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 32);
       }
+      throw new UnresolvableDataTypeException(m);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 33);
+      throw new UnresolvableDataTypeException(m);
 
     }
 
