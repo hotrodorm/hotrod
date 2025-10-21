@@ -1,7 +1,10 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +32,7 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class SybaseASEDialect extends LiveSQLDialect {
@@ -44,6 +48,118 @@ public class SybaseASEDialect extends LiveSQLDialect {
     if (fetchSize != null) {
       ps.setFetchSize(fetchSize);
     }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    // Decimal, numeric and money types
+
+    case Types.DECIMAL:
+
+      if (m.getColumnTypeName().equalsIgnoreCase("money") || m.getColumnTypeName().equalsIgnoreCase("smallmoney")) {
+        return RuntimeType.ofDialect(BigDecimal.class, 8);
+      } else if ((m.getScale() != 0)) {
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else {
+        if (m.getPrecision() <= 2) {
+          return RuntimeType.ofDialect(Byte.class, 3);
+        } else if (m.getPrecision() <= 4) {
+          return RuntimeType.ofDialect(Short.class, 4);
+        } else if (m.getPrecision() <= 9) {
+          return RuntimeType.ofDialect(Integer.class, 5);
+        } else if (m.getPrecision() <= 18) {
+          return RuntimeType.ofDialect(Long.class, 6);
+        } else {
+          return RuntimeType.ofDialect(BigInteger.class, 7);
+        }
+
+      }
+
+      // Integer types
+
+    case Types.BIT: // -7
+      // BIT
+      return RuntimeType.ofDialect(Byte.class, 9);
+
+    case Types.TINYINT: // -6
+      // TINYINY, UNSIGNED TINYINT
+      return m.getColumnTypeName().startsWith("unsigned") ? //
+          RuntimeType.ofDialect(Short.class, 11) : //
+          RuntimeType.ofDialect(Byte.class, 10);
+
+    case Types.SMALLINT: // 5
+      return m.getColumnTypeName().startsWith("unsigned") ? //
+          RuntimeType.ofDialect(Integer.class, 13) : //
+          RuntimeType.ofDialect(Short.class, 12);
+
+    case Types.INTEGER: // 4
+      return m.getColumnTypeName().startsWith("unsigned") ? //
+          RuntimeType.ofDialect(Long.class, 15) : //
+          RuntimeType.ofDialect(Integer.class, 14);
+
+    case Types.BIGINT: // -5
+      return m.getColumnTypeName().startsWith("unsigned") ? //
+          RuntimeType.ofDialect(BigInteger.class, 17) : //
+          RuntimeType.ofDialect(Long.class, 16);
+
+    // Floating point types
+
+    case Types.REAL: // 7
+      // REAL
+      return RuntimeType.ofDialect(Float.class, 18);
+    case Types.DOUBLE: // 8
+      // FLOAT, DOUBLE PRECISION
+      return RuntimeType.ofDialect(Double.class, 19);
+
+    // Character types
+
+    case Types.CHAR: // 1
+      return RuntimeType.ofDialect(String.class, 20);
+    case Types.VARCHAR: // 12
+      // VARCHAR(n), UNIVARCHAR(n), NVARCHAR(n), SYSNAME, LONGSYSNAME
+      return RuntimeType.ofDialect(String.class, 21);
+    case Types.LONGVARCHAR: // -1
+      // TEXT, UNITEXT
+      return RuntimeType.ofDialect(String.class, 22);
+
+    // Date/Time types
+
+    case Types.DATE:
+      return RuntimeType.ofDialect(java.time.LocalDate.class, 23);
+    case Types.TIME:
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 24);
+    case 10: // BIGTIME
+      // Invalid JDBC type (10) reported by the SAP ASE JDBC Driver.
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 25);
+    case Types.TIMESTAMP: // 93
+      // DATETIME, SMALLDATETIME
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 26);
+    case 11:
+      // BIGDATETIME
+      // Invalid JDBC type (11) reported by the SAP ASE JDBC Driver.
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 27);
+
+    // LOB types
+
+    case Types.BINARY: // BINARY
+      return RuntimeType.ofDialect(byte[].class, 28);
+
+    case Types.VARBINARY: // VARBINARY
+      return RuntimeType.ofDialect(byte[].class, 29);
+
+    case Types.LONGVARBINARY: // IMAGE
+      return RuntimeType.ofDialect(byte[].class, 30);
+
+    // If not found.
+
+    default:
+      return null;
+
+    }
+
   }
 
   // WITH rendering

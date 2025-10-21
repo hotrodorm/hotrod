@@ -60,107 +60,110 @@ public class SAPASEAdapter extends DatabaseAdapter {
     case Types.DECIMAL:
 
       if (m.getTypeName().equalsIgnoreCase("money") || m.getTypeName().equalsIgnoreCase("smallmoney")) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 8);
       } else if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 2);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
       } else {
         if (m.getPrecision() == null) {
-          return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 3);
+          return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 2);
         } else if (m.getPrecision() <= 2) {
           return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.STATIC_DIALECT_RULE, 4);
+              TypeSource.STATIC_DIALECT_RULE, 3);
         } else if (m.getPrecision() <= 4) {
           return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.STATIC_DIALECT_RULE, 5);
+              TypeSource.STATIC_DIALECT_RULE, 4);
         } else if (m.getPrecision() <= 9) {
           return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.STATIC_DIALECT_RULE, 6);
+              TypeSource.STATIC_DIALECT_RULE, 5);
         } else if (m.getPrecision() <= 18) {
           return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getPrecision()),
-              TypeSource.STATIC_DIALECT_RULE, 7);
+              TypeSource.STATIC_DIALECT_RULE, 6);
         } else {
-          return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 8);
+          return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 7);
         }
 
       }
 
       // Integer types
 
-    case Types.TINYINT:
+    case Types.BIT: // -7
+      // BIT
       return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE, 9);
 
-    case Types.SMALLINT:
+    case Types.TINYINT: // -6
+      // TINYINY, UNSIGNED TINYINT
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 10) : //
-          new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 11);
+          new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 11) : //
+          new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE, 10);
 
-    case Types.INTEGER:
+    case Types.SMALLINT: // 5
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 12) : //
-          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 13);
+          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 13) : //
+          new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 12);
 
-    case Types.BIGINT:
+    case Types.INTEGER: // 4
       return m.getTypeName().startsWith("unsigned") ? //
-          new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14) : //
-          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 15);
+          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 15) : //
+          new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 14);
+
+    case Types.BIGINT: // -5
+      return m.getTypeName().startsWith("unsigned") ? //
+          new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17) : //
+          new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 16);
 
     // Floating point types
 
-    case Types.REAL: // FLOAT, REAL, DOUBLE PRECISION
-    case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
+    case Types.REAL: // 7
+      // REAL
+      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
+    case Types.DOUBLE: // 8
+      // FLOAT, DOUBLE PRECISION
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
 
     // Character types
 
-    case Types.CHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
-
-    case Types.VARCHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
-
-    case Types.LONGVARCHAR:
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 19);
-
-    // Bit type
-
-    case Types.BIT:
-      return new PropertyType(Byte.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
+    case Types.CHAR: // 1
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
+    case Types.VARCHAR: // 12
+      // VARCHAR(n), UNIVARCHAR(n), NVARCHAR(n), SYSNAME, LONGSYSNAME
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 21);
+    case Types.LONGVARCHAR: // -1
+      // TEXT, UNITEXT
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 22);
 
     // Date/Time types
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 21);
-
-    case Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 22);
-
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
+    case Types.TIME:
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
     case 10: // BIGTIME
       // Invalid JDBC type (10) reported by the SAP ASE JDBC Driver.
-      return new PropertyType(java.time.LocalTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE, 23);
-
-    case 11: // BIGDATETIME
+      return new PropertyType(java.time.LocalTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE, 25);
+    case Types.TIMESTAMP: // 93
+      // DATETIME, SMALLDATETIME
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 26);
+    case 11:
+      // BIGDATETIME
       // Invalid JDBC type (11) reported by the SAP ASE JDBC Driver.
       return new PropertyType(java.time.LocalDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
-          24);
-
-    case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 25);
+          27);
 
     // LOB types
 
     case Types.BINARY: // BINARY
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 26);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 28);
 
     case Types.VARBINARY: // VARBINARY
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 27);
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 29);
 
     case Types.LONGVARBINARY: // IMAGE
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 28);
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 30);
 
     // If not found.
 
     default:
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 29);
+      throw new UnresolvableDataTypeException(m);
 
     }
   }
