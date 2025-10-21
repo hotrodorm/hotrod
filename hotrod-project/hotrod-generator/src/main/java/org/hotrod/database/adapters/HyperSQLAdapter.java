@@ -100,46 +100,60 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
     // Character types
 
-    case java.sql.Types.CHAR:
+    case java.sql.Types.CHAR: // 1
+      // CHAR
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
-
-    case java.sql.Types.VARCHAR:
+    case java.sql.Types.VARCHAR: // 12
+      // VARCHAR, LONGVARCHAR
       if (m.getTypeName() != null && m.getTypeName().toUpperCase().startsWith("INTERVAL")) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
+        throw new UnresolvableDataTypeException(m);
       } else {
         boolean isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-        return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 14);
+        return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 13);
       }
+    case java.sql.Types.CLOB: // 2005
+      // CLOB
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 14);
 
-      // Date/Time types
+    // Date/Time types
 
     case java.sql.Types.DATE:
       return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 15);
     case java.sql.Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
+      if ("TIME WITH TIME ZONE".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.time.OffsetTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
+      } else {
+        return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
+      }
     case java.sql.Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
+      if ("TIMESTAMP WITH TIME ZONE".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.time.OffsetDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
+      } else {
+        return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
+      }
 
     case java.sql.Types.BOOLEAN:
-      return new PropertyType(Boolean.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
+      return new PropertyType(Boolean.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
 
-    case java.sql.Types.BLOB:
-    case java.sql.Types.BINARY:
-    case java.sql.Types.VARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 19);
+    // Binary
 
-    case java.sql.Types.CLOB:
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 20);
+    case java.sql.Types.BLOB: //  2004
+    case java.sql.Types.BINARY: // -2
+    case java.sql.Types.VARBINARY: // -3
+      // BLOB, BINARY, VARBINARY 
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 21);
+
+    // Other
 
     case java.sql.Types.OTHER:
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 21);
+      throw new UnresolvableDataTypeException(m);
 
     case java.sql.Types.BIT:
     case java.sql.Types.ARRAY:
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 22);
+      throw new UnresolvableDataTypeException(m);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 23);
+      throw new UnresolvableDataTypeException(m);
 
     }
 
