@@ -1,5 +1,7 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -11,8 +13,8 @@ import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
-import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -29,6 +31,7 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class DerbyDialect extends LiveSQLDialect {
@@ -44,6 +47,95 @@ public class DerbyDialect extends LiveSQLDialect {
     if (fetchSize != null) {
       ps.setFetchSize(fetchSize);
     }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    // Numeric types
+
+    case java.sql.Types.NUMERIC:
+    case java.sql.Types.DECIMAL:
+      if (m.getScale() != 0) {
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else {
+        if (m.getPrecision() <= 2) {
+          return RuntimeType.ofDialect(Byte.class, 2);
+        } else if (m.getPrecision() <= 4) {
+          return RuntimeType.ofDialect(Short.class, 3);
+        } else if (m.getPrecision() <= 9) {
+          return RuntimeType.ofDialect(Integer.class, 4);
+        } else if (m.getPrecision() <= 18) {
+          return RuntimeType.ofDialect(Long.class, 5);
+        } else {
+          return RuntimeType.ofDialect(BigInteger.class, 6);
+        }
+      }
+
+    case java.sql.Types.SMALLINT:
+      return RuntimeType.ofDialect(Short.class, 7);
+
+    case java.sql.Types.INTEGER:
+      return RuntimeType.ofDialect(Integer.class, 8);
+
+    case java.sql.Types.BIGINT:
+      return RuntimeType.ofDialect(Long.class, 9);
+
+    case java.sql.Types.DOUBLE:
+      return RuntimeType.ofDialect(Double.class, 10);
+
+    case java.sql.Types.REAL:
+      return RuntimeType.ofDialect(Float.class, 11);
+
+    case java.sql.Types.FLOAT:
+      if (m.getScale() <= 23) {
+        return RuntimeType.ofDialect(Float.class, 12);
+      } else {
+        return RuntimeType.ofDialect(Double.class, 13);
+      }
+
+      // Character types
+
+    case java.sql.Types.CHAR:
+    case java.sql.Types.VARCHAR:
+    case java.sql.Types.LONGVARCHAR:
+    case java.sql.Types.CLOB:
+      return RuntimeType.ofDialect(String.class, 14);
+
+    // Date/Time types
+
+    case java.sql.Types.DATE:
+      return RuntimeType.ofDialect(java.time.LocalDate.class, 15);
+    case java.sql.Types.TIME:
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 16);
+    case java.sql.Types.TIMESTAMP:
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 17);
+
+    // Binary
+
+    case java.sql.Types.BLOB:
+    case java.sql.Types.VARBINARY: // varchar (n) for bit data
+    case java.sql.Types.LONGVARBINARY: // long carchar for bit data
+    case java.sql.Types.BINARY: // char(n) for bit data
+      return RuntimeType.ofDialect(byte[].class, 18);
+
+    // Boolean
+
+    case java.sql.Types.BOOLEAN:
+      return RuntimeType.ofDialect(Boolean.class, 19);
+
+    // Other
+
+    case java.sql.Types.SQLXML: // xml
+      return null;
+
+    default: // Unrecognized type
+      return null;
+
+    }
+
   }
 
   // WITH rendering

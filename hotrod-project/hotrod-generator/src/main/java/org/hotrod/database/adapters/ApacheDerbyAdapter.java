@@ -135,10 +135,10 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     // Other
 
     case java.sql.Types.SQLXML: // xml
-      return new PropertyType("java.lang.Object", m, false, TypeSource.STATIC_DIALECT_RULE, 20);
+      throw new UnresolvableDataTypeException(m);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 21);
+      throw new UnresolvableDataTypeException(m);
 
     }
 
