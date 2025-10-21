@@ -164,7 +164,6 @@ public class OracleAdapter extends DatabaseAdapter {
     case -13: // BFILE
       // Invalid JDBC type (-13) reported by the Oracle JDBC Driver.
       // No default java type on HotRod yet.
-      // byte[] type does not work on MyBatis out of the box.
       throw new UnresolvableDataTypeException(m);
 
     // Other

@@ -86,17 +86,17 @@ public class MySQLAdapter extends DatabaseAdapter {
     case java.sql.Types.TINYINT:
       if (m.getTypeName().toUpperCase().contains("UNSIGNED")) {
         return new PropertyType(Short.class, m, false, ValueRange.UNSIGNED_BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE,
-            7);
+            8);
       } else {
-        return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE, 8);
+        return new PropertyType(Byte.class, m, false, ValueRange.BYTE_RANGE, TypeSource.STATIC_DIALECT_RULE, 7);
       }
 
     case java.sql.Types.SMALLINT:
       if (m.getTypeName().toUpperCase().contains("UNSIGNED")) {
         return new PropertyType(Integer.class, m, false, ValueRange.UNSIGNED_SHORT_RANGE,
-            TypeSource.STATIC_DIALECT_RULE, 9);
+            TypeSource.STATIC_DIALECT_RULE, 10);
       } else {
-        return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 10);
+        return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE, TypeSource.STATIC_DIALECT_RULE, 9);
       }
 
     case java.sql.Types.INTEGER:
@@ -127,30 +127,44 @@ public class MySQLAdapter extends DatabaseAdapter {
     case java.sql.Types.DOUBLE:
       return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
 
-    case java.sql.Types.CHAR: // CHAR, ENUM, SET
+    case java.sql.Types.CHAR: // 1
+      // CHAR, ENUM, SET
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
+    case java.sql.Types.VARCHAR: // 12
+      // VARCHAR, TINYTEXT
+      if ("TINYTEXT".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 21);
+      } else {
+        return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
+      }
+    case java.sql.Types.LONGVARCHAR: // -1
+      // TEXT, MEDIUMTEXT, LONGTEXT
+      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 22);
 
-    case java.sql.Types.VARCHAR: // VARCHAR, TINYTEXT
-      boolean isLOB = "TINYTEXT".equalsIgnoreCase(m.getTypeName());
-      return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 20);
-    case java.sql.Types.LONGVARCHAR: // TEXT, MEDIUMTEXT, LONGTEXT
-      return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 21);
+    case java.sql.Types.DATE: // 91
+      if ("YEAR".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 27);
+      } else {
+        return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
+      }
+    case java.sql.Types.TIME: // 92
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
+    case java.sql.Types.TIMESTAMP: // 93
+      if ("TIMESTAMP".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.time.OffsetDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 26);
+      } else {
+        return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 25);
+      }
 
-    case java.sql.Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 22);
-    case java.sql.Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
-    case java.sql.Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
-
-    case java.sql.Types.BINARY: // TINYBLOB
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 25);
-
-    case java.sql.Types.LONGVARBINARY: // BLOB, MEDIUMBLOB, LONGBLOB
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 26);
+    case java.sql.Types.VARBINARY: // -3
+      // TINYBLOB
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 28);
+    case java.sql.Types.LONGVARBINARY: // -4
+      // BLOB, MEDIUMBLOB, LONGBLOB
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 29);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 27);
+      throw new UnresolvableDataTypeException(m);
 
     }
 

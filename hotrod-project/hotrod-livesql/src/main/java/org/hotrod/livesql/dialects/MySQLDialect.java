@@ -1,5 +1,7 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -28,6 +30,7 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 
 public class MySQLDialect extends LiveSQLDialect {
 
@@ -40,6 +43,112 @@ public class MySQLDialect extends LiveSQLDialect {
   public void enableSelectStreaming(PreparedStatement ps, Integer fetchSize) throws SQLException {
     // Ignore fetch size to enable streaming
     ps.setFetchSize(Integer.MIN_VALUE);
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    // Numeric types
+
+    case java.sql.Types.DECIMAL:
+      if ((m.getScale() != 0)) {
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else {
+        if (m.getPrecision() <= 2) {
+          return RuntimeType.ofDialect(Byte.class, 2);
+        } else if (m.getPrecision() <= 4) {
+          return RuntimeType.ofDialect(Short.class, 3);
+        } else if (m.getPrecision() <= 9) {
+          return RuntimeType.ofDialect(Integer.class, 4);
+        } else if (m.getPrecision() <= 18) {
+          return RuntimeType.ofDialect(Long.class, 5);
+        } else {
+          return RuntimeType.ofDialect(BigInteger.class, 6);
+        }
+      }
+
+    case java.sql.Types.TINYINT:
+      if (m.getColumnTypeName().toUpperCase().contains("UNSIGNED")) {
+        return RuntimeType.ofDialect(Short.class, 8);
+      } else {
+        return RuntimeType.ofDialect(Byte.class, 7);
+      }
+
+    case java.sql.Types.SMALLINT:
+      if (m.getColumnTypeName().toUpperCase().contains("UNSIGNED")) {
+        return RuntimeType.ofDialect(Integer.class, 10);
+      } else {
+        return RuntimeType.ofDialect(Short.class, 9);
+      }
+
+    case java.sql.Types.INTEGER:
+      if (m.getColumnTypeName().toUpperCase().equals("MEDIUMINT")) {
+        return RuntimeType.ofDialect(Integer.class, 11);
+      } else if (m.getColumnTypeName().toUpperCase().equals("MEDIUMINT UNSIGNED")) {
+        return RuntimeType.ofDialect(Integer.class, 12);
+      } else if (m.getColumnTypeName().toUpperCase().equals("INT")) {
+        return RuntimeType.ofDialect(Integer.class, 13);
+      } else if (m.getColumnTypeName().toUpperCase().equals("INT UNSIGNED")) {
+        return RuntimeType.ofDialect(Long.class, 14);
+      }
+
+    case java.sql.Types.BIGINT:
+      if (m.getColumnTypeName().toUpperCase().equals("BIGINT")) {
+        return RuntimeType.ofDialect(Long.class, 15);
+      } else if (m.getColumnTypeName().toUpperCase().equals("BIGINT UNSIGNED")) {
+        return RuntimeType.ofDialect(BigInteger.class, 16);
+      }
+
+    case java.sql.Types.REAL:
+    case java.sql.Types.FLOAT:
+      return RuntimeType.ofDialect(Float.class, 17);
+
+    case java.sql.Types.DOUBLE:
+      return RuntimeType.ofDialect(Double.class, 18);
+
+    case java.sql.Types.CHAR: // 1
+      // CHAR, ENUM, SET
+      return RuntimeType.ofDialect(String.class, 19);
+    case java.sql.Types.VARCHAR: // 12
+      // VARCHAR, TINYTEXT
+      if ("TINYTEXT".equalsIgnoreCase(m.getColumnTypeName())) {
+        return RuntimeType.ofDialect(String.class, 21);
+      } else {
+        return RuntimeType.ofDialect(String.class, 20);
+      }
+    case java.sql.Types.LONGVARCHAR: // -1
+      // TEXT, MEDIUMTEXT, LONGTEXT
+      return RuntimeType.ofDialect(String.class, 22);
+
+    case java.sql.Types.DATE: // 91
+      if ("YEAR".equalsIgnoreCase(m.getColumnTypeName())) {
+        return RuntimeType.ofDialect(Integer.class, 27);
+      } else {
+        return RuntimeType.ofDialect(java.time.LocalDate.class, 23);
+      }
+    case java.sql.Types.TIME: // 92
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 24);
+    case java.sql.Types.TIMESTAMP: // 93
+      if ("TIMESTAMP".equalsIgnoreCase(m.getColumnTypeName())) {
+        return RuntimeType.ofDialect(java.time.OffsetDateTime.class, 26);
+      } else {
+        return RuntimeType.ofDialect(java.time.LocalDateTime.class, 25);
+      }
+
+    case java.sql.Types.VARBINARY: // -3
+      // TINYBLOB
+      return RuntimeType.ofDialect(byte[].class, 28);
+    case java.sql.Types.LONGVARBINARY: // -4
+      // BLOB, MEDIUMBLOB, LONGBLOB
+      return RuntimeType.ofDialect(byte[].class, 29);
+
+    default: // Unrecognized type
+      return null;
+
+    }
+
   }
 
   // WITH rendering

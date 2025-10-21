@@ -1,4 +1,4 @@
-# Support for MariaDB Database
+# MariaDB Dialect
 
-Please refer to the [Support for MySQL Database](./mysql.md).
+Please refer to the [MySQL Dialect](./mysql.md).
 
