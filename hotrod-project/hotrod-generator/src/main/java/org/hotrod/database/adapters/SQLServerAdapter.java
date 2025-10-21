@@ -64,7 +64,8 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
     // Numeric types
 
-    case Types.DECIMAL: // DECIMAL, MONEY, SMALLMONEY
+    case Types.DECIMAL: // 3
+      // DECIMAL, MONEY, SMALLMONEY
       if ((m.getScale() != null) && (m.getScale().intValue() != 0)) {
         return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 1);
       } else if (m.getPrecision() <= 2) {
@@ -94,26 +95,30 @@ public class SQLServerAdapter extends DatabaseAdapter {
     case Types.BIGINT:
       return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 11);
 
-    case Types.REAL:
+    case Types.REAL: // 7
       return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
-    case Types.DOUBLE:
+    case Types.FLOAT: // 6
+    case Types.DOUBLE: // 8
       return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
 
     // Char types
 
-    case Types.CHAR: // CHAR, UNIQUEIDENTIFIER
+    case Types.CHAR: // 1
+      // CHAR, UNIQUEIDENTIFIER
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14);
-    case Types.VARCHAR:
+    case Types.VARCHAR: // 12
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 15);
-    case Types.NCHAR:
+    case Types.NCHAR: // -15
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
-    case Types.NVARCHAR:
+    case Types.NVARCHAR: // -9
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
       return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 17);
-    case Types.LONGVARCHAR: // TEXT
+    case Types.LONGVARCHAR: // -1
+      // TEXT
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
       return new PropertyType(String.class, m, isLOB, TypeSource.STATIC_DIALECT_RULE, 18);
-    case Types.LONGNVARCHAR: // NTEXT, XML
+    case Types.LONGNVARCHAR: // -16
+      // NTEXT, XML
       // return new PropertyType(String.class, m); // LONGNVARCHAR is not
       // supported by MyBatis.
       isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
@@ -121,56 +126,54 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
     // Date/Time types
 
-    case Types.DATE:
+    case Types.DATE: // 91
       return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 20);
-    case Types.TIME:
+    case Types.TIME: // 92
       return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 21);
-    case Types.TIMESTAMP: // DATETIME, DATETIME2, SMALLDATETIME
+    case Types.TIMESTAMP: // 93
+      // DATETIME, DATETIME2, SMALLDATETIME
       return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 22);
-    case -155: // DATETIMEOFFSET
+    case -155:
+      // DATETIMEOFFSET
       // Invalid JDBC type (-155) reported by the SQL Server JDBC Driver.
       return new PropertyType(java.time.OffsetDateTime.class, JDBCType.TIMESTAMP, false, TypeSource.STATIC_DIALECT_RULE,
           23);
 
     // Binary types
 
-    case Types.BINARY:
+    case Types.BINARY: // -2
       if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
+        throw new UnresolvableDataTypeException(m);
       } else {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 25);
+        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 24);
       }
-    case Types.VARBINARY: // VARBINARY, HIERARCHYID, GEOGRAPHY, GEOMETRY
+    case Types.VARBINARY: // -3
+      // VARBINARY, HIERARCHYID, GEOGRAPHY, GEOMETRY
       if ("hierarchyid".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 26);
+        throw new UnresolvableDataTypeException(m);
       } else if ("geometry".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 27);
+        throw new UnresolvableDataTypeException(m);
       } else if ("geography".equalsIgnoreCase(m.getTypeName())) {
-        return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 28);
-      } else {
+        throw new UnresolvableDataTypeException(m);
+      } else { // VARBINARY
         isLOB = m.getPrecision() >= MAX_VARCHAR_LENGTH;
-        return new PropertyType("byte[]", m, isLOB, TypeSource.STATIC_DIALECT_RULE, 29);
+        return new PropertyType("byte[]", m, isLOB, TypeSource.STATIC_DIALECT_RULE, 25);
       }
-    case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 30);
+    case Types.LONGVARBINARY: // -4
+      // IMAGE
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 26);
 
     // Other types
 
     case Types.OTHER:
-      if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 31);
-      } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 32);
-      } else {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 33);
-      }
+      throw new UnresolvableDataTypeException(m);
 
     case -150: // SQL_VARIANT
       // Invalid JDBC type (-150) reported by the SQL Server JDBC Driver.
-      return new PropertyType(Object.class, JDBCType.OTHER, false, TypeSource.STATIC_DIALECT_RULE, 34);
+      throw new UnresolvableDataTypeException(m);
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 35);
+      throw new UnresolvableDataTypeException(m);
 
     }
 

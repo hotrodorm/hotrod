@@ -1,7 +1,10 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class SQLServerDialect extends LiveSQLDialect {
@@ -47,6 +51,118 @@ public class SQLServerDialect extends LiveSQLDialect {
     // Streaming enabled by default
     if (fetchSize != null) {
       ps.setFetchSize(fetchSize);
+    }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    // Numeric types
+
+    case Types.DECIMAL: // 3
+      // DECIMAL, MONEY, SMALLMONEY
+      if (m.getScale() != 0) {
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else if (m.getPrecision() <= 2) {
+        return RuntimeType.ofDialect(Byte.class, 2);
+      } else if (m.getPrecision() <= 4) {
+        return RuntimeType.ofDialect(Short.class, 3);
+      } else if (m.getPrecision() <= 9) {
+        return RuntimeType.ofDialect(Integer.class, 4);
+      } else if (m.getPrecision() <= 18) {
+        return RuntimeType.ofDialect(Long.class, 5);
+      } else {
+        return RuntimeType.ofDialect(BigInteger.class, 6);
+      }
+
+    case Types.BIT:
+      return RuntimeType.ofDialect(Byte.class, 7);
+    case Types.TINYINT:
+      return RuntimeType.ofDialect(Byte.class, 8);
+    case Types.SMALLINT:
+      return RuntimeType.ofDialect(Short.class, 9);
+    case Types.INTEGER:
+      return RuntimeType.ofDialect(Integer.class, 10);
+    case Types.BIGINT:
+      return RuntimeType.ofDialect(Long.class, 11);
+
+    case Types.FLOAT: // 6
+    case Types.REAL: // 7
+      return RuntimeType.ofDialect(Float.class, 12);
+    case Types.DOUBLE: // 8
+      return RuntimeType.ofDialect(Double.class, 13);
+
+    // Char types
+
+    case Types.CHAR: // 1
+      // CHAR, UNIQUEIDENTIFIER
+      return RuntimeType.ofDialect(String.class, 14);
+    case Types.VARCHAR: // 12
+      return RuntimeType.ofDialect(String.class, 15);
+    case Types.NCHAR: // -15
+      return RuntimeType.ofDialect(String.class, 16);
+    case Types.NVARCHAR: // -9
+      return RuntimeType.ofDialect(String.class, 17);
+    case Types.LONGVARCHAR: // -1
+      // TEXT
+      return RuntimeType.ofDialect(String.class, 18);
+    case Types.LONGNVARCHAR: // -16
+      // NTEXT, XML
+      // return new PropertyType(String.class, m); // LONGNVARCHAR is not
+      // supported by MyBatis.
+      return RuntimeType.ofDialect(String.class, 19);
+
+    // Date/Time types
+
+    case Types.DATE: // 91
+      return RuntimeType.ofDialect(java.time.LocalDate.class, 20);
+    case Types.TIME: // 92
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 21);
+    case Types.TIMESTAMP: // 93
+      // DATETIME, DATETIME2, SMALLDATETIME
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 22);
+    case -155:
+      // DATETIMEOFFSET
+      // Invalid JDBC type (-155) reported by the SQL Server JDBC Driver.
+      return RuntimeType.ofDialect(java.time.OffsetDateTime.class, 23);
+
+    // Binary types
+
+    case Types.BINARY: // -2
+      if ("timestamp".equalsIgnoreCase(m.getColumnTypeName())) {
+        return null;
+      } else {
+        return RuntimeType.ofDialect(byte[].class, 24);
+      }
+    case Types.VARBINARY: // -3
+      // VARBINARY, HIERARCHYID, GEOGRAPHY, GEOMETRY
+      if ("hierarchyid".equalsIgnoreCase(m.getColumnTypeName())) {
+        return null;
+      } else if ("geometry".equalsIgnoreCase(m.getColumnTypeName())) {
+        return null;
+      } else if ("geography".equalsIgnoreCase(m.getColumnTypeName())) {
+        return null;
+      } else { // VARBINARY
+        return RuntimeType.ofDialect(byte[].class, 25);
+      }
+    case Types.LONGVARBINARY: // -4
+      // IMAGE
+      return RuntimeType.ofDialect(byte[].class, 26);
+
+    // Other types
+
+    case Types.OTHER:
+      return null;
+
+    case -150: // SQL_VARIANT
+      // Invalid JDBC type (-150) reported by the SQL Server JDBC Driver.
+      return null;
+
+    default: // Unrecognized type
+      return null;
+
     }
   }
 
