@@ -1,7 +1,10 @@
 package org.hotrod.livesql.dialects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
+import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 import org.hotrod.utils.Separator;
 
 public class DB2Dialect extends LiveSQLDialect {
@@ -45,6 +49,85 @@ public class DB2Dialect extends LiveSQLDialect {
     if (fetchSize != null) {
       ps.setFetchSize(fetchSize);
     }
+  }
+
+  @Override
+  public RuntimeType resolveRuntimeType(final ResultSetColumnMetadata m) {
+
+    switch (m.getColumnType()) {
+
+    case Types.DECIMAL:
+      if ((m.getScale() != 0)) {
+        return RuntimeType.ofDialect(BigDecimal.class, 1);
+      } else if (m.getPrecision() <= 2) {
+        return RuntimeType.ofDialect(Byte.class, 2);
+      } else if (m.getPrecision() <= 4) {
+        return RuntimeType.ofDialect(Short.class, 3);
+      } else if (m.getPrecision() <= 9) {
+        return RuntimeType.ofDialect(Integer.class, 4);
+      } else if (m.getPrecision() <= 18) {
+        return RuntimeType.ofDialect(Long.class, 5);
+      } else {
+        return RuntimeType.ofDialect(BigInteger.class, 6);
+      }
+
+    case Types.SMALLINT:
+      return RuntimeType.ofDialect(Short.class, 7);
+    case Types.INTEGER:
+      return RuntimeType.ofDialect(Integer.class, 8);
+    case Types.BIGINT:
+      return RuntimeType.ofDialect(Long.class, 9);
+
+    case Types.REAL:
+      return RuntimeType.ofDialect(Float.class, 11);
+    case Types.DOUBLE:
+      return RuntimeType.ofDialect(Double.class, 12);
+
+    case Types.CHAR: // 1
+      // CHAR(n), CHARACTER(n), GRAPHIC(n), NCHAR(n)
+      return RuntimeType.ofDialect(String.class, 13);
+    case Types.VARCHAR: // 12
+      // VARCHAR(n), CHARACTER VARYING(n), VARGRAPHIC(n), NVARCHAR(n)
+      return RuntimeType.ofDialect(String.class, 14);
+    case Types.CLOB: // 2005
+      // CLOB(n), DBCLOB(n)`, NCLOB(n)
+      return RuntimeType.ofDialect(String.class, 15);
+    case Types.LONGVARCHAR: // -1
+      // LONG VARCHAR, LONG VARGRAPHIC
+      return RuntimeType.ofDialect(String.class, 16);
+
+    case Types.DATE:
+      return RuntimeType.ofDialect(java.time.LocalDate.class, 17);
+    case Types.TIME:
+      return RuntimeType.ofDialect(java.time.LocalTime.class, 18);
+    case Types.TIMESTAMP:
+      return RuntimeType.ofDialect(java.time.LocalDateTime.class, 19);
+
+    case Types.LONGVARBINARY: // -4
+      // LONG VARCHAR FOR BIT DATA
+      return RuntimeType.ofDialect(byte[].class, 20);
+    case Types.VARBINARY: // -3
+      // VARCHAR(n) FOR BIT DATA
+      return RuntimeType.ofDialect(byte[].class, 21);
+    case Types.BINARY: // -2
+      // CHAR FOR BIT DATA
+      return RuntimeType.ofDialect(byte[].class, 22);
+    case Types.BLOB: // 2004
+      // BLOB(n)
+      return RuntimeType.ofDialect(byte[].class, 23);
+
+    case Types.OTHER: // 1111
+      if ("DECFLOAT".equals(m.getColumnTypeName())) {
+        return RuntimeType.ofDialect(BigDecimal.class, 10);
+      } else {
+        return null;
+      }
+
+    default: // Unrecognized type
+      return null;
+
+    }
+
   }
 
   // WITH rendering

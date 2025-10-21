@@ -23,24 +23,30 @@ The Static Dialect Rules are used during the persistence layer generation when t
 
 | Database Column Type | Static Dialect Rule |
 | :-- | :-- |
-| `SMALLINT` | `java.lang.Short` |
-| `INTEGER`,<br/>`INT` | `java.lang.Integer` |
-| `BIGINT` | `java.lang.Long` |
-| `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
-| `DECFLOAT` | `java.math.BigDecimal` |
-| `REAL` | `java.lang.Float` |
-| `FLOAT`,<br/>`DOUBLE` | `java.lang.Double`
-| `CHAR(n)`,<br/> `CHARACTER(n)`,<br/>`VARCHAR(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`CLOB(n)`,<br/>`GRAPHIC(n)`,<br/>`NCHAR(n)`,<br/>`VARGRAPHIC(n)`,<br/>`NVARCHAR(n)`,<br/>`DBCLOB(n)`,<br/>`NCLOB(n)`,<br/>`LONG VARCHAR`,<br/>`LONG VARGRAPHIC` | `java.lang.String` [^1] |
-| `VARCHAR FOR BIT DATA`,<br/>`LONG VARCHAR FOR BIT DATA`,<br/>`CHAR(n) FOR BIT DATA`,<br/>`BLOB(n)` | `byte[]` [^1] |
-| `DATE` | `java.sql.Date` |
-| `TIME` | `java.sql.Time` |
-| `TIMESTAMP` | `java.sql.Timestamp` |
-| `XML` | `java.lang.String` |
-| `BOOLEAN` (pseudo type) | `java.lang.String` |
-| `BINARY` | No default HotRod data type [^2] |
-| `VARBINARY` | No default HotRod data type [^2] |
-| `ROW` | No default HotRod data type [^2] |
-| `ARRAY` | No default HotRod data type [^2] |
+| `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`:small_orange_diamond:D1<br/>if s is not specified or it's zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`:small_orange_diamond:D2<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`:small_orange_diamond:D3<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`:small_orange_diamond:D4<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`:small_orange_diamond:D5<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger`:small_orange_diamond:D6 |
+| `SMALLINT` | `java.lang.Short`:small_orange_diamond:D7 |
+| `INTEGER`,<br/>`INT` | `java.lang.Integer`:small_orange_diamond:D8 |
+| `BIGINT` | `java.lang.Long`:small_orange_diamond:D9 |
+| `DECFLOAT` | `java.math.BigDecimal`:small_orange_diamond:D10 |
+| `REAL` | `java.lang.Float`:small_orange_diamond:D11 |
+| `FLOAT`,<br/>`DOUBLE` | `java.lang.Double`:small_orange_diamond:D12 |
+| `CHAR(n)`,<br/>`CHARACTER(n)`,<br/>`GRAPHIC(n)`,<br/>`NCHAR(n)` | `java.lang.String`:small_orange_diamond:D13 |
+| `VARCHAR(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`VARGRAPHIC(n)`,<br/>`NVARCHAR(n)` | `java.lang.String`:small_orange_diamond:D14 |
+| `CLOB(n)`,<br/>`DBCLOB(n)`,<br/>`NCLOB(n)` | `java.lang.String`:small_orange_diamond:D15 |
+| `LONG VARCHAR`,<br/>`LONG VARGRAPHIC` | `java.lang.String`:small_orange_diamond:D16 |
+| `DATE` | `java.time.LocalDate`:small_orange_diamond:D17 |
+| `TIME` | `java.time.LocalTime`:small_orange_diamond:D18 |
+| `TIMESTAMP` | `java.time.LocalDateTime`:small_orange_diamond:D19 |
+| `LONG VARCHAR FOR BIT DATA` | `byte[]`:small_orange_diamond:D20 |
+| `VARCHAR FOR BIT DATA` | `byte[]`:small_orange_diamond:D21 |
+| `CHAR(n) FOR BIT DATA` | `byte[]`:small_orange_diamond:D22 |
+| `BLOB(n)` | `byte[]`:small_orange_diamond:D23 |
+| `XML` | No dialect rule |
+| `BOOLEAN` (pseudo type) | No dialect rule |
+| `BINARY` | No dialect rule |
+| `VARBINARY` | No dialect rule |
+| `ROW` | No dialect rule |
+| `ARRAY` | No dialect rule |
 
 
 ## Runtime Dialect Rules
@@ -51,4 +57,27 @@ These rules affect only LiveSQL expression. The type of LiveSQL table or view co
 
 | Database Column Type | Runtime Dialect Rule |
 | :-- | :-- |
-
+| `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`:small_orange_diamond:RD1<br/>if s is not specified or it's zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`:small_orange_diamond:RD2<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`:small_orange_diamond:RD3<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`:small_orange_diamond:RD4<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`:small_orange_diamond:RD5<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger`:small_orange_diamond:RD6 |
+| `SMALLINT` | `java.lang.Short`:small_orange_diamond:RD7 |
+| `INTEGER`,<br/>`INT` | `java.lang.Integer`:small_orange_diamond:RD8 |
+| `BIGINT` | `java.lang.Long`:small_orange_diamond:RD9 |
+| `DECFLOAT` | `java.math.BigDecimal`:small_orange_diamond:RD10 |
+| `REAL` | `java.lang.Float`:small_orange_diamond:RD11 |
+| `FLOAT`,<br/>`DOUBLE` | `java.lang.Double`:small_orange_diamond:RD12 |
+| `CHAR(n)`,<br/>`CHARACTER(n)`,<br/>`GRAPHIC(n)`,<br/>`NCHAR(n)` | `java.lang.String`:small_orange_diamond:RD13 |
+| `VARCHAR(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`VARGRAPHIC(n)`,<br/>`NVARCHAR(n)` | `java.lang.String`:small_orange_diamond:RD14 |
+| `CLOB(n)`,<br/>`DBCLOB(n)`,<br/>`NCLOB(n)` | `java.lang.String`:small_orange_diamond:RD15 |
+| `LONG VARCHAR`,<br/>`LONG VARGRAPHIC` | `java.lang.String`:small_orange_diamond:RD16 |
+| `DATE` | `java.time.LocalDate`:small_orange_diamond:RD17 |
+| `TIME` | `java.time.LocalTime`:small_orange_diamond:RD18 |
+| `TIMESTAMP` | `java.time.LocalDateTime`:small_orange_diamond:RD19 |
+| `LONG VARCHAR FOR BIT DATA` | `byte[]`:small_orange_diamond:RD20 |
+| `VARCHAR FOR BIT DATA` | `byte[]`:small_orange_diamond:RD21 |
+| `CHAR(n) FOR BIT DATA` | `byte[]`:small_orange_diamond:RD22 |
+| `BLOB(n)` | `byte[]`:small_orange_diamond:RD23 |
+| `XML` | No dialect rule |
+| `BOOLEAN` (pseudo type) | No dialect rule |
+| `BINARY` | No dialect rule |
+| `VARBINARY` | No dialect rule |
+| `ROW` | No dialect rule |
+| `ARRAY` | No dialect rule |

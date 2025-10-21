@@ -83,47 +83,54 @@ public class DB2Adapter extends DatabaseAdapter {
       return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 9);
 
     case Types.REAL:
-      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 10);
+      return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 11);
     case Types.DOUBLE:
-      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 11);
+      return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
 
-    case Types.CHAR:
-      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
-    case Types.VARCHAR:
+    case Types.CHAR: // 1
+      // CHAR(n), CHARACTER(n), GRAPHIC(n), NCHAR(n)
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 13);
-    case Types.LONGVARCHAR:
+    case Types.VARCHAR: // 12
+      // VARCHAR(n), CHARACTER VARYING(n), VARGRAPHIC(n), NVARCHAR(n)
       return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 14);
-
-    case Types.CLOB:
+    case Types.CLOB: // 2005
+      // CLOB(n), DBCLOB(n)`, NCLOB(n)
       return new PropertyType(String.class, m, true, TypeSource.STATIC_DIALECT_RULE, 15);
+    case Types.LONGVARCHAR: // -1
+      // LONG VARCHAR, LONG VARGRAPHIC
+      return new PropertyType(String.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
 
     case Types.DATE:
-      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
+      return new PropertyType(java.time.LocalDate.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
     case Types.TIME:
-      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 17);
+      return new PropertyType(java.time.LocalTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
     case Types.TIMESTAMP:
-      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 18);
+      return new PropertyType(java.time.LocalDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 19);
 
-    case Types.LONGVARBINARY:
-      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 19);
-    case Types.VARBINARY:
+    case Types.LONGVARBINARY: // -4
+      // LONG VARCHAR FOR BIT DATA
       return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 20);
-    case Types.BINARY:
+    case Types.VARBINARY: // -3
+      // VARCHAR(n) FOR BIT DATA
       return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 21);
-    case Types.BLOB:
-      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 22);
+    case Types.BINARY: // -2
+      // CHAR FOR BIT DATA
+      return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 22);
+    case Types.BLOB: // 2004
+      // BLOB(n)
+      return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 23);
 
-    case Types.OTHER:
+    case Types.OTHER: // 1111
       if ("DECFLOAT".equals(m.getTypeName())) {
-        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
+        return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 10);
       } else if ("XML".equals(m.getTypeName())) {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 24);
+        throw new UnresolvableDataTypeException(m);
       } else {
-        return new PropertyType(Object.class, m, false, TypeSource.STATIC_DIALECT_RULE, 25);
+        throw new UnresolvableDataTypeException(m);
       }
 
     default: // Unrecognized type
-      return produceType(Object.class, m, false, m.getResolvedConverter(), 26);
+      throw new UnresolvableDataTypeException(m);
 
     }
 
