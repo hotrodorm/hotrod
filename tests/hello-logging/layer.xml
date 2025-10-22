@@ -1,0 +1,16 @@
+<hotrod>
+
+  <table name="employee" />
+
+  <dao name="ReportsDAO">
+
+    <select method="findEmployees" vo="FoundEmployee">
+      <parameter name="txt" java-type="String" />
+      SELECT *
+      FROM employee
+      WHERE name LIKE '%' || #{txt} || '%'
+    </select>
+
+  </dao>
+
+</hotrod>
