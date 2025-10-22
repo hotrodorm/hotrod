@@ -159,11 +159,13 @@ These modules are:
 
 ## Examples
 
-See [Hello CRUD](./crud/hello-crud.md) for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+See [Hello CRUD](./crud/hello-crud.md) example for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
 
-The [Hello Nitro](./guides/hello-nitro.md) expands on previous example to implement custom native queries, including DynamicSQL.
+The [Hello Nitro](./guides/hello-nitro.md) example expands on previous example to implement custom native queries, including DynamicSQL.
 
-The [Hello Type Resolution](./guides/hello-type-resolution.md) shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
+The [Hello Type Resolution](./guides/hello-type-resolution.md) example shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
+
+The [Hello Logging](./guides/hello-logging.md) example shows how enable logging of executed SQL statements.
 
 <!--
 For the basic usage of each module and more examples of each one see:

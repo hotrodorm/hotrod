@@ -5,29 +5,28 @@ a simple CRUD functionality. This demonstrates the case of selecting a row by pr
 
 For more CRUD examples using SELECT see:
 
-- [Select By Primary Key](./select-by-primary-key.md).
-- [Select By Example](./select-by-example.md).
-- [Select By Any Criteria](./select-by-criteria.md).
-- [Select By Unique Index](./select-by-unique-index.md).
-- [Select By Children Rows By Foreign Key](./select-children-by-foreign-key.md).
-- [Select By Parent Row By Foreign Key](./select-parent-by-foreign-key.md).
+- [Select By Primary Key](./select-by-primary-key.md)
+- [Select By Example](./select-by-example.md)
+- [Select By Criteria](./select-by-criteria.md)
 
 For more CRUD examples using INSERT see:
 
-- [Insert](./insert.md).
-- [Insert By Example](./insert-by-example.md).
+- [Insert](./insert.md)
+- [Insert By Example](./insert-by-example.md)
 
 For more CRUD examples using UPDATE see:
 
-- [Update By Primary Key](./update-by-primary-key.md).
-- [Update By Primary Key](./update-by-primary-key.md).
+- [Update By Primary Key](./update-by-primary-key.md)
+- [Update By Example](./update-by-example.md)
+- [Update By Criteria](./update-by-criteria.md)
 
 For more CRUD examples using DELETE see:
 
-- [Delete By Primary Key](./delete-by-primary-key.md).
-- [Delete By Primary Key](./delete-by-primary-key.md).
+- [Delete By Primary Key](./delete-by-primary-key.md)
+- [Delete By Example](./delete-by-example.md)
+- [Delete By Criteria](./delete-by-criteria.md)
 
-See [The CRUD Module](./README.md) for more details on the CRUD Module.
+See [The CRUD Module](./README.md) for more details on the CRUD features.
 
 
 ## What Do You Need
