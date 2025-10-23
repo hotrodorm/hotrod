@@ -55,6 +55,9 @@ public class App {
 
   private void demoLiveSQLInsert() {
     Employee emp = new Employee();
+    emp.setFirstName("Bob");
+    emp.setLastName("Marley");
+    emp.setBranchId(420);
     Employee inserted = this.employeeDAO.insert(emp);
     System.out.println("2. LiveSQL INSERT: " + inserted);
   }
