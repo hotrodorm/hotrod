@@ -53,8 +53,10 @@ public class RowCursor<T> implements Cursor<T> {
         this.rowReader = rowReader;
       }
 
-      if (loggingAdapter != null && loggingAdapter.enabled()) {
-        loggingAdapter.log(q.getPreview(true));
+      if (loggingAdapter != null && loggingAdapter.fullEnabled()) {
+        loggingAdapter.fullLog(q.getPreview(true));
+      } else if (loggingAdapter != null && loggingAdapter.basicEnabled()) {
+        loggingAdapter.basicLog(q.getPreview(false));
       }
 
     } catch (SQLException e) {

@@ -2,7 +2,8 @@ package org.hotrod.livesql;
 
 public class LiveSQLLogging {
 
-  public static final LiveSQLLogging NO_LOGGING = new LiveSQLLogging(() -> false, (msg) -> {
+  public static final LiveSQLLogging NO_LOGGING = new LiveSQLLogging(() -> false, msg -> {
+  }, () -> false, msg -> {
   });
 
   public interface Enabled {
@@ -13,25 +14,39 @@ public class LiveSQLLogging {
     void log(String msg);
   }
 
-  private Enabled enabled;
-  private Logger logger;
+  private Enabled basicEnabled;
+  private Logger basicLogger;
+  private Enabled fullEnabled;
+  private Logger fullLogger;
 
-  private LiveSQLLogging(Enabled enabled, Logger logger) {
-    this.enabled = enabled;
-    this.logger = logger;
+  private LiveSQLLogging(Enabled basicEnabled, Logger basicLogger, Enabled fullEnabled, Logger fullLogger) {
+    this.basicEnabled = basicEnabled;
+    this.basicLogger = basicLogger;
+    this.fullEnabled = fullEnabled;
+    this.fullLogger = fullLogger;
   }
 
-  public static LiveSQLLogging of(Enabled enabled, Logger logger) {
-    return new LiveSQLLogging(enabled, logger);
+  public static LiveSQLLogging of(Enabled basicEnabled, Logger basicLogger, Enabled fullEnabled, Logger fullLogger) {
+    return new LiveSQLLogging(basicEnabled, basicLogger, fullEnabled, fullLogger);
   }
 
-  public boolean enabled() {
-    return this.enabled != null && this.enabled.enabled();
+  public boolean basicEnabled() {
+    return this.basicEnabled != null && this.basicEnabled.enabled();
   }
 
-  public void log(String msg) {
-    if (this.logger != null) {
-      this.logger.log(msg);
+  public void basicLog(String msg) {
+    if (this.basicLogger != null) {
+      this.basicLogger.log(msg);
+    }
+  }
+
+  public boolean fullEnabled() {
+    return this.fullEnabled != null && this.fullEnabled.enabled();
+  }
+
+  public void fullLog(String msg) {
+    if (this.fullLogger != null) {
+      this.fullLogger.log(msg);
     }
   }
 

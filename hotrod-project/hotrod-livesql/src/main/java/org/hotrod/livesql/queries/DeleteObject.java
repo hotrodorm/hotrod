@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DeleteObject {
@@ -38,9 +39,7 @@ public class DeleteObject {
   public int execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
 
-    if (loggingAdapter != null && loggingAdapter.enabled()) {
-      loggingAdapter.log(q.getPreview(true));
-    }
+    LoggingUtil.logQuery(q, loggingAdapter);
 
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {

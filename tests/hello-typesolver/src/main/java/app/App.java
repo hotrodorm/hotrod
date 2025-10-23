@@ -29,7 +29,7 @@ public class App {
   private static final Logger LOG = Logger.getLogger(App.class.getName());
 
   private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> LOG.isLoggable(Level.FINE),
-      msg -> LOG.fine(msg));
+      msg -> LOG.fine(msg), () -> LOG.isLoggable(Level.FINER), msg -> LOG.finer(msg));
 
   @Autowired
   private LiveSQL sql;
@@ -80,24 +80,13 @@ public class App {
   private void demoTypeSolverLiveSQL() {
     InvoiceTable i = this.invoiceDAO.newTable();
     List<Row> rows = this.sql
-        .select(
-          i.amount,
-          i.status,
-          i.created,
-          i.active,
-          i.category,
-          i.amount.mult(1.30).as("gross").type(Double.class),
-          sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end()
-            .as("vip").type(this.ynBooleanConverter),
-          i.created.extract(DateTimeField.DAY).as("dom"),
-          sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
-          sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end()
-            .as("paidAmount"),
-          h2.randomUUID().as("globalId")
-         )
-        .from(i)
-        .where(i.status.eq(InvoiceStatus.DRAFT))
-        .execute(LIVESQL_LOG);
+        .select(i.amount, i.status, i.created, i.active, i.category, i.amount.mult(1.30).as("gross").type(Double.class),
+            sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end().as("vip").type(this.ynBooleanConverter),
+            i.created.extract(DateTimeField.DAY).as("dom"),
+            sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
+            sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end().as("paidAmount"),
+            h2.randomUUID().as("globalId"))
+        .from(i).where(i.status.eq(InvoiceStatus.DRAFT)).execute(LIVESQL_LOG);
     System.out.println("== Returns ==");
     for (Row r : rows) {
       System.out.println("3. row=" + r);

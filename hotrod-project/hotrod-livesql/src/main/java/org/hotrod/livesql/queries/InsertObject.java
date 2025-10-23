@@ -11,6 +11,7 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.utils.Separator;
 
 public class InsertObject {
@@ -52,9 +53,7 @@ public class InsertObject {
   public int execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
 
-    if (loggingAdapter != null && loggingAdapter.enabled()) {
-      loggingAdapter.log(q.getPreview(true));
-    }
+    LoggingUtil.logQuery(q, loggingAdapter);
 
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {

@@ -15,6 +15,7 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class UpdateObject {
@@ -54,9 +55,7 @@ public class UpdateObject {
   public int execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
 
-    if (loggingAdapter != null && loggingAdapter.enabled()) {
-      loggingAdapter.log(q.getPreview(true));
-    }
+    LoggingUtil.logQuery(q, loggingAdapter);
 
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {

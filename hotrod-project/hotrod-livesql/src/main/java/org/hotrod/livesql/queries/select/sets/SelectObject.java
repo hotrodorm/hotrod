@@ -19,6 +19,7 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.livesql.util.ToString;
 
 public abstract class SelectObject<T> {
@@ -138,9 +139,7 @@ public abstract class SelectObject<T> {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
 
-          if (loggingAdapter != null && loggingAdapter.enabled()) {
-            loggingAdapter.log(q.getPreview(true));
-          }
+          LoggingUtil.logQuery(q, loggingAdapter);
 
           while (rs.next()) {
             T row = effectiveRowReader.readRowFrom(rs, conn);
@@ -179,9 +178,7 @@ public abstract class SelectObject<T> {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
 
-          if (loggingAdapter != null && loggingAdapter.enabled()) {
-            loggingAdapter.log(q.getPreview(true));
-          }
+          LoggingUtil.logQuery(q, loggingAdapter);
 
           T row = null;
           int count = 0;
