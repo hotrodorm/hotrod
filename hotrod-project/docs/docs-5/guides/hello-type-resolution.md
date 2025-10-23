@@ -43,7 +43,7 @@ Add the `pom.xml` file:
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>examples</groupId>
-  <artifactId>hello-typesolver</artifactId>
+  <artifactId>hello-typeresolution</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -500,8 +500,8 @@ spring.datasource.url=jdbc:h2:mem:DB;INIT=runscript from './schema.sql';DB_CLOSE
 spring.datasource.username=sa
 spring.datasource.password=
 
-logging.level.app.App=DEBUG
-logging.level.app.persistence.dao=DEBUG
+logging.level.app.App=TRACE
+logging.level.app.persistence.dao=TRACE
 ```
 
 Note that we enable logging to see the actual queries being run. We do this in the App itself for the LiveSQL SELECTs and, separately, in the DAOs for the CRUD and Nitro SELECTs.
@@ -518,7 +518,7 @@ The Spring Boot application starts, connects to the database and runs the three 
 
 #### 1. The CRUD Select
 
-The log shows:
+The log shows the CRUD query and its parameters:
 
 ```log
 SELECT
@@ -529,6 +529,9 @@ SELECT
   category
 FROM invoice
 WHERE status = ?
+
+JDBC Parameters (1):
+  1. f.status: UNPAID (app.InvoiceStatus)
 == Returns ==
 1. Unpaid invoice: app.persistence.model.Invoice@478b0739
 - amount=51.99
@@ -565,10 +568,15 @@ The following table describes how they are computed using the 5 types of STATIC 
 
 #### 2. The Nitro Select
 
+The log shows the Nitro SELECT query and its parameters:
+
 ```log
 SELECT *
 FROM invoice
 WHERE amount > 200
+
+JDBC Parameters (0):
+  N/A
 == Returns ==
 2. Big Invoice: app.persistence.model.BigInvoice@3f63a513
 - amount=480.14
@@ -613,6 +621,8 @@ The following table describes how they are computed using the 5 types of STATIC 
 
 
 #### 3. The LiveSQL Select
+
+The log shows the LiveSQL SELECT query, its parameters, and the resulting columns:
 
 ```log
 SELECT
