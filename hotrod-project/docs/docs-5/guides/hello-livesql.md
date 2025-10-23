@@ -1,6 +1,6 @@
-# Hello World!
+# Hello LiveSQL
 
-This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows the basic idea of how HotRod works.
+This guide shows a few examples of LiveSQL in action. It runs a Spring Boot project with Maven and H2 in-memory database.
 
 You'll need:
 
@@ -27,17 +27,11 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the
-steps below. Alternatively, you can use your favorite IDE to create a blank Maven project.
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add
+the files as described in the steps below. Alternatively, you can use your favorite IDE to create
+a blank Maven project.
 
-The `pom.xml` will include:
-
-- The Spring Boot Starter dependency and the Spring Boot Plugin
-- The JDBC driver dependency according to your specific database
-- The HotRod Libraries
-- The HotRod Generator Plugin
-
-The complete `pom.xml` file will look like:
+Create the following `pom.xml` file:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -45,7 +39,7 @@ The complete `pom.xml` file will look like:
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>examples</groupId>
-  <artifactId>helloworld</artifactId>
+  <artifactId>hello-livesql</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -131,7 +125,6 @@ Also, create the empty source folders, if they are not yet created. In linux you
 
 ```bash
 mkdir -p src/main/java/app
-mkdir -p src/main/resources
 ```
 
 Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
@@ -155,29 +148,11 @@ In this part we create an in-memory table in H2 database and we generate the per
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
-drop table if exists branch;
-drop table if exists employee;
-
-create table branch (
-  id int primary key not null,
-  name varchar(15) not null,
-  type int
-);
-
-insert into branch (id, name, type) values
-  (1, 'South', 5),
-  (2, 'North', 2),
-  (3, 'Mountain', 4),
-  (4, 'VIP', 4),
-  (5, 'West', 6),
-  (6, 'East Coast', 6),
-  (7, 'Lakeside', 7);
-
 create table employee (
   id int primary key not null,
   first_name varchar(20) not null,
   last_name varchar(20) not null,
-  branch_id int references branch (id)
+  branch_id
 );
 
 insert into employee (id, first_name, last_name, branch_id) values
@@ -192,7 +167,7 @@ insert into employee (id, first_name, last_name, branch_id) values
 
 ### Generate the Persistence Layer
 
-Now, let's use HotRod to generate the persistence layer. Type:
+Let's generate the persistence layer. Type:
 
 ```bash
 mvn hotrod:gen
@@ -224,19 +199,6 @@ We see the layer generation details:
 [INFO] ------------------------------------------------------------------------
 ```
 
-HotRod connected to the database schema, discovered the tables in the schema, retrieved their details, and generated the persistence layer. In sum, it created the following files:
-
-| Class | Description |
-| -- | -- |
-| `src/main/java/app/persistence/LayerConfiguration.java` | The persistence layer configuration |
-| `src/main/java/app/persistence/dao/BranchDAO.java`<br/>`src/main/java/app/persistence/layout/BranchLayout.java`<br/>`src/main/java/app/persistence/model/Branch.java` | The DAO, layout, and model classes for the BRANCH table |
-| `src/main/java/app/persistence/dao/EmployeeDAO.java`<br/>`src/main/java/app/persistence/layout/EmployeeLayout.java`<br/>`src/main/java/app/persistence/model/Employee.java` | The DAO, layout, and model classes for the EMPLOYEE table |
-
-Note that since model classes (`Branch.java` and `Employee.java`) are designed to include custom
-logic, and are never overwritten. The DAO and Layour classes, on the other hand, are overwritten
-when when you re-generate the persistence layer to keep them up-to-date with the latest database structure.
-
-
 ## Part 3 &mdash; The Application
 
 In this part we write a simple app that uses the CRUD and LiveSQL functionalities to read from the database.
@@ -250,10 +212,8 @@ class `src/main/java/app/App.java` as:
 ```java
 package app;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,8 +224,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.BranchDAO;
-import app.persistence.dao.BranchDAO.BranchTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.EmployeeDAO.EmployeeTable;
 import app.persistence.model.Employee;
@@ -278,9 +236,6 @@ public class App {
   private EmployeeDAO employeeDAO;
 
   @Autowired
-  private BranchDAO branchDAO;
-
-  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -290,59 +245,59 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-      System.out.println("[ Starting example ]");
-      demoCRUD();
-      demoLiveSQL();
-      System.out.println("[ Example complete ]");
+      demoLiveSQLSelect();
+      demoLiveSQLInsert();
+      demoLiveSQLUpdate();
+      demoLiveSQLDelete();
     };
   }
 
-  private void demoCRUD() throws DynamicExpressionException, SQLException {
-    Employee emp = this.employeeDAO.select(134081);
-    System.out.println("Employee #123081's name: " + emp.getFirstName());
+  private void demoLiveSQLSelect() {
+    EmployeeTable e = this.employeeDAO.newTable();
+    List<Row> rows = this.sql
+        .select()
+        .from(e)
+        .where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
+        .orderBy(e.branchId.desc())
+        .execute();
+    for (Row r : rows) {
+      System.out.println("1. LiveSQL SELECT - selected row: " + r);
+    }
   }
 
-  private void demoLiveSQL() {
+  private void demoLiveSQLInsert() {
+    Employee emp = new Employee();
+    Employee inserted = this.employeeDAO.insert(emp);
+    System.out.println("2. LiveSQL INSERT - inserted row: " + inserted);
+  }
 
-    System.out.println("Employees with last names that include smith from branches of type 2, 6, or 7:");
+  private void demoLiveSQLUpdate() {
+    EmployeeTable e = this.employeeDAO.newTable();
+    Employee values = new Employee();
+    values.setBranchId(15);
+    int count = this.employeeDAO
+        .update(values, e, e.lastName.lower().like("%smith%").and(e.branchId.eq(2)))
+        .execute();
+    System.out.println("3. LiveSQL UPDATE - updated rows: " + count);
+  }
 
-    EmployeeTable e = this.employeeDAO.newTable("e");
-    BranchTable b = this.branchDAO.newTable("b");
-
-    List<Row> rows = this.sql
-      .select(e.star(), b.name.as("branchName"))
-      .from(e)
-      .join(b, b.id.eq(e.branchId))
-      .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-      .orderBy(b.name, e.lastName.desc())
-      .execute();
-
-    for (Row r : rows) {
-      System.out.println(r);
-    }
-
+  private void demoLiveSQLDelete() {
+    Employee example = new Employee();
+    example.setBranchId(7);
+    int count = this.employeeDAO.delete(example);
+    System.out.println("4. LiveSQL DELETE - deleted rows: " + count);
   }
 
 }
 ```
 
-The LiveSQL query above executes the following query:
+The Hello LiveSQL app includes basic examples of LiveSQL SELECT, INSERT, UPDATE, and DELETE queries:
 
-```sql
-  SELECT e.*, b.name AS "branchName"
-  FROM employee e
-  JOIN branch b ON b.id = e.branch_id
-  WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
-  ORDER BY b.name, e.last_name DESC
-```
-
-### Prepare the Runtime Properties File
+### The Runtime Properties File
 
 The runtime properties are used when running the application. Create the file `application.properties` as:
 
 ```properties
-# Default datasource configuration
-
 spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
@@ -352,30 +307,39 @@ spring.datasource.password=
 
 ### Run the Application
 
-Now, let's run the application. Type:
+Let's run the application. Type:
 
 ```bash
 mvn spring-boot:run
 ```
 
-The Spring Boot application starts, connects to the database and runs both queries. We see the result shown below:
+The Spring Boot application starts, connects to the database and runs the queries. We see the ouput shown below:
 
 ```log
-[ Starting example ]
-Employee #123081's name: Alice
-Employees with last names that include smith from branches of type 2, 6, or 7:
-{firstName=Steve, lastName=Locksmith, branchId=6, branchName=East Coast, id=609792}
-{firstName=Julia, lastName=Whitesmith, branchId=2, branchName=North, id=207121}
-{firstName=Anne, lastName=Smith, branchId=2, branchName=North, id=101457}
-[ Example complete ]
+1. LiveSQL SELECT - selected row: {firstName=Steve, lastName=Locksmith, branchId=6, id=609792}
+1. LiveSQL SELECT - selected row: {firstName=Anne, lastName=Smith, branchId=2, id=101457}
+
+2. LiveSQL INSERT - inserted row: app.persistence.model.Employee@664632e9
+- id=1
+- firstName=null
+- lastName=null
+- branchId=null
+
+3. LiveSQL UPDATE - updated rows: 2
+
+4. LiveSQL DELETE - deleted rows: 1
 ```
 
-We can see:
-- The CRUD query `select id, name from employee where id = 123081` was run and returned 1 row.
-- The LiveSQL query returned 3 rows using the correct search criteria and ordering.
+We can see four sections identified by their numbers:
 
-That's it! You just generated the persistence layer from the database and ran an app using it.
+- The SELECT query found 2 rows, shown above
+- The INSERT query inserted a single row with autogenerated primary (with value=1)
+- The UPDATE query updated 2 rows, according to the specified criteria
+- The DELETE query deleted a single row
 
-Later on, when the database suffers changes &mdash; it will &mdash; you can just
-rerun the generation step `mvn hotrod:gen` to retrieve the latest changes to columns, tables, views, etc. and to apply
-them automatically to the persistence layer.
+That's it! You ran four basic LiveSQL queries.
+
+The LiveSQL syntax can include more complex query columns, predicates, expressions and other SQL clauses like WHERE, ORDER BY, GROUP BY, LIMIT, etc. See [LiveSQL](../livesql/README.md) for details.
+
+
+

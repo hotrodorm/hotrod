@@ -41,18 +41,17 @@ public class UpdateSetCompletePhase implements DMLQuery {
   // Constructor
 
   public UpdateSetCompletePhase(final LiveSQLContext context, final UpdateObject update) {
+    log.fine("init");
     this.context = context;
     this.update = update;
   }
 
-  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView<?> tableOrView, final List<Setter> setters,
-      final Predicate predicate) {
-    log.info("### setters = " + setters.size());
+  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView<?> tableOrView,
+      final List<Setter> setters, final Predicate predicate) {
     this.context = context;
     this.update = new UpdateObject();
     this.update.setTableOrView(tableOrView);
     for (Setter s : setters) {
-      log.info("### SETTER: " + s.getColumn().getProperty() + " = " + s.getExpression());
       this.update.addSetter(s.getColumn(), s.getExpression());
     }
     this.update.setWherePredicate(predicate);

@@ -113,13 +113,13 @@ In this example the persistence layer will include a single table. Create the fi
 
 ## 4. Generating the Persistence Layer
 
-Now, let's use HotRod to generate the persistence code. Go to the project folder and type:
+Now, let's use HotRod to generate the persistence layer. Go to the project folder and type:
 
 ```bash
 ant
 ```
 
-We see the code generation details:
+We see the layer generation details:
 
 ```bash
 Buildfile: ./build.xml
