@@ -51,25 +51,25 @@ Create the following `pom.xml` file:
 
   <dependencies>
 
-    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- Instantiates the JDBC DataSources -->
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- HotRod -->
+    <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>5.1.4</version>
     </dependency>
 
-    <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
@@ -152,7 +152,7 @@ create table employee (
   id int primary key not null,
   first_name varchar(20) not null,
   last_name varchar(20) not null,
-  branch_id
+  branch_id int
 );
 
 insert into employee (id, first_name, last_name, branch_id) values
@@ -180,8 +180,8 @@ We see the layer generation details:
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:5.0.0:gen (default-cli) @ myapp ---
-[INFO] HotRod Generator version 5.0.0 (build 20250520-023716) - Generate
+[INFO] --- hotrod-maven-plugin:5.1.4:gen (default-cli) @ myapp ---
+[INFO] HotRod Generator version 5.1.4 (build 20250520-023716) - Generate
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2

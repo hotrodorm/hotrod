@@ -114,6 +114,7 @@ public class Subquery extends TableExpression {
 
   @Override
   protected void renderColumns() {
+    log.info("this.select[" + this.name + "]=" + this.select);
     List<Expression> raw = this.select.getCompiledColumns();
     // raw: has expanded all columns at this point.
 
