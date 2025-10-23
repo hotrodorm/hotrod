@@ -159,23 +159,14 @@ These modules are:
 
 ## Examples
 
-See [Hello CRUD](./crud/hello-crud.md) example for the out-of-the-box functionality and its basic setup and to run other CRUD examples.
+Explore the following examples to quickly see the functionality in action:
 
-The [Hello Nitro](./guides/hello-nitro.md) example expands on previous example to implement custom native queries, including DynamicSQL.
-
-The [Hello Type Resolution](./guides/hello-type-resolution.md) example shows how the persistence layer rules decide the data types for tables, view, and SELECT queries on the database.
-
-The [Hello Logging](./guides/hello-logging.md) example shows how enable logging of executed SQL statements.
-
-<!--
-For the basic usage of each module and more examples of each one see:
- - [Hello CRUD]() &amp; more [CRUD Examples]().
- - [Hello LiveSQL]() &amp; more [LiveSQL Examples]().
- - [Hello Nitro]() &amp; more [Nitro Examples]().
- - [Hello Torcs]() &amp; more [Torcs Examples]().
- - [Hello Torcs CTP]() &amp; more Torcs CTP Examples]().
--->
-
+- [Hello CRUD](./crud/hello-crud.md) - Basic CRUD examples
+- [Hello Nitro](./guides/hello-nitro.md) - The different forms of Nitro queries
+- [Hello LiveSQL](./guides/hello-livesql.md) - The basic LiveSQL queries
+- [Hello Torcs](./guides/hello-torcs.md) - Single out slow queries
+- [Hello Type Resolution](./guides/hello-type-resolution.md) - See all cases of the full type resolution
+- [Hello Logging](./guides/hello-logging.md) - Enable query execution logs for DAOs and LiveSQL
 
 ## Reference
 
