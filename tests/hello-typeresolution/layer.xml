@@ -12,8 +12,8 @@
 
   <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"
     class="app.YNBooleanConverter" />
-  <converter name="InvoiceStatusConverter" java-raw-type="java.lang.Integer" java-type="app.InvoiceStatus"
-    class="app.InvoiceStatusConverter" />
+  <converter name="InvoiceStatusConverter" java-raw-type="java.lang.Integer"
+    java-type="app.InvoiceStatus" class="app.InvoiceStatusConverter" />
 
   <table name="invoice">
     <column name="amount" java-type="Double" />
