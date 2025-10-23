@@ -261,8 +261,10 @@ public class App {
 
   private static final Logger LOG = Logger.getLogger(App.class.getName());
 
-  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> LOG.isLoggable(Level.FINE),
-      msg -> LOG.fine(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(
+    () -> LOG.isLoggable(Level.FINE), msg -> LOG.fine(msg),
+    () -> LOG.isLoggable(Level.FINER), msg -> LOG.finer(msg)
+  );
 
   @Autowired
   private LiveSQL sql;

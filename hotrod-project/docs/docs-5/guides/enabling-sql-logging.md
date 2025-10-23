@@ -1,11 +1,33 @@
-# Query Logging
+# Enabling Query Logging
 
 Sometimes is critical to have the ability to see the exact queries and parameters that are used when running queries.
 
-The DAOs in the persistence layer provide logging at the DEBUG and TRACE levels.
+The persistence layer used by HotRod provides logging at the DEBUG and TRACE levels.
+
+## Logging Levels
+
+The logging can log the SQL queries only, or the SQL queries and their actual parameters:
+
+- The *Basic Mode* logs the SQL query only. This is activated when the logger's level is set to DEBUG.
+- The *Full Mode* that shows the SQL query and its parameter values. This is activated when the logger's level is set to TRACE.
+
+In short, TRACE logs the SQL and its parameters, DEBUG logs the SQL only, and INFO and up doesn't log SQL queries at all.
+
+## Separate Loggers
+
+Logging can be activated separately per DAO and in LiveSQL queries.
+
+In the DAOs the logger is referenced by the full class name of the DAO that we want to log. For example, if we want to log the queries in the DAO `app.persistence.dao.EmployeeDAO` we should enable the logger by using the property `logging.level.app.persistence.dao.EmployeeDAO` in the Spring properties file.
+
+LiveSQL can receive a logging adapter in the `execute()` methods to do logging. This logging adapter should implement both levels of logging. See the example below.
 
 
-### 1. Enabling Logging in DAOs
+## Examples
+
+The [Hello Logging](./hello-logging.md) example is a running example that shows logging in CRUD, Nitro, and LiveSQL.
+
+
+### 1. Logging in DAOs and Nitro SELECTs
 
 The logging can be enabled for an entire group of DAOs or for a single DAO. In the `application.properties` file add one or more lines in the form:
 
@@ -19,9 +41,7 @@ If we have a couple of DAOs called `ReportingDAO` and `EmployeeDAO` in the packa
 logging.level.app.persistence.dao=DEBUG
 ```
 
-Enables debugging for all DAOs in that package.
-
-The configuration:
+Enables debugging for all DAOs in that package. Now, the configuration:
 
 ```properties
 logging.level.app.persistence.dao.ReportingDAO=DEBUG
@@ -29,12 +49,6 @@ logging.level.app.persistence.dao.ReportingDAO=DEBUG
 
 Enables debugging for the specific DAO `ReportingDAO`.
 
-### 2. The Logging Level
-
-The DAOs provide two levels of logging:
-
-- A `DEBUG` level logs the SQL query being executed.
-- A `TRACE` level logs the SQL query being executed and the specific parameters being applied to it.
 
 For example, a query with DEBUG logging level produces:
 
@@ -66,17 +80,24 @@ JDBC Parameters (1):
 ```
 
 
-### 3. Enable LiveSQL Logging
+### 2. LiveSQL Logging
 
-LiveSQL is logged separately using the logger `org.hotrod.livesql.LiveSQL`, as in:
+LiveSQL can specify a logger adapter in the `execute()` methods. This logger adapter references your specific logger solution, and can be defined at the class level as:
 
-```properties
-logging.level.org.hotrod.livesql.LiveSQL=DEBUG
+```java
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(
+    () -> LOG.isLoggable(Level.FINE), msg -> LOG.fine(msg),
+    () -> LOG.isLoggable(Level.FINER), msg -> LOG.finer(msg)
+  );
 ```
 
-Both levels DEBUG and TRACE are available.
+In the end LiveSQL will use `LOG` to perform the actual logging. The `LOG` logger (not shown in the example) should be configured in the standard way in Spring. Maybe as:
 
-LiveSQL's logging includes the query, the parameters, and the column types, as in:
+```properties
+logging.level.app.accounting.reports.Reporting=TRACE
+```
+
+In Full Mode (activated by TRACE in this case) LiveSQL's logging includes the query, the parameters, and the column types, as in:
 
 ```
 2025-05-27 11:26:59.503 TRACE 13226 --- [           main] org.hotrod.livesql.LiveSQL               : SQL: --- SQL ----------
@@ -103,5 +124,6 @@ ORDER BY b.name, e.last_name DESC
  * branchName: class java.lang.String, source: ENTITY_COLUMN
 ------------------
 ```
+
 
 
