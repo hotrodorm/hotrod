@@ -66,7 +66,7 @@ Create the following `pom.xml` file:
     <dependency> <!-- HotRod -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.0.0</version>
+      <version>5.1.4</version>
     </dependency>
 
     <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
@@ -97,7 +97,7 @@ Create the following `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.0.0</version>
+        <version>5.1.4</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
