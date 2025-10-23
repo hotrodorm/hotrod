@@ -290,8 +290,10 @@ public class App {
 
   private static final Logger LOG = Logger.getLogger(App.class.getName());
 
-  private static final LiveSQLLogging LIVESQL_LOG =
-    LiveSQLLogging.of(() -> LOG.isLoggable(Level.FINE), msg -> LOG.fine(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(
+    () -> LOG.isLoggable(Level.FINE), msg -> LOG.fine(msg),
+    () -> LOG.isLoggable(Level.FINER), msg -> LOG.finer(msg)
+  );
 
   @Autowired
   private LiveSQL sql;
@@ -504,7 +506,10 @@ logging.level.app.App=TRACE
 logging.level.app.persistence.dao=TRACE
 ```
 
-Note that we enable logging to see the actual queries being run. We do this in the App itself for the LiveSQL SELECTs and, separately, in the DAOs for the CRUD and Nitro SELECTs.
+Note that:
+
+- We enable TRACE logging to see the actual queries being run and their parameters; DEBUG will show the SQL only, while INFO and up won't log the queries being executed.
+- We enable logging this in the App itself for the LiveSQL SELECTs and, separately, in the DAOs for the CRUD and Nitro SELECTs.
 
 ## Running the Application
 

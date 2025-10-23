@@ -338,6 +338,8 @@ The configuration shows all three logging cases enabled using typical Spring Boo
 - The Basic Mode that shows the SQL query only. This is activated when the logger's level is set to DEBUG.
 - The Full Mode that shows the SQL query and its parameter values. This is activated when the logger's level is set to TRACE.
 
+In short, TRACE logs the SQL and its parameters, DEBUG logs the SQL only, and INFO and up doesn't log SQL queries at all.
+
 
 ## Running the Application
 
@@ -442,8 +444,6 @@ WHERE a.name like ?
  * 2 name: java.lang.String, source: STATIC_DIALECT_RULE, rule #D14
 ---------------------
 ```
-
-
 
 That's it!
 
