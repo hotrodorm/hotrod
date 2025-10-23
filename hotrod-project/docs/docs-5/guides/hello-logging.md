@@ -333,8 +333,11 @@ logging.level.app.persistence.dao.ReportsDAO=DEBUG
 logging.level.app.App=DEBUG
 ```
 
-The coniguration shows all three logging cases enabled, using the standard logging configuration of
-Spring.
+The configuration shows all three logging cases enabled using typical Spring Boot settings. There are two modes for logging:
+
+- The Basic Mode that shows the SQL query only. This is activated when the logger's level is set to DEBUG.
+- The Full Mode that shows the SQL query and its parameter values. This is activated when the logger's level is set to TRACE.
+
 
 ## Running the Application
 
@@ -364,6 +367,19 @@ FROM employee
 WHERE id = ?
 ```
 
+If we switch the logger's level to TRACE we can see the query and the parameters:
+
+```log
+SELECT
+  id,
+  name
+FROM employee
+WHERE id = ?
+
+JDBC Parameters (1):
+  1. f.id: 10 (java.lang.Integer)
+```
+
 #### 2. The Nitro Select
 
 This logger is activated by the configuration line:
@@ -375,9 +391,20 @@ logging.level.app.persistence.dao.ReportsDAO=DEBUG
 The log shows:
 
 ```log
-      SELECT *
-      FROM employee
-      WHERE name LIKE '%' || ? || '%'
+SELECT *
+FROM employee
+WHERE name LIKE '%' || ? || '%'
+```
+
+If we switch the logger's level to TRACE we can see the query and the parameters:
+
+```log
+SELECT *
+FROM employee
+WHERE name LIKE '%' || ? || '%'
+
+JDBC Parameters (1):
+  1. txt (VARCHAR): t (java.lang.String)
 ```
 
 #### 3. The LiveSQL Select
@@ -398,6 +425,16 @@ SELECT
   a.name as "name"
 FROM employee a
 WHERE a.name like ?
+```
+
+If we switch the logger's level to TRACE we can see the query, the parameters, and the query columns:
+
+```log
+SELECT
+  a.id as "id",
+  a.name as "name"
+FROM employee a
+WHERE a.name like ?
 --- Parameters (1) -------
  * 1 (java.lang.String, length=2): %e
 --- Query Columns (2) ---
@@ -405,6 +442,7 @@ WHERE a.name like ?
  * 2 name: java.lang.String, source: STATIC_DIALECT_RULE, rule #D14
 ---------------------
 ```
+
 
 
 That's it!
