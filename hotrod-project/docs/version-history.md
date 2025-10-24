@@ -2,6 +2,82 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.4:
+
+- Core:
+    - New fragment packages reordering for a cleaner persistence layer.
+    - Configurable layer resources class using the new &lt;layer-resources> tag.
+    - Hello Type Resolution example prepared.
+    - Hello Logging example prepared.
+- CRUD:
+    - Hello CRUD example prepared.
+- LiveSQL:
+    - Hello LiveSQL example prepared.
+    - CAST implemented.
+    - Fixing Nitro Select with Type Solver rule with Converter.
+    - Improving Type Solver messaging.
+    - Fixing runtime designated type as converter.
+    - Type resolution details are displayed in the SQL log and preview features.
+    - Clear documentation of the static and runtime type resolutions.
+    - Converters now must be autowired Spring beans.
+    - New LiveSQL logging can implement custom logging.
+    - Fixing converter in runtime type solver.
+    - Fixing plain and recursive CTEs.
+- Nitro:
+    - Hello Nitro example prepared.
+    - Fixing the &lt;complement> tag.
+- Torcs:
+    - Fixing Torcs auto-config.
+    - Hello Torcs example prepared.
+
+## 5.1.3:
+
+- Core:
+    - Enhancing column export commands (TXT and XLSX).
+    - Fixing the NUMERIC type in the H2 generator adapter.
+    - Forcing Oracle-11 sequence prefetch on all INSERTs with sequences.
+- CRUD:
+    - Fixing CRUD usage of layout classes instead of model classes.
+    - Fixing sequences implementation in custom DAOs.
+    - Fixing insert with auto-generated PK.
+    - Adding missing @Override annotation
+    - Removing DynamicExpressionException from DAOs.
+    - Fixing java.sql.Types import.
+    - CRUD converters fixed.
+    - Fixing clone() instantiation.
+- LiveSQL
+    - Fixing updateByCriteria().
+    - Converters do not throw SQLException anymore.
+    - Fixing entity selects with designated column names.
+    - Update by criteria fixed.
+    - Fixing aliasing of entity columns.
+- Nitro:
+    - Hello Nitro example prepared.
+    - Removed checked exceptions in all Nitro queries.
+- Generator:
+    - Improving Generator performance by retrieving the minimal amount of metadata needed. Timers added.
+    - Better error messaging.
+    - Improving messaging on failed type solving.
+DynamicSQL:
+    - Improving DynamicSQL updatable PK design.
+    - Fixing indexes in iterative parameters.
+
+## 5.1.2:
+
+- Core:
+    - The &lt;sequence> tag was implemented.
+    - Greatly simplifies multiple datasource usage.
+    - All persistence operations now throw RuntimeException.
+    - The &lt;jdbc> tag mechanics were simplified.
+- LiveSQL:
+    - The Predicate class was restored.
+    - The parseRow() method was re-implemented.
+
+## 5.1.1:
+
+- Nitro:
+    - Fixing SQL Parameter rendering in Nitro.
+
 ## 5.1.0:
 
 - LiveSQL:
@@ -65,6 +141,11 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - New Highest Impact Queries Ranking implemented. This ranking ranks queries by combining the accumulated response times; may become the default one in future versions.
     - New Highest Frequency Queries Ranking implemented to detect fast, but extremely frequent query surges.
     - Rankings' default size increased to 30.
+
+## 4.8.3:
+
+- Generator:
+    - Increasing generator performance.
 
 ## 4.8.1:
 

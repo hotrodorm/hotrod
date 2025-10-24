@@ -9,14 +9,16 @@ HotRod brings:
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of Dynamic SQL and Native SQL when you need it
 - [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 
-All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
+Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and other [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
 See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
 [roadmap](./hotrod-project/docs/roadmap.md),
-and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). For documentation on the previous versions see
-[HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
+and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). 
+All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
-Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example.
+For documentation on the previous versions see the
+[HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and the [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
+
 
 
 ## LiveSQL &mdash; At a Glance
