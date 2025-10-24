@@ -81,42 +81,22 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
       try {
         // Single column
         Expression single = (Expression) se;
-//        log.info("=== 2.2 single" + (single == null ? "" : " [" + single.getClass().getName() + "] ") + "=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
-//        log.info("=== 2.2 emerging=" + emerging);
         if (emerging != null) {
-//          log.info("=== * th=" + Shield.getTypeHandler(emerging));
           Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
         }
         this.compiledColumns.add(single);
 
       } catch (ClassCastException cce) {
         // Wrapping column
-//        log.info("=== 2.3");
         SQLMetaExpression wrapping = (SQLMetaExpression) se;
         for (Expression exp : Shield.expand(wrapping)) {
-//          log.info("=== 2.4");
           Expression em = Shield.getEmergingExpression(exp);
           this.compiledColumns.add(em);
         }
       }
 
-//      log.info("=== 2.4 rsc=" + rsc);
-//      Expression raised = Shield.getEmergingExpression(rsc); // raised is always null for wrapping columns
-//
-//      log.info("=== 2.4.1 raised=" + raised);
-//      if (raised != null) {
-//        this.expandedQueryColumns.add(raised);
-//      } else {
-//        for (Expression exp : Shield.expand(rsc)) {
-//          raised = Shield.getEmergingExpression(exp);
-//          this.expandedQueryColumns.add(raised);
-//        }
-//      }
     }
-//    log.info(">1 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
-
-//    log.info("=== 2.10 EXPAND DONE from " + SShield.getName(this.from) + " ===");
   }
 
   @Override

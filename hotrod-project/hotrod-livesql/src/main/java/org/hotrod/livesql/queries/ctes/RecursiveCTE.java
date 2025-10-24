@@ -2,6 +2,8 @@ package org.hotrod.livesql.queries.ctes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -13,8 +15,13 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class RecursiveCTE extends CTE {
+
+  private static final Logger log = Logger.getLogger(RecursiveCTE.class.getName());
 
   // Properties
 
@@ -26,6 +33,7 @@ public class RecursiveCTE extends CTE {
 
   public RecursiveCTE(final String name, final String[] columns) {
     super(name, columns);
+    log.fine("init");
   }
 
   public void as(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
@@ -39,6 +47,7 @@ public class RecursiveCTE extends CTE {
     this.anchorTerm = anchorTerm;
     this.unionAll = true;
     this.recursiveTerm = recursiveTerm;
+
   }
 
   public void asUnion(final Select<?> anchorTerm, final Select<?> recursiveTerm) {
@@ -60,6 +69,24 @@ public class RecursiveCTE extends CTE {
       SShield.getCombinedSelect(this.anchorTerm).validateTableReferences(tableReferences, ag);
       SShield.getCombinedSelect(this.recursiveTerm).validateTableReferences(tableReferences, ag);
     }
+  }
+
+  @Override
+  protected void renderColumns(Set<SelectObject<?>> compiling) {
+
+    CombinedSelectObject<?> anchorSelect = SShield.getCombinedSelect(this.anchorTerm);
+    CombinedSelectObject<?> recursiveSelect = SShield.getCombinedSelect(this.recursiveTerm);
+
+    anchorSelect.compileColumns(compiling);
+    recursiveSelect.compileColumns(compiling);
+    List<Expression> raw = anchorSelect.getCompiledColumns();
+    // raw: has expanded all columns at this point.
+
+    this.resolvedColumns = raw.stream().map(r -> Shield.asSubqueryExpression(r, this, Shield.getReferenceName(r)))
+        .collect(Collectors.toList());
+
+    this.columnsByName = this.resolvedColumns.stream()
+        .collect(Collectors.toMap(c -> Shield.getReferenceName(c), c -> c));
   }
 
   // Rendering

@@ -2,6 +2,7 @@ package org.hotrod.livesql.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
@@ -10,6 +11,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 
 public abstract class TableOrView<M> extends TableExpression {
@@ -64,7 +66,7 @@ public abstract class TableOrView<M> extends TableExpression {
   // Validation
 
   @Override
-  protected void renderColumns() {
+  protected void renderColumns(Set<SelectObject<?>> compiling) {
     // Tables and views have already all their assembled columns; nothing to do
   }
 

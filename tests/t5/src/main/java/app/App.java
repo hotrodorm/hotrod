@@ -3,10 +3,15 @@ package app;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.queries.ctes.CTE;
+import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,6 +34,9 @@ import app.persistence.geo.layout.VehicleLayout;
 public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
+
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
+      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
 
   static {
 //    JULCustomFormatter.initialize(Level.FINER);
@@ -78,7 +86,10 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testComplement();
+      testSubquery();
+      testCTE();
+      testRecursiveCTE();
+//      testComplement();
 //      testCast();
 //      testWhere();
 //      testInsert1();
@@ -109,6 +120,33 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testSubquery() {
+    System.out.println("### Subquery:");
+    Subquery x = sql.subquery("x", sql.select(sql.literal(123).as("a")));
+    List<Row> rows = sql.select().from(x).execute(LIVESQL_LOG);
+    rows.forEach(r -> System.out.println("r=" + r));
+  }
+
+  private void testCTE() {
+    System.out.println("### CTE:");
+    CTE x = sql.cte("x", sql.select(sql.literal(123).as("a")));
+    List<Row> rows = sql.with(x).select().from(x).execute(LIVESQL_LOG);
+    rows.forEach(r -> System.out.println("r=" + r));
+
+//CTE y=    sql.cte("x", "a").as(sql.select(sql.literal(123).as("a")));
+  }
+
+  private void testRecursiveCTE() {
+    System.out.println("### Recursive CTE:");
+    RecursiveCTE x = sql.recursiveCTE("x", "n");
+    x.as( //
+        sql.select(sql.literal(1)), //
+        sql.select(x.num("n").plus(1)).from(x).where(x.num("n").lt(5)) //
+    );
+    Row row = sql.with(x).select(sql.sum(x.num("n")).as("total")).from(x).executeOne(LIVESQL_LOG);
+    System.out.println("row=" + row);
   }
 
   private void testComplement() {

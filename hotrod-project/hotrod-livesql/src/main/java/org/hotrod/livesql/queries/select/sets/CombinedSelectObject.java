@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries.select.sets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,6 @@ import org.hotrod.livesql.util.ToString;
 
 public class CombinedSelectObject<T> extends SelectObject<T> {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(CombinedSelectObject.class.getName());
 
   private boolean forceParenthesis;
@@ -50,10 +50,12 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   private Integer limit = null;
 
   public CombinedSelectObject(final SelectObject<T> anchor) {
+    log.fine("init");
     initialize(anchor, false);
   }
 
   public CombinedSelectObject(final SelectObject<T> anchor, final boolean forceParenthesis) {
+    log.fine("init");
     initialize(anchor, forceParenthesis);
   }
 
@@ -308,10 +310,10 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   }
 
   @Override
-  protected void prepareColumnCompilation() {
-    this.anchor.prepareColumnCompilation();
+  protected void prepareColumnCompilation(Set<SelectObject<?>> compiling) {
+    this.anchor.prepareColumnCompilation(compiling);
     for (SetOperatorTerm<T> o : this.combined) {
-      o.getMultiset().prepareColumnCompilation();
+      o.getMultiset().prepareColumnCompilation(compiling);
     }
   }
 
@@ -348,8 +350,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   public T executeOne(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     RowReader<T> rowReader = this.anchor.getRowReader();
-    LiveSQLLogging la = null;
-    T row = super.executeLiveSQLOne(context, q, rowReader, la);
+    T row = super.executeLiveSQLOne(context, q, rowReader, loggingAdapter);
     return row;
   }
 

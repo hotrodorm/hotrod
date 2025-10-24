@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries.select.tuples;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -26,12 +27,12 @@ import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata.TuplesJoin;
 import org.hotrod.utils.Separator;
 
 public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TuplesSelectObject.class.getName());
 
   @SuppressWarnings("unused")
@@ -41,6 +42,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   public TuplesSelectObject(TuplesMetadata metadata) {
     super(metadata.getCtes(), metadata.isDistinct());
+    log.fine("init");
     this.sqlExpressions = metadata.getResultSetColumns();
     this.from = metadata.getFrom();
     this.tuplesJoins = metadata.getJoins();
@@ -65,22 +67,22 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  protected void prepareColumnCompilation() {
+  protected void prepareColumnCompilation(Set<SelectObject<?>> compiling) {
 
     if (this.getCTEs() != null) {
       for (CTE cte : this.getCTEs()) {
-        SShield.renderColumns(cte);
+        SShield.renderColumns(cte, compiling);
       }
     }
 
     if (this.from != null) {
-      SShield.renderColumns(this.from);
+      SShield.renderColumns(this.from, compiling);
     }
 
     if (this.tuplesJoins != null) {
       this.tuplesJoins.forEach(tj -> {
         if (tj.includeInResultSet())
-          SShield.renderColumns(tj.getJoin());
+          SShield.prepareColumnCompilation(tj.getJoin(), compiling);
       });
     }
 

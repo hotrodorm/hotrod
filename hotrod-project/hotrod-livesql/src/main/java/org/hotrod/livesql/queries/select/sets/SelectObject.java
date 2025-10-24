@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +22,9 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.util.LoggingUtil;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
+import org.hotrod.utils.TUtil;
 
 public abstract class SelectObject<T> {
 
@@ -40,12 +44,15 @@ public abstract class SelectObject<T> {
 
   // Rendering
 
-  public final void compileColumns() {
-    this.prepareColumnCompilation();
-    this.computeColumnsCompilation();
+  public final void compileColumns(Set<SelectObject<?>> compiling) {
+    if (!compiling.contains(this)) {
+      compiling.add(this);
+      this.prepareColumnCompilation(compiling);
+      this.computeColumnsCompilation();
+    }
   }
 
-  protected abstract void prepareColumnCompilation();
+  protected abstract void prepareColumnCompilation(Set<SelectObject<?>> compiling);
 
   protected abstract void computeColumnsCompilation();
 
@@ -99,7 +106,9 @@ public abstract class SelectObject<T> {
 //    ToString t = new ToString();
 //    this.log(t);
 
-    this.compileColumns();
+    Set<SelectObject<?>> compiling = new HashSet<>();
+    this.compileColumns(compiling);
+
     List<Expression> columns = this.getCompiledColumns();
     renderTo(w, false);
 
@@ -119,6 +128,7 @@ public abstract class SelectObject<T> {
 
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
+
 
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
@@ -212,12 +222,16 @@ public abstract class SelectObject<T> {
 
   protected abstract void log(ToString t);
 
-//  void logExecution(final LiveSQLContext context, final LiveSQLPreparedQuery q) {
-//    if (context.getLogger().isLoggable(Level.FINER)) {
-//      context.getLogger().finest("SQL: " + q.getPreview(true));
-//    } else if (context.getLogger().isLoggable(Level.FINE)) {
-//      context.getLogger().fine("SQL: " + q.getPreview(false));
-//    }
-//  }
+  // Hashable -- ensuring default implementation
+
+  @Override
+  public int hashCode() {
+    return System.identityHashCode(this);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return this == obj;
+  }
 
 }

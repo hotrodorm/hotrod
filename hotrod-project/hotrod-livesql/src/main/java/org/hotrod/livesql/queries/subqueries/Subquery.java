@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries.subqueries;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -23,27 +24,27 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.sets.MShield;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
 
 public class Subquery extends TableExpression {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Subquery.class.getName());
 
   private Name name;
   protected String[] columnNames;
   private CombinedSelectObject<?> select;
 
-  private List<Expression> resolvedColumns = null;
-  private Map<String, Expression> columnsByName = null;
+  protected List<Expression> resolvedColumns = null;
+  protected Map<String, Expression> columnsByName = null;
 
   protected Subquery(final String naturalName, final String[] columnNames) {
+    log.fine("init");
     if (SUtil.isEmpty(naturalName)) {
       throw new LiveSQLException("Subquery name cannot be empty", null);
     }
-
     this.name = Name.parse(naturalName);
     this.columnNames = columnNames;
     this.select = null;
@@ -113,8 +114,8 @@ public class Subquery extends TableExpression {
   }
 
   @Override
-  protected void renderColumns() {
-    log.info("this.select[" + this.name + "]=" + this.select);
+  protected void renderColumns(Set<SelectObject<?>> compiling) {
+    this.select.compileColumns(compiling);
     List<Expression> raw = this.select.getCompiledColumns();
     // raw: has expanded all columns at this point.
 

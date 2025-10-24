@@ -1,6 +1,9 @@
 package org.hotrod.livesql.queries.select;
 
+import java.util.Set;
+
 import org.hotrod.livesql.exceptions.InvalidLiveSQLClauseException;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 
 public abstract class Join {
 
@@ -17,8 +20,8 @@ public abstract class Join {
     return this.tableExpression;
   }
 
-  protected void renderColumns() {
-    this.tableExpression.renderColumns();
+  protected void renderColumns(Set<SelectObject<?>> compiling) {
+    this.tableExpression.renderColumns(compiling);
   }
 
 }

@@ -1,5 +1,7 @@
 package org.hotrod.livesql.queries.select;
 
+import java.util.Set;
+
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
@@ -9,6 +11,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
@@ -42,12 +45,12 @@ public class SShield {
     return j.getTableExpression().star();
   }
 
-  public static void renderColumns(TableExpression te) {
-    te.renderColumns();
+  public static void renderColumns(TableExpression te, Set<SelectObject<?>> compiling) {
+    te.renderColumns(compiling);
   }
 
-  public static void renderColumns(Join j) {
-    j.getTableExpression().renderColumns();
+  public static void prepareColumnCompilation(Join j, Set<SelectObject<?>> compiling) {
+    j.getTableExpression().renderColumns(compiling);
   }
 
   public static <R> SelectWherePhase<R> getSelectWherePhase(final LiveSQLContext context,
