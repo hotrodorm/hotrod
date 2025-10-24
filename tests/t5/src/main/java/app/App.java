@@ -86,11 +86,11 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testSubquery();
-      testCTE();
-      testRecursiveCTE();
+//      testSubquery();
+//      testCTE();
+//      testRecursiveCTE();
 //      testComplement();
-//      testCast();
+      testCast();
 //      testWhere();
 //      testInsert1();
 //      testForEach();
@@ -158,7 +158,7 @@ public class App {
   private void testCast() {
     ProductTable p = this.productDAO.newTable();
     List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VARCHAR").length().as("len")).from(p)
-        .execute();
+        .execute(LIVESQL_LOG);
     rows.forEach(r -> System.out.println("r=" + r));
   }
 
