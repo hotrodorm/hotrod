@@ -39,8 +39,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -419,7 +419,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(EmployeeLayout values, EmployeeTable tableOrView,
+  public UpdateWherePhase update(EmployeeLayout values, EmployeeTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -427,7 +427,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (values.getLastName() != null) setters.add(new Setter(tableOrView.lastName, sql.val(values.getLastName())));
     if (values.getSalary() != null) setters.add(new Setter(tableOrView.salary, sql.val(values.getSalary())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate);
   }
 
   // DELETE BY PRIMARY KEY

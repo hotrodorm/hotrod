@@ -113,10 +113,12 @@ public class App {
   }
 
   private void updateByCriteria() {
+    System.out.println("updateByCriteria() 1");
     EmployeeTable e = this.employeeDAO.newTable();
     Employee values = new Employee();
     values.setBranchId(106);
     int count = this.employeeDAO.update(values, e, e.branchId.in(10, 20).or(e.salary.ge(100))).execute();
+    System.out.println("updateByCriteria() 2 - count=" + count);
   }
 
   private void deleteByPrimaryKey() {

@@ -69,8 +69,8 @@ import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -1125,7 +1125,7 @@ public class DAOWriter {
     w.println();
     w.println("  // UPDATE BY CRITERIA");
     w.println();
-    w.print("  public ", UpdateSetCompletePhase.class, " update(", el, " values, ");
+    w.print("  public ", UpdateWherePhase.class, " update(", el, " values, ");
     w.println(ec, " tableOrView,");
     w.println("      final ", Predicate.class, " predicate) {");
     w.print("    ", List.class, "<", Setter.class, "> setters");
@@ -1138,7 +1138,7 @@ public class DAOWriter {
           "(tableOrView." + memId + ", sql.val(values." + getter + "())));");
     }
 
-    w.println("    return new ", UpdateSetCompletePhase.class, "(this.context, tableOrView, setters, predicate);");
+    w.println("    return new ", UpdateWherePhase.class, "(this.context, tableOrView, setters, predicate);");
     w.println("  }");
   }
 

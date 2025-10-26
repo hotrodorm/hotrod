@@ -1,6 +1,10 @@
 package org.hotrod.livesql.queries;
 
+import java.util.List;
+
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class UpdateWherePhase implements DMLQuery {
@@ -17,6 +21,17 @@ public class UpdateWherePhase implements DMLQuery {
     this.update = update;
     this.update.setWherePredicate(predicate);
   }
+  
+  public UpdateWherePhase(final LiveSQLContext context, final TableOrView<?>  tableOrView, final List<Setter> setters , final Predicate predicate) {
+    this.context = context;
+    this.update = new UpdateObject();
+    this.update.setTableOrView(tableOrView);
+    for (Setter s : setters) {
+      this.update.addSetter(s.getColumn(), s.getExpression());
+    }
+    this.update.setWherePredicate(predicate);
+  }
+
 
   // Next phases
 
