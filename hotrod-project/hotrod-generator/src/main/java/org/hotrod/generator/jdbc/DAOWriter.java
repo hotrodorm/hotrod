@@ -72,8 +72,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
+import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.metadata.ColumnMetadata;
@@ -679,32 +679,33 @@ public class DAOWriter {
     w.println("  private void " + initializerName + "() {");
     w.println("    this." + queryName + " = dyn");
 
-    w.println("      .literaln(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
-        " (\")");
+    w.println("      .literal(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
+        "\")");
+    w.println("      .trim(\" (\\n  \", \",\\n  \", \"\\n) \")");
     int coln = this.metadata.getColumns().size();
-    int n = 1;
+//    int n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
 
       if (byExample) {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         } else {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").endif()");
+              + SUtil.escapeJavaString(sqlId) + "\").endif()");
         }
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literaln(\"  " + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\")");
+          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
 
         // Never include column
@@ -715,14 +716,13 @@ public class DAOWriter {
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-              + SUtil.escapeJavaString(sqlId) + (n < coln ? "," : "") + "\\n\").endif()");
+              + SUtil.escapeJavaString(sqlId) + "\").endif()");
         }
 
       }
 
-      n++;
     }
-    w.println("      .literaln(\")\")");
+    w.println("      .endtrim()");
 
     if (mechanics.getOutputClause() != null && mechanics.getGeneratedKeysNames() != null
         && mechanics.getGeneratedKeysNames().length > 0) {
@@ -730,9 +730,9 @@ public class DAOWriter {
       w.println("      .literaln(\"" + mechanics.getOutputClause() + SUtil.escapeJavaString(gkn) + "\")");
     }
 
-    w.println("      .literaln(\"VALUES(\")");
+    w.println("      .literal(\"VALUES\")");
+    w.println("      .trim(\" (\\n  \", \",\\n  \", \"\\n)\")");
 
-    n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String jdbcType = cm.getType().getJDBCShortType();
@@ -742,12 +742,11 @@ public class DAOWriter {
       if (byExample) { // by example
 
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
-              + (n < coln ? ".literaln(\",\")" : ""));
+          w.println(
+              "      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
-              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + (n < coln ? ".literal(\", \")" : "")
-              + ".endif()");
+              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
         }
 
       } else { // insert
@@ -755,26 +754,25 @@ public class DAOWriter {
         // Always include column
         if (!cm.belongsToPK()) {
           if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-            w.println("      .literal(\"  " + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression())
-                + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println(
+                "      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
           } else {
-            w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
+                Types.class, "." + jdbcType + converterParam + ")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .literal(\"  \").parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\""
-                + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("      .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\""
+                + converterParam + ")");
           } else {
             String si = mechanics.getSequenceInlineSQL();
-            w.println(
-                "      .literal(\"  " + SUtil.escapeJavaString(si) + "\")" + (n < coln ? ".literaln(\",\")" : ""));
+            w.println("      .literal(\"" + SUtil.escapeJavaString(si) + "\")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literal(\"  \").parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ""));
+          w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
+              Types.class, "." + jdbcType + converterParam + ")");
         }
 
         // Never include column
@@ -785,15 +783,15 @@ public class DAOWriter {
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
-              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + (n < coln ? ".literal(\", \")" : "")
-              + ".endif()");
+              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
         }
 
       }
 
-      n++;
     }
-    w.println("      .literal(\")\")");
+    w.println("      .endtrim()");
+    
+    // end insert query
 
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
       w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,

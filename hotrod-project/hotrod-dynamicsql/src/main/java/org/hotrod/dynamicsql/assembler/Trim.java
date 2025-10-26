@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.segments.IfSegment;
+import org.hotrod.dynamicsql.segments.QuerySegment;
+import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.TrimSegment;
 
-public class Trim<P extends AbstractSentence<?, ?>> extends AbstractSentence<Trim<P>, P> {
+public class Trim<P extends AbstractSentence<?, ?>> extends Sentence<Trim<P>, P> {
 
   private String header;
   private String separator;
@@ -50,15 +51,18 @@ public class Trim<P extends AbstractSentence<?, ?>> extends AbstractSentence<Tri
     this.removePrefixes = removePrefixes;
   }
 
-  @SuppressWarnings("unchecked")
-  public If<Trim<P>> if_(String test) {
-    @SuppressWarnings("rawtypes")
-    If<Trim<P>> s = new If(this.factory, this, test);
-    return s;
-  }
+//  public If<Trim<P>> if_(String test) {
+//    If<Trim<P>> s = new If<>(this.factory, this, test);
+//    return s;
+//  }
+//
+//  public Trim<P> literal(String text) {
+//    this.segments.add(new StaticContentSegment(text));
+//    return this;
+//  }
 
   public P endtrim() {
-    List<IfSegment> ifSegments = this.segments.stream().map(s -> (IfSegment) s).collect(Collectors.toList());
+    List<QuerySegment> ifSegments = this.segments.stream().map(s -> (QuerySegment) s).collect(Collectors.toList());
     TrimSegment s;
     if (this.extendedFormatting) {
       s = new TrimSegment(this.header, this.separator, this.tail, ifSegments, super.factory);

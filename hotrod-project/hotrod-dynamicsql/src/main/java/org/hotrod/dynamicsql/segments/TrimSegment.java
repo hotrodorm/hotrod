@@ -21,11 +21,11 @@ public class TrimSegment extends DynamicListSegment {
   private static final String DEFAULT_TAIL_PREFIX = "";
   private static final String DEFAULT_TAIL_SUFFIX = "";
 
-  private List<IfSegment> segments;
+  private List<QuerySegment> segments;
   @SuppressWarnings("unused")
   private DynamicExpressionFactory factory;
 
-  public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
+  public TrimSegment(String header, String separator, String tail, List<QuerySegment> segments,
       DynamicExpressionFactory factory) {
     super(new ListProcessor( //
         new ClauseFormatter(header, DEFAULT_HEADER_PREFIX, DEFAULT_HEADER_SUFFIX), //
@@ -37,7 +37,7 @@ public class TrimSegment extends DynamicListSegment {
     this.factory = factory;
   }
 
-  public TrimSegment(String header, String separator, String tail, List<IfSegment> segments,
+  public TrimSegment(String header, String separator, String tail, List<QuerySegment> segments,
       DynamicExpressionFactory factory, String headerPrefix, String headerSuffix, String separatorPrefix,
       String separatorSuffix, String tailPrefix, String tailSuffix, String... removePrefixes) {
     super(new ListProcessor( //
@@ -54,7 +54,7 @@ public class TrimSegment extends DynamicListSegment {
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
     try (ListFormatterConsumer wc = new ListFormatterConsumer(sc, super.processor)) {
-      for (IfSegment s : this.segments) {
+      for (QuerySegment s : this.segments) {
         wc.startNextEntry();
         s.prepare(wc, context, loopNestingLevel);
       }

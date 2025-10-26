@@ -274,20 +274,22 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO employee (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .literaln("  first_name,")
-      .literaln("  last_name,")
-      .literaln("  salary,")
-      .literaln("  branch_id")
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .literal("  ").parameterNullable("l.firstName", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.lastName", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.salary", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.branchId", Types.INTEGER)
-      .literal(")")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("l.id != null").literal("id").endif()
+      .literal("first_name")
+      .literal("last_name")
+      .literal("salary")
+      .literal("branch_id")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("l.id != null").parameter("l.id").endif()
+      .parameterNullable("l.firstName", Types.VARCHAR)
+      .parameterNullable("l.lastName", Types.VARCHAR)
+      .parameterNullable("l.salary", Types.INTEGER)
+      .parameterNullable("l.branchId", Types.INTEGER)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
@@ -312,16 +314,16 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO employee ")
-      .trim("  (", ", ", ")\n")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
       .if_("l.id != null").literal("id").endif()
       .if_("l.firstName != null").literal("first_name").endif()
       .if_("l.lastName != null").literal("last_name").endif()
       .if_("l.salary != null").literal("salary").endif()
       .if_("l.branchId != null").literal("branch_id").endif()
       .endtrim()
-      .literaln("VALUES")
-      .trim("  (", ", ", ")")
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
       .if_("l.id != null").parameter("l.id").endif()
       .if_("l.firstName != null").parameter("l.firstName").endif()
       .if_("l.lastName != null").parameter("l.lastName").endif()
