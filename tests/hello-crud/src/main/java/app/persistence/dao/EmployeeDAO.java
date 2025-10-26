@@ -316,29 +316,29 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     this.insertByExample = dyn
       .literal("INSERT INTO employee")
       .trim(" (\n  ", ",\n  ", "\n) ")
-      .if_("l.id != null").literal("id").endif()
-      .if_("l.firstName != null").literal("first_name").endif()
-      .if_("l.lastName != null").literal("last_name").endif()
-      .if_("l.salary != null").literal("salary").endif()
-      .if_("l.branchId != null").literal("branch_id").endif()
+      .if_("e.id != null").literal("id").endif()
+      .if_("e.firstName != null").literal("first_name").endif()
+      .if_("e.lastName != null").literal("last_name").endif()
+      .if_("e.salary != null").literal("salary").endif()
+      .if_("e.branchId != null").literal("branch_id").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-      .if_("l.id != null").parameter("l.id").endif()
-      .if_("l.firstName != null").parameter("l.firstName").endif()
-      .if_("l.lastName != null").parameter("l.lastName").endif()
-      .if_("l.salary != null").parameter("l.salary").endif()
-      .if_("l.branchId != null").parameter("l.branchId").endif()
+      .if_("e.id != null").parameter("e.id").endif()
+      .if_("e.firstName != null").parameter("e.firstName").endif()
+      .if_("e.lastName != null").parameter("e.lastName").endif()
+      .if_("e.salary != null").parameter("e.salary").endif()
+      .if_("e.branchId != null").parameter("e.branchId").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Employee insertByExample(EmployeeLayout layout) {
+  public Employee insertByExample(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Employee model = this.clone(layout);
+    Employee model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));

@@ -684,8 +684,6 @@ public class DAOWriter {
     w.println("      .literal(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         "\")");
     w.println("      .trim(\" (\\n  \", \",\\n  \", \"\\n) \")");
-    int coln = this.metadata.getColumns().size();
-//    int n = 1;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
@@ -694,7 +692,7 @@ public class DAOWriter {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         } else {
-          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+          w.println("      .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
               + SUtil.escapeJavaString(sqlId) + "\").endif()");
         }
       } else {
@@ -746,7 +744,7 @@ public class DAOWriter {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
-          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
+          w.println("      .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
         }
 
@@ -793,9 +791,11 @@ public class DAOWriter {
 
     // end insert query
 
+    String prefix = byExample ? "e" : "l";
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
       w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
-          "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \"l." //
+          "." + mechanics.getMode() + ", \"" + SUtil.escapeJavaString(mechanics.getSequencePreFetchSQL()) + "\", \""
+              + prefix + "." //
               + SUtil.escapeJavaString(mechanics.getPrimaryKeyMemberName()) //
               + "\"");
     } else {
@@ -820,11 +820,20 @@ public class DAOWriter {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
-    w.print("  public ", em, " " + methodName + "(", el, " layout");
+    w.print("  public ", em, " " + methodName + "(", el);
+    if (byExample) {
+      w.print(" example");
+    } else {
+      w.print(" layout");
+    }
     w.println(") {");
 
     w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
-    w.println("    params.add(\"l\", layout);");
+    if (byExample) {
+      w.println("    params.add(\"e\", example);");
+    } else {
+      w.println("    params.add(\"l\", layout);");
+    }
 
     if (ol != null) {
       switch (ol.getStrategy()) {
@@ -847,7 +856,11 @@ public class DAOWriter {
 
     fragmentLogging();
 
-    w.println("    ", em, " model = this.clone(layout);");
+    if (byExample) {
+      w.println("    ", em, " model = this.clone(example);");
+    } else {
+      w.println("    ", em, " model = this.clone(layout);");
+    }
 
     w.println("    try (", Connection.class, " conn = this.dataSource.getConnection()) {");
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.NO_RETRIEVAL) {
