@@ -55,6 +55,7 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -271,8 +272,15 @@ public class DAOWriter {
     w.println("  private static final long serialVersionUID = 1L;");
     w.println();
 
+    // Loggers
+
     w.println("  private static final ", Logger.class, " log = ", Logger.class,
         ".getLogger(" + this.getClassName() + ".class.getName());");
+    w.println();
+    w.println("  private static final ", LiveSQLLogging.class, " livesql_log = ", LiveSQLLogging.class, ".of(");
+    w.println("      () -> log.isLoggable(", Level.class, ".FINE), msg -> log.fine(msg),");
+    w.println("      () -> log.isLoggable(", Level.class, ".FINER), msg -> log.finer(msg)");
+    w.println("    );");
     w.println();
 
     // Spring properties
@@ -633,7 +641,7 @@ public class DAOWriter {
     w.print("  public ", CriteriaWherePhase.class, "<", em, "> ");
     w.println("select(final ", ec, " from, final ", Predicate.class, " predicate) {");
     w.println("    return new ", CriteriaWherePhase.class, "<", em,
-        ">(this.context, from, predicate, this.rowReader);");
+        ">(this.context, from, predicate, this.rowReader, livesql_log);");
     w.println("  }");
   }
 
@@ -1138,7 +1146,8 @@ public class DAOWriter {
           "(tableOrView." + memId + ", sql.val(values." + getter + "())));");
     }
 
-    w.println("    return new ", UpdateWherePhase.class, "(this.context, tableOrView, setters, predicate);");
+    w.println("    return new ", UpdateWherePhase.class,
+        "(this.context, tableOrView, setters, predicate, livesql_log);");
     w.println("  }");
   }
 
@@ -1282,7 +1291,7 @@ public class DAOWriter {
     w.println();
     w.print("  public ", DeleteWherePhase.class);
     w.println(" delete(final ", ec, " from, final ", Predicate.class, " predicate) {");
-    w.println("    return new ", DeleteWherePhase.class, "(this.context, from, predicate);");
+    w.println("    return new ", DeleteWherePhase.class, "(this.context, from, predicate, livesql_log);");
     w.println("  }");
   }
 

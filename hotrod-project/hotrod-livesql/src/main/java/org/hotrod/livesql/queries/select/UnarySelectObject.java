@@ -185,15 +185,15 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
   // Execute
 
   @Override
-  public List<T> execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter) {
+  public List<T> execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
     return executeLiveSQL(context, q, null, LiveSQLLogging.NO_LOGGING);
   }
 
   @Override
-  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
+  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    return executeLiveSQL(context, q, rowReader, LiveSQLLogging.NO_LOGGING);
+    return executeLiveSQL(context, q, rowReader, loggingAdapter);
   }
 
   @Override

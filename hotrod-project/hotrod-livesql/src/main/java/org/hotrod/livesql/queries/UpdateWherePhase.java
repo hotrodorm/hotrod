@@ -13,6 +13,7 @@ public class UpdateWherePhase implements DMLQuery {
 
   private LiveSQLContext context;
   private UpdateObject update;
+  private LiveSQLLogging logger;
 
   // Constructor
 
@@ -21,8 +22,9 @@ public class UpdateWherePhase implements DMLQuery {
     this.update = update;
     this.update.setWherePredicate(predicate);
   }
-  
-  public UpdateWherePhase(final LiveSQLContext context, final TableOrView<?>  tableOrView, final List<Setter> setters , final Predicate predicate) {
+
+  public UpdateWherePhase(final LiveSQLContext context, final TableOrView<?> tableOrView, final List<Setter> setters,
+      final Predicate predicate, LiveSQLLogging logger) {
     this.context = context;
     this.update = new UpdateObject();
     this.update.setTableOrView(tableOrView);
@@ -30,8 +32,8 @@ public class UpdateWherePhase implements DMLQuery {
       this.update.addSetter(s.getColumn(), s.getExpression());
     }
     this.update.setWherePredicate(predicate);
+    this.logger = logger;
   }
-
 
   // Next phases
 
@@ -51,7 +53,7 @@ public class UpdateWherePhase implements DMLQuery {
 
   @Override
   public int execute() {
-    return this.update.execute(this.context);
+    return this.update.execute(this.context, this.logger);
   }
 
   @Override

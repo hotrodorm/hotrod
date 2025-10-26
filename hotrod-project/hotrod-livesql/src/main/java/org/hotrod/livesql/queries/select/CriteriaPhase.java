@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
 
@@ -13,11 +14,21 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   protected LiveSQLContext context;
   protected UnarySelectObject<T> select;
   protected RowReader<T> rowReader;
+  protected LiveSQLLogging logger;
 
-  protected CriteriaPhase(final LiveSQLContext context, final UnarySelectObject<T> select, RowReader<T> rowReader) {
+  protected CriteriaPhase(final LiveSQLContext context, final UnarySelectObject<T> select, RowReader<T> rowReader,
+      LiveSQLLogging logger) {
     this.context = context;
     this.select = select;
     this.rowReader = rowReader;
+    this.logger = logger;
+  }
+
+  protected CriteriaPhase(CriteriaPhase<T> previous) {
+    this.context = previous.context;
+    this.select = previous.select;
+    this.rowReader = previous.rowReader;
+    this.logger = previous.logger;
   }
 
   // next phases
@@ -25,7 +36,7 @@ public abstract class CriteriaPhase<T> implements EntitySelect<T> {
   // execute
 
   public final List<T> execute() {
-    return this.select.execute(this.context, this.rowReader);
+    return this.select.execute(this.context, this.rowReader, this.logger);
   }
 
   public final Cursor<T> executeCursor() throws SQLException {

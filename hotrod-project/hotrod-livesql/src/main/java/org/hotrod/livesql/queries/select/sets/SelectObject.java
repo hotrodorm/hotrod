@@ -64,9 +64,9 @@ public abstract class SelectObject<T> {
 
   // Execution
 
-  public abstract List<T> execute(final LiveSQLContext context, final LiveSQLLogging loggingAdapter);
+  public abstract List<T> execute(final LiveSQLContext context, LiveSQLLogging loggingAdapter);
 
-  public abstract List<T> execute(final LiveSQLContext context, RowReader<T> rowReader);
+  public abstract List<T> execute(final LiveSQLContext context, RowReader<T> rowReader, LiveSQLLogging loggingAdapter);
 
   public abstract Cursor<T> executeCursor(final LiveSQLContext context, final LiveSQLLogging loggingAdapter)
       throws SQLException;

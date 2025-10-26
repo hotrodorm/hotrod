@@ -340,10 +340,9 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   }
 
   @Override
-  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader) {
+  public List<T> execute(final LiveSQLContext context, final RowReader<T> rowReader, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
-    LiveSQLLogging la = null;
-    return super.executeLiveSQL(context, q, rowReader, la);
+    return super.executeLiveSQL(context, q, rowReader, loggingAdapter);
   }
 
   @Override

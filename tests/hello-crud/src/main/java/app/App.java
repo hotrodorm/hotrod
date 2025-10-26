@@ -133,7 +133,7 @@ public class App {
 
   private void deleteByCriteria() {
     EmployeeTable e = this.employeeDAO.newTable();
-    int count = this.employeeDAO.delete(e, e.salary.le(70)).execute();
+    int count = this.employeeDAO.delete(e, e.salary.le(70).or(e.branchId.eq(10))).execute();
   }
 
 }

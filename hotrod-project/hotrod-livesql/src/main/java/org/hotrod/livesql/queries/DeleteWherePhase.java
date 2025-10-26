@@ -10,6 +10,7 @@ public class DeleteWherePhase implements DMLQuery {
 
   private LiveSQLContext context;
   private DeleteObject delete;
+  private LiveSQLLogging logger;
 
   // Constructor
 
@@ -19,11 +20,13 @@ public class DeleteWherePhase implements DMLQuery {
     this.delete.setWherePredicate(predicate);
   }
 
-  public DeleteWherePhase(final LiveSQLContext context, final TableOrView<?> from, final Predicate predicate) {
+  public DeleteWherePhase(final LiveSQLContext context, final TableOrView<?> from, final Predicate predicate,
+      LiveSQLLogging logger) {
     this.context = context;
     this.delete = new DeleteObject();
     this.delete.setFrom(from);
     this.delete.setWherePredicate(predicate);
+    this.logger = logger;
   }
 
   // Next stages
@@ -44,7 +47,7 @@ public class DeleteWherePhase implements DMLQuery {
 
   @Override
   public int execute() {
-    return this.delete.execute(this.context);
+    return this.delete.execute(this.context, this.logger);
   }
 
   @Override

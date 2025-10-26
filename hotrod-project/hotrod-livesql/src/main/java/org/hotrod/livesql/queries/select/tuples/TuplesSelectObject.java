@@ -144,7 +144,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
   }
 
   @Override
-  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader) {
+  public List<T> execute(LiveSQLContext context, RowReader<T> rowReader, LiveSQLLogging loggingAdapter) {
     // TODO Auto-generated method stub
     return null;
   }

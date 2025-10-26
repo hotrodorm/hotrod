@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -63,6 +64,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(EmployeeDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -265,7 +271,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Employee> select(final EmployeeTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -427,7 +433,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     if (values.getLastName() != null) setters.add(new Setter(tableOrView.lastName, sql.val(values.getLastName())));
     if (values.getSalary() != null) setters.add(new Setter(tableOrView.salary, sql.val(values.getSalary())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
-    return new UpdateWherePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -490,7 +496,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final EmployeeTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
