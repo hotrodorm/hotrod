@@ -157,7 +157,7 @@ It includes:
 - [Torcs](./torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 - [Torcs CTP](./torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in *Check The Plan*
 
-Last but not least the [DynamicSQL](./dynamicsql/README.md) library is used to define, implement, and execute Dynamic SQL queries, altough it's mostly used behind the scenes in the persistence layer.
+Last but not least, the [DynamicSQL](./dynamicsql/README.md) component is used behind the scenes to define, implement, and execute Dynamic SQL queries.
 
 ## Examples
 
