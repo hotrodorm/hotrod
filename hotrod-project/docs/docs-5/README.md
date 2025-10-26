@@ -104,7 +104,7 @@ To update the status of an invoice:
 
 Nitro queries enhance SQL capabilities with:
 
-- [Dynamic SQL](./nitro/nitro-dynamicsql.md)
+- [Nitro Dynamic SQL](./nitro/nitro-dynamicsql.md)
 - Native SQL
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. Any or all of these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
@@ -146,16 +146,18 @@ See HotRod in action with the [Hello World](./guides/hello-world.md) example.
 
 ## Modules
 
-The HotRod functionality is divided into five modules serving different purposes. From simple
+The HotRod functionality is divided into modules that serve different purposes. From simple
 out-of-the-box functionality available in CRUD and LiveSQL to advanced querying capabilities provided by Nitro and query optimization with Torcs and Torcs CTP.
 
-These modules are:
+It includes:
 
 - [CRUD](./crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
 - [LiveSQL](./livesql/README.md) &mdash; Flexible querying from Java
-- [Nitro](./nitro/README.md) &mdash; All the power of [Dynamic SQL](./nitro/nitro-dynamicsql.md) and Native SQL when you need it
+- [Nitro](./nitro/README.md) &mdash; All the power of [Nitro Dynamic SQL](./nitro/nitro-dynamicsql.md) and Native SQL when you need it
 - [Torcs](./torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 - [Torcs CTP](./torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in *Check The Plan*
+
+Last but not least the [DynamicSQL](./dynamicsql/README.md) library is used to define, implement, and execute Dynamic SQL queries, altough it's mostly used behind the scenes in the persistence layer.
 
 ## Examples
 

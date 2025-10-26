@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.dynamicsql.segments.QuerySegment;
-import org.hotrod.dynamicsql.segments.StaticContentSegment;
 import org.hotrod.dynamicsql.segments.TrimSegment;
 
 public class Trim<P extends AbstractSentence<?, ?>> extends Sentence<Trim<P>, P> {
@@ -50,16 +49,6 @@ public class Trim<P extends AbstractSentence<?, ?>> extends Sentence<Trim<P>, P>
     this.tailSuffix = tailSuffix;
     this.removePrefixes = removePrefixes;
   }
-
-//  public If<Trim<P>> if_(String test) {
-//    If<Trim<P>> s = new If<>(this.factory, this, test);
-//    return s;
-//  }
-//
-//  public Trim<P> literal(String text) {
-//    this.segments.add(new StaticContentSegment(text));
-//    return this;
-//  }
 
   public P endtrim() {
     List<QuerySegment> ifSegments = this.segments.stream().map(s -> (QuerySegment) s).collect(Collectors.toList());

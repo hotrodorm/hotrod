@@ -1,8 +1,8 @@
-# DynamicSQL
+# Nitro Dynamic SQL
 
-DynamicSQL can be used in all [Nitro](./README.md) queries to execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
+Nitro Dynamic SQL can be used in all [Nitro](./README.md) queries to execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
-All Nitro queries &mdash; declared with `<select>` and `<query>` tags &mdash; can include DynamicSQL sections.
+All Nitro queries &mdash; declared with `<select>` and `<query>` tags &mdash; can include Nitro Dynamic SQL sections.
 
 The following example includes a dynamic query that updates a table:
 

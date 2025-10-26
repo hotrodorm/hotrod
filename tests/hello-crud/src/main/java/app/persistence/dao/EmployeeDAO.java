@@ -237,19 +237,19 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  branch_id")
       .literaln("FROM employee")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.firstName != null").literal("first_name = ").parameter("f.firstName").endif()
-        .if_("f.lastName != null").literal("last_name = ").parameter("f.lastName").endif()
-        .if_("f.salary != null").literal("salary = ").parameter("f.salary").endif()
-        .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.firstName != null").literal("first_name = ").parameter("e.firstName").endif()
+        .if_("e.lastName != null").literal("last_name = ").parameter("e.lastName").endif()
+        .if_("e.salary != null").literal("salary = ").parameter("e.salary").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Employee> select(EmployeeLayout filter, EmployeeOrderBy... orderBies) {
+  public List<Employee> select(EmployeeLayout example, EmployeeOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(params, this.rowReader);

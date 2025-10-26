@@ -2,8 +2,9 @@
 
 DynamicSQL can execute SQL queries that combine static and dynamic sections in them. The dynamic sections are automatically activated or deactivated according to the specified logic and according to the parameters that are provided at runtime.
 
-Even though it was developed in the scope of the HotRod ORM, DynamicSQL can be used by separatedly.
+Even though it was developed for the HotRod ORM, DynamicSQL is a fully independent library and can be used separatedly for any application that could benefit from Dynamic SQL query definition and execution.
 
+Behind the scenes DynamicSQL is the underlying SQL execution engine that HotRod uses to run CRUD and Nitro queries. It's not directly used by the developer of the app; it's only used indirectly by the DAOs of the persistence layer.
 
 The following example includes a dynamic query that updates a table:
 
@@ -166,6 +167,7 @@ The full list of dynamic operators implemented in DynamicSQL is:
 | `.trim()` | A trim section includes multiple `.if_()` sections; trim will collect all inner sections that evaluate to true and will join them with a defined separator |
 | `.where()` | A trim section tailored to be used as a WHERE clause; each inner clause can potentially be include or excluded, and the where section joins them using and AND or OR operator |
 | `.set()` | A trim section tailored to be used as the SET clause of an UPDATE statement; each inner clause can potentially be include or excluded, and the set section joins them using commas |
+| `.begin()` | Encloses a sequence of segments to treat them as a single unit. This can be especially useful to render separators properly between the elements of `.trim()`, `.where()`, or `.set()` and not between their sub-elements |
 
 ## 6. Applying Parameters Using JEXL Syntax
 

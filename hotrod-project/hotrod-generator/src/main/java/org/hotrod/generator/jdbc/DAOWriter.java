@@ -568,7 +568,7 @@ public class DAOWriter {
 
       w.println("      .literaln(\"FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       if (byExample) {
-        fragmentWhereExample("f");
+        fragmentWhereExample("e");
         w.println("      .parameterInjection(\"ordering\")");
       } else {
         fragmentWherePK("f");
@@ -584,7 +584,7 @@ public class DAOWriter {
       if (byExample) {
         w.print("  public ", List.class, "<", em, "> select(");
         ExternalClass ob = ExternalClass.of(this.getOrderByClassName());
-        w.print(el, " filter, ", ob, "... orderBies");
+        w.print(el, " example, ", ob, "... orderBies");
       } else {
         w.print("  public ", em, " select(");
         fragmentPKParameters(pk);
@@ -605,10 +605,12 @@ public class DAOWriter {
       }
 
       w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
-      w.println("    params.add(\"f\", filter);");
       if (byExample) {
+        w.println("    params.add(\"e\", example);");
         w.println("    String ordering = ", SQLUtil.class, ".render(orderBies);");
         w.println("    params.add(\"ordering\", ordering);");
+      } else {
+        w.println("    params.add(\"f\", filter);");
       }
       w.print("    ", PreparedSelectQuery.class, "<", em, "> preparedQuery = ");
       w.println("this." + queryName + ".prepare(params, this.rowReader);");
@@ -742,8 +744,7 @@ public class DAOWriter {
       if (byExample) { // by example
 
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println(
-              "      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
+          w.println("      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
           w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
@@ -757,22 +758,21 @@ public class DAOWriter {
             w.println(
                 "      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
           } else {
-            w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + converterParam + ")");
+            w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+                "." + jdbcType + converterParam + ")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\""
-                + converterParam + ")");
+            w.println("      .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
           } else {
             String si = mechanics.getSequenceInlineSQL();
             w.println("      .literal(\"" + SUtil.escapeJavaString(si) + "\")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + converterParam + ")");
+          w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+              "." + jdbcType + converterParam + ")");
         }
 
         // Never include column
@@ -790,7 +790,7 @@ public class DAOWriter {
 
     }
     w.println("      .endtrim()");
-    
+
     // end insert query
 
     if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {

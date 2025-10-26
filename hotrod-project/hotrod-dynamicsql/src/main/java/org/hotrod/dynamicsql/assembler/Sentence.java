@@ -75,6 +75,13 @@ public abstract class Sentence<M extends Sentence<?, ?>, P> extends AbstractSent
   }
 
   @SuppressWarnings("unchecked")
+  public Begin<M> begin() {
+    @SuppressWarnings("rawtypes")
+    Begin<M> s = new Begin(this.factory, this);
+    return s;
+  }
+
+  @SuppressWarnings("unchecked")
   public If<M> if_(String test) {
     @SuppressWarnings("rawtypes")
     If<M> s = new If(this.factory, this, test);

@@ -13,7 +13,7 @@ import org.hotrod.dynamicsql.Parameters;
 
 public class JEXLDynamicExpression extends DynamicExpression {
 
-  private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
+  private static final int JEXL_CACHE_MAX_EXPRESSIONS = 2000;
 
   private static final JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS)
       .permissions(JexlPermissions.UNRESTRICTED).strict(true).debug(true).silent(false).create();
