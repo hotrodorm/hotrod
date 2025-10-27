@@ -30,17 +30,17 @@ The generated methods differ between a table and a view:
 
 | Persistence Method | In Tables | In Views | Optimistic Locking |
 | -- | :-- | :-- | :--: |
-| [Select by Primary Key](./select-by-primary-key.md) | *only when the table has a PK*<br/>`select(pkColumns...)` | N/A | &mdash; |
-| [Select by Example](./select-by-example.md) | `select(example)` | `select(example)` | &mdash; |
-| [Select by Criteria](./select-by-criteria.md) | `select(t, predicate)` | `select(v, predicate)` | &mdash; |
-| [Insert](./insert.md) | `insert(model)` | `insert(model)` | &mdash; |
-| [Insert By Example](./insert-by-example.md) | `insert(model)` | `insert(model)` | &mdash; |
-| [Update By Primary Key](./update-by-primary-key.md) | *only when the table has a PK:*<br/>`update(model)` | N/A | :heavy_check_mark: |
-| [Update by Example](./update-by-example.md) | `update(example, newValues)` | `update(example, newValues)` | &mdash; |
-| [Update by Criteria](./update-by-criteria.md) | `update(newValues, t, predicate)` | `update(newValues, v, predicate)` | &mdash; |
-| [Delete by Primary Key](./delete-by-primary-key.md) | *only when the table has a PK:*<br/>`delete(pkColumns...)` | N/A | :heavy_check_mark: |
-| [Delete by Example](./delete-by-example.md) | `delete(example)` | `delete(example)` | &mdash; |
-| [Delete by Criteria](./delete-by-criteria.md) | `delete(t, predicate)` | `delete(v, predicate)` | &mdash; |
+| [Select by Primary Key](#1-select-by-primary-key) | *only when the table has a PK*<br/>`select(pkColumns...)` | N/A | &mdash; |
+| [Select by Example](#2-select-by-example) | `select(example)` | `select(example)` | &mdash; |
+| [Select by Criteria](#3-select-by-criteria) | `select(t, predicate)` | `select(v, predicate)` | &mdash; |
+| [Insert](#4-insert) | `insert(model)` | `insert(model)` | &mdash; |
+| [Insert By Example](#5-insert-by-example) | `insert(model)` | `insert(model)` | &mdash; |
+| [Update By Primary Key](#6-update-by-primary-key) | *only when the table has a PK:*<br/>`update(model)` | N/A | :heavy_check_mark: |
+| [Update by Example](#7-update-by-example) | `update(example, newValues)` | `update(example, newValues)` | &mdash; |
+| [Update by Criteria](#8-update-by-criteria) | `update(newValues, t, predicate)` | `update(newValues, v, predicate)` | &mdash; |
+| [Delete by Primary Key](#9-delete-by-primary-key) | *only when the table has a PK:*<br/>`delete(pkColumns...)` | N/A | :heavy_check_mark: |
+| [Delete by Example](#10-delete-by-example) | `delete(example)` | `delete(example)` | &mdash; |
+| [Delete by Criteria](#11-delete-by-criteria) | `delete(t, predicate)` | `delete(v, predicate)` | &mdash; |
 
 **Note**: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform
 if a view is updatable or not, so CRUD adds data modification methods to all views. It's up to the developer
@@ -84,9 +84,9 @@ query is aborted and an exception is thrown, to invalidate the transaction.
 
 See [Optimistic Locking](../config/tags/optimistic-locking.md) for details on how to activate this feature.
 
-## Examples
+## CRUD Methods
 
-The following examples are included in the [Hello CRUD](../guides/hello-crud.md) example. They consider a table defined as:
+The CRUD methods are described below consider the following table as an example:
 
 ```sql
 CREATE TABLE employee (
@@ -100,15 +100,32 @@ CREATE TABLE employee (
 
 ### 1. Select by Primary Key
 
-This method is only available in tables with primary keys:
+This method selects a single row from a table that has a primary key. A such, this method is only available in tables with primary keys.
+
+The simplest form this method takes is shown below:
 
 ```java
 Employee emp = this.employeeDAO.select(150);
 ```
 
+#### Composite Primary Keys
+
+The parameter(s) in the call corresponds to the list of primary key values. If the table has a composite primary key, then multiple parameters are added. The parameter types will correspond to the specific app types for the columns according to the Type Resolution Mechanics.
+
+If the table has a composite key with three columns (VARCHAR, DATE, INTEGER) this method could look like:
+
+```java
+Payment p = this.paymentDAO.select("INT", LocalDate.of(2025, 10, 23), 7);
+```
+
+
 ### 2. Select by Example
 
-This method is available in all tables and views:
+This method retrieves a list of rows from a table or view, using an example of the values of its columns. All the values specified as non-null are used to search for rows using an AND predicate.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 Employee example = new Employee();
@@ -116,7 +133,9 @@ example.setBranchId(2);
 List<Employee> employees = this.employeeDAO.select(example);
 ```
 
-Basic row ordering can also be specified, as in:
+#### Basic Ordering
+
+This method has a second variation that can specify a basic row ordering by adding one or more column ordering parameters, as in:
 
 ```java
 Employee example = new Employee();
@@ -127,9 +146,15 @@ List<Employee> employeesb = this.employeeDAO.select(example,
 );
 ```
 
+If a more advanced row ordering is needed, the next method "Select by Criteria" offers more options.
+
 ### 3. Select by Criteria
 
-This method is available in tables and views. It can be used to search using more complex predicates:
+This method retrieves a list (or streaming cursor) of rows from a table or view, using [LiveSQL Expressions](../livesql/syntax/expressions.md). These are full LiveSQL expressions that can include math operations, date algebra, string manipulation, functions, etc.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
@@ -137,6 +162,8 @@ List<Employee> employees = this.employeeDAO.select(e,
     e.salary.between(70, 100).and(e.lastName.like("%t%"))
 ).execute();
 ```
+
+#### Adding More Options
 
 This form can be enhanced to use complex ordering, offset, limit, and row locking as in:
 
@@ -153,11 +180,32 @@ List<Employee> employees2 = this.employeeDAO.select(e,
   .execute();
 ```
 
+#### Using Cursors
+
+This method can also use a `Cursor<>` to stream rows from the database. Compared with a `List<>` that retrieves the entire set of rows in memory, a cursor will only retrieve rows in small subsets and will buffer them accordingly. You app won't incurr in heavy memory usage even when processing a very high number of rows.
+
+A cursor is enabled by using `.executeCursor()` instead of the simple form `.execute()`. For example:
+
+```java
+EmployeeTable e = this.employeeDAO.newTable();
+Cursor<Employee> employees = this.employeeDAO.select(e,
+    e.salary.between(70, 100).and(e.lastName.like("%t%"))
+).executeCursor();
+for (Employee emp : employees) {
+  // Do something with the employee "emp"
+  // Notice we don't create a List<> or other collection; we just process the rows one by one
+}
+```
+
+Finally, if your query needs more flexible functionality you can use LiveSQL SELECT queries (with or without tuples functionality) to define complex queries. Or... resort to fully typing Nitro queries that offer access to the full SQL language dialect. These options fall outside the scope of CRUD, however.
+
 ### 4. Insert
 
-This method is available in tables and views. It inserts a single row.
+This method inserts a single row in a table or view.
 
-For tables, it automatically retrieves the identity primary key value; sequence-generated primary key values can also be retrieved when configured:
+It's available in all tables and views.
+
+The application prepares the data to insert in a Layout object and then uses the `insert(<layout>)` to insert the row, as shown below:
 
 ```java
 Employee emp = new Employee();
@@ -167,11 +215,42 @@ emp.setSalary(140);
 Employee inserted = this.employeeDAO.insert(emp);
 ```
 
+All columns are used in this form of the INSERT functionality. Columns with null values will be inserted as nulls.
+
+#### Primary Key Auto-Generation
+
+When inserting a row in a table with an auto-generated primary key this method automatically retrieves it value in the resulting model object:
+
+- If the primary key is defined as an IDENTITY key no extra configuration is needed
+- If the primary key is generated using a SEQUENCE then this one needs to be configured in the layer configuration using the `sequence` attribute of the `<column>` for it.
+
+The following table describes which strategies are implemented for primary key auto-generation when inserting in each database:
+
+| Database | Identities | Sequence |
+| -- | -- | -- |
+| Oracle     | Yes | Yes, with configuration |
+| DB2 LUW    | Yes | Yes, with configuration |
+| PostgreSQL | Yes | Yes, with configuration |
+| SQL Server | Yes*1 | No |
+| MySQL      | Yes | No |
+| MariaB     | Yes | No |
+| SAP ASE    | Yes*2 | Yes, with configuration |
+| H2         | Yes | Yes, with configuration |
+| HyperSQL   | Yes | Yes, with configuration |
+| Derby      | Yes | Yes, with configuration |
+
+*1 SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and the insert operation will fail if a PK value is provided
+
+*2 Explicit PK value for an IDENTITY column was not implemented; the insert operation will fail if a PK value is provided on an IDENTITY column
+
+
 ### 5. Insert by Example
 
-This method is available in tables and views. It can be particularly useful in views when we want to intentionally omit a subset of the columns during the insert.
+This method inserts a single row in a table or view, omitting unspecified columns so table level DEFAULT constraints or GENERATE clauses can operate.
 
-For tables, it automatically retrieves the identity primary key value; sequence-generated primary key values can also be retrieved when configured:
+It's available in all tables and views.
+
+The application prepares the data to insert in a Layout object and then uses the `insert(<layout>)` to insert the row, as shown below:
 
 ```java
 Employee emp = new Employee();
@@ -179,9 +258,15 @@ emp.setLastName("Llacolen");
 Employee inserted = this.employeeDAO.insertByExample(emp);
 ```
 
+If an auto-generated primary key is active in the table, it's retrieved in the resulting Model object. When inserting on a view, the auto-generated primary key value is not retrieved.
+
+The omitted columns are not retrieved automatically even if table level constraints populated them; if the app would need to execute an extra SELECT to retrieve them.
+
 ### 6. Update by Primary Key
 
-This method is only available in tables with primary keys:
+This method updates a single row in a table that has a primary key. As such, this method is only available in tables with primary keys.
+
+For example:
 
 ```java
 Employee emp = this.employeeDAO.select(154);
@@ -191,9 +276,17 @@ int count = this.employeeDAO.update(emp);
 
 The count value informs us how many rows were actually updated.
 
+The method works in the same way for tables with composite primary keys. The corresponding columns are used to locate and update the row.
+
+This method cannot be used to update the primary key of a row. However, you can use the update by example functionality described below to do so.
+
 ### 7. Update by Example
 
-This method is available in all tables and views:
+This method updates multiple rows on a table or view, using an example of the values of its columns. All the values specified as non-null are used to search for rows using an AND predicate.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 Employee example = new Employee();
@@ -205,9 +298,15 @@ int count = this.employeeDAO.update(example, values);
 
 The count value informs us how many rows were actually updated.
 
+This method can be used to update the primary key of a table.
+
 ### 8. Update by Criteria
 
-This method is available in tables and views. It can be used to search using more complex predicates:
+This method updates multiple rows on a table or view, using [LiveSQL Expressions](../livesql/syntax/expressions.md). These are full LiveSQL expressions that can include math operations, date algebra, string manipulation, functions, etc.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
@@ -222,7 +321,9 @@ The count value informs us how many rows were actually updated.
 
 ### 9. Delete by Primary Key
 
-This method is only available in tables with primary keys:
+This method deleted a single row in a table that has a primary key. As such, this method is only available in tables with primary keys.
+
+For example:
 
 ```java
 int count = this.employeeDAO.delete(154);
@@ -230,9 +331,15 @@ int count = this.employeeDAO.delete(154);
 
 The count value informs us how many rows were actually deleted.
 
+If the table has a composite primary key, then the method includes multiple parameters, one per primary key column.
+
 ### 10. Delete by Example
 
-This method is available in all tables and views:
+This method deletes multiple rows on a table or view, using an example of the values of its columns. All the values specified as non-null are used to search for rows using an AND predicate.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 Employee example = new Employee();
@@ -244,7 +351,11 @@ The count value informs us how many rows were actually deleted.
 
 ### 11. Delete by Criteria
 
-This method is available in tables and views. It can be used to search using more complex predicates:
+This method deletes multiple rows on a table or view, using [LiveSQL Expressions](../livesql/syntax/expressions.md). These are full LiveSQL expressions that can include math operations, date algebra, string manipulation, functions, etc.
+
+This method is available in all tables with or without primary key and also in all views.
+
+For example:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();

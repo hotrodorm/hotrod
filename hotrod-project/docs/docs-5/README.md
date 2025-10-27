@@ -163,7 +163,7 @@ Last but not least, the [DynamicSQL](./dynamicsql/README.md) component is used b
 
 Explore the following examples to quickly see the functionality in action:
 
-- [Hello CRUD](./crud/hello-crud.md) - Basic CRUD examples
+- [Hello CRUD](./guides/hello-crud.md) - Basic CRUD examples
 - [Hello Nitro](./guides/hello-nitro.md) - The different forms of Nitro queries
 - [Hello LiveSQL](./guides/hello-livesql.md) - The basic LiveSQL queries
 - [Hello Torcs](./guides/hello-torcs.md) - Single out slow queries
