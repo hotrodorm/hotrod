@@ -28,15 +28,15 @@ The generated methods differ between a table and a view:
 
 | Persistence Method | In Tables | In Views | Optimistic Locking |
 | -- | :-- | :-- | :--: |
-| [Select by Primary Key](#1-select-by-primary-key) | *only when the table has a PK*<br/>`select(pkColumns...)` | N/A | &mdash; |
+| [Select by Primary Key](#1-select-by-primary-key) | `select(pkColumns...)`<br/>*only when the table has a PK* | N/A | &mdash; |
 | [Select by Example](#2-select-by-example) | `select(example)` | `select(example)` | &mdash; |
 | [Select by Criteria](#3-select-by-criteria) | `select(t, predicate)` | `select(v, predicate)` | &mdash; |
 | [Insert](#4-insert) | `insert(model)` | `insert(model)` | &mdash; |
 | [Insert By Example](#5-insert-by-example) | `insert(model)` | `insert(model)` | &mdash; |
-| [Update By Primary Key](#6-update-by-primary-key) | *only when the table has a PK:*<br/>`update(model)` | N/A | :heavy_check_mark: |
+| [Update By Primary Key](#6-update-by-primary-key) | `update(model)`<br/>*only when the table has a PK* | N/A | :heavy_check_mark: |
 | [Update by Example](#7-update-by-example) | `update(example, newValues)` | `update(example, newValues)` | &mdash; |
 | [Update by Criteria](#8-update-by-criteria) | `update(newValues, t, predicate)` | `update(newValues, v, predicate)` | &mdash; |
-| [Delete by Primary Key](#9-delete-by-primary-key) | *only when the table has a PK:*<br/>`delete(pkColumns...)` | N/A | :heavy_check_mark: |
+| [Delete by Primary Key](#9-delete-by-primary-key) | `delete(pkColumns...)`<br/>*only when the table has a PK* | N/A | :heavy_check_mark: |
 | [Delete by Example](#10-delete-by-example) | `delete(example)` | `delete(example)` | &mdash; |
 | [Delete by Criteria](#11-delete-by-criteria) | `delete(t, predicate)` | `delete(v, predicate)` | &mdash; |
 
