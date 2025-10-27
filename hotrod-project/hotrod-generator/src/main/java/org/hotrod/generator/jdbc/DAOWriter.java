@@ -277,11 +277,14 @@ public class DAOWriter {
     w.println("  private static final ", Logger.class, " log = ", Logger.class,
         ".getLogger(" + this.getClassName() + ".class.getName());");
     w.println();
-    w.println("  private static final ", LiveSQLLogging.class, " livesql_log = ", LiveSQLLogging.class, ".of(");
-    w.println("      () -> log.isLoggable(", Level.class, ".FINE), msg -> log.fine(msg),");
-    w.println("      () -> log.isLoggable(", Level.class, ".FINER), msg -> log.finer(msg)");
-    w.println("    );");
-    w.println();
+
+    if (!this.isExecutor()) {
+      w.println("  private static final ", LiveSQLLogging.class, " livesql_log = ", LiveSQLLogging.class, ".of(");
+      w.println("      () -> log.isLoggable(", Level.class, ".FINE), msg -> log.fine(msg),");
+      w.println("      () -> log.isLoggable(", Level.class, ".FINER), msg -> log.finer(msg)");
+      w.println("    );");
+      w.println();
+    }
 
     // Spring properties
 

@@ -1,14 +1,10 @@
 # CRUD
 
-CRUD provides a simple, straightforward out-of-the-box persistence layer that be used to start prototyping an app in minutes.
+CRUD provides a simple, straightforward out-of-the-box persistence layer that can be used to start prototyping an app in minutes.
 
-CRUD models schema tables and views as fully typed classes. They can be used in CRUD queries as well as in LiveSQL queries.
-
-Tables and views are modeled as Layout and Model classes and their columns are modeled as properties of these.
+Tables and views are modeled as Layout fully typed and Model classes and their columns are modeled as properties of these. These are used by CRUD, LiveSQL queries, and Nitro SELECTs.
 
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with methods for each one. These include different variations of the traditional SELECT, INSERT, UPDATE, and DELETE statements according to the specifics of each table or view in the database.
-
-Note that the CRUD modeling of tables as Layout classes and Model classes is also used by LiveSQL queries and by Nitro SELECTs.
 
 See the [Hello CRUD](../guides/hello-crud.md) example to see all CRUD methods described in this page in action.
 

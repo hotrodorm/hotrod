@@ -32,6 +32,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -41,8 +42,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -66,6 +67,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(EmployeeDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -233,18 +239,18 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  vip")
       .literaln("FROM employee")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.fullName != null").literal("\"NAME\" = ").parameter("f.fullName").endif()
-        .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
-        .if_("f.vip != null").literal("vip = ").parameter("f.vip", this.converter0).endif()
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.fullName != null").literal("\"NAME\" = ").parameter("e.fullName").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip", this.converter0).endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Employee> select(EmployeeLayout filter, EmployeeOrderBy... orderBies) {
+  public List<Employee> select(EmployeeLayout example, EmployeeOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -260,7 +266,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Employee> select(final EmployeeTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -269,18 +275,20 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO employee (")
-      .literaln("  id,")
-      .literaln("  \"NAME\",")
-      .literaln("  branch_id,")
-      .literaln("  vip")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.fullName", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.branchId", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.vip", Types.INTEGER, this.converter0)
-      .literal(")")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("id")
+      .literal("\"NAME\"")
+      .literal("branch_id")
+      .literal("vip")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.id", Types.INTEGER)
+      .parameterNullable("l.fullName", Types.VARCHAR)
+      .parameterNullable("l.branchId", Types.INTEGER)
+      .parameterNullable("l.vip", Types.INTEGER, this.converter0)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -304,27 +312,29 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO employee (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.fullName != null").literal("\"NAME\",\n").endif()
-      .if_("l.branchId != null").literal("branch_id,\n").endif()
-      .if_("l.vip != null").literal("vip\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.fullName != null").parameter("l.fullName").literal(", ").endif()
-      .if_("l.branchId != null").parameter("l.branchId").literal(", ").endif()
-      .if_("l.vip != null").parameter("l.vip", this.converter0).endif()
-      .literal(")")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.id != null").literal("id").endif()
+      .if_("e.fullName != null").literal("\"NAME\"").endif()
+      .if_("e.branchId != null").literal("branch_id").endif()
+      .if_("e.vip != null").literal("vip").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.id != null").parameter("e.id").endif()
+      .if_("e.fullName != null").parameter("e.fullName").endif()
+      .if_("e.branchId != null").parameter("e.branchId").endif()
+      .if_("e.vip != null").parameter("e.vip", this.converter0).endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Employee insertByExample(EmployeeLayout layout) {
+  public Employee insertByExample(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Employee model = this.clone(layout);
+    Employee model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -401,14 +411,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(EmployeeLayout values, EmployeeTable tableOrView,
+  public UpdateWherePhase update(EmployeeLayout values, EmployeeTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getFullName() != null) setters.add(new Setter(tableOrView.fullName, sql.val(values.getFullName())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
     if (values.getVip() != null) setters.add(new Setter(tableOrView.vip, sql.val(values.getVip())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -470,7 +480,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final EmployeeTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

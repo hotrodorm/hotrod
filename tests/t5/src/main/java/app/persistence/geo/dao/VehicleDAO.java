@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -63,6 +64,11 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(VehicleDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -196,16 +202,16 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
       .literaln("  name")
       .literaln("FROM vehicle")
       .where("AND")
-        .if_("f.vehicleCode != null").literal("vehicle_code = ").parameter("f.vehicleCode").endif()
-        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
+        .if_("e.vehicleCode != null").literal("vehicle_code = ").parameter("e.vehicleCode").endif()
+        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Vehicle> select(VehicleLayout filter, VehicleOrderBy... orderBies) {
+  public List<Vehicle> select(VehicleLayout example, VehicleOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Vehicle> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -221,7 +227,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Vehicle> select(final VehicleTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Vehicle>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Vehicle>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -230,14 +236,16 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO vehicle (")
-      .if_("l.vehicleCode != null").literal("vehicle_code,\n").endif()
-      .literaln("  name")
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.vehicleCode != null").parameter("l.vehicleCode").literal(", ").endif()
-      .literal("  ").parameterNullable("l.name", Types.VARCHAR)
-      .literal(")")
+      .literal("INSERT INTO vehicle")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("l.vehicleCode != null").literal("vehicle_code").endif()
+      .literal("name")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("l.vehicleCode != null").parameter("l.vehicleCode").endif()
+      .parameterNullable("l.name", Types.VARCHAR)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
@@ -262,23 +270,25 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO vehicle (")
-      .if_("l.vehicleCode != null").literal("vehicle_code,\n").endif()
-      .if_("l.name != null").literal("name\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.vehicleCode != null").parameter("l.vehicleCode").literal(", ").endif()
-      .if_("l.name != null").parameter("l.name").endif()
-      .literal(")")
+      .literal("INSERT INTO vehicle")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.vehicleCode != null").literal("vehicle_code").endif()
+      .if_("e.name != null").literal("name").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.vehicleCode != null").parameter("e.vehicleCode").endif()
+      .if_("e.name != null").parameter("e.name").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Vehicle insertByExample(VehicleLayout layout) {
+  public Vehicle insertByExample(VehicleLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Vehicle model = this.clone(layout);
+    Vehicle model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setVehicleCode((pk == null) ? null : Integer.valueOf(pk.intValue()));
@@ -350,12 +360,12 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(VehicleLayout values, VehicleTable tableOrView,
+  public UpdateWherePhase update(VehicleLayout values, VehicleTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getVehicleCode() != null) setters.add(new Setter(tableOrView.vehicleCode, sql.val(values.getVehicleCode())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -415,7 +425,7 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final VehicleTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

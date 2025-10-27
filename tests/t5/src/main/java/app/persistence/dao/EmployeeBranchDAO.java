@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -63,6 +64,11 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(EmployeeBranchDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -202,19 +208,19 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
       .literaln("  region")
       .literaln("FROM employee_branch")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
-        .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
-        .if_("f.vip != null").literal("vip = ").parameter("f.vip").endif()
-        .if_("f.region != null").literal("region = ").parameter("f.region").endif()
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
+        .if_("e.vip != null").literal("vip = ").parameter("e.vip").endif()
+        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<EmployeeBranch> select(EmployeeBranchLayout filter, EmployeeBranchOrderBy... orderBies) {
+  public List<EmployeeBranch> select(EmployeeBranchLayout example, EmployeeBranchOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<EmployeeBranch> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -230,7 +236,7 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<EmployeeBranch> select(final EmployeeBranchView from, final Predicate predicate) {
-    return new CriteriaWherePhase<EmployeeBranch>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<EmployeeBranch>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -239,20 +245,22 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO employee_branch (")
-      .literaln("  id,")
-      .literaln("  name,")
-      .literaln("  branch_id,")
-      .literaln("  vip,")
-      .literaln("  region")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.name", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.branchId", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.vip", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.region", Types.VARCHAR)
-      .literal(")")
+      .literal("INSERT INTO employee_branch")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("id")
+      .literal("name")
+      .literal("branch_id")
+      .literal("vip")
+      .literal("region")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.id", Types.INTEGER)
+      .parameterNullable("l.name", Types.VARCHAR)
+      .parameterNullable("l.branchId", Types.INTEGER)
+      .parameterNullable("l.vip", Types.INTEGER)
+      .parameterNullable("l.region", Types.VARCHAR)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -276,29 +284,31 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO employee_branch (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.name != null").literal("name,\n").endif()
-      .if_("l.branchId != null").literal("branch_id,\n").endif()
-      .if_("l.vip != null").literal("vip,\n").endif()
-      .if_("l.region != null").literal("region\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.name != null").parameter("l.name").literal(", ").endif()
-      .if_("l.branchId != null").parameter("l.branchId").literal(", ").endif()
-      .if_("l.vip != null").parameter("l.vip").literal(", ").endif()
-      .if_("l.region != null").parameter("l.region").endif()
-      .literal(")")
+      .literal("INSERT INTO employee_branch")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.id != null").literal("id").endif()
+      .if_("e.name != null").literal("name").endif()
+      .if_("e.branchId != null").literal("branch_id").endif()
+      .if_("e.vip != null").literal("vip").endif()
+      .if_("e.region != null").literal("region").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.id != null").parameter("e.id").endif()
+      .if_("e.name != null").parameter("e.name").endif()
+      .if_("e.branchId != null").parameter("e.branchId").endif()
+      .if_("e.vip != null").parameter("e.vip").endif()
+      .if_("e.region != null").parameter("e.region").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public EmployeeBranch insertByExample(EmployeeBranchLayout layout) {
+  public EmployeeBranch insertByExample(EmployeeBranchLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    EmployeeBranch model = this.clone(layout);
+    EmployeeBranch model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -349,7 +359,7 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(EmployeeBranchLayout values, EmployeeBranchView tableOrView,
+  public UpdateWherePhase update(EmployeeBranchLayout values, EmployeeBranchView tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -357,7 +367,7 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
     if (values.getVip() != null) setters.add(new Setter(tableOrView.vip, sql.val(values.getVip())));
     if (values.getRegion() != null) setters.add(new Setter(tableOrView.region, sql.val(values.getRegion())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
@@ -395,7 +405,7 @@ public class EmployeeBranchDAO implements Serializable, ApplicationContextAware 
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final EmployeeBranchView from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

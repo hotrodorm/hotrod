@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -63,6 +64,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(ProductDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -210,17 +216,17 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       .literaln("  shipping")
       .literaln("FROM product")
       .where("AND")
-        .if_("f.pidProduct != null").literal("pid_product = ").parameter("f.pidProduct").endif()
-        .if_("f.type != null").literal("type = ").parameter("f.type").endif()
-        .if_("f.shipping != null").literal("shipping = ").parameter("f.shipping").endif()
+        .if_("e.pidProduct != null").literal("pid_product = ").parameter("e.pidProduct").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type").endif()
+        .if_("e.shipping != null").literal("shipping = ").parameter("e.shipping").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Product> select(ProductLayout filter, ProductOrderBy... orderBies) {
+  public List<Product> select(ProductLayout example, ProductOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Product> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -236,7 +242,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Product> select(final ProductTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Product>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Product>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -245,16 +251,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO product (")
-      .literaln("  pid_product,")
-      .literaln("  type,")
-      .literaln("  shipping")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  NEXT VALUE FOR seq_product").literaln(",")
-      .literal("  ").parameterNullable("l.type", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.shipping", Types.INTEGER)
-      .literal(")")
+      .literal("INSERT INTO product")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("pid_product")
+      .literal("type")
+      .literal("shipping")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .literal("NEXT VALUE FOR seq_product")
+      .parameterNullable("l.type", Types.VARCHAR)
+      .parameterNullable("l.shipping", Types.INTEGER)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
@@ -279,25 +287,27 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO product (")
-      .if_("l.pidProduct != null").literal("pid_product,\n").endif()
-      .if_("l.type != null").literal("type,\n").endif()
-      .if_("l.shipping != null").literal("shipping\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.pidProduct != null").parameter("l.pidProduct").literal(", ").endif()
-      .if_("l.type != null").parameter("l.type").literal(", ").endif()
-      .if_("l.shipping != null").parameter("l.shipping").endif()
-      .literal(")")
+      .literal("INSERT INTO product")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.pidProduct != null").literal("pid_product").endif()
+      .if_("e.type != null").literal("type").endif()
+      .if_("e.shipping != null").literal("shipping").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.pidProduct != null").parameter("e.pidProduct").endif()
+      .if_("e.type != null").parameter("e.type").endif()
+      .if_("e.shipping != null").parameter("e.shipping").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
   }
 
-  public Product insertByExample(ProductLayout layout) {
+  public Product insertByExample(ProductLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Product model = this.clone(layout);
+    Product model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setPidProduct(pk);
@@ -372,13 +382,13 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(ProductLayout values, ProductTable tableOrView,
+  public UpdateWherePhase update(ProductLayout values, ProductTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getPidProduct() != null) setters.add(new Setter(tableOrView.pidProduct, sql.val(values.getPidProduct())));
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
     if (values.getShipping() != null) setters.add(new Setter(tableOrView.shipping, sql.val(values.getShipping())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -439,7 +449,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final ProductTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

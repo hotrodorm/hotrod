@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -64,6 +65,11 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(CoinDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -202,16 +208,16 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
       .literaln("  name")
       .literaln("FROM coin")
       .where("AND")
-        .if_("f.type != null").literal("type = ").parameter("f.type", this.converter0).endif()
-        .if_("f.name != null").literal("name = ").parameter("f.name").endif()
+        .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
+        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Coin> select(CoinLayout filter, CoinOrderBy... orderBies) {
+  public List<Coin> select(CoinLayout example, CoinOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Coin> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -227,7 +233,7 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Coin> select(final CoinTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Coin>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Coin>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -236,14 +242,16 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO coin (")
-      .literaln("  type,")
-      .literaln("  name")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.type", Types.CHAR, this.converter0).literaln(",")
-      .literal("  ").parameterNullable("l.name", Types.VARCHAR)
-      .literal(")")
+      .literal("INSERT INTO coin")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("type")
+      .literal("name")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.type", Types.CHAR, this.converter0)
+      .parameterNullable("l.name", Types.VARCHAR)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -267,23 +275,25 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO coin (")
-      .if_("l.type != null").literal("type,\n").endif()
-      .if_("l.name != null").literal("name\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.type != null").parameter("l.type", this.converter0).literal(", ").endif()
-      .if_("l.name != null").parameter("l.name").endif()
-      .literal(")")
+      .literal("INSERT INTO coin")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.type != null").literal("type").endif()
+      .if_("e.name != null").literal("name").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.type != null").parameter("e.type", this.converter0).endif()
+      .if_("e.name != null").parameter("e.name").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Coin insertByExample(CoinLayout layout) {
+  public Coin insertByExample(CoinLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Coin model = this.clone(layout);
+    Coin model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -354,12 +364,12 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(CoinLayout values, CoinTable tableOrView,
+  public UpdateWherePhase update(CoinLayout values, CoinTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -419,7 +429,7 @@ public class CoinDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final CoinTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

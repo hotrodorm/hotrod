@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -63,6 +64,11 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(LandDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -213,17 +219,17 @@ public class LandDAO implements Serializable, ApplicationContextAware {
       .literaln("  price")
       .literaln("FROM land")
       .where("AND")
-        .if_("f.regionCode != null").literal("region_code = ").parameter("f.regionCode").endif()
-        .if_("f.localCode != null").literal("local_code = ").parameter("f.localCode").endif()
-        .if_("f.price != null").literal("price = ").parameter("f.price").endif()
+        .if_("e.regionCode != null").literal("region_code = ").parameter("e.regionCode").endif()
+        .if_("e.localCode != null").literal("local_code = ").parameter("e.localCode").endif()
+        .if_("e.price != null").literal("price = ").parameter("e.price").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Land> select(LandLayout filter, LandOrderBy... orderBies) {
+  public List<Land> select(LandLayout example, LandOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Land> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -239,7 +245,7 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Land> select(final LandTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Land>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Land>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -248,16 +254,18 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO land (")
-      .literaln("  region_code,")
-      .literaln("  local_code,")
-      .literaln("  price")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.regionCode", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.localCode", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.price", Types.INTEGER)
-      .literal(")")
+      .literal("INSERT INTO land")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("region_code")
+      .literal("local_code")
+      .literal("price")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.regionCode", Types.INTEGER)
+      .parameterNullable("l.localCode", Types.VARCHAR)
+      .parameterNullable("l.price", Types.INTEGER)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -281,25 +289,27 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO land (")
-      .if_("l.regionCode != null").literal("region_code,\n").endif()
-      .if_("l.localCode != null").literal("local_code,\n").endif()
-      .if_("l.price != null").literal("price\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.regionCode != null").parameter("l.regionCode").literal(", ").endif()
-      .if_("l.localCode != null").parameter("l.localCode").literal(", ").endif()
-      .if_("l.price != null").parameter("l.price").endif()
-      .literal(")")
+      .literal("INSERT INTO land")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.regionCode != null").literal("region_code").endif()
+      .if_("e.localCode != null").literal("local_code").endif()
+      .if_("e.price != null").literal("price").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.regionCode != null").parameter("e.regionCode").endif()
+      .if_("e.localCode != null").parameter("e.localCode").endif()
+      .if_("e.price != null").parameter("e.price").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Land insertByExample(LandLayout layout) {
+  public Land insertByExample(LandLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Land model = this.clone(layout);
+    Land model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -375,13 +385,13 @@ public class LandDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(LandLayout values, LandTable tableOrView,
+  public UpdateWherePhase update(LandLayout values, LandTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getRegionCode() != null) setters.add(new Setter(tableOrView.regionCode, sql.val(values.getRegionCode())));
     if (values.getLocalCode() != null) setters.add(new Setter(tableOrView.localCode, sql.val(values.getLocalCode())));
     if (values.getPrice() != null) setters.add(new Setter(tableOrView.price, sql.val(values.getPrice())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -445,7 +455,7 @@ public class LandDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final LandTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
