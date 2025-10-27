@@ -20,7 +20,7 @@ specific SQL dialect implemented in the database and/or version of it.
 The following example previews a `SELECT` statement before executing it:
 
 ```java
-DepositTable d = DepositDAO.newTable("d");
+DepositTable d = this.depositDAO.newTable("d");
 
 Select<Row> query = this.sql
     .select(d.balance)
@@ -56,7 +56,7 @@ different query assembler that can be used to preview the query:
 | Entity SELECT | DAOs using the `.select(<t>, <predicate>)` method | EntitySelect&lt;EntityVO> q = dao.select()... |
 | DML Query | LiveSQL that executes UPDATE, DELETE, and INSERT queries | DMLQuery q = sql.update()...<br/>DMLQuery q = sql.delete()...<br/>DMLQuery q = sql.insert()... |
 
-All of these assembler objects (Select&lt;Row>, EntitySelect&lt;EntityVO>, and DMLQuery) offer the `.getPreview()` method that returns the actual SQL query that will be executed in the database.
+All of these assembler objects (Select&lt;Row>, EntitySelect&lt;Entity>, and DMLQuery) offer the `.getPreview()` method that returns the actual SQL query that will be executed in the database.
 
 The preview includes parameterized values (using `?`) with their corresponding values, as well
 as literal values directly included in the query.
