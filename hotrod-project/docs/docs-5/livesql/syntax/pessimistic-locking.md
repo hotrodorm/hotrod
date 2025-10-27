@@ -101,7 +101,7 @@ The following table compares the locking modes:
 | ---------- | ---------- | --------- |
 | Use when | you want the data to stay the same for the duration of this operation and you expect **to make changes** to it | you want the data to stay the same for the duration of this operation and you **won't make changes** to it |
 | Locks last until | the end of the transaction | the end of the transaction |
-| Affects queries in other sessions | UPDATE, DELETE, and SELECT | UPDATE, DELETE |
+| Affects queries in other sessions | UPDATE, DELETE, and SELECT | UPDATE, DELETE, and SELECT |
 | Plain queries with no locking in other sessions | will run normally | will run normally |
 | Queries in other sessions trying to use FOR SHARE | will wait until this transaction completes, and then will get the locks | will succeed immediately and will also obtain similar locks |
 | Queries in other sessions trying to use FOR UPDATE | will wait until this transaction completes, and then will get the locks | will wait until this transaction completes, and then will get the locks |
