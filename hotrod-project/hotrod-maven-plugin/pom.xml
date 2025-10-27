@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>5.1.5-SNAPSHOT</version>
+    <version>5.1.5</version>
   </parent>
 
   <properties>
@@ -24,7 +24,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-abstract-plugin</artifactId>
-      <version>5.1.5-SNAPSHOT</version>
+      <version>5.1.5</version>
     </dependency>
 
     <!-- Maven 3 -->
