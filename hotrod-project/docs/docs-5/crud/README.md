@@ -243,22 +243,24 @@ As shown above the IDENTITY strategies have two forms:
 
 The following table describes which strategies are implemented for primary key auto-generation when inserting in each database:
 
-| Database | Identities | Sequence |
+| Database | Identities | Sequences |
 | -- | -- | -- |
 | Oracle     | Yes | Yes, with configuration |
 | DB2 LUW    | Yes | Yes, with configuration |
-| PostgreSQL | Yes, including SERIAL types | Yes, with configuration |
-| SQL Server | Yes*1 | No |
+| PostgreSQL | Yes, including SERIAL types*1 | Yes, with configuration |
+| SQL Server | Yes*2 | No |
 | MySQL      | Yes, including AUTO_INCREMENT clauses | No |
 | MariaB     | Yes, including AUTO_INCREMENT clauses  | No |
-| SAP ASE    | Yes*2 | Yes, with configuration |
+| SAP ASE    | Yes*3 | Yes, with configuration |
 | H2         | Yes | Yes, with configuration |
 | HyperSQL   | Yes | Yes, with configuration |
 | Derby      | Yes | Yes, with configuration |
 
-*1 SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and the insert operation will fail if a PK value is provided
+*1 PostgreSQL implements identities for any column, not necessarily primary keys only. Identity value retrieval is only implemented for the primary key identity column, if available; other identity columns are not retrieved
 
-*2 Explicit PK value for an IDENTITY column was not implemented; the insert operation will fail if a PK value is provided on an IDENTITY column
+*2 SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and the insert operation will fail if a PK value is provided
+
+*3 Explicit PK value for an IDENTITY column was not implemented; the insert operation will fail if a PK value is provided on an IDENTITY column
 
 #### Inserting through a View
 

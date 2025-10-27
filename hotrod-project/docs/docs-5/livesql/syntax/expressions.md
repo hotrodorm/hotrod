@@ -145,6 +145,7 @@ Depending on the scalar, column, or expression the repertoire of available funct
 | a BETWEEN b AND c | BETWEEN | `<a>.between(<b>, <c>)` |
 | a NOT BETWEEN b AND c | NOT BETWEEN | `<a>.notBetween(<b>, <c>)` |
 | COALESCE(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
+| NULLIF(a, b) | NULLIF() | `<a>.nullIf(<b>)` |
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
 | a IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
 | a NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
