@@ -49,7 +49,7 @@ public class App {
   private YNBooleanConverter ynBooleanConverter;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean

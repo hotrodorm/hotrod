@@ -31,6 +31,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -39,8 +40,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -63,6 +64,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(EmployeeDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -223,18 +229,18 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       .literaln("  branch_id")
       .literaln("FROM employee")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.firstName != null").literal("first_name = ").parameter("f.firstName").endif()
-        .if_("f.lastName != null").literal("last_name = ").parameter("f.lastName").endif()
-        .if_("f.branchId != null").literal("branch_id = ").parameter("f.branchId").endif()
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.firstName != null").literal("first_name = ").parameter("e.firstName").endif()
+        .if_("e.lastName != null").literal("last_name = ").parameter("e.lastName").endif()
+        .if_("e.branchId != null").literal("branch_id = ").parameter("e.branchId").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Employee> select(EmployeeLayout filter, EmployeeOrderBy... orderBies) {
+  public List<Employee> select(EmployeeLayout example, EmployeeOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Employee> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -250,7 +256,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Employee> select(final EmployeeTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -259,18 +265,20 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO employee (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .literaln("  first_name,")
-      .literaln("  last_name,")
-      .literaln("  branch_id")
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .literal("  ").parameterNullable("l.firstName", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.lastName", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.branchId", Types.INTEGER)
-      .literal(")")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("l.id != null").literal("id").endif()
+      .literal("first_name")
+      .literal("last_name")
+      .literal("branch_id")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("l.id != null").parameter("l.id").endif()
+      .parameterNullable("l.firstName", Types.VARCHAR)
+      .parameterNullable("l.lastName", Types.VARCHAR)
+      .parameterNullable("l.branchId", Types.INTEGER)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
@@ -295,27 +303,29 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO employee (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.firstName != null").literal("first_name,\n").endif()
-      .if_("l.lastName != null").literal("last_name,\n").endif()
-      .if_("l.branchId != null").literal("branch_id\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.firstName != null").parameter("l.firstName").literal(", ").endif()
-      .if_("l.lastName != null").parameter("l.lastName").literal(", ").endif()
-      .if_("l.branchId != null").parameter("l.branchId").endif()
-      .literal(")")
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.id != null").literal("id").endif()
+      .if_("e.firstName != null").literal("first_name").endif()
+      .if_("e.lastName != null").literal("last_name").endif()
+      .if_("e.branchId != null").literal("branch_id").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.id != null").parameter("e.id").endif()
+      .if_("e.firstName != null").parameter("e.firstName").endif()
+      .if_("e.lastName != null").parameter("e.lastName").endif()
+      .if_("e.branchId != null").parameter("e.branchId").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public Employee insertByExample(EmployeeLayout layout) {
+  public Employee insertByExample(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Employee model = this.clone(layout);
+    Employee model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Integer.valueOf(pk.intValue()));
@@ -393,14 +403,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(EmployeeLayout values, EmployeeTable tableOrView,
+  public UpdateWherePhase update(EmployeeLayout values, EmployeeTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getFirstName() != null) setters.add(new Setter(tableOrView.firstName, sql.val(values.getFirstName())));
     if (values.getLastName() != null) setters.add(new Setter(tableOrView.lastName, sql.val(values.getLastName())));
     if (values.getBranchId() != null) setters.add(new Setter(tableOrView.branchId, sql.val(values.getBranchId())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -462,7 +472,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final EmployeeTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY

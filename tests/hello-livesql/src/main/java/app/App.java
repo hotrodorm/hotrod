@@ -27,7 +27,7 @@ public class App {
   private LiveSQL sql;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean

@@ -32,6 +32,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -41,8 +42,8 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -68,6 +69,11 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(InvoiceDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -219,19 +225,19 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       .literaln("  category")
       .literaln("FROM invoice")
       .where("AND")
-        .if_("f.amount != null").literal("amount = ").parameter("f.amount").endif()
-        .if_("f.status != null").literal("status = ").parameter("f.status", this.converter0).endif()
-        .if_("f.created != null").literal("created = ").parameter("f.created").endif()
-        .if_("f.active != null").literal("active = ").parameter("f.active", this.converter1).endif()
-        .if_("f.category != null").literal("category = ").parameter("f.category").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
+        .if_("e.status != null").literal("status = ").parameter("e.status", this.converter0).endif()
+        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter1).endif()
+        .if_("e.category != null").literal("category = ").parameter("e.category").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Invoice> select(InvoiceLayout filter, InvoiceOrderBy... orderBies) {
+  public List<Invoice> select(InvoiceLayout example, InvoiceOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Invoice> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -247,7 +253,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Invoice> select(final InvoiceTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Invoice>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Invoice>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -256,20 +262,22 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO invoice (")
-      .literaln("  amount,")
-      .literaln("  status,")
-      .literaln("  created,")
-      .literaln("  active,")
-      .literaln("  category")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.amount", Types.DECIMAL).literaln(",")
-      .literal("  ").parameterNullable("l.status", Types.INTEGER, this.converter0).literaln(",")
-      .literal("  ").parameterNullable("l.created", Types.TIMESTAMP).literaln(",")
-      .literal("  ").parameterNullable("l.active", Types.CHAR, this.converter1).literaln(",")
-      .literal("  ").parameterNullable("l.category", Types.DECIMAL)
-      .literal(")")
+      .literal("INSERT INTO invoice")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("amount")
+      .literal("status")
+      .literal("created")
+      .literal("active")
+      .literal("category")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.amount", Types.DECIMAL)
+      .parameterNullable("l.status", Types.INTEGER, this.converter0)
+      .parameterNullable("l.created", Types.TIMESTAMP)
+      .parameterNullable("l.active", Types.CHAR, this.converter1)
+      .parameterNullable("l.category", Types.DECIMAL)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -293,29 +301,31 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO invoice (")
-      .if_("l.amount != null").literal("amount,\n").endif()
-      .if_("l.status != null").literal("status,\n").endif()
-      .if_("l.created != null").literal("created,\n").endif()
-      .if_("l.active != null").literal("active,\n").endif()
-      .if_("l.category != null").literal("category\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.amount != null").parameter("l.amount").literal(", ").endif()
-      .if_("l.status != null").parameter("l.status", this.converter0).literal(", ").endif()
-      .if_("l.created != null").parameter("l.created").literal(", ").endif()
-      .if_("l.active != null").parameter("l.active", this.converter1).literal(", ").endif()
-      .if_("l.category != null").parameter("l.category").endif()
-      .literal(")")
+      .literal("INSERT INTO invoice")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.amount != null").literal("amount").endif()
+      .if_("e.status != null").literal("status").endif()
+      .if_("e.created != null").literal("created").endif()
+      .if_("e.active != null").literal("active").endif()
+      .if_("e.category != null").literal("category").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.amount != null").parameter("e.amount").endif()
+      .if_("e.status != null").parameter("e.status", this.converter0).endif()
+      .if_("e.created != null").parameter("e.created").endif()
+      .if_("e.active != null").parameter("e.active", this.converter1).endif()
+      .if_("e.category != null").parameter("e.category").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Invoice insertByExample(InvoiceLayout layout) {
+  public Invoice insertByExample(InvoiceLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Invoice model = this.clone(layout);
+    Invoice model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -366,7 +376,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(InvoiceLayout values, InvoiceTable tableOrView,
+  public UpdateWherePhase update(InvoiceLayout values, InvoiceTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getAmount() != null) setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
@@ -374,7 +384,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
     if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
     if (values.getCategory() != null) setters.add(new Setter(tableOrView.category, sql.val(values.getCategory())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
@@ -412,7 +422,7 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final InvoiceTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
