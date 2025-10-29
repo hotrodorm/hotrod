@@ -13,6 +13,7 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.TypesUtil;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
@@ -26,7 +27,11 @@ public class ParameterTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
+
+  @Deprecated
   private String javaType = null;
+  private String type = null;
+
   private String jdbcTypeName = null;
   private String sampleSQLValue = null;
 
@@ -52,6 +57,11 @@ public class ParameterTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "java-type")
   public void setJavaType(final String javaType) {
     this.javaType = javaType;
+  }
+
+  @XmlAttribute(name = "type")
+  public void setType(final String type) {
+    this.type = type;
   }
 
   @XmlAttribute(name = "jdbc-type")
@@ -96,30 +106,53 @@ public class ParameterTag extends AbstractConfigurationTag {
 
     if (!this.internal) {
 
-      // java-type
+      // type and java-type
 
-      if (this.javaType == null) {
-        throw new InvalidConfigurationFileException(this,
-            "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
+      if (this.type != null) {
+
+        if (this.javaType != null) {
+          throw new InvalidConfigurationFileException(this,
+              "Either the attribute 'type' or the attribute 'java-type' can be specified at the same time. Prefer the former.");
+        }
+        if (SUtil.isEmpty(this.type)) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid <parameter> tag -- the 'type' attribute is empty. It must specify the class name for the parameter.");
+        }
+        if (!this.type.matches(Patterns.VALID_JAVA_TYPE)) {
+          throw new InvalidConfigurationFileException(this, "Invalid <parameter> tag -- "
+              + "the 'type' attribute must be a valid class; it must start with a letter and continue with letters, digits, and/or underscores, but found '"
+              + this.type + "'.");
+        }
+
+      } else {
+
+        if (this.javaType == null) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid <parameter> tag -- the attribute 'type' must be specified.");
+        }
+        if (SUtil.isEmpty(this.javaType)) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid <parameter> tag -- the 'java-type' attribute is empty. It must specify the class name for the parameter.");
+        }
+        if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
+          throw new InvalidConfigurationFileException(this, "Invalid <parameter> tag -- "
+              + "the 'java-type' attribute must be a valid class; it must start with a letter and continue with letters, digits, and/or underscores, but found '"
+              + this.javaType + "'.");
+        }
+        this.type = this.javaType;
+        this.javaType = null;
+
       }
-      if (SUtil.isEmpty(this.javaType)) {
-        throw new InvalidConfigurationFileException(this,
-            "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
-      }
-      if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
-        throw new InvalidConfigurationFileException(this, "invalid <parameter> tag -- "
-            + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
-            + this.javaType + "'.");
-      }
+      this.type = TypesUtil.expand(this.type);
 
       // jdbc-type
 
       if (this.jdbcTypeName == null) {
-        this.jdbcType = getDefaultJDBCType(this.javaType);
+        this.jdbcType = getDefaultJDBCType(this.type);
         log.fine("this.jdbcType=" + this.jdbcType);
         if (this.jdbcType == null) {
           throw new InvalidConfigurationFileException(this,
-              "Could not guess the JDBC type for the parameter based on its java type '" + this.javaType
+              "Could not guess the JDBC type for the parameter based on its java type '" + this.type
                   + "'. Please include the 'jdbc-type' attribute to specify it; "
                   + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
                   + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
@@ -159,8 +192,8 @@ public class ParameterTag extends AbstractConfigurationTag {
     return name;
   }
 
-  public String getJavaType() {
-    return javaType;
+  public String getType() {
+    return type;
   }
 
   public JDBCType getJDBCType() {
@@ -181,7 +214,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   @Override
   public String toString() {
-    return "ParameterTag [name=" + name + ", javaType=" + javaType + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
+    return "ParameterTag [name=" + name + ", type=" + type + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
         + ", jdbcType=" + jdbcType + "]";
   }
 

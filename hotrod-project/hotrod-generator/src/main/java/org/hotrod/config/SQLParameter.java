@@ -99,7 +99,7 @@ public class SQLParameter implements SQLSegment {
   }
 
   public String getJavaType() {
-    return this.definition.getJavaType();
+    return this.definition.getType();
   }
 
   public String getJdbcType() {

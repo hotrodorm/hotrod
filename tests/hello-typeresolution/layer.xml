@@ -1,33 +1,34 @@
 <hotrod>
 
   <type-solver>
-    <when test="name == 'CREATED'" java-type="java.time.LocalDateTime" />
+    <when test="name == 'CREATED'" type="java.time.LocalDateTime" />
     <when test="name == 'ACTIVE'" converter="YNConverter" />
   </type-solver>
 
   <runtime-type-solver>
-    <when test="columnName == 'dom'" java-type="Long" />
+    <when test="columnName == 'dom'" type="Long" />
     <when test="columnName.endsWith('Branch')" converter="YNConverter" />
   </runtime-type-solver>
 
-  <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"
+  <converter name="YNConverter" raw-type="String" type="Boolean"
     class="app.YNBooleanConverter" />
-  <converter name="InvoiceStatusConverter" java-raw-type="java.lang.Integer"
-    java-type="app.InvoiceStatus" class="app.InvoiceStatusConverter" />
+  <converter name="InvoiceStatusConverter" raw-type="Integer"
+    type="app.InvoiceStatus" class="app.InvoiceStatusConverter" />
 
   <table name="invoice">
-    <column name="amount" java-type="Double" />
+    <column name="amount" type="Double" />
     <column name="status" converter="InvoiceStatusConverter" />
   </table>
 
   <dao name="PaymentDAO">
 
     <select method="getBigInvoices" vo="BigInvoice">
-      <column name="amount" java-type="Double" />
+      <parameter name="minAmount" type="Integer" />
+      <column name="amount" type="Double" />
       <column name="status" converter="InvoiceStatusConverter" />
       SELECT *
       FROM invoice
-      WHERE amount > 200
+      WHERE amount > #{minAmount}
     </select>
 
   </dao>

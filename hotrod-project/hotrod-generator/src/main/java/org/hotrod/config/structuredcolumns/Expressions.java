@@ -125,7 +125,7 @@ public class Expressions implements ColumnsProvider {
         if (tag.getConverterTag() != null) {
           ct.setConverterTag(tag.getConverterTag());
         }
-        log.fine("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
+        log.fine("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getType());
         try {
           cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {

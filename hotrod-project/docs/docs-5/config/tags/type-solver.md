@@ -9,7 +9,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 
 ```xml
 <type-solver>
-    <when test="scale > 0" java-type="java.math.BigDecimal" />
+    <when test="scale > 0" type="java.math.BigDecimal" />
     <when test="name.matches('.*_IMAGE') and size > 10000" converter="ByteArrayConverter" />
     <when ... />
 </type-solver>
@@ -57,7 +57,7 @@ If a rule is matched the resulting type specified in the rule is applied to the 
 
 A `<when>` tag has three attributes that are used to specify the resulting type:
 
- - `java-type`
+ - `type`
  - `converter`
  - `force-jdbc-type-on-write`
 

@@ -72,7 +72,7 @@ public class App {
   }
 
   private void demoTypeSolverNitroSelect() {
-    List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
+    List<BigInvoice> bi = this.paymentDAO.getBigInvoices(200);
     System.out.println("== Returns ==");
     for (BigInvoice i : bi) {
       System.out.println("2. Big Invoice: " + i);

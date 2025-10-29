@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -68,7 +69,10 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
     this.select0 = dyn
       .literal("\n      ")
       .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM invoice\n      WHERE amount > 200\n    ")
+      .literal("\n      ")
+      .literal("\n      SELECT *\n      FROM invoice\n      WHERE amount > ")
+      .parameterNullable("minAmount", Types.INTEGER)
+      .literal("\n    ")
       .endSelectQuery();
   }
 
@@ -110,8 +114,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present2) {
-        Integer raw2 = rs.getInt("STATUS"); // STATUS
-        if (rs.wasNull()) raw2 = null;
+        Integer raw2 = rs.getObject("STATUS", Integer.class); // STATUS
         InvoiceStatus col2 = converter0.decode(raw2, conn);
         row.setStatus(col2);
       }
@@ -122,7 +125,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       }
 
       if (this.present4) {
-        String raw4 = rs.getString("ACTIVE"); // ACTIVE
+        String raw4 = rs.getObject("ACTIVE", String.class); // ACTIVE
         Boolean col4 = converter1.decode(raw4, conn);
         row.setActive(col4);
       }
@@ -138,8 +141,9 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
 
   };
 
-  public List<BigInvoice> getBigInvoices() {
+  public List<BigInvoice> getBigInvoices(Integer minAmount) {
     Parameters params = this.dyn.newParameters();
+    params.add("minAmount", minAmount);
     RowReader0 rr = new RowReader0();
     PreparedSelectQuery<BigInvoice> preparedQuery = this.select0.prepare(params, rr);
     logQuery(preparedQuery);

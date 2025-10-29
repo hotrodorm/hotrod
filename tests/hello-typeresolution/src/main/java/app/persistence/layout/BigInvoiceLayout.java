@@ -51,7 +51,7 @@ public class BigInvoiceLayout implements Serializable {
     return this.active;
   }
 
-  public final void setActive(final java.lang.Boolean active) {
+  public final void setActive(final Boolean active) {
     this.active = active;
   }
 

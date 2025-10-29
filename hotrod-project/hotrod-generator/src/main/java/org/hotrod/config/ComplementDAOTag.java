@@ -42,6 +42,7 @@ public class ComplementDAOTag extends DynamicSQLPart {
   })
   protected List<Object> content = new ArrayList<Object>();
 
+  @SuppressWarnings("unused")
   private List<DynamicSQLPart> parts;
 
   // Constructor

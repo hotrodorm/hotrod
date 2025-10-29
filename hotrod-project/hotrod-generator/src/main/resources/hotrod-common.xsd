@@ -60,7 +60,8 @@
 
   <xsd:complexType name="parameter-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
-    <xsd:attribute name="java-type" type="xsd:string" use="required" />
+    <xsd:attribute name="type" type="xsd:string" />
+    <xsd:attribute name="java-type" type="xsd:string" />
     <xsd:attribute name="jdbc-type" type="xsd:string" />
     <xsd:attribute name="sample-sql-value" type="xsd:string" />
   </xsd:complexType>
@@ -97,6 +98,7 @@
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-name" type="xsd:string" />
     <xsd:attribute name="java-type" type="xsd:string" />
+    <xsd:attribute name="type" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />
     <xsd:attribute name="jdbc-type" type="xsd:string" />
     <xsd:attribute name="sequence" type="xsd:string" />
@@ -259,8 +261,10 @@
   
   <xsd:complexType name="converter-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
-    <xsd:attribute name="java-type" type="xsd:string" use="required" />
-    <xsd:attribute name="java-raw-type" type="xsd:string" use="required"  />
+    <xsd:attribute name="java-type" type="xsd:string" />
+    <xsd:attribute name="type" type="xsd:string" />
+    <xsd:attribute name="java-raw-type" type="xsd:string" />
+    <xsd:attribute name="raw-type" type="xsd:string" />
     <xsd:attribute name="class" type="xsd:string" use="required" />
   </xsd:complexType>
 

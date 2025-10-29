@@ -112,15 +112,14 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
       if (rs.wasNull()) col1 = null;
       row.setAmount(col1);
 
-      Integer raw2 = rs.getInt("STATUS"); // STATUS
-      if (rs.wasNull()) raw2 = null;
+      Integer raw2 = rs.getObject("STATUS", Integer.class); // STATUS
       InvoiceStatus col2 = converter0.decode(raw2, conn);
       row.setStatus(col2);
 
       LocalDateTime col3 = rs.getObject("CREATED", LocalDateTime.class); // CREATED
       row.setCreated(col3);
 
-      String raw4 = rs.getString("ACTIVE"); // ACTIVE
+      String raw4 = rs.getObject("ACTIVE", String.class); // ACTIVE
       Boolean col4 = converter1.decode(raw4, conn);
       row.setActive(col4);
 

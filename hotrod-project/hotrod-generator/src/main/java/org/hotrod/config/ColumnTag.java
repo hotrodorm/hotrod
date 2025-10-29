@@ -1,7 +1,5 @@
 package org.hotrod.config;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,6 +14,7 @@ import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
+import org.hotrod.utils.TypesUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -30,7 +29,11 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   private String name = null;
   private String javaName = null;
+
+  @Deprecated
   private String javaType = null;
+  private String type = null;
+
   private String converter = null;
   private String jdbcType = null;
 
@@ -71,6 +74,11 @@ public class ColumnTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "java-type")
   public void setJavaType(final String javaType) {
     this.javaType = javaType;
+  }
+
+  @XmlAttribute(name = "type")
+  public void setType(final String type) {
+    this.type = type;
   }
 
   @XmlAttribute
@@ -124,17 +132,6 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  private static Map<String, String> TYPE_SYNONYMS = new HashMap<>();
-  static {
-    TYPE_SYNONYMS.put("Byte", "java.lang.Byte");
-    TYPE_SYNONYMS.put("Short", "java.lang.Short");
-    TYPE_SYNONYMS.put("Integer", "java.lang.Integer");
-    TYPE_SYNONYMS.put("Long", "java.lang.Long");
-    TYPE_SYNONYMS.put("Float", "java.lang.Float");
-    TYPE_SYNONYMS.put("Double", "java.lang.Double");
-    TYPE_SYNONYMS.put("Boolean", "java.lang.Boolean");
-  }
-
   public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -163,24 +160,51 @@ public class ColumnTag extends AbstractConfigurationTag {
       }
     }
 
-    // java-type
+    // type and java-type
 
-    if (this.javaType != null) {
-      if (SUtil.isEmpty(this.javaType)) {
-        throw new InvalidConfigurationFileException(this,
-            "Attribute 'java-type' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
-                + "this attribute must specify a full java class name for the database column.");
-      }
-      String fullType = TYPE_SYNONYMS.get(this.javaType);
-      if (fullType != null) {
-        this.javaType = fullType;
-      }
-    }
+    if (this.converter == null) {
 
-    // converter
+      this.converterTag = null;
 
-    if (this.converter != null) {
+      String t = null;
       if (this.javaType != null) {
+        if (this.type != null) {
+          throw new InvalidConfigurationFileException(this,
+              "The old attribute 'java-type' of the tag <" + super.getTagName()
+                  + "> cannot at the same time as the new 'type' attribute. " + "Use the latter only.");
+        }
+        if (SUtil.isEmpty(this.javaType)) {
+          throw new InvalidConfigurationFileException(this,
+              "The attribute 'java-type' of the tag <" + super.getTagName() + "> cannot be empty. " + "When specified "
+                  + "this attribute must specify the class name to represent the database column.");
+        }
+        if (!TypesUtil.isValidClassName(this.javaType)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'java-type' of the tag <"
+              + super.getTagName() + "> must specify a valid class name, but found '" + this.javaType + "'.");
+        }
+        t = this.javaType;
+      } else if (this.type != null) {
+        if (SUtil.isEmpty(this.type)) {
+          throw new InvalidConfigurationFileException(this,
+              "The attribute 'type' of the tag <" + super.getTagName() + "> cannot be empty. " + "When specified "
+                  + "this attribute must specify the class name to represent the database column.");
+        }
+        if (!TypesUtil.isValidClassName(this.type)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'type' of the tag <" + super.getTagName()
+              + "> must specify a valid class name, but found '" + this.type + "'.");
+        }
+        t = this.type;
+      } else {
+        throw new InvalidConfigurationFileException(this,
+            "The 'type' attribute of the tag <" + super.getTagName() + "> must be specified.");
+      }
+      this.type = TypesUtil.expand(t);
+
+    } else {
+
+      // converter
+
+      if (this.type != null) {
         throw new InvalidConfigurationFileException(this, "Invalid attributes 'java-type' and 'converter' of tag <"
             + super.getTagName() + ">: "
             + "these attributes are mutually exclusive, so only one of them can be specified in a column definition.");
@@ -193,14 +217,13 @@ public class ColumnTag extends AbstractConfigurationTag {
       if (this.converterTag == null) {
         throw new InvalidConfigurationFileException(this, "Converter '" + this.converter + "' not found.");
       }
-    } else {
-      this.converterTag = null;
+
     }
 
     // jdbc-type
 
     if (this.jdbcType != null) {
-      if (this.javaType == null && this.converter == null) {
+      if (this.type == null && this.converter == null) {
         throw new InvalidConfigurationFileException(this,
             "'jdbc-type' attribute specified but no java-type attribute nor converter attribute found. "
                 + "The jdbc-type attribute can only be specified when the java-type attribute or the converter is present.");
@@ -407,8 +430,8 @@ public class ColumnTag extends AbstractConfigurationTag {
     return javaName;
   }
 
-  public String getJavaType() {
-    return javaType;
+  public String getType() {
+    return type;
   }
 
   public String getJdbcType() {
@@ -438,9 +461,9 @@ public class ColumnTag extends AbstractConfigurationTag {
   // ToString
 
   public String toString() {
-    return "name=" + name + " javaName=" + this.javaName + " javaType=" + this.javaType + ", converter="
-        + this.converter + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue="
-        + this.sInitialValue + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
+    return "name=" + name + " javaName=" + this.javaName + " type=" + this.type + ", converter=" + this.converter
+        + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue=" + this.sInitialValue
+        + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
   }
 
   // Simple Caption

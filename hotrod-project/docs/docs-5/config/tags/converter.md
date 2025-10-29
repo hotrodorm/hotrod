@@ -22,8 +22,10 @@ This tag can include the following attributes:
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | `name` | The converter name. It's used to reference a converter | Required |
-| `java-type` | The application property type that VOs have. This is the converted value | Required |
-| `java-raw-type` | The unconverted raw Java type used by the converter class to read or write values to and from the database | Required |
+| `type` | The application property type that VOs have. This is the converted value | Required |
+| `java-type` | *Deprecated*. Use `type` instead | |
+| `raw-type` | The unconverted raw Java type used by the converter class to read or write values to and from the database | Required |
+| `java-raw-type` | *Deprecated*. Use `raw-type` instead | |
 | `class` | The full Java class name that implements the converter logic | Required |
 
 
@@ -49,11 +51,11 @@ and also to column of Nitro queries.
 The Java converter class is a POJO that implements the `org.hotrod.runtime.converter.TypeConverter<R, A>` interface. This interface is shown below:
 
 ```java
-public interface TypeConverter<R, A> {
+public interface TypeConverter<R, D> {
 
-  A decode(R raw, Connection conn) throws SQLException; // used when reading from the database
+  D decode(R raw, Connection conn) throws SQLException; // used when reading from the database
 
-  R encode(A value, Connection conn) throws SQLException; // used when writing to the database
+  R encode(D domain, Connection conn) throws SQLException; // used when writing to the database
 
 }
 ```
@@ -61,36 +63,33 @@ public interface TypeConverter<R, A> {
 
 ## Example 1 &ndash; Boolean Stored as a Number
 
-Let's consider the case of an Oracle database column `DECIMAL(4)` that is used to represent a boolean value &mdash; a type that 
-Oracle does not support. The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be 
-created as:
+Let's consider the case of an Oracle database column `DECIMAL(4)` that is used to represent a boolean value &mdash; a type that Oracle does not support. The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be created as:
 
 ```sql
-create table patient (
-  id decimal(15) primary key not null,
-  name varchar2(20),
-  active decimal(4) not null check (active = 0 or active = 1),
-  recurring decimal(4) not null check (recurring = 0 or recurring = 1)
+CREATE TABLE patient (
+  id DECIMAL(15) PRIMARY KEY NOT NULL,
+  name VARCHAR2(20),
+  active DECIMAL(4) NOT NULL CHECK (active = 0 OR active = 1),
+  recurring DECIMAL(4) NOT NULL CHECK (recurring = 0 OR recurring = 1)
 )
 ```
 
-Now, when reading this database column the converter reads it first as the raw type `java.lang.Short`. Then, it converts into a 
-`java.lang.Boolean`. In this case:
+Now, when reading this database column the converter reads it first as the raw type `java.lang.Short`. Then, it converts into a `java.lang.Boolean`. In this case:
 
 - `DECIMAL(4)`: the database column type.
 - `java.lang.Short`: the raw type for the intermediate value. This value is used briefly during the conversion and
 is not available to the application.
-- `java.lang.Boolean`: the property type in the application. This is the value that the application sees.
+- `java.lang.Boolean`: the property type in the application. This is the domain value that the application sees.
 
 In this example the converter Java class can look like:
 
 ```java
-package com.ctac.converters;
+package app.converters;
 
 import java.sql.Connection;
 
+import org.hotrod.converter.TypeConverter;
 import org.springframework.stereotype.Component;
-import org.hotrod.runtime.converter.TypeConverter;
 
 @Component
 public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
@@ -125,9 +124,9 @@ This converter can be defined in the configuration file with the `<converter>` t
 
 ```xml
   <converter name="boolean_stored_as_decimal"
-    java-type="java.lang.Boolean"
-    java-raw-type="java.lang.Short"
-    class="com.ctac.converters.ShortBooleanConverter"
+             raw-type="java.lang.Short"
+             class="com.ctac.converters.ShortBooleanConverter"
+             type="java.lang.Boolean"
   />
 ```
 
@@ -140,18 +139,17 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`s. Type Solvers 
-can automatically apply converters to columns according to the logic defined by the developer.
+**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`s. Type Solvers can automatically apply converters to columns according to the logic defined by the developer.
 
 When look at the generated persistence code we can see the configured VO properties are available
  as a `Boolean` type, not as numeric anymore:
 
 ```java
-package com.ctac.daos.primitives;
+package app.persistence.layout;
 
-public class PatientVO implements Serializable {
+public class PatientLayout implements Serializable {
 
-  // VO Properties (table columns)
+  // Properties (table columns)
 
   protected java.lang.Integer id;
   protected java.lang.String name;
@@ -166,13 +164,12 @@ public class PatientVO implements Serializable {
 
 ## Example 2 &ndash; Using an Array of Integers in PostgreSQL
 
-Let's consider the case of a PostgreSQL database column `INT[]` that is used to represent the list of cards each player holds.
-The table could be created as:
+Let's consider the case of a PostgreSQL database column `INT[]` that is used to represent the list of cards each player holds. The table could be created as:
 
 ```sql
-create table player (
-  id int primary key not null,
-  cards int[]
+CREATE TABLE player (
+  id INT PRIMARY KEY NOT NULL,
+  cards INT[]
 );
 ```
 
@@ -181,12 +178,17 @@ In this example the converter Java class can look like:
 ```java
 package app;
 
+
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.hotrod.runtime.converter.TypeConverter;
+import java.sql.Connection;
 
+import org.hotrod.converter.TypeConverter;
+import org.springframework.stereotype.Component;
+
+@Component
 public class IntegerArrayConverter implements TypeConverter<java.sql.Array, Integer[]> {
 
   @Override
@@ -208,9 +210,9 @@ This converter can be defined in the configuration file with the `<converter>` t
 
 ```xml
   <converter name="integer_array_converter"
-    java-type="Integer[]"
-    java-raw-type="java.sql.Array"
-    class="app.IntegerArrayConverter"
+             raw-type="java.sql.Array"
+             class="app.IntegerArrayConverter"
+             type="Integer[]"
   />
 ```
 
@@ -222,14 +224,10 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`s. Type Solvers 
-can automatically apply converters to columns according to the logic defined by the developer.
-
-Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's 
-a traditional `java.lang.Integer[]`. For example, the application code could look like:
+Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's a traditional `java.lang.Integer[]`. For example, the application code could look like:
 
 ```java
-  PlayerVO p = this.playerDAO.select(101);
+  Player p = this.playerDAO.select(101);
   Integer[] cards = p.getCards();
   p.setCards(new Integer[] { 7, 8, 8, 9 });
   this.playerDAO.update(p);

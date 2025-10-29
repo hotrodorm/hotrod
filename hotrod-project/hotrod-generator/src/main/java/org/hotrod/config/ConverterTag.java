@@ -1,15 +1,12 @@
 package org.hotrod.config;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.SUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
+import org.hotrod.utils.TypesUtil;
 
 @XmlRootElement(name = "converter")
 public class ConverterTag extends AbstractConfigurationTag {
@@ -17,17 +14,20 @@ public class ConverterTag extends AbstractConfigurationTag {
   // Constants
 
   private static final String NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
-  private static final String FULL_CLASS_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*+(\\.[a-zA-Z][a-zA-Z0-9_]*+)*+(\\[\\])?";
 
   // Properties
 
   private String name = null;
-  private String rawClass = null;
-  private String domainClass = null;
-  private String converterClass = null;
 
-  private String jdbcGetterMethod;
-  private String jdbcSetterMethod;
+  @Deprecated
+  private String javaRawClass = null;
+  private String rawClass = null;
+
+  @Deprecated
+  private String javaDomainClass = null;
+  private String domainClass = null;
+
+  private String converterClass = null;
 
   // Constructor
 
@@ -44,12 +44,22 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   @XmlAttribute(name = "java-raw-type")
   public void setJavaRawType(final String javaRawType) {
-    this.rawClass = javaRawType;
+    this.javaRawClass = javaRawType;
+  }
+
+  @XmlAttribute(name = "raw-type")
+  public void setRawType(final String rawType) {
+    this.rawClass = rawType;
   }
 
   @XmlAttribute(name = "java-type")
   public void setJavaType(final String javaType) {
-    this.domainClass = javaType;
+    this.javaDomainClass = javaType;
+  }
+
+  @XmlAttribute(name = "type")
+  public void setType(final String type) {
+    this.domainClass = type;
   }
 
   @XmlAttribute(name = "class")
@@ -72,111 +82,103 @@ public class ConverterTag extends AbstractConfigurationTag {
           + "> must be a valid name. An alphanumeric name was expected but '" + this.name + "' was specified.");
     }
 
-    // java-raw-type (raw)
+    // raw-type & java-raw-type
 
-    if (SUtil.isEmpty(this.rawClass)) {
+    if (this.javaRawClass == null) {
+      if (this.rawClass == null) {
+        throw new InvalidConfigurationFileException(this,
+            "The attribute 'raw-type' of the tag <" + super.getTagName() + "> must be specified.");
+      } else {
+
+        // raw-type
+        if (SUtil.isEmpty(this.rawClass)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'raw-type' of the tag <" + super.getTagName()
+              + "> cannot be empty. It must specify the class for the raw type read from the database.");
+        }
+        if (!TypesUtil.isValidClassName(this.rawClass)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'raw-type' of tag <" + super.getTagName()
+              + "> must be a valid full class name, but '" + this.rawClass + "' was specified.");
+        }
+
+      }
+    } else if (this.rawClass != null) {
       throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-raw-type' of tag <" + super.getTagName() + "> cannot be empty.");
-    }
-    if (!this.rawClass.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, "Attribute 'java-raw-type' of tag <" + super.getTagName()
-          + "> must be a valid full class name, but '" + this.rawClass + "' was specified.");
-    }
-    Accessors gs = ACCESSORS.get(this.rawClass);
-    if (gs == null) {
+          "Either the attribute 'raw-type' or 'java-raw-type' of the tag <" + super.getTagName()
+              + "> can be specified at the same time. " + "Use the former when possible.");
 
-      String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
-      throw new InvalidConfigurationFileException(this,
-          "Unsupported java-raw-type '" + this.rawClass + "' on tag <" + super.getTagName()
-              + ">. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
-    }
-    this.jdbcGetterMethod = gs.getGetter();
-    this.jdbcSetterMethod = gs.getSetter();
+    } else {
 
-    // java-type (domain)
+      // java-raw-type
+      if (SUtil.isEmpty(this.javaRawClass)) {
+        throw new InvalidConfigurationFileException(this,
+            "The attribute 'java-raw-type' of the tag <" + super.getTagName()
+                + "> cannot be empty. It must specify the class for the raw type read from the database.");
+      }
 
-    if (SUtil.isEmpty(this.domainClass)) {
-      throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-type' of tag <" + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
-    }
-    if (!this.domainClass.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, "Attribute 'java-type' of tag <" + super.getTagName()
-          + "> must be a valid full class name, but '" + this.domainClass + "' was specified.");
+      if (!TypesUtil.isValidClassName(this.javaRawClass)) {
+        throw new InvalidConfigurationFileException(this, "The attribute 'java-raw-type' of tag <" + super.getTagName()
+            + "> must be a valid full class name, but '" + this.rawClass + "' was specified.");
+      }
+      this.rawClass = this.javaRawClass;
+      this.javaRawClass = null;
+
     }
 
-    // class (converter)
+    // type & java-type
+
+    if (this.javaDomainClass == null) {
+      if (this.domainClass == null) {
+        throw new InvalidConfigurationFileException(this,
+            "The attribute 'type' of the tag <" + super.getTagName() + "> must be specified.");
+      } else {
+
+        // type
+        if (SUtil.isEmpty(this.domainClass)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'type' of the tag <" + super.getTagName()
+              + "> with name '" + this.name + "' cannot be empty.");
+        }
+        if (!TypesUtil.isValidClassName(this.domainClass)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'type' of the tag <" + super.getTagName()
+              + "> must be a valid full class name, but '" + this.domainClass + "' was specified.");
+        }
+
+      }
+    } else {
+      if (this.domainClass != null) {
+        throw new InvalidConfigurationFileException(this, "Either the attribute 'type' or 'java-type' of the tag <"
+            + super.getTagName() + "> can be specified at the same time. " + "Use the former when possible.");
+
+      } else {
+
+        // java-type
+        if (SUtil.isEmpty(this.javaDomainClass)) {
+          throw new InvalidConfigurationFileException(this, "The attribute 'java-type' of the tag <"
+              + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
+        }
+        if (!TypesUtil.isValidClassName(this.javaDomainClass)) {
+          throw new InvalidConfigurationFileException(this,
+              "The attribute 'java-type' of the tag <" + super.getTagName() + "> must be a valid full class name, but '"
+                  + this.domainClass + "' was specified.");
+        }
+        this.domainClass = this.javaDomainClass;
+        this.javaDomainClass = null;
+
+      }
+
+    }
+
+    // converter
 
     if (SUtil.isEmpty(this.converterClass)) {
       throw new InvalidConfigurationFileException(this,
-          "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty.");
+          "Attribute 'class' of tag <" + super.getTagName()
+              + "> cannot be empty. Please specify a class that implements the " + TypeConverter.class.getName()
+              + " interface.");
     }
-    if (!this.converterClass.matches(FULL_CLASS_NAME_PATTERN)) {
+    if (!TypesUtil.isValidClassName(this.converterClass)) {
       throw new InvalidConfigurationFileException(this, "Attribute 'class' of tag <" + super.getTagName()
           + "> must be a valid full class name, but '" + this.converterClass + "' was specified.");
     }
-
-  }
-
-  private static class Accessors {
-    private String getter;
-    private String setter;
-
-    public Accessors(String getter, String setter) {
-      super();
-      this.getter = getter;
-      this.setter = setter;
-    }
-
-    public String getGetter() {
-      return getter;
-    }
-
-    public String getSetter() {
-      return setter;
-    }
-
-  }
-
-  private static Map<String, Accessors> ACCESSORS = new LinkedHashMap<String, Accessors>();
-  static {
-
-    ACCESSORS.put("String", new Accessors("getString", "setString"));
-    ACCESSORS.put("java.lang.String", new Accessors("getString", "setString"));
-    ACCESSORS.put("java.sql.Clob", new Accessors("getClob", "setClob"));
-
-    ACCESSORS.put("Byte", new Accessors("getByte", "setByte"));
-    ACCESSORS.put("java.lang.Byte", new Accessors("getByte", "setByte"));
-    ACCESSORS.put("Short", new Accessors("getShort", "setShort"));
-    ACCESSORS.put("java.lang.Short", new Accessors("getShort", "setShort"));
-    ACCESSORS.put("Integer", new Accessors("getInt", "setInt"));
-    ACCESSORS.put("java.lang.Integer", new Accessors("getInt", "setInt"));
-    ACCESSORS.put("Long", new Accessors("getLong", "setLong"));
-    ACCESSORS.put("java.lang.Long", new Accessors("getLong", "setLong"));
-    ACCESSORS.put("java.math.BigDecimal", new Accessors("getBigDecimal", "setBigDecimal"));
-    ACCESSORS.put("Float", new Accessors("getFloat", "setFloat"));
-    ACCESSORS.put("java.lang.Float", new Accessors("getFloat", "setFloat"));
-    ACCESSORS.put("Double", new Accessors("getDouble", "setDouble"));
-    ACCESSORS.put("java.lang.Double", new Accessors("getDouble", "setDouble"));
-
-    ACCESSORS.put("java.sql.Date", new Accessors("getDate", "setDate"));
-    ACCESSORS.put("java.sql.Time", new Accessors("getTime", "setTime"));
-    ACCESSORS.put("java.sql.Timestamp", new Accessors("getTimestamp", "setTimestamp"));
-
-    ACCESSORS.put("Boolean", new Accessors("getBoolean", "setBoolean"));
-    ACCESSORS.put("java.lang.Boolean", new Accessors("getBoolean", "setBoolean"));
-
-    ACCESSORS.put("byte[]", new Accessors("getBytes", "setBytes"));
-    ACCESSORS.put("java.sql.Blob", new Accessors("getBlob", "setBlob"));
-
-    ACCESSORS.put("java.sql.Array", new Accessors("getArray", "setArray"));
-    ACCESSORS.put("java.sql.NClob", new Accessors("getNClob", "setNClob"));
-    ACCESSORS.put("java.sql.SQLXML", new Accessors("getSQLXML", "setSQLXML"));
-    ACCESSORS.put("java.net.URL", new Accessors("getURL", "setURL"));
-    ACCESSORS.put("java.sql.RowId", new Accessors("getRowId", "setRowId"));
-    ACCESSORS.put("java.sql.Ref", new Accessors("getRef", "setRef"));
-
-    ACCESSORS.put("Object", new Accessors("getObject", "setObject"));
-    ACCESSORS.put("java.lang.Object", new Accessors("getObject", "setObject"));
 
   }
 
@@ -196,14 +198,6 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   public String getConverterClass() {
     return converterClass;
-  }
-
-  public String getJdbcGetterMethod() {
-    return jdbcGetterMethod;
-  }
-
-  public String getJdbcSetterMethod() {
-    return jdbcSetterMethod;
   }
 
   // Simple Caption
