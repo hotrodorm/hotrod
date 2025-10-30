@@ -5,7 +5,7 @@ HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high per
 HotRod brings:
 
 - [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
-- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying from your code to retrieve plain values and also full table entities
+- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying from your code with live syntax validation
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of Dynamic SQL and Native SQL when you need it
 - [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Detect slow queries at runtime and analyze them
 
@@ -31,13 +31,14 @@ A simple SELECT query to compute the expression `3 * 7` in the database can be w
 
 ```java
 Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
+
 System.out.println("total=" + row.get("total")); // total=21
 ```
 
 Selecting from a table can be done as:
 
 ```java
-List<Tuple1<Product>> products = this.sql
+List<Tuple1<Product>> rows = this.sql
   .select(p.star(), p.shipping.plus(p.tax).as("totalCost"))
   .tuples()
   .from(p)
@@ -45,9 +46,15 @@ List<Tuple1<Product>> products = this.sql
   .orderBy(p.shipping.desc())
   .limit(50)
   .execute();
+
+for (Tuple1<Product> r : rows) {
+  Product prod = r.getA() // all columns correctly named, cast, typed, and/or converted here
+  System.out.println("Product: " + prod);
+  System.out.println("Total Cost: " + r.getUnbound().get("totalCost"));
+}
 ```
 
-Joining multiple tables and views can be done as:
+Joining multiple tables (views, subqueries, and/or CTEs) can be done as:
 
 ```java
 List<Tuple2<Invoice, Client>> rows = sql
@@ -99,6 +106,12 @@ List<Row> rows = sql
 
 [CRUD](./hotrod-project/docs/docs-5/crud/README.md) provides a straightforward repertoire of database access methods that can access rows by primary keys, by example, or by predicates to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
 
+To find an employee by primary key we can do:
+
+```java
+Employee emp = this.employeeDAO.select(134081);
+```
+
 Inserting a payment while retrieving the new primary key (in the column ID) can be done as:
 
 ```java
@@ -108,12 +121,6 @@ p.setPaidAt(LocalDateTime.now());
 p.setAmount(100.00);
 Payment inserted = this.paymentDAO.insert(p);
 System.out.println("ID: " + inserted.getId()); // generated ID
-```
-
-To find an employee by primary key:
-
-```java
-Employee emp = this.employeeDAO.select(134081);
 ```
 
 CRUD can use custom predicates, for example, to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH':
@@ -142,18 +149,32 @@ this.invoiceDAO.update(inv);
 - [Nitro Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to dynamically assemble queries based on runtime parameters
 - Native SQL extensions available in the specific database
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (TRUNCATE, CREATE, ALTER, DROP, etc.).
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (CREATE, ALTER, DROP, etc.).
+
+For example we can define any custom SQL query, as in:
+
+```xml
+<query method="initializeBatchProcess">
+  TRUNCATE tmp_accounting;
+</query>
+```
+
+That becomes available in the persistence layer as the method:
+
+```java
+  public void initializeBatchProcess()
+```
 
 The following query uses Dynamic SQL to assemble the query dynamically and to apply parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
-  <parameter name="brandName" java-type="String" />
-  <parameter name="minYear" java-type="Integer" />
-  <parameter name="ordering" java-type="Integer" />
+  <parameter name="brandName" type="String" />
+  <parameter name="minYear" type="Integer" />
+  <parameter name="ordering" type="Integer" />
   SELECT /*+ FIRST_ROWS(10) */ *
   FROM vehicle
-  where brand like = '%' || #{brandName} || '%'
+  WHERE brand like = '%' || #{brandName} || '%'
     <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
     <if test="ordering == 1">ORDER BY price</if>
@@ -163,7 +184,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to ap
 </select>
 ```
 
-Nitro makes this query available in your application as the method:
+Nitro makes this query available in the persistence layer as the method:
 
 ```java
 List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
