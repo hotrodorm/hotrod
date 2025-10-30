@@ -23,9 +23,9 @@ This tag can include the following attributes:
 | -- | -- | -- |
 | `name` | The converter name. It's used to reference a converter | Required |
 | `type` | The application property type that VOs have. This is the converted value | Required |
-| `java-type` | *Deprecated*. Use `type` instead | |
+| ~~`java-type`~~ | *Deprecated*. Use `type` instead | |
 | `raw-type` | The unconverted raw Java type used by the converter class to read or write values to and from the database | Required |
-| `java-raw-type` | *Deprecated*. Use `raw-type` instead | |
+| ~~`java-raw-type`~~ | *Deprecated*. Use `raw-type` instead | |
 | `class` | The full Java class name that implements the converter logic | Required |
 
 

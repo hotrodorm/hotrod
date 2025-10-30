@@ -61,7 +61,9 @@ A `<when>` tag has three attributes that are used to specify the resulting type:
  - `converter`
  - `force-jdbc-type-on-write`
 
-The tag can either specify the `java-type` or the `converter` attributes; they are exclusive. If the `java-type` is specified, this is taken as the final type to use in the generated code. Alternatively, it can specify `converter` in case a converter needs to be used for the column.
+**Note**: the attribute `java-type` has been deprecated. Use `type` instead.
+
+The tag can either specify the `type` or the `converter` attributes; they are exclusive. If the `java-type` is specified, this is taken as the final type to use in the generated code. Alternatively, it can specify `converter` in case a converter needs to be used for the column.
 
 When using `java-type` option, the attibute `force-jdbc-type-on-write` can be specified in case the developer needs to force the JDBC type when sending a
 value back to the database, typically on the `UPDATE` or `INSERT` SQL statements.

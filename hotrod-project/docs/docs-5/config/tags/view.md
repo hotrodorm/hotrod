@@ -20,7 +20,7 @@ The `<view>` tag can include modifiers that can be useful in special cases, as s
 | `catalog` | The catalog of the view, if different from the default one | The current catalog, specified in the runtime properties file |
 | `schema` | The schema of the view, if different from the default one | The current schema, specified in the runtime properties file |
 | `entity` | Sets the base Java name for the Layout, Model, and DAO classes | Camel-case identifier based on the database identifier |
-| `java-name` | *Deprecated*. Use `entity` instead |  |
+| ~~`java-name`~~ | *Deprecated*. Use `entity` instead |  |
 | `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
 
 
