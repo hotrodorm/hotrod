@@ -32,7 +32,7 @@ The generated methods differ between a table and a view:
 | [Select by Example](#2-select-by-example) | `select(example)` | `select(example)` | &mdash; |
 | [Select by Criteria](#3-select-by-criteria) | `select(t, predicate)` | `select(v, predicate)` | &mdash; |
 | [Insert](#4-insert) | `insert(model)` | `insert(model)` | &mdash; |
-| [Insert By Example](#5-insert-by-example) | `insert(model)` | `insert(model)` | &mdash; |
+| [Insert By Example](#5-insert-by-example) | `insertByExample(model)` | `insertByExample(model)` | &mdash; |
 | [Update By Primary Key](#6-update-by-primary-key) | `update(model)`<br/>*only when the table has a PK* | N/A | :heavy_check_mark: |
 | [Update by Example](#7-update-by-example) | `update(example, newValues)` | `update(example, newValues)` | &mdash; |
 | [Update by Criteria](#8-update-by-criteria) | `update(newValues, t, predicate)` | `update(newValues, v, predicate)` | &mdash; |
