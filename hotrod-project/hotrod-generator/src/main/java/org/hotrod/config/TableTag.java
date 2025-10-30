@@ -51,7 +51,10 @@ public class TableTag extends AbstractEntityDAOTag {
   private JdbcTable extendsJdbcTable = null;
   private JdbcForeignKey extendsFK = null;
 
-  private String javaClassName = null;
+  @Deprecated
+  private String javaName = null;
+  private String entity = null;
+
   private String columnSeam = null;
 
   private OptimisticLockingTag optimisticLocking = null;
@@ -82,7 +85,7 @@ public class TableTag extends AbstractEntityDAOTag {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
         : null;
-    this.javaClassName = resolveJavaName(config, adapter);
+    this.entity = resolveJavaName(config, adapter);
 
     try {
 
@@ -149,7 +152,12 @@ public class TableTag extends AbstractEntityDAOTag {
 
   @XmlAttribute(name = "java-name")
   public void setJavaName(final String javaName) {
-    this.javaClassName = javaName;
+    this.javaName = javaName;
+  }
+
+  @XmlAttribute(name = "entity")
+  public void setEntity(final String entity) {
+    this.entity = entity;
   }
 
   @XmlAttribute(name = "column-seam")
@@ -169,6 +177,8 @@ public class TableTag extends AbstractEntityDAOTag {
 
   // Behavior
 
+  public static final String ENTITY_PATTERN = "[A-Z][a-zA-Z0-9_]*+";
+
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
@@ -185,10 +195,6 @@ public class TableTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
           + "> cannot be empty. " + "Must specify a database table name.");
     }
-
-//    if (this.catalog == null && this.schema == null) {
-//      this.applyCurrentSchema(currentCS);
-//    }
 
     // catalog
 
@@ -271,27 +277,39 @@ public class TableTag extends AbstractEntityDAOTag {
 
     }
 
-    // java-name
+    // entity & java-name
 
-    if (this.javaClassName != null) {
-      this.javaClassName = this.javaClassName.trim();
-      if (SUtil.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException(this, "Invalid 'java-name' attribute value of tag <"
-            + super.getTagName() + "> for the table '" + this.name + "'. When specified, the value cannot be empty.");
-      }
-      if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(this,
-            "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
-                + ">. When specified, the java-name must start with an upper case letter, "
-                + "and continue with any combination of letters, digits, underscores, or dollar signs.");
+    if (this.javaName == null) {
+      if (this.entity != null) {
+        if (!this.entity.matches(TableTag.ENTITY_PATTERN)) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid 'entity' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
+                  + "'. When specified, the value must start with an upper case letter, "
+                  + "and continue with any combination of letters, digits, and underscores, but found: " + this.entity);
+        }
       }
     } else {
+      if (this.entity != null) {
+        throw new InvalidConfigurationFileException(this, "Either the attribute 'entity' or 'java-name' of the tag <"
+            + super.getTagName() + "> can be specified at the same time. " + "Use the former when possible.");
+      }
+      if (!this.javaName.matches(TableTag.ENTITY_PATTERN)) {
+        throw new InvalidConfigurationFileException(this,
+            "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
+                + "'. When specified, the value must start with an upper case letter, "
+                + "and continue with any combination of letters, digits, and underscores, but found: " + this.javaName);
+      }
+      this.entity = this.javaName;
+      this.javaName = null;
+    }
+
+    if (this.entity == null) {
       String replacedName = null;
       try {
         replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
         log.fine("### this.name=" + this.name + " -> replacedName=" + replacedName);
         if (replacedName != null) {
-          this.javaClassName = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
+          this.entity = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
           log.fine(" done.");
         }
       } catch (CouldNotResolveNameException e) {
@@ -307,8 +325,8 @@ public class TableTag extends AbstractEntityDAOTag {
 
     Id nameId;
     try {
-      nameId = this.javaClassName == null ? Id.fromTypedSQL(this.name, adapter)
-          : Id.fromTypedSQLAndJavaClass(this.name, adapter, this.javaClassName);
+      nameId = this.entity == null ? Id.fromTypedSQL(this.name, adapter)
+          : Id.fromTypedSQLAndJavaClass(this.name, adapter, this.entity);
       log.fine(">>> nameId=" + nameId.getCanonicalSQLName() + " / " + nameId.getJavaClassName());
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();

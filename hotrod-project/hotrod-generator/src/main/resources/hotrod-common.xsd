@@ -32,6 +32,7 @@
     <xsd:attribute name="extends-catalog" type="xsd:string" />
     <xsd:attribute name="extends-schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="entity" type="xsd:string" />
     <xsd:attribute name="column-seam" type="xsd:string" />
     <xsd:attribute name="implements" type="xsd:string" />
   </xsd:complexType>
@@ -126,6 +127,7 @@
     <xsd:attribute name="catalog" type="xsd:string" />
     <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="entity" type="xsd:string" />
     <xsd:attribute name="implements" type="xsd:string" />
   </xsd:complexType>
 
