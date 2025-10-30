@@ -7,9 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hotrod.converter.TypeConverter;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class ColumnReader {
+public abstract class ColumnReader {
+
+  private ColumnReader() {
+  }
 
   public static Object read(ResultSet rs, int ordinal, TypeHandler<?, ?> th, Connection conn) throws SQLException {
     if (th == null) { // No typeHandler: use the JDBC default value
@@ -29,16 +33,16 @@ public class ColumnReader {
     try {
       m = TypeConverter.class.getMethod("decode", Object.class, Connection.class);
     } catch (NoSuchMethodException | SecurityException e) {
-      throw new RuntimeException("Could not use converter", e);
+      throw new LiveSQLException("Could not use converter", e);
     }
 
     Object value;
     try {
       value = m.invoke(converter, raw, conn);
     } catch (InvocationTargetException e) {
-      throw new RuntimeException("Converter's decode() method threw an exception", e);
+      throw new LiveSQLException("Converter's decode() method threw an exception", e);
     } catch (IllegalAccessException | IllegalArgumentException e) {
-      throw new RuntimeException("Could not invoke converter's decode() method", e);
+      throw new LiveSQLException("Could not invoke converter's decode() method", e);
     }
 
     return value;

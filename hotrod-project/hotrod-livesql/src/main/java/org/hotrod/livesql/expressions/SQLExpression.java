@@ -56,7 +56,7 @@ import org.hotrod.livesql.util.ToString;
  * </pre>
  */
 
-public abstract class SQLExpression extends LiveSQLExpression {
+public abstract class SQLExpression implements LiveSQLExpression {
 
   protected abstract List<Expression> expand();
 

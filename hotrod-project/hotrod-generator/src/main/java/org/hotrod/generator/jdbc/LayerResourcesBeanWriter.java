@@ -146,7 +146,7 @@ public class LayerResourcesBeanWriter {
         w.println(".forConverter(this." + property + ", ", TypeSource.class,
             "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       } else {
-        w.println(".forClass(", ExternalClass.of(when.getJavaType()), ".class, ", TypeSource.class,
+        w.println(".forClass(", ExternalClass.of(when.getType()), ".class, ", TypeSource.class,
             "." + TypeSource.RUNTIME_TYPESOLVER_RULE.name() + ", \"" + ruleNumber + "\")));");
       }
 

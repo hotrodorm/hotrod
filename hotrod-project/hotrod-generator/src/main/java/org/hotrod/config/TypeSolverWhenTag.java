@@ -189,7 +189,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.test;
   }
 
-  public String getJavaType() {
+  public String getType() {
     return this.type;
   }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.hotrod.livesql.expressions.LiveSQLExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 
-public abstract class CollectionsOperator extends LiveSQLExpression {
+public abstract class CollectionsOperator implements LiveSQLExpression {
 
   protected String property;
   protected TableOrView<?> tableOrView;

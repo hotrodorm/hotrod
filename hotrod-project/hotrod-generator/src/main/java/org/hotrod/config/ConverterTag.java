@@ -13,7 +13,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final String NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
+  private static final String NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*+";
 
   // Properties
 

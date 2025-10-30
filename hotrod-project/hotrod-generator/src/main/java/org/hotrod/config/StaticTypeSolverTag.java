@@ -92,7 +92,7 @@ public class StaticTypeSolverTag extends AbstractConfigurationTag {
             if (jdbcTypeOnWrite == null) {
               jdbcTypeOnWrite = (c != null ? JDBCTypes.codeToType(c.getDataType()) : resultSetType);
             }
-            return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false, TypeSource.STATIC_TYPESOLVER_RULE,
+            return new PropertyType(w.getType(), jdbcTypeOnWrite, false, TypeSource.STATIC_TYPESOLVER_RULE,
                 w.getConverterTag(), ruleNumber, true);
           }
         } catch (ClassCastException e) {
