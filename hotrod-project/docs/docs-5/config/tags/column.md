@@ -14,8 +14,9 @@ This tag can include the following attributes:
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | `name` | The database column name | Required |
-| `java-name` | Overrides the default Java property name | Rule from `<name-solver>` or camel-case name |
-| `type` | Overrides the default Java property type. Mutually exclusive with `converter` |  |
+| `property` | Overrides the default Java property name | Rule from `<name-solver>` or camel-case name |
+| `java-name` | *Deprecated*. Use `property` instead | |
+| `type` | Overrides the default Java property type. Mutually exclusive with `converter` | See [Type Resolution Mechanics](../../guides/type-resolution-mechanics.md) |
 | `java-type` | *Deprecated*. Use `type` instead |
 | `converter` | The name of the type converter to use for this column. See [`<converter>`](converter.md). Mutually exclusive with `java-type` | No conversion |
 | `jdbc-type` | Overrides the JDBC type for inserting or updating nulls in the database [^1] | Default database JDBC type |

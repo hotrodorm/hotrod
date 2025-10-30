@@ -91,8 +91,8 @@ public class ColumnMetadata implements DriverColumnMetaData {
 
     this.tag = columnTag;
 
-    if (this.tag != null && this.tag.getJavaName() != null) {
-      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
+    if (this.tag != null && this.tag.getProperty() != null) {
+      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getProperty());
     } else {
       String replacedName = null;
       try {
@@ -219,10 +219,10 @@ public class ColumnMetadata implements DriverColumnMetaData {
     this.tableName = dataSet.getSelectMethodNamespace() + "." + selectName;
 
     this.tag = columnTag;
-    if (this.tag == null || this.tag.getJavaName() == null) {
+    if (this.tag == null || this.tag.getProperty() == null) {
       this.id = Id.fromCanonicalSQL(this.columnName, adapter);
     } else {
-      this.id = Id.fromCanonicalSQLAndJavaMember(this.columnName, adapter, this.tag.getJavaName());
+      this.id = Id.fromCanonicalSQLAndJavaMember(this.columnName, adapter, this.tag.getProperty());
     }
 
     this.belongsToPK = belongsToPK;
@@ -308,8 +308,8 @@ public class ColumnMetadata implements DriverColumnMetaData {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
     m2.type = cm.resolveJavaType(m2, tag, tag.getJdbcColumn(), cm.resultSetType, cm.typeSolverTag, m2.adapter);
-    if (tag.getJavaName() != null) {
-      m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getName(), adapter, tag.getJavaName());
+    if (tag.getProperty() != null) {
+      m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getName(), adapter, tag.getProperty());
     }
     return m2;
   }

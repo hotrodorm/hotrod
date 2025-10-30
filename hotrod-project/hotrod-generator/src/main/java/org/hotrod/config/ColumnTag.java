@@ -28,7 +28,10 @@ public class ColumnTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
+
+  @Deprecated
   private String javaName = null;
+  private String property = null;
 
   @Deprecated
   private String javaType = null;
@@ -69,6 +72,11 @@ public class ColumnTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "java-name")
   public void setJavaName(final String javaName) {
     this.javaName = javaName;
+  }
+
+  @XmlAttribute(name = "property")
+  public void setProperty(final String property) {
+    this.property = property;
   }
 
   @XmlAttribute(name = "java-type")
@@ -132,6 +140,8 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Behavior
 
+  private static final String PROPERTY_PATTERN = "[a-z][a-zA-Z0-9_]*+";
+
   public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -144,23 +154,33 @@ public class ColumnTag extends AbstractConfigurationTag {
           + "> cannot be empty. " + "Must specify a database column name.");
     }
 
-    // java-name
+    // property (and old java-name)
 
-    if (this.javaName != null) {
-      this.javaName = this.javaName.trim();
-      if (SUtil.isEmpty(this.javaName)) {
-        throw new InvalidConfigurationFileException(this, "Invalid 'java-name' attribute value of tag <"
-            + super.getTagName() + ">. " + "When specified, the value cannot be empty.");
+    if (this.javaName == null) {
+      if (this.property != null) {
+        if (!this.property.matches(PROPERTY_PATTERN)) {
+          throw new InvalidConfigurationFileException(this,
+              "The attribute 'property' of the tag <" + super.getTagName()
+                  + "> must start with a lower case letter and continue with letters, digits, "
+                  + "and/or underscore symbols, but '" + this.property + "' was specified.");
+        }
       }
-      if (!this.javaName.matches(Patterns.VALID_JAVA_PROPERTY)) {
+    } else {
+      if (this.property != null) {
+        throw new InvalidConfigurationFileException(this, "Either the attribute 'property' or 'java-name' of the tag <"
+            + super.getTagName() + "> can be specified at the same time. " + "Use the former when possible.");
+      }
+      if (!this.javaName.matches(PROPERTY_PATTERN)) {
         throw new InvalidConfigurationFileException(this,
-            "Invalid 'java-name' attribute value '" + this.javaName + "' of tag <" + super.getTagName()
-                + ">. When specified, the java-name must start with an lower case letter, "
-                + "and continue with any combination of letters, digits, underscores, or dollar signs.");
+            "The attribute 'java-name' of the tag <" + super.getTagName()
+                + "> must start with a lower case letter and continue with letters, digits, "
+                + "and/or underscore symbols, but '" + this.javaName + "' was specified.");
       }
+      this.property = this.javaName;
+      this.javaName = null;
     }
 
-    // type and java-type
+    // type (and old java-type)
 
     if (this.converter == null) {
 
@@ -426,8 +446,8 @@ public class ColumnTag extends AbstractConfigurationTag {
     return name;
   }
 
-  public String getJavaName() {
-    return javaName;
+  public String getProperty() {
+    return this.property;
   }
 
   public String getType() {
@@ -461,7 +481,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   // ToString
 
   public String toString() {
-    return "name=" + name + " javaName=" + this.javaName + " type=" + this.type + ", converter=" + this.converter
+    return "name=" + name + " property=" + this.property + " type=" + this.type + ", converter=" + this.converter
         + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue=" + this.sInitialValue
         + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
   }
