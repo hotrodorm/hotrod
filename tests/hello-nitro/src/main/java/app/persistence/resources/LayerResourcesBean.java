@@ -1,4 +1,4 @@
-package app.persistence;
+package app.persistence.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration("null")
-public class LayerConfigurationBean {
+@Configuration
+public class LayerResourcesBean {
 
   @Bean
   public LayerConfiguration layerConfig() {

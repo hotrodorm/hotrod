@@ -13,10 +13,10 @@ public class AccountLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // INTEGER
-  protected String title = null; // CHARACTER VARYING
-  protected LocalDate created = null; // DATE
-  protected Integer balance = null; // INTEGER
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String title = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected LocalDate created = null; // Type Source: STATIC_DIALECT_RULE, rule #D16
+  protected Integer balance = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
 
   // getters & setters
 

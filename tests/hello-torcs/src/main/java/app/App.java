@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
 
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.EmployeeDAO.EmployeeTable;
@@ -31,7 +30,7 @@ public class App {
 
   @Autowired
   private LiveSQL sql;
-  
+
   public static void main(String[] args) {
     SpringApplication.run(App.class, args).close();
   }

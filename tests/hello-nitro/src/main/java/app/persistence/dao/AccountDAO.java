@@ -33,6 +33,7 @@ import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
@@ -42,11 +43,11 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
-import org.hotrod.livesql.queries.typesolver.TypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -66,6 +67,11 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
+
+  private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
+      () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
+      () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
+    );
 
   @Autowired
   private DataSource dataSource;
@@ -226,18 +232,18 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literaln("  balance")
       .literaln("FROM account")
       .where("AND")
-        .if_("f.id != null").literal("id = ").parameter("f.id").endif()
-        .if_("f.title != null").literal("title = ").parameter("f.title").endif()
-        .if_("f.created != null").literal("created = ").parameter("f.created").endif()
-        .if_("f.balance != null").literal("balance = ").parameter("f.balance").endif()
+        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.title != null").literal("title = ").parameter("e.title").endif()
+        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
+        .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Account> select(AccountLayout filter, AccountOrderBy... orderBies) {
+  public List<Account> select(AccountLayout example, AccountOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
+    params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
     PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
@@ -253,7 +259,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Account> select(final AccountTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader);
+    return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -262,18 +268,20 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literaln("INSERT INTO account (")
-      .literaln("  id,")
-      .literaln("  title,")
-      .literaln("  created,")
-      .literaln("  balance")
-      .literaln(")")
-      .literaln("VALUES(")
-      .literal("  ").parameterNullable("l.id", Types.INTEGER).literaln(",")
-      .literal("  ").parameterNullable("l.title", Types.VARCHAR).literaln(",")
-      .literal("  ").parameterNullable("l.created", Types.DATE).literaln(",")
-      .literal("  ").parameterNullable("l.balance", Types.INTEGER)
-      .literal(")")
+      .literal("INSERT INTO account")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .literal("id")
+      .literal("title")
+      .literal("created")
+      .literal("balance")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .parameterNullable("l.id", Types.INTEGER)
+      .parameterNullable("l.title", Types.VARCHAR)
+      .parameterNullable("l.created", Types.DATE)
+      .parameterNullable("l.balance", Types.INTEGER)
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
@@ -297,27 +305,29 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literaln("INSERT INTO account (")
-      .if_("l.id != null").literal("id,\n").endif()
-      .if_("l.title != null").literal("title,\n").endif()
-      .if_("l.created != null").literal("created,\n").endif()
-      .if_("l.balance != null").literal("balance\n").endif()
-      .literaln(")")
-      .literaln("VALUES(")
-      .if_("l.id != null").parameter("l.id").literal(", ").endif()
-      .if_("l.title != null").parameter("l.title").literal(", ").endif()
-      .if_("l.created != null").parameter("l.created").literal(", ").endif()
-      .if_("l.balance != null").parameter("l.balance").endif()
-      .literal(")")
+      .literal("INSERT INTO account")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+      .if_("e.id != null").literal("id").endif()
+      .if_("e.title != null").literal("title").endif()
+      .if_("e.created != null").literal("created").endif()
+      .if_("e.balance != null").literal("balance").endif()
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+      .if_("e.id != null").parameter("e.id").endif()
+      .if_("e.title != null").parameter("e.title").endif()
+      .if_("e.created != null").parameter("e.created").endif()
+      .if_("e.balance != null").parameter("e.balance").endif()
+      .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Account insertByExample(AccountLayout layout) {
+  public Account insertByExample(AccountLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
+    params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Account model = this.clone(layout);
+    Account model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
       preparedQuery.execute(conn);
     } catch (SQLException e) {
@@ -394,14 +404,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateSetCompletePhase update(AccountLayout values, AccountTable tableOrView,
+  public UpdateWherePhase update(AccountLayout values, AccountTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getTitle() != null) setters.add(new Setter(tableOrView.title, sql.val(values.getTitle())));
     if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
     if (values.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(values.getBalance())));
-    return new UpdateSetCompletePhase(this.context, tableOrView, setters, predicate);
+    return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
   // DELETE BY PRIMARY KEY
@@ -463,7 +473,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   // DELETE BY CRITERIA
 
   public DeleteWherePhase delete(final AccountTable from, final Predicate predicate) {
-    return new DeleteWherePhase(this.context, from, predicate);
+    return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
@@ -512,13 +522,13 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   public static class AccountTable extends Table<Account> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this,
-      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "ID", "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     public final CharEntityColumn title = new CharEntityColumn(this,
-      "TITLE", "title", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE));
+      "TITLE", "title", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
     public final DateTimeEntityColumn created = new DateTimeEntityColumn(this,
-      "CREATED", "created", "DATE", 10, 0, TypeHandler.forClass(LocalDate.class, TypeSource.STATIC_DIALECT_RULE));
+      "CREATED", "created", "DATE", 10, 0, TypeHandler.forClass(LocalDate.class, TypeSource.STATIC_DIALECT_RULE, "D16"));
     public final NumericEntityColumn balance = new NumericEntityColumn(this,
-      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE));
+      "BALANCE", "balance", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
 
     @Override
     public AllColumns star() {
@@ -578,7 +588,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   private void initializeSelect0() {
     this.select0 = dyn
       .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM account\n      WHERE title like 'SAV%'\n      ")
+      .literal("\n      SELECT *\n      FROM account\n      WHERE title LIKE 'SAV%'\n      ")
       .if_("year != null")
         .literal("\n        AND year(created) = ")
         .parameterNullable("year", Types.INTEGER)
@@ -668,7 +678,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @PostConstruct
   private void initializeContext() {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new TypeSolver(null, liveSQLDialect), log);
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();

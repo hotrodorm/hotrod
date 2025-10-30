@@ -12,8 +12,8 @@ public class ReportingTotalsLayout implements Serializable {
 
   // Expression properties
 
-  protected Long balance = null;
-  protected Long count = null;
+  protected Long balance = null; // Source Type: STATIC_DIALECT_RULE, rule #D10
+  protected Long count = null; // Source Type: STATIC_DIALECT_RULE, rule #D10
 
   // getters & setters
 

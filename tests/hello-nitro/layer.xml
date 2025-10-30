@@ -7,12 +7,12 @@
   <table name="account">
 
     <query method="applyMonthlyCharge">
-      <parameter name="amount" java-type="Integer" />
+      <parameter name="amount" type="Integer" />
       UPDATE account SET balance = balance - #{amount}
     </query>
 
     <select method="findSavingAccounts">
-      <parameter name="year" java-type="Integer" />
+      <parameter name="year" type="Integer" />
       SELECT *
       FROM account
       WHERE title LIKE 'SAV%'
@@ -26,13 +26,13 @@
   <dao name="ReportingDAO">
 
     <query method="deleteOldNegativeAccounts">
-      <parameter name="maxYear" java-type="Integer" />
+      <parameter name="maxYear" type="Integer" />
       DELETE FROM account WHERE year(created) &lt;= #{maxYear} AND balance &lt; 0
     </query>
 
     <select method="getTotals" vo="ReportingTotals" mode="single-row">
-      <parameter name="minDate" java-type="java.time.LocalDate" />
-      <parameter name="maxDate" java-type="java.time.LocalDate" />
+      <parameter name="minDate" type="java.time.LocalDate" />
+      <parameter name="maxDate" type="java.time.LocalDate" />
       SELECT sum(balance) AS balance, count(*) AS count
       FROM account
       WHERE created BETWEEN #{minDate} AND #{maxDate}
