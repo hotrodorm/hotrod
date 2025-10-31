@@ -151,21 +151,21 @@ this.invoiceDAO.update(inv);
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (CREATE, ALTER, DROP, etc.).
 
-For example we can define any custom SQL query, as in:
+A basic query with no parameters can be specified as:
 
 ```xml
 <query method="initializeBatchProcess">
-  TRUNCATE tmp_accounting;
+  TRUNCATE tmp_accounting
 </query>
 ```
 
-That becomes available in the persistence layer as the method:
+This query becomes available in the persistence layer as the method:
 
 ```java
   public void initializeBatchProcess()
 ```
 
-The following query uses Dynamic SQL to assemble the query dynamically and to apply parameter values to it. It also uses a piece of Native SQL (an optimizer hint):
+The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values the query will take a different shape each time. It also uses a piece of Native SQL (an optimizer hint):
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
@@ -175,7 +175,7 @@ The following query uses Dynamic SQL to assemble the query dynamically and to ap
   SELECT /*+ FIRST_ROWS(10) */ *
   FROM vehicle
   WHERE brand like = '%' || #{brandName} || '%'
-    <if test="minYear != null">AND year >= #{minYear}</if>
+  <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
     <if test="ordering == 1">ORDER BY price</if>
     <if test="ordering == 2">ORDER BY price DESC</if>
@@ -212,6 +212,18 @@ The following rankings are built-in in Torcs and can be activated programmatical
 - Initial Queries
 - Latest Queries
 
-Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings.
+Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings. For example, the default format in PostgreSQL can show the execution plan:
+
+```log
+Sort  (cost=36.80..36.80 rows=1 width=221)
+  Sort Key: i.order_date DESC
+  ->  Hash Join  (cost=16.79..36.79 rows=1 width=221)
+        Hash Cond: (i.branch_id = b.id)
+        ->  Seq Scan on invoice i  (cost=0.00..19.45 rows=209 width=100)
+              Filter: (((status)::text <> 'UNPAID'::text) AND (amount >= 228))
+        ->  Hash  (cost=16.75..16.75 rows=3 width=121)
+              ->  Seq Scan on branch b  (cost=0.00..16.75 rows=3 width=121)
+                    Filter: ((region)::text = 'SOUTH'::text)
+```
 
 
