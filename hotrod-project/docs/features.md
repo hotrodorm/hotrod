@@ -2,9 +2,9 @@
 
 As developers ourselves we started HotRod when we decided that we didn't like any of the available ORM solutions at the time.
 
-The initial goal of HotRod was to speed up the initial development phase of an app. This included quick prototyping and also enhance the support for the gradual growth of the app. In short, when a project is just starting schema discovery gives an edge to the team; then, when the project starts growing LiveSQL, Dynamic SQL, and Nitro can implement complex functionality for little effort.
+The initial goal of HotRod was to speed up the initial development of an app. This included quick prototyping and also providing support for the gradual growth of the app. In short, when a project is just starting schema discovery gives an edge to the team; then, when the project starts growing LiveSQL, Dynamic SQL, and Nitro can implement more complex functionality with little effort.
 
-Som time later we realized we also wanted to reduce the operational cost of the apps. Apart from the coding phase itself we decided to consider the debugging, testing, support, maintenance, and above all the stability of the apps themselves. That's where Torcs, SQL Injection safety, API simplification, compile-time syntax checks, and many others features came into play.
+Some time later we realized we also wanted to reduce the operational cost of the apps. Apart from the coding phase itself we decided to consider the debugging, testing, support, maintenance, and above all the stability and performance of the apps themselves. That's where Torcs, SQL Injection safety, API simplification, compile-time syntax checks, and many others features came into play.
 
 
 ## A. Top-of-the-Line ORM Features
