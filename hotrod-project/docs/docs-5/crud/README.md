@@ -423,8 +423,8 @@ For example:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
-int count = this.employeeDAO.delete(e, //
-    e.salary.le(70).or(e.lastName.like("G%")) //
+int count = this.employeeDAO.delete(e,
+    e.salary.le(70).or(e.lastName.like("G%"))
 ).execute();
 ```
 
