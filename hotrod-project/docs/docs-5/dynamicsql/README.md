@@ -251,8 +251,8 @@ When previewing the query, we can se that both *injected* parameters are concate
 
 ```
   SELECT * FROM employee WHERE recorded < ? ORDER BY hired_on DESC
-                ~~~~~~~~                             ~~~~~~~~~~~~~
-                injected                             injected
+                ~~~~~~~~                  ~          ~~~~~~~~~~~~~
+                injected                  applied    injected
 
   JDBC Parameters (1):
     1. maxDate: 2021-06-12 (java.time.LocalDate)
