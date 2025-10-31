@@ -58,7 +58,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Improving Generator performance by retrieving the minimal amount of metadata needed. Timers added.
     - Better error messaging.
     - Improving messaging on failed type solving.
-DynamicSQL:
+- DynamicSQL:
     - Improving DynamicSQL updatable PK design.
     - Fixing indexes in iterative parameters.
 
@@ -290,7 +290,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 
 - LiveSQL:
     - Set Operators: All variants of them, including UNION [ALL], INTERSECT [ALL], and EXCEPT [ALL], along with nesting using parenthesis, default and explicit precedence, as well as set ordering, offsets, and limiting.
-    - Literal scalars: Using `sql.literal()` plain, non-parameterized values can be included in a SQL query.
+    - Literal Scalars: Using `sql.literal()` plain, non-parameterized values can be included in a SQL query.
 
 ## 4.1.1
 
