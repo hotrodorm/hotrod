@@ -2,16 +2,19 @@
 
 HotRod supports the following Databases:
 
-- [Oracle](./database-support/oracle.md)
-- [Db2 LUW](./database-support/db2-luw.md)
-- [PostgreSQL &amp; Aurora/PostgreSQL](./database-support/postgresql.md)
-- [SQL Server](./database-support/sql-server.md)
-- [MariaDB](./database-support/mariadb.md)
-- [MySQL &amp; Aurora/MySQL](./database-support/mysql.md)
-- [SAP ASE (Sybase)](./database-support/sap-ase.md)
-- [H2](./database-support/h2.md)
-- [HyperSQL (HSQLDB)](./database-support/hsqldb.md)
-- [Apache Derby](./database-support/apache-derby.md)
+- Heap Oriented Databases:
+    - [Oracle](./database-support/oracle.md)
+    - [Db2 LUW](./database-support/db2-luw.md)
+    - [PostgreSQL &amp; Aurora/PostgreSQL](./database-support/postgresql.md)
+- Clustered-Index Oriented Databases:
+    - [SQL Server](./database-support/sql-server.md)
+    - [MariaDB](./database-support/mariadb.md)
+    - [MySQL &amp; Aurora/MySQL](./database-support/mysql.md)
+    - [SAP ASE (Sybase)](./database-support/sap-ase.md)
+- In-Memory Databases:
+    - [H2](./database-support/h2.md)
+    - [HyperSQL (HSQLDB)](./database-support/hsqldb.md)
+    - [Apache Derby](./database-support/apache-derby.md)
 
 ## Dialect Features
 
