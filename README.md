@@ -38,19 +38,19 @@ System.out.println("total=" + row.get("total")); // total=21
 Selecting from a table can be done as:
 
 ```java
-List<Tuple1<Product>> rows = this.sql
-  .select(p.star(), p.shipping.plus(p.tax).as("totalCost"))
+List<Tuple1<Product>> rows = sql
+  .select(p.star(), p.shipping.plus(p.tax).minus(p.discount).as("net"))
   .tuples()
   .from(p)
-  .where(p.type.eq("SPORTS").and(p.promotion.eq("BOGO")))
-  .orderBy(p.shipping.desc())
+  .where(p.shipping.plus(p.tax).minus(p.discount).lt(10))
+  .orderBy(p.category, p.name.desc())
   .limit(50)
   .execute();
 
 for (Tuple1<Product> r : rows) {
   Product prod = r.getA() // all columns correctly named, cast, typed, and/or converted here
   System.out.println("Product: " + prod);
-  System.out.println("Total Cost: " + r.getUnbound().get("totalCost"));
+  System.out.println("Net: " + r.get("net"));
 }
 ```
 
@@ -58,7 +58,7 @@ Joining multiple tables (views, subqueries, and/or CTEs) can be done as:
 
 ```java
 List<Tuple2<Invoice, Client>> rows = sql
-  .select(i.star(), c.star(), i.amount.mult(c.discount).as("appliedDiscount"))
+  .select(i.star(), c.star(), i.amount.mult(c.discountPct).as("appliedDiscount"))
   .tuples()
   .from(i)
   .join(c, c.id.eq(i.clientId))
