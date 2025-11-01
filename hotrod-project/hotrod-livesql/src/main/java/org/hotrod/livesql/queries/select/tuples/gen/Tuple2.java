@@ -1,21 +1,17 @@
 package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.util.Map;
+import org.hotrod.livesql.queries.select.tuples.AbstractTuple;
 
-public class Tuple2<A, B> {
+public class Tuple2<A, B> extends AbstractTuple {
 
   private A a;
   private B b;
-  private Map<String, Object> unbound;
-
-  @SuppressWarnings("unused")
-  private Tuple2() {
-  }
 
   public Tuple2(A a, B b, Map<String, Object> unbound) {
+    super(unbound);
     this.a = a;
     this.b = b;
-    this.unbound = unbound;
   }
 
   public final A getA() {
@@ -24,10 +20,6 @@ public class Tuple2<A, B> {
 
   public final B getB() {
     return b;
-  }
-
-  public final Map<String, Object> getUnbound() {
-    return unbound;
   }
 
 }

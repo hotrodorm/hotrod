@@ -64,21 +64,27 @@ public class Gen {
       String className = "Tuple" + i;
       String name = DEST_DIR + "/" + className + ".java";
       try (BufferedWriter w = new BufferedWriter(new FileWriter(new File(name)))) {
-        w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "import java.util.Map;\n" + "\n"
-            + "public class ");
-        w.write(className + "<" + stream(size).collect(Collectors.joining(", ")) + ">" + " {\n\n");
+        w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n\n");
+        w.write("import java.util.Map;\n" + "import org.hotrod.livesql.queries.select.tuples.AbstractTuple;\n\n");
+        w.write("public class ");
+        w.write(
+            className + "<" + stream(size).collect(Collectors.joining(", ")) + ">" + " extends AbstractTuple {\n\n");
         stream(size).forEach(x -> write(w, "  private " + x + " " + x.toLowerCase() + ";\n"));
-        w.write("  private Map<String, Object> unbound;\n");
-        w.write("\n" + "  @SuppressWarnings(\"unused\")\n" + "  private " + className + "() {\n" + "  }\n" + "\n");
-        w.write("  public " + className + "("
+//        w.write("  private Map<String, Object> unbound;\n");
+
+//        w.write("\n" + "  @SuppressWarnings(\"unused\")\n" + "  private " + className + "() {\n" + "  }\n" + "\n");
+
+        w.write("\n  public " + className + "("
             + stream(size).map(x -> x + " " + x.toLowerCase()).collect(Collectors.joining(", "))
             + ", Map<String, Object> unbound) {\n" + "");
+        w.write("    super(unbound);\n");
         stream(size).forEach(x -> write(w, "    this." + x.toLowerCase() + " = " + x.toLowerCase() + ";\n"));
-        w.write("    this.unbound = unbound;\n" + "  }\n");
-        stream(size).forEach(x -> write(w, "\n" + "  public final " + x + " get" + x + "() {\n" + "    return "
-            + x.toLowerCase() + ";\n" + "  }\n" + ""));
-        w.write("\n" + "  public final Map<String, Object> getUnbound() {\n" + "    return unbound;\n" + "  }\n" + "\n"
-            + "}\n");
+        w.write("  }\n");
+        stream(size).forEach(x -> write(w,
+            "\n" + "  public final " + x + " get" + x + "() {\n" + "    return " + x.toLowerCase() + ";\n" + "  }\n"));
+//        w.write("\n" + "  public final Map<String, Object> getUnbound() {\n" + "    return unbound;\n" + "  }\n" + "\n"
+//            + "}\n");
+        w.write("\n}\n");
       }
     }
   }
@@ -86,8 +92,8 @@ public class Gen {
   private static void genFactory() throws IOException {
     String name = DEST_DIR + "/TupleClassFactory.java";
     try (BufferedWriter w = new BufferedWriter(new FileWriter(new File(name)))) {
-      w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "public class TupleClassFactory {\n" + "\n"
-          + "  public static Class<?> getTuplesClass(int modelInstancesCount) {\n"
+      w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "public class TupleClassFactory {\n"
+          + "\n" + "  public static Class<?> getTuplesClass(int modelInstancesCount) {\n"
           + "    switch (modelInstancesCount) {\n");
       IntStream.rangeClosed(1, MAX_SIZE)
           .forEach(x -> write(w, "    case " + x + ":\n" + "      return Tuple" + x + ".class;\n"));

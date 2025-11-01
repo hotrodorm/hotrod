@@ -1,8 +1,9 @@
 package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.util.Map;
+import org.hotrod.livesql.queries.select.tuples.AbstractTuple;
 
-public class Tuple8<A, B, C, D, E, F, G, H> {
+public class Tuple8<A, B, C, D, E, F, G, H> extends AbstractTuple {
 
   private A a;
   private B b;
@@ -12,13 +13,9 @@ public class Tuple8<A, B, C, D, E, F, G, H> {
   private F f;
   private G g;
   private H h;
-  private Map<String, Object> unbound;
-
-  @SuppressWarnings("unused")
-  private Tuple8() {
-  }
 
   public Tuple8(A a, B b, C c, D d, E e, F f, G g, H h, Map<String, Object> unbound) {
+    super(unbound);
     this.a = a;
     this.b = b;
     this.c = c;
@@ -27,7 +24,6 @@ public class Tuple8<A, B, C, D, E, F, G, H> {
     this.f = f;
     this.g = g;
     this.h = h;
-    this.unbound = unbound;
   }
 
   public final A getA() {
@@ -60,10 +56,6 @@ public class Tuple8<A, B, C, D, E, F, G, H> {
 
   public final H getH() {
     return h;
-  }
-
-  public final Map<String, Object> getUnbound() {
-    return unbound;
   }
 
 }

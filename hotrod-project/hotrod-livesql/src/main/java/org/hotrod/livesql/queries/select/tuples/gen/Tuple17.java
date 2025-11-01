@@ -1,8 +1,9 @@
 package org.hotrod.livesql.queries.select.tuples.gen;
 
 import java.util.Map;
+import org.hotrod.livesql.queries.select.tuples.AbstractTuple;
 
-public class Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> {
+public class Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> extends AbstractTuple {
 
   private A a;
   private B b;
@@ -21,13 +22,9 @@ public class Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> {
   private O o;
   private P p;
   private Q q;
-  private Map<String, Object> unbound;
-
-  @SuppressWarnings("unused")
-  private Tuple17() {
-  }
 
   public Tuple17(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l, M m, N n, O o, P p, Q q, Map<String, Object> unbound) {
+    super(unbound);
     this.a = a;
     this.b = b;
     this.c = c;
@@ -45,7 +42,6 @@ public class Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> {
     this.o = o;
     this.p = p;
     this.q = q;
-    this.unbound = unbound;
   }
 
   public final A getA() {
@@ -114,10 +110,6 @@ public class Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> {
 
   public final Q getQ() {
     return q;
-  }
-
-  public final Map<String, Object> getUnbound() {
-    return unbound;
   }
 
 }

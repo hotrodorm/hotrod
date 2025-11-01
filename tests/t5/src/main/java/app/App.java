@@ -11,6 +11,7 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -120,6 +121,14 @@ public class App {
 //      testNitro6();
       log.info("[ Ending ]");
     };
+  }
+
+  private void testTuples() {
+    ProductTable p = this.productDAO.newTable();
+    List<Tuple1<Product>> rows = this.sql.select().tuples().from(p).execute();
+    for (Tuple1<Product> r : rows) {
+      Integer total = r.get("total", Integer.class);
+    }
   }
 
   private void testSubquery() {

@@ -56,7 +56,8 @@ EmployeeTable e = this.employeeDAO.newTable();
 
 List<Tuple2<Employee, Branch>> rows = this.sql
     .select(e.star(), b.star(),
-      sql.caseWhen(b.isVip().eq(1), "VIP Manager").elseValue("Manager").end().as("title")
+      sql.caseWhen(b.region.eq("main"), "Senior ").elseValue("").end()
+         .convat(b.title).as("title")
     )
     .tuples() // here the magic starts
     .from(e)
@@ -64,12 +65,12 @@ List<Tuple2<Employee, Branch>> rows = this.sql
     .where(e.name.like("%Anne%"))
     .execute();
 for (Tuple2<Employee, Branch> r : rows) {
-  Employee account = r.getA(); // Object models are separated
+  Employee account = r.getA(); // Model tuples are separated
   Branch branch = r.getB();
-  System.out.println("=== Employee: " + account);
-  System.out.println("=== Branch: " + branch);
-  for (String prop : r.getUnbound().keySet()) { // Extra columns are retrieved
-    System.out.println("*** Extra column '" + prop + "': " + r.getUnbound().get(prop));
+  String title = r.get("title", String.class);
+  System.out.println("Employee: " + account);
+  System.out.println("Branch: " + branch);
+  System.out.println("Title: " + title);
   }
 }
 ```
