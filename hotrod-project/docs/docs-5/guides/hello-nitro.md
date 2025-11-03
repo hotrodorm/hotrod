@@ -12,19 +12,11 @@ You'll need:
 After following all the steps of this guide our main project folder will include the files and folders shown below:
 
 ```bash
-<PROJECT_HOME>
-+- application.properties
-+- pom.xml
-+- layer.xml
-+- schema.sql
-+- src/main/java/app/persistence/
-   +- LayerConfigurationBean.java
-   +- dao/
-      +- AccountDAO.java
-   +- layout/
-      +- AccountLayout.java
-   +- model/
-      +- Account.java
+application.properties
+pom.xml
+layer.xml
+schema.sql
+src/main/java
 ```
 
 ## Part 1 &mdash; Setting Up the Project
@@ -39,7 +31,7 @@ Create the `pom.xml` file as:
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>examples</groupId>
-  <artifactId>hellonitro</artifactId>
+  <artifactId>hello-nitro</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -66,13 +58,13 @@ Create the `pom.xml` file as:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.3</version>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.1.214</version>
+      <version>2.2.224</version>
     </dependency>
 
   </dependencies>
@@ -97,7 +89,7 @@ Create the `pom.xml` file as:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.3</version>
+        <version>5.1.6</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -110,7 +102,7 @@ Create the `pom.xml` file as:
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.214</version>
+            <version>2.2.224</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -176,32 +168,32 @@ Create the `layer.xml` file with:
   <table name="account">
 
     <query method="applyMonthlyCharge">
-      <parameter name="amount" java-type="Integer" />
+      <parameter name="amount" type="Integer" />
       UPDATE account SET balance = balance - #{amount}
     </query>
 
     <select method="findSavingAccounts">
-      <parameter name="year" java-type="Integer" />
+      <parameter name="year" type="Integer" />
       SELECT *
       FROM account
       WHERE title LIKE 'SAV%'
       <if test="year != null">
         AND year(created) = #{year}
       </if>
-    </select> 
+    </select>
 
   </table>
 
   <dao name="ReportingDAO">
 
     <query method="deleteOldNegativeAccounts">
-      <parameter name="maxYear" java-type="Integer" />
+      <parameter name="maxYear" type="Integer" />
       DELETE FROM account WHERE year(created) &lt;= #{maxYear} AND balance &lt; 0
     </query>
 
     <select method="getTotals" vo="ReportingTotals" mode="single-row">
-      <parameter name="minDate" java-type="java.time.LocalDate" />
-      <parameter name="maxDate" java-type="java.time.LocalDate" />
+      <parameter name="minDate" type="java.time.LocalDate" />
+      <parameter name="maxDate" type="java.time.LocalDate" />
       SELECT sum(balance) AS balance, count(*) AS count
       FROM account
       WHERE created BETWEEN #{minDate} AND #{maxDate}
@@ -320,7 +312,7 @@ public class App {
   private ReportingDAO reportingDAO;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean

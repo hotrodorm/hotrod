@@ -10,4 +10,4 @@ insert into account (id, title, created, balance) values
   (108, 'SAV2307', '2024-09-11', 20),
   (109, 'CHK1015', '2025-09-12', 140),
   (110, 'SAV2308', '2025-09-15', 45);
-
+  
