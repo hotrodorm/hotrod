@@ -63,16 +63,16 @@ The complete `pom.xml` file will look like:
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- Instantiates the JDBC DataSources -->
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency> <!-- HotRod -->
+    <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.0.0</version>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
@@ -103,7 +103,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.0.0</version>
+        <version>5.1.6</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -131,10 +131,9 @@ Also, create the empty source folders, if they are not yet created. In linux you
 
 ```bash
 mkdir -p src/main/java/app
-mkdir -p src/main/resources
 ```
 
-Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
+Change the command above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
 To check the `pom.xml` file is correct, run Maven once using:
 
@@ -284,7 +283,7 @@ public class App {
   private LiveSQL sql;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
