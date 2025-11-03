@@ -2,7 +2,7 @@
 
 This guide runs a Spring Boot project with Maven and an H2 in-memory database. It shows the details on how the data types are decided for your app when queryinh tables, views, native queries, and LiveSQL queries.
 
-It demonstrates all 11 type solver cases described in [Type Resolution Mechanics](./type-resolution-mechanics.md).
+It demonstrates all 11 type resolution cases described in [Type Resolution Mechanics](./type-resolution-mechanics.md).
 
 You'll need:
 
@@ -70,7 +70,7 @@ Add the `pom.xml` file:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.4</version>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency>
@@ -101,7 +101,7 @@ Add the `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.4</version>
+        <version>5.1.6</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -177,33 +177,34 @@ Create the file `layer.xml` with the following content:
 <hotrod>
 
   <type-solver>
-    <when test="name == 'CREATED'" java-type="java.time.LocalDateTime" />
+    <when test="name == 'CREATED'" type="java.time.LocalDateTime" />
     <when test="name == 'ACTIVE'" converter="YNConverter" />
   </type-solver>
 
   <runtime-type-solver>
-    <when test="columnName == 'dom'" java-type="Long" />
+    <when test="columnName == 'dom'" type="Long" />
     <when test="columnName.endsWith('Branch')" converter="YNConverter" />
   </runtime-type-solver>
 
-  <converter name="YNConverter" java-raw-type="java.lang.String" java-type="java.lang.Boolean"
+  <converter name="YNConverter" raw-type="String" type="Boolean"
     class="app.YNBooleanConverter" />
-  <converter name="InvoiceStatusConverter" java-raw-type="java.lang.Integer"
-    java-type="app.InvoiceStatus" class="app.InvoiceStatusConverter" />
+  <converter name="InvoiceStatusConverter" raw-type="Integer"
+    type="app.InvoiceStatus" class="app.InvoiceStatusConverter" />
 
   <table name="invoice">
-    <column name="amount" java-type="Double" />
+    <column name="amount" type="Double" />
     <column name="status" converter="InvoiceStatusConverter" />
   </table>
 
   <dao name="PaymentDAO">
 
     <select method="getBigInvoices" vo="BigInvoice">
-      <column name="amount" java-type="Double" />
+      <parameter name="minAmount" type="Integer" />
+      <column name="amount" type="Double" />
       <column name="status" converter="InvoiceStatusConverter" />
       SELECT *
       FROM invoice
-      WHERE amount > 200
+      WHERE amount > #{minAmount}
     </select>
 
   </dao>
@@ -311,7 +312,7 @@ public class App {
   private YNBooleanConverter ynBooleanConverter;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
@@ -334,7 +335,7 @@ public class App {
   }
 
   private void demoTypeSolverNitroSelect() {
-    List<BigInvoice> bi = this.paymentDAO.getBigInvoices();
+    List<BigInvoice> bi = this.paymentDAO.getBigInvoices(200);
     System.out.println("== Returns ==");
     for (BigInvoice i : bi) {
       System.out.println("2. Big Invoice: " + i);
