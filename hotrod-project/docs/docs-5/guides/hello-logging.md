@@ -33,7 +33,8 @@ a blank Maven project.
 Add the `pom.xml` file:
 
 ```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -65,7 +66,7 @@ Add the `pom.xml` file:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.4</version>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency>
@@ -96,7 +97,7 @@ Add the `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.4</version>
+        <version>5.1.6</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -172,7 +173,7 @@ Create the file `layer.xml` with the following content:
   <dao name="ReportsDAO">
 
     <select method="findEmployees" vo="FoundEmployee">
-      <parameter name="txt" java-type="String" />
+      <parameter name="txt" type="String" />
       SELECT *
       FROM employee
       WHERE name LIKE '%' || #{txt} || '%'
@@ -276,7 +277,7 @@ public class App {
   private ReportsDAO reportsDAO;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
@@ -312,7 +313,6 @@ public class App {
   }
 
 }
-
 ```
 
 ### 5. The Runtime Properties File
@@ -325,13 +325,13 @@ spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';D
 spring.datasource.username=sa
 spring.datasource.password=
 
-# 1. One CRUD logger
+# One CRUD logger
 logging.level.app.persistence.dao.EmployeeDAO=DEBUG
 
-# 2. One Nitro logger
+# One Nitro logger
 logging.level.app.persistence.dao.ReportsDAO=DEBUG
 
-# 3. One logger used by LiveSQL
+# One logger used by LiveSQL
 logging.level.app.App=DEBUG
 ```
 
