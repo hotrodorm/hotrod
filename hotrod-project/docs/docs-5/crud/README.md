@@ -331,7 +331,10 @@ In the case shown above the logic detects the row change (maybe someone changed 
 
 ### 7. Update by Example
 
-This method updates multiple rows on a table or view, using an example of the values of its columns. All the values specified as non-null are used to search for rows using an AND predicate.
+This method updates multiple rows on a table or view, using an example of the values of its columns to search and another example to update them. In short:
+
+- Only the non-null values in the *example* are used to search for rows, using an AND predicate.
+- Only the non-null values in the *values* parameter are updated; the other columns of the selected rows are left intact.
 
 This method is available in all tables with or without primary key and also in all views.
 
