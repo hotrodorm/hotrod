@@ -212,18 +212,33 @@ The following rankings are built-in in Torcs and can be activated programmatical
 - Initial Queries
 - Latest Queries
 
-Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings. For example, the default format in PostgreSQL can show the execution plan:
+Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings. For example, the default format in Oracle can retrieve the execution plan for a query of interest as:
 
 ```log
-Sort  (cost=36.80..36.80 rows=1 width=221)
-  Sort Key: i.order_date DESC
-  ->  Hash Join  (cost=16.79..36.79 rows=1 width=221)
-        Hash Cond: (i.branch_id = b.id)
-        ->  Seq Scan on invoice i  (cost=0.00..19.45 rows=209 width=100)
-              Filter: (((status)::text <> 'UNPAID'::text) AND (amount >= 228))
-        ->  Hash  (cost=16.75..16.75 rows=3 width=121)
-              ->  Seq Scan on branch b  (cost=0.00..16.75 rows=3 width=121)
-                    Filter: ((region)::text = 'SOUTH'::text)
+Plan hash value: 3305857414
+
+----------------------------------------------------------------------------------------------
+| Id  | Operation                     | Name         | Rows  | Bytes | Cost (%CPU)| Time     |
+----------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT              |              |     1 |   118 |     5  (20)| 00:00:01 |
+|   1 |  SORT ORDER BY                |              |     1 |   118 |     5  (20)| 00:00:01 |
+|   2 |   NESTED LOOPS                |              |     1 |   118 |     4   (0)| 00:00:01 |
+|   3 |    NESTED LOOPS               |              |     1 |   118 |     4   (0)| 00:00:01 |
+|*  4 |     TABLE ACCESS FULL         | INVOICE      |     1 |    84 |     3   (0)| 00:00:01 |
+|*  5 |     INDEX UNIQUE SCAN         | SYS_C0016733 |     1 |       |     0   (0)| 00:00:01 |
+|*  6 |    TABLE ACCESS BY INDEX ROWID| BRANCH       |     1 |    34 |     1   (0)| 00:00:01 |
+----------------------------------------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   4 - filter("I"."STATUS"<>:2 AND "I"."AMOUNT">=:3)
+   5 - access("B"."ID"="I"."BRANCH_ID")
+   6 - filter("B"."REGION"=:1)
+
+Note
+-----
+   - dynamic statistics used: dynamic sampling (level=2)
 ```
 
 
