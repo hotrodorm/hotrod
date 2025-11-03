@@ -51,28 +51,28 @@ Create the following `pom.xml` file:
 
   <dependencies>
 
-    <dependency>
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- Instantiates the JDBC DataSources -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- HotRod -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.4</version>
+      <version>5.1.6</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.1.214</version>
+      <version>2.2.224</version>
     </dependency>
 
   </dependencies>
@@ -97,7 +97,7 @@ Create the following `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.4</version>
+        <version>5.1.6</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -109,7 +109,7 @@ Create the following `pom.xml` file:
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.214</version>
+            <version>2.2.224</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -239,7 +239,7 @@ public class App {
   private LiveSQL sql;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
@@ -261,7 +261,7 @@ public class App {
         .orderBy(e.branchId.desc())
         .execute();
     for (Row r : rows) {
-      System.out.println("1. LiveSQL SELECT - selected row: " + r);
+      System.out.println("1. LiveSQL SELECT: " + r);
     }
   }
 
@@ -271,7 +271,7 @@ public class App {
     emp.setLastName("Marley");
     emp.setBranchId(420);
     Employee inserted = this.employeeDAO.insert(emp);
-    System.out.println("2. LiveSQL INSERT - inserted row: " + inserted);
+    System.out.println("2. LiveSQL INSERT: " + inserted);
   }
 
   private void demoLiveSQLUpdate() {
@@ -281,14 +281,14 @@ public class App {
     int count = this.employeeDAO
         .update(values, e, e.lastName.lower().like("%smith%").and(e.branchId.eq(2)))
         .execute();
-    System.out.println("3. LiveSQL UPDATE - updated rows: " + count);
+    System.out.println("3. LiveSQL UPDATE - rows: " + count);
   }
 
   private void demoLiveSQLDelete() {
     Employee example = new Employee();
     example.setBranchId(7);
     int count = this.employeeDAO.delete(example);
-    System.out.println("4. LiveSQL DELETE - deleted rows: " + count);
+    System.out.println("4. LiveSQL DELETE - rows: " + count);
   }
 
 }
