@@ -13,7 +13,6 @@ After following all the steps of this guide our main project folder will include
 
 ```bash
 application.properties     # The runtime properties of your app
-layer.xml                  # The configuration details of your persistence layer
 pom.xml                    # The Maven project file
 schema.sql                 # A SQL script that creates a table and data for this example
 src/main/java              # Your app, your converters, and the generated persistence layer
@@ -65,7 +64,7 @@ Add the `pom.xml` file:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.5</version>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency>
@@ -96,7 +95,7 @@ Add the `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.5</version>
+        <version>5.1.6</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -118,7 +117,6 @@ Add the `pom.xml` file:
   </build>
 
 </project>
-
 ```
 
 Also, create the empty source folder. In linux you can do:
@@ -241,7 +239,7 @@ public class App {
   private LiveSQL sql;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
