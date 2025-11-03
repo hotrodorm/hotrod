@@ -72,13 +72,13 @@ The complete `pom.xml` file will look like:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.4</version>
+      <version>5.1.6-SNAPSHOT</version>
     </dependency>
-
+    
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-torcs</artifactId>
-      <version>5.1.4</version>
+      <version>5.1.6-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -109,7 +109,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.4</version>
+        <version>5.1.6-SNAPSHOT</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
@@ -252,7 +252,7 @@ public class App {
   private LiveSQL sql;
 
   public static void main(String[] args) {
-    SpringApplication.run(App.class, args);
+    SpringApplication.run(App.class, args).close();
   }
 
   @Bean
@@ -328,7 +328,7 @@ public class App {
 }
 ```
 
-Create the configuration class `src/main/java/app/MyConfiguration.java` to wrap the DataSource in Torcs DataSource as:
+Create the configuration class `src/main/java/app/MyConfiguration.java` to wrap the DataSource in a TorcsDataSource as:
 
 ```java
 package app;
