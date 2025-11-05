@@ -10,15 +10,15 @@ Some time later we realized we also wanted to reduce the operational cost of the
 
 This is a list of distinctive features that we don't find in most ORM competitors. We believe HotRod shines when it comes to these features.
 
-**Entity Tuples** retrieve fully-separated tuples for joined tables and views in SELECT queries. This includes fully-modeled entities with naming rules and column type resolution, as well as additional on-the-fly computed columns, all with compilation-time syntax check while you type.
+**Entity Tuples**. SQL queries can retrieve fully-separated tuples for joined tables and views. This includes fully-modeled entities with naming rules and column type resolution, as well as additional on-the-fly computed columns, all with compilation-time syntax check while you type.
 
 **Schema Discovery**. The discovery mechanism generates a fully-functional persistence layer in minutes. By specifying an existing database schema HotRod can discover all the tables and views in it and generate the fully-named and fully-typed persistence layer. This persistence layer is used by CRUD and in LiveSQL queries so you can start prototyping right away. The schema discovery can also work on multiple schemas using rules with extra configuration.
 
 **Advanced CRUD**. Once the first rounds of prototyping are complete CRUD still offers advanced functionality to continue supporting the growth of the application, including flexible predicates, advanced ordering, query pagination, multiple strategies of optimistic locking, and more.
 
-**Advanced Data Type Resolution**. A flexible data type engine uses SQL dialect-based, custom rule-based, and designated data types to decide the types of all tables and query columns. The persistence layer gives you full control of the data types you use when interacting with the database.
+**Configurable Data Type Resolution**. The flexible data type resolution engine uses SQL dialect-based, custom rule-based, designated data types, and JDBC data types to decide the types of all tables and query columns. The persistence layer gives you full control of the data types you use when interacting with the database.
 
-**Layout and Model Modeling**. The entity modeling always separates the structure of the tables from their custom behavior. The custom, hand-written domain logic is fully protected from the ever-changing nature of the tables and query structure. The persistence layer always updates the Layout classes to keep them up-to-date with the latest structure of the tables, views, and queries, while keeping your custom logic intact in the Model classes.
+**Segregated Entity Modeling**. The entities for tables, views, and Nitro SELECTs separate their Layout (structure of the tables and queries) from their Model (custom behavior and implementation). This way their custom, hand-written domain logic is fully protected from the ever-changing nature of the tables and query structures. The persistence layer always updates the Layout classes to keep them up-to-date with the latest structure of the tables, views, and queries, while keeping your custom domain logic intact in the Model classes.
 
 **Feature-Rich LiveSQL**. Write LiveSQL queries from your app with compilation-time syntax check while you type. The comprehensive syntax includes the SELECT, INSERT, UPDATE, and DELETE SQL statemen, as well as, all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, row locking, and more.
 
