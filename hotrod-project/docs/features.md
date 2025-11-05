@@ -2,7 +2,7 @@
 
 As developers ourselves we started HotRod when we decided that we didn't like any of the available ORM solutions at the time.
 
-The initial goal of HotRod was to speed up the initial development of an app. This included quick prototyping and also providing support for the gradual growth of the app. In short, when a project is just starting schema discovery gives an edge to the team; then, when the project keeps on growing LiveSQL, Dynamic SQL, and Nitro can implement more complex functionality with little effort.
+The initial goal of HotRod was to speed up the initial development of an app. This included quick prototyping and also providing basic support for the gradual growth of the app. In short, when a project was just starting schema discovery could give an edge to the team; then, when the project kept on growing LiveSQL, Dynamic SQL, and Nitro could provide more complex functionality with little effort.
 
 Some time later we realized we also wanted to reduce the operational cost of the apps. Apart from the coding phase itself we decided to consider the debugging, testing, support, maintenance, and above all the stability and performance of the apps themselves. That's when Torcs, SQL Injection safety, API simplification, compile-time syntax checks, and many others features came into play.
 
@@ -26,9 +26,9 @@ This is a list of distinctive features that we don't find in most ORM competitor
 
 **Advanced Dynamic SQL**. Feature-full query definition that declares rules for inclusion or exclusion of SQL segments using JEXL syntax. In short, the same dynamic query will take many shapes when executed with different runtime parameters. DynamicSQL includes basic constructs such as IF/CHOOSE to advanced ones such as TRIM/FOREACH/BIND and nesting of SQL segments. Native SQL can always be added to any SQL segment.
 
-**SQL Injection Free**. Free of SQL Injection in all CRUD and LiveSQL queries. Only Nitro offers SQL Injection &ndash; always disabled by default &ndash; if deliberately enabled on a per-query basis when the specific use case requires it.
+**SQL Injection Safety**. Free of SQL Injection in all CRUD and LiveSQL queries. Only Nitro offers SQL Injection &ndash; always disabled by default &ndash; if deliberately enabled on a per-query basis when the specific use case requires it.
 
-**Out-of-the-box Cursors**. All CRUD, Nitro, and LiveSQL queries can stream data instead of materializing big data sets in memory before consuming them. This can dramatically reduce the memory footprint of your app, improve the app performance, and optimize the use of hardware resources.
+**Out-of-the-box Cursors**. All CRUD, Nitro, and LiveSQL queries can stream data instead of materializing big data sets in memory before consuming them. This can dramatically reduce the memory footprint of your app, improve the app performance, and optimize the use of the hardware resources.
 
 ## World-Class Features
 
