@@ -34,44 +34,42 @@ This is a list of distinctive features that we don't find in most ORM competitor
 
 This is a list of features that you would expect from any typical high-end ORM.
 
-**LiveSQL Live Syntax Check**. LiveSQL uses a builder pattern that allows the compiler to check the syntax of queries while you type. This prevents you typing clauses out of order or illegal expressions such as typing ORDER BY before a WHERE clause or comparing a DATE with a BOOLEAN. Flat out errors are detected immediately.
+**LiveSQL Live Syntax Check**. LiveSQL uses a builder pattern that allows the compiler to check the syntax of queries while you type. This prevents you typing clauses out of order or illegal expressions such as typing ORDER BY before a WHERE clause or comparing incompatible types such as a DATE value against a BOOLEAN value. Trivial errors are detected immediately.
 
-**Automatic Dialect Translation**. The CRUD and LiveSQL queries are automatically translated to the specific database engine of the datasource. Your CRUD and LiveSQL queries are always typed using standard SQL clauses and the dialect rephrases them accordingly. Apart from simplifying the coding of your app, this strategy also reduces the migration effort should you choose to migrate to a different database in the future.
+**Automatic Dialect Translation**. The CRUD and LiveSQL queries are automatically translated to the specific database engine by data source. While your code always uses CRUD and LiveSQL queries typed in a standard manner the dialect automatically rephrases them when they are executed. Apart from simplifying the coding of your app, this strategy also reduces the migration effort should you choose to migrate to a different database in the future.
 
-**Converters**. Column converters can be defined for any table, view, or even SELECT query columns. Converters perform on-the-fly data conversion between fully different data domains. For example between CHAR and a BOOLEAN, or between an INT and an ENUM. The converters are bidirectional so they convert data while reading from the database and also while writing back to it. Data *casting* is also supported when converting between compatible types such as INTEGER and DOUBLE and many others.
+**Converters**. Column converters can be defined for any table, view, or even SELECT query columns. Converters perform on-the-fly data conversion between different data domains. For example, between CHAR and a BOOLEAN, or between an INT and an ENUM. The converters are bidirectional so they convert data while reading from the database and also while writing back to it. Data *casting* is also supported when converting between compatible types such as INTEGER and DOUBLE and many others.
 
 **SQL-Free Source Code**. Your application does not include any SQL code in it. You can freely dedicate your code to implement the business logic instead of debugging SQL queries.
 
-**World-class OLTP databases**. The persistence layer includes the most successful world-class relational OLTP databases, including commercial and free ones. It covers heap-based, clustered-index-based, and in-memory databases.
+**World-class OLTP databases**. The persistence layer supports the leading relational OLTP databases, including commercial and free ones. It covers heap-based, clustered-index-based, and in-memory databases.
 
-**Wide Tech Stack Support**. Currently tested with state-of-the-art Java 25, Spring 6.x, and Spring Boot 3.x, it includes tech stack support back to Java 8 and Spring 3.x, and Spring Boot to 2.x.
+**Wide Tech Stack Support**. Currently tested with state-of-the-art Java 25, Spring 6.x, and Spring Boot 3.x, it includes support back to Java 8 and Spring 3.x, and Spring Boot to 2.x.
 
 **No-Config Mode for Easy Prototyping**. The No-Configuration mode can run with no layer configuration at all. Just point HotRod to a running database schema and it discovers its details automatically.
 
-**Multi-datasource Aware**. Your app can seamlessly use one or more databases &ndash; of the same or different brand, version, or edition. The persistence layers will automatically switch on the correct SQL dialect for each one, so your app code is always free from specific customizations.
+**Multi-datasource Aware**. Your app can seamlessly use one or more databases of the same or different version, edition, or even brand. The persistence layers will automatically switch on the correct SQL dialect for each one, so your app code is always free from specific customizations.
 
-**Feature-Full Configuration**. Even though it includes sensible default settings, the feature-full layer configuration can customize your configuration layer to control folder structure, naming, data types, and more.
+**Flexible Organization of the Persistence Layer**. Even though it includes sensible default settings, the layer configuration can customize your persistence layer with a rich set of settings that cover base and extra folders, packages and sub-packages, prefixes, suffixes, and more.
 
 **Row Locking**. To implement thread-safe operations the row locking mechanism are available by default in CRUD and LiveSQL, and Nitro.
 
-**Multiple Optimistic Locking Strategies**. To deal with different real-world scenarios three separate optimistic locking strategies are included, that can tackle specific cases when the database table structure cannot be modified at will.
+**Multiple Optimistic Locking Strategies**. To deal with different real-world scenarios three separate optimistic locking strategies are implemented. These can be specially useful when the development team does not have the ability to modify database table's structures at will.
 
-**Native SQL**. Native SQL can be added to any Nitro query. Native dialect SQL extensions can prove very beneficial in specific cases, specially when it comes to uncommon features available only in some databases, or when your app needs to squeeze performance from the engine.
+**Native SQL**. Native SQL can be added to any Nitro query. Native dialect SQL extensions can prove very beneficial in specific cases, specially when it comes to exploit uncommon features available only in some databases, or when your app needs to squeeze performance from the engine.
 
-**Flexible Organization of the Persistence Layer**. The persistence layer organization can be tailored to suit different teams setups. The layer configuration includes a rich set of parameters that cover base and extra folders, packages and sub-packages, prefixes, suffixes, and more.
-
-**Configuration Partitioning**. For large apps or multiple teams per project, the layer configuration cab be partitioned using *fragments*. These fragments and sub-fragments can be used to separate and tailor the configuration of sub-modules of the app.
+**Configuration Partitioning**. For large apps or multiple teams per project, the layer configuration can be partitioned using fragments. These fragments (and sub-fragments) can be used to separate and tailor the configuration of sub-modules of the app.
 
 **Auto-generated Identities and Sequence**. The persistence layer automatically discovers Identity-generated primary keys. When it comes to sequences, these need to be explicitly specified by the developer to be used by one or multiple tables.
 
-**Previewing LiveSQL**. The final translated SQL for the dialect can be viewed before it's run. This gives you full access to inspect the actualy SQL query being run, if you need to debug the app, to check specific SQL extensions, or if you need to see the specific parameter values or query columns returned by the query. This is different from SQL logging that can be activated separately.
-
-**Selecting Sequences**. Sometimes your app needs to select from database sequences that are unrelated to tables. This is typically used to produce unique values for APIs, for file-naming, and other.
+**Previewing LiveSQL**. The final translated SQL for the dialect can always be viewed before it's run. This gives you full access to inspect the actual SQL query being run, if you need to debug the app, to check specific SQL extensions, or if you need to see the specific parameter values or query columns returned by the query. This is different from SQL logging that can be activated separately.
 
 **SQL Logging**. Configurable SQL Logging allows the operation team to enable or disable logging of a deployed app, by changing the runtime logging configuration of it.
+
+**Selecting Sequences**. Sometimes your app needs to select from database sequences that are unrelated to tables. This is typically used to produce unique values for APIs, for file-naming, and other.
 
 **Composite Primary Keys Supported**. Composite and simple primary keys are fully supported in all queries. This may be considered a basic feature, but many ORMs do not implement this feature.
 
 ## Other Features
 
-Of course there are many other features that are not included in this list. The main goal of this page is brevity. See the HotRod 5 Documentation for the full details of what HotRod can do.
+Of course there are many other features that are not included in this list. The main goal of this page is brevity. See the [HotRod 5 Documentation](./docs-5/README.md) for the full details of what HotRod can do.
