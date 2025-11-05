@@ -11,8 +11,7 @@ HotRod brings:
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and other [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
-See [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, [version history](./hotrod-project/docs/version-history.md),
-[roadmap](./hotrod-project/docs/roadmap.md),
+See the [Highlights](./hotrod-project/docs/features.md) of HotRod ORM, [what's new](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, the [version history](./hotrod-project/docs/version-history.md), the [roadmap](./hotrod-project/docs/roadmap.md),
 and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). 
 All this functionality is available for any of the [supported databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
