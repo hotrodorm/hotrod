@@ -28,6 +28,7 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
@@ -62,7 +63,8 @@ public class Metadata {
 
   // Load metadata
 
-  public void load(final HotRodConfigTag config, final Connection conn) throws ErrorMessageException, FaultException {
+  public void load(final HotRodConfigTag config, final Connection conn, Feedback feedback)
+      throws ErrorMessageException, FaultException {
 
     this.voRegistry = new VORegistry();
 
@@ -87,7 +89,7 @@ public class Metadata {
               || t.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
 
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
-              jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
+              jdbcTag, isFromCurrentCatalog, isFromCurrentSchema, feedback);
           log.fine("*** tm=" + tm);
 
           this.tables.add(tm);
@@ -217,7 +219,7 @@ public class Metadata {
               || v.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
 
           vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, jdbcTag,
-              isFromCurrentCatalog, isFromCurrentSchema);
+              isFromCurrentCatalog, isFromCurrentSchema, feedback);
           this.views.add(vmd);
 
           ClassPackage fragmentPackage = vmd.getFragmentConfig() != null

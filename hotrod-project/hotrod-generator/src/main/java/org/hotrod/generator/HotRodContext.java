@@ -142,7 +142,7 @@ public class HotRodContext {
       if (configFile != null) {
         try {
           log.fine("will load configuration");
-          this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS);
+          this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames, currentCS, feedback);
 //          log.info("Main Configuration loaded.");
 //        } catch (ErrorMessageException e) {
 //          if (e.getLocation() != null) {
@@ -163,7 +163,8 @@ public class HotRodContext {
       } else {
         log.fine("No config mode");
         try {
-          this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS);
+          this.config = ConfigurationLoader.prepareNoConfig(baseDir, configFile, adapter, facetNames, currentCS,
+              feedback);
           log.fine("Default configuration loaded.");
         } catch (Throwable e) { // Added to display JVM errors, such as JAXB not present (Java 11 and up for Ant
           // generation)
@@ -336,7 +337,7 @@ public class HotRodContext {
       this.config.getFacetTables();// FIXME
       log.fine("gen 11");
 //      try {
-      metadata.load(config, conn);
+      metadata.load(config, conn, feedback);
       log.fine("gen 12");
 //      } catch (InvalidConfigurationFileException e) {
 //        log.fine("gen 13");

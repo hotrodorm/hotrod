@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
 
@@ -84,7 +85,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
   // Behavior
 
   protected void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, Feedback feedback)
       throws InvalidConfigurationFileException {
 
     // sequences
@@ -126,7 +127,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     Set<String> methodNames = new HashSet<String>();
 
     for (SelectMethodTag s : this.selects) {
-      s.validate(jdbcTag, config, fragmentConfig, adapter, isEntity);
+      s.validate(jdbcTag, config, fragmentConfig, adapter, isEntity, feedback);
       if (methodNames.contains(s.getMethod())) {
         throw new InvalidConfigurationFileException(s,
             "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");

@@ -129,6 +129,16 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
   }
 
   @Override
+  public boolean includesSQLInjection() {
+    for (DynamicSQLPart p : this.parts) {
+      if (p.includesSQLInjection()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
     return "";
   }

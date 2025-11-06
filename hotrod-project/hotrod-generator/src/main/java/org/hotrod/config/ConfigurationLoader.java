@@ -32,6 +32,7 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 import org.hotrod.utils.SourceLocation;
@@ -65,7 +66,7 @@ public class ConfigurationLoader {
   // Behavior
 
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS, Feedback feedback)
       throws ErrorMessageException, FaultException, FacetNotFoundException {
 
     // Basic validation on the file
@@ -146,7 +147,7 @@ public class ConfigurationLoader {
 
       FileRegistry fileRegistry = new FileRegistry(f);
 
-      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
+      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS, feedback);
       log.fine("Semantics validation #2 successful.");
 
       JDBCTag mst = (JDBCTag) config.getGenerators().getSelectedGeneratorTag();
@@ -181,7 +182,7 @@ public class ConfigurationLoader {
   // When no hotrod.xml is provided
 
   public static HotRodConfigTag prepareNoConfig(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS, Feedback feedback)
       throws ErrorMessageException, FaultException {
     HotRodConfigTag config = new HotRodConfigTag();
     File parentDir = null;
@@ -195,7 +196,7 @@ public class ConfigurationLoader {
     JDBCTag jdbcTag = JDBCTag.getNoConfigTag();
     FileRegistry fileRegistry = new FileRegistry(f);
     try {
-      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS);
+      config.validateCommon(config, f, fileRegistry, f, jdbcTag, null, adapter, facetNames, currentCS, feedback);
     } catch (InvalidConfigurationFileException e) {
       throw new ErrorMessageException("No Config Error: " + e.getMessage());
     } catch (FacetNotFoundException e) {
@@ -206,8 +207,8 @@ public class ConfigurationLoader {
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
       final FileRegistry fileRegistry, final JDBCTag jdbcTag, final FragmentTag fragmentTag,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws FaultException, ErrorMessageException, FacetNotFoundException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS,
+      Feedback feedback) throws FaultException, ErrorMessageException, FacetNotFoundException {
 
     // Basic file validation
 
@@ -282,7 +283,7 @@ public class ConfigurationLoader {
       fileRegistry.add(fragmentTag, f);
       log.fine("----2> fileRegistry=" + fileRegistry);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, jdbcTag, fragmentConfig, adapter, facetNames,
-          currentCS);
+          currentCS, feedback);
 
       // Complete
 

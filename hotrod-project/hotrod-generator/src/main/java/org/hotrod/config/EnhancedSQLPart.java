@@ -38,6 +38,10 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   public abstract void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException;
 
+  public boolean includesSQLInjection() {
+    return false;
+  }
+
   // Render SQL Angle
 
   public abstract String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp);

@@ -10,4 +10,8 @@ public interface SQLSegment {
 
   public abstract String renderSQLFoundation(ParameterRenderer parameterRenderer);
 
+  default boolean hasSQLInjection() {
+    return false;
+  }
+
 }

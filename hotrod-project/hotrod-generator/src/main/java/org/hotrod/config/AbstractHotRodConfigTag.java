@@ -25,6 +25,7 @@ import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.FileRegistry;
@@ -109,7 +110,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
       final File parentFile, final JDBCTag jdbcTag, final HotRodFragmentConfigTag fragmentConfig,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS,
+      Feedback feedback)
       throws InvalidConfigurationFileException, ErrorMessageException, FaultException, FacetNotFoundException {
 
     log.fine("validateCommon");
@@ -119,7 +121,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     // DAOs
 
     for (TableTag t : this.tables) {
-      t.validate(jdbcTag, config, fragmentConfig, adapter, currentCS);
+      t.validate(jdbcTag, config, fragmentConfig, adapter, currentCS, feedback);
     }
     Collections.sort(this.tables, new Comparator<TableTag>() {
       @Override
@@ -139,7 +141,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     });
 
     for (ViewTag v : this.views) {
-      v.validate(jdbcTag, config, fragmentConfig, adapter, currentCS);
+      v.validate(jdbcTag, config, fragmentConfig, adapter, currentCS, feedback);
     }
     Collections.sort(this.views, new Comparator<ViewTag>() {
       @Override
@@ -150,7 +152,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
     for (ExecutorTag x : this.executors) {
       try {
-        x.validate(jdbcTag, config, fragmentConfig, adapter);
+        x.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
       } catch (InvalidConfigurationFileException e1) {
         throw e1;
       }
@@ -163,13 +165,13 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     });
 
     for (FacetTag f : this.facets) {
-      f.validate(config, jdbcTag, fragmentConfig, adapter);
+      f.validate(config, jdbcTag, fragmentConfig, adapter, feedback);
     }
 
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, parentDir, fileRegistry, parentFile, jdbcTag, adapter, facetNames, currentCS);
+      f.validate(config, parentDir, fileRegistry, parentFile, jdbcTag, adapter, facetNames, currentCS, feedback);
       this.mergeFragment(f.getFragmentConfig());
     }
 

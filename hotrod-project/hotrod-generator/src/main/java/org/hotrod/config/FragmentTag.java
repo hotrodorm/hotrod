@@ -12,6 +12,7 @@ import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -47,7 +48,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
       final File parentFile, final JDBCTag jdbcTag, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS, Feedback feedback)
       throws InvalidConfigurationFileException, ErrorMessageException, FaultException, FacetNotFoundException {
 
     log.fine("Will load fragment: this.filename=" + this.filename);
@@ -70,18 +71,18 @@ public class FragmentTag extends AbstractConfigurationTag {
           + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    load(primaryConfig, fileRegistry, jdbcTag, adapter, facetNames, currentCS);
+    load(primaryConfig, fileRegistry, jdbcTag, adapter, facetNames, currentCS, feedback);
 
     log.fine("Fragment loaded.");
 
   }
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final JDBCTag jdbcTag,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
-      throws FaultException, ErrorMessageException, FacetNotFoundException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS,
+      Feedback feedback) throws FaultException, ErrorMessageException, FacetNotFoundException {
     log.fine("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, jdbcTag, this, adapter,
-        facetNames, currentCS);
+        facetNames, currentCS, feedback);
     log.fine("Fragment loaded.");
 //    super.addChildren(this.fragmentConfig.getSubTags());
   }

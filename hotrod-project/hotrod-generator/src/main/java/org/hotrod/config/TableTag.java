@@ -15,6 +15,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
@@ -180,8 +181,8 @@ public class TableTag extends AbstractEntityDAOTag {
   public static final String ENTITY_PATTERN = "[A-Z][a-zA-Z0-9_]*+";
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS)
-      throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final CatalogSchema currentCS,
+      Feedback feedback) throws InvalidConfigurationFileException {
 
     this.jdbcTag = jdbcTag;
     this.fragmentConfig = fragmentConfig;
@@ -366,7 +367,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
     // sequences, queries, and selects
 
-    super.validate(jdbcTag, config, fragmentConfig, adapter);
+    super.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
 
   }
 

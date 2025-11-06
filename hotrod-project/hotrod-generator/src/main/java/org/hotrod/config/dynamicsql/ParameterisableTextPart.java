@@ -133,6 +133,15 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   }
 
+  public boolean includesSQLInjection() {
+    for (SQLSegment s : this.segments) {
+      if (s.hasSQLInjection()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean isEmpty() {
     for (SQLSegment s : this.segments) {
       if (!s.isEmpty()) {

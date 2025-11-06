@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
@@ -44,7 +45,7 @@ public class ExecutorTag extends AbstractDAOTag {
   // Behavior
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, Feedback feedback)
       throws InvalidConfigurationFileException {
 
     log.fine("validate Table tag: " + jdbcTag.getInternalCaption());
@@ -71,7 +72,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
     // sequences, queries, selects
 
-    super.validate(jdbcTag, config, fragmentConfig, adapter);
+    super.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
 
   }
 

@@ -72,6 +72,11 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
     this.method = method;
   }
 
+  @XmlAttribute(name = "sql-injection-enabled")
+  public void setSQLInjectionEnabled(final String sSQLInjectionEnabled) {
+    this.sSQLInjectionEnabled = sSQLInjectionEnabled;
+  }
+
   // Behavior
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
@@ -94,7 +99,6 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
         try {
           ParameterTag p = (ParameterTag) obj; // parameter
           p.validate();
-//          log.info("## Adding parameter '" + p.getName() + "'");
           this.parameters.add(p);
         } catch (ClassCastException e2) {
           try {
@@ -106,6 +110,25 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
                 + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
           }
         }
+      }
+    }
+
+    boolean sqlInjectionUsed = false;
+    for (DynamicSQLPart p : parts) {
+      if (p.includesSQLInjection()) {
+        sqlInjectionUsed = true;
+      }
+    }
+    if (sqlInjectionUsed) {
+      if (!this.sqlInjectionEnabled) {
+        throw new InvalidConfigurationFileException(this,
+            "SQL Injection is used in the tag <" + super.getTagName()
+                + "> but it's not enabled. If you want to use SQL Injection in this <" + super.getTagName()
+                + "> tag please enable it by adding the attribute 'sql-injection-enabled' with value 'true' to it.");
+      } else {
+        log.warning("SQL Injection was implemented in the <" + super.getTagName() + "> method '" + this.method
+            + "' in the file " + this.getSourceLocation().getFile().getName() + ":"
+            + this.getSourceLocation().getLineNumber() + ".");
       }
     }
 

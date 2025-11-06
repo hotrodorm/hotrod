@@ -23,6 +23,10 @@ public class ParameterInjection implements SQLSegment {
     this.name = name;
   }
 
+  public boolean hasSQLInjection() {
+    return true;
+  }
+
   // Setters
 
   // Getters
@@ -38,7 +42,7 @@ public class ParameterInjection implements SQLSegment {
 
   @Override
   public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
-    return "";
+    return "?";
   }
 
   @Override

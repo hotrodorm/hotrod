@@ -75,6 +75,7 @@
       <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="method" type="xsd:string" use="required" />
+    <xsd:attribute name="sql-injection-enabled" type="xsd:string" />
   </xsd:complexType>
 
   <!-- auto-generated-column -->
@@ -170,6 +171,7 @@
     <xsd:attribute name="vo" type="xsd:string" />
     <xsd:attribute name="mode" type="xsd:string" />
     <xsd:attribute name="implements" type="xsd:string" />
+    <xsd:attribute name="sql-injection-enabled" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - columns -->

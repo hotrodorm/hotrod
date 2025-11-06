@@ -19,6 +19,8 @@ This tag includes the following attribute:
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | `method` | The Java method that will execute this query | Required |
+| `sql-injection-enabled` | Enables SQL Injection in this query. When enabled the SQL Injection can be achieved by adding to the query any expression that evaluates to a String in the form `$SQLINJECTION{expression}`| `false` |
+
 
 
 ## General Structure

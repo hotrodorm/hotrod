@@ -23,6 +23,7 @@ This tag includes the following attribute:
 | `vo` | The VO class that will be generated to represent result set rows of the query. Allowed only for `<select>` tags inside `<dao>` tags, since `<select>` tags inside `<table>` and `<view>` tags always return VOs of the corresponding entity | Optional [^2] |
 | `mode` | The fecthing mode that defines how the query result will be represented in Java. Valid options are: `list`, `cursor`, `single-row` [^1] | `list` |
 | `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
+| `sql-injection-enabled` | Enables SQL Injection in this query. When enabled the SQL Injection can be achieved by adding to the query any expression that evaluates to a String in the form `$SQLINJECTION{expression}`| `false` |
 
 [^1]: When using the `list` option the method will return a `List<Row>`. When using the `cursor` option the method will return a `Cursor<Row>`. When using
 `single-row` the method will return `Row`.

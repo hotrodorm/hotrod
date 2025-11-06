@@ -10,6 +10,7 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -19,7 +20,7 @@ public abstract class DataSetMetadataFactory {
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
       final DatabaseAdapter adapter, final HotRodConfigTag config, final JDBCTag jdbcTag,
-      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
+      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema, Feedback feedback)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     log.fine("init");
@@ -58,7 +59,7 @@ public abstract class DataSetMetadataFactory {
         tableTag.setCatalog(t.getCatalog());
         tableTag.setSchema(t.getSchema());
         tableTag.setName(t.getName());
-        tableTag.validate(null, config, null, adapter, null);
+        tableTag.validate(null, config, null, adapter, null, feedback);
         return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
             config, jdbcTag, isFromCurrentCatalog, isFromCurrentSchema);
       } else {
@@ -66,7 +67,7 @@ public abstract class DataSetMetadataFactory {
         viewTag.setCatalog(t.getCatalog());
         viewTag.setSchema(t.getSchema());
         viewTag.setName(t.getName());
-        viewTag.validate(null, config, null, adapter, null);
+        viewTag.validate(null, config, null, adapter, null, feedback);
         return new TableDataSetMetadata(viewTag, t, adapter, config, jdbcTag, isFromCurrentCatalog,
             isFromCurrentSchema);
       }

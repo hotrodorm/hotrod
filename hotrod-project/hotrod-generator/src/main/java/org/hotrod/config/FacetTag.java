@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
@@ -73,7 +74,7 @@ public class FacetTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final HotRodConfigTag config, final JDBCTag jdbcTag,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, Feedback feedback)
       throws InvalidConfigurationFileException {
 
     // name
@@ -86,19 +87,19 @@ public class FacetTag extends AbstractConfigurationTag {
     // daos
 
     for (TableTag t : this.tables) {
-      t.validate(jdbcTag, config, fragmentConfig, adapter);
+      t.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(jdbcTag, config, fragmentConfig, adapter);
+      v.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
     }
 
     for (EnumTag e : this.enums) {
-      e.validate(jdbcTag, config, fragmentConfig, adapter);
+      e.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
     }
 
     for (ExecutorTag dao : this.daos) {
-      dao.validate(jdbcTag, config, fragmentConfig, adapter);
+      dao.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
     }
 
   }

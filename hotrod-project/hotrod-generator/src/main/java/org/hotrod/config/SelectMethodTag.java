@@ -27,6 +27,7 @@ import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
@@ -138,6 +139,11 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     this.sMode = m;
   }
 
+  @XmlAttribute(name = "sql-injection-enabled")
+  public void setSQLInjectionEnabled(final String sSQLInjectionEnabled) {
+    this.sSQLInjectionEnabled = sSQLInjectionEnabled;
+  }
+
   @XmlAttribute(name = "implements")
   public void setImplements(final String implementsClasses) {
     this.implementsClasses = implementsClasses;
@@ -146,8 +152,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   // Behavior
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final boolean belongsToEntity)
-      throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, final boolean belongsToEntity,
+      Feedback feedback) throws InvalidConfigurationFileException {
+
+    super.validate(jdbcTag, config, fragmentConfig);
 
     this.belongsToEntity = belongsToEntity;
     this.fragmentConfig = fragmentConfig;
@@ -200,19 +208,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       this.aggregatedPart = new SequenceOfParts(this.parts);
     } else {
       this.aggregatedPart = this.parts.get(0);
-    }
-
-    // method
-
-    if (SUtil.isEmpty(this.method)) {
-      throw new InvalidConfigurationFileException(this, "Attribute 'method' of tag <" + getTagName()
-          + "> cannot be empty. " + "A unique Java method name was expected for the DAO class.");
-    }
-    if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-      throw new InvalidConfigurationFileException(this,
-          "Invalid method name '" + this.method + "' on tag <" + super.getTagName()
-              + ">. A Java method name must start with a lower case letter, "
-              + "and continue with letters, digits, and/or underscores.");
     }
 
     // vo
@@ -297,14 +292,28 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     // Literal SQL, <columns>, <complement> tags
 
+    boolean sqlInjectionUsed = false;
     for (EnhancedSQLPart p : this.parts) {
-      // log.info("VAL p: " + p.getClass().getName());
       p.validate(jdbcTag, config, fragmentConfig, this.parameters, adapter);
+      if (p.includesSQLInjection()) {
+        sqlInjectionUsed = true;
+      }
+    }
+    if (sqlInjectionUsed) {
+      if (!this.sqlInjectionEnabled) {
+        throw new InvalidConfigurationFileException(this,
+            "SQL Injection is used in the tag <" + super.getTagName()
+                + "> but it's not enabled. If you want to use SQL Injection in this <" + super.getTagName()
+                + "> tag please enable it by adding the attribute 'sql-injection-enabled' with value 'true' to it.");
+      } else {
+        feedback.warn("SQL Injection was implemented in the <" + super.getTagName() + "> method '" + this.method
+            + "' in the file " + this.getSourceLocation().getFile().getName() + ":"
+            + this.getSourceLocation().getLineNumber() + ".");
+      }
     }
 
     // all validations cleared
 
-    log.fine("columns=" + this.columns.size());
   }
 
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
