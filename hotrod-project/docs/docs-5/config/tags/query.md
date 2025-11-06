@@ -57,7 +57,7 @@ implemented with the `TRUNCATE` statement as:
 The following example &mdash; for DB2 &mdash; includes Dynamic SQL, parameter applying, and parameter injection:
 
 ```xml
-<query method="closeSales">
+<query method="closeSales" sql-injection-enabled="true">
   <parameter name="soldOn" java-type="java.time.LocalDateTime" jdbc-type="TIMESTAMP" />
   <parameter name="branchId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
   <parameter name="rows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -70,16 +70,16 @@ The following example &mdash; for DB2 &mdash; includes Dynamic SQL, parameter ap
     </if>
     and fulfilled = 1
   order by fulfilled_on
-  fetch next ${rows} rows only
+  fetch next $SQLINJECTION{rows} rows only
 </query>
 ```
 
 In the example above we can see:
+
 - It defines three parameters.
 - The SQL statement is an UPDATE that does not return any rows.
 - The parameter `soldOn` is **applied** to the query using the `#{}` construct.
-- The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this
-parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause.
+- The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause. Notice that the attribute `sql-injection-enabled` must be used to enable SQL Injection.
 - Dynamic SQL is used to filter rows by `branch_id` if the parameter `branchId` has a non-null value. If the parameter
 is null, the section `and branch_id = #{branchId}` is not included in the SQL statement at all.
 
@@ -89,7 +89,7 @@ is null, the section `and branch_id = #{branchId}` is not included in the SQL st
 Injecting a parameter value means to directly *concatenate* its value into the SQL statement. This can be seen as a
 simple way of assembling SQL statement at first, and it actually is. However, the downside of it &mdash; and it's a big one
 &mdash; is that SQL Injection can modify the whole SQL statement. If the parameter is not controlled by the application and
-comes unfiltered from the application UI or other external source it can represent a big security hole in the application and
+comes unfiltered from the application UI or other external source it can represent a big security risk in the application and
 can lead to severe losses to the business.
 
 In this particular example, the parameter `rows` is injected. If the value always comes from inside the application then there's no 

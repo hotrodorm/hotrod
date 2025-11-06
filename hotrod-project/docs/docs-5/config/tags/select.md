@@ -86,15 +86,17 @@ could define a couple of parameters for it. The following example (for PostgreSQ
 parameter and injects the second one:
 
 ```xml
-<select method="getPendingSalesOfBranch" vo="BranchPendingSale">
+<select method="getPendingSalesOfBranch" vo="BranchPendingSale" sql-injection-enabled="true">
   <parameter name="branchId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
   <parameter name="orderColumn" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-  select * 
-  from sales 
+  select *
+  from sales
   where status = 'PENDING` and branch_id = #{branchId}
-  order by ${orderColumn}
+  order by $SQLINJECTION{orderColumn}
 </select>
 ```
+
+**Note**: The attribute `sql-injection-enabled` must be explicitly set to `true` to enable SQL Injection in this query. Typically you don't need SQL Injection very often, but in exceptional cases only.
 
 The above `<select>` query tag will add the following method to the DAO in the persistence layer:
 
@@ -111,7 +113,7 @@ There are multiple variations for SELECT queries, each one enhancing different a
 Injecting a parameter value means to directly *concatenate* its value into the SQL statement. This can be seen as a
 simple way of assembling SQL statement at first, and it actually is. However, the downside of it &mdash; and it's a big one
 &mdash; is that SQL Injection can modify the whole SQL statement. If the parameter is not controlled by the application and
-comes unfiltered from the application UI or other external source it can represent a big security hole in the application and
+comes unfiltered from the application UI or other external source it can represent a big security risk in the application and
 can lead to severe losses to the business.
 
 In this particular example, the parameter `rows` is injected. If the value always comes from inside the application then there's no 
