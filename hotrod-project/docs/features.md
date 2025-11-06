@@ -26,7 +26,7 @@ Once the initial prototyping is complete, CRUD continues to offer advanced funct
 
 The flexible data type resolution engine employs SQL dialect-based, custom rule-based, designated data types, and JDBC data types to determine the types for all tables and query columns. The Data type Resolution grants you full control over the data types used in database interactions.
 
-### Segregated Entity Modeling
+### Updatable Entity Model
 
 Entities for tables, views, and Nitro SELECTs separate their *Layout* (the structure of tables and queries) from their *Model* (custom behavior and implementation). This ensures that your hand-written domain logic remains safe from the ever-changing nature of table and query structures. When the persistence layer is updated the layout classes are refreshed to reflect the latest structures of tables, views, and queries while preserving your custom domain logic within the model classes.
 
