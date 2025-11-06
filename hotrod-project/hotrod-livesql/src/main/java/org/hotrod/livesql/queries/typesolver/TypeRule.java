@@ -84,7 +84,7 @@ public class TypeRule {
 
     private static final long serialVersionUID = 1L;
 
-    private ResultSetColumnMetadata cm;
+    private transient ResultSetColumnMetadata cm;
 
     public CouldNotResolveResultSetDataTypeException(ResultSetColumnMetadata cm, String message) {
       super(message);

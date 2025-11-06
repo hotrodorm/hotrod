@@ -397,9 +397,10 @@ public class H2Adapter extends DatabaseAdapter {
 //    case java.sql.Types.ROWID
 //    case java.sql.Types.STRUCT
 
+    default:
+      return null;
     }
 
-    return null;
   }
 
   @Override

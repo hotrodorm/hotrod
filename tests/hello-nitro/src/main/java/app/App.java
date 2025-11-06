@@ -53,12 +53,15 @@ public class App {
   }
 
   private void demoNitro3() {
-    int count = this.reportingDAO.deleteOldNegativeAccounts(2015);
+    Integer year = 2015;
+    
+    int count = this.reportingDAO.deleteOldNegativeAccounts(year);
     System.out.println("Deleted a total " + count + " old account(s).");
   }
 
   private void demoNitro4() {
-    ReportingTotals totals = this.reportingDAO.getTotals(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
+    DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));       
+    ReportingTotals totals = this.reportingDAO.getTotals(dr);
     System.out.println("September 2025: " + totals.getCount() + " accounts, $" + totals.getBalance() + " balance.");
   }
 

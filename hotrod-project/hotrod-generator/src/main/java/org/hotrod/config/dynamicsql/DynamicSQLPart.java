@@ -47,7 +47,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected List<Object> content = new ArrayList<Object>();
+  protected List<Object> dynamicContent = new ArrayList<Object>();
 
   protected List<DynamicSQLPart> parts;
 
@@ -81,7 +81,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
     // 2. General body parsing & validation
 
     this.parts = new ArrayList<DynamicSQLPart>();
-    for (Object obj : this.content) {
+    for (Object obj : this.dynamicContent) {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
@@ -149,7 +149,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     this.parts = new ArrayList<DynamicSQLPart>();
-    for (Object obj : this.content) {
+    for (Object obj : this.dynamicContent) {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj; // literal content part

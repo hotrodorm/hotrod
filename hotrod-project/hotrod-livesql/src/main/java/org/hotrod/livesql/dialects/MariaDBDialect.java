@@ -91,14 +91,14 @@ public class MariaDBDialect extends LiveSQLDialect {
         return RuntimeType.ofDialect(Integer.class, 12);
       } else if (m.getColumnTypeName().toUpperCase().equals("INT")) {
         return RuntimeType.ofDialect(Integer.class, 13);
-      } else if (m.getColumnTypeName().toUpperCase().equals("INT UNSIGNED")) {
+      } else { // INT UNSIGNED
         return RuntimeType.ofDialect(Long.class, 14);
       }
 
     case java.sql.Types.BIGINT:
       if (m.getColumnTypeName().toUpperCase().equals("BIGINT")) {
         return RuntimeType.ofDialect(Long.class, 15);
-      } else if (m.getColumnTypeName().toUpperCase().equals("BIGINT UNSIGNED")) {
+      } else { // BIGINT UNSIGNED
         return RuntimeType.ofDialect(BigInteger.class, 16);
       }
 
@@ -298,6 +298,7 @@ public class MariaDBDialect extends LiveSQLDialect {
             break;
           case WAIT:
             sb.append(" WAIT " + waitTime);
+            break;
           case SKIP_LOCKED:
             sb.append(" SKIP LOCKED");
             break;

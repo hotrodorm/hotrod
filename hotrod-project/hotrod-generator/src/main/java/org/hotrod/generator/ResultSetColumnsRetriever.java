@@ -204,6 +204,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   @Override
   public void close() throws Exception {
+    // Nothing to do
   }
 
   // Classes

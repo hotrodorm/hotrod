@@ -535,9 +535,9 @@ public class VORegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private EntityVOClass thisOne;
-    private SelectVOClass thisOneSt;
-    private EntityVOClass otherOne;
+    private transient EntityVOClass thisOne;
+    private transient SelectVOClass thisOneSt;
+    private transient EntityVOClass otherOne;
 
     public VOAlreadyExistsException(EntityVOClass thisOne, final EntityVOClass otherOne) {
       super();
@@ -571,9 +571,9 @@ public class VORegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private EntityVOClass thisOne;
-    private SelectVOClass thisOneSt;
-    private SelectVOClass otherOne;
+    private transient EntityVOClass thisOne;
+    private transient SelectVOClass thisOneSt;
+    private transient SelectVOClass otherOne;
 
     public StructuredVOAlreadyExistsException(final EntityVOClass thisOne, final SelectVOClass otherOne) {
       super();

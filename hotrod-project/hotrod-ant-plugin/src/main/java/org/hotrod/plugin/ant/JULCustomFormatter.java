@@ -24,28 +24,28 @@ public class JULCustomFormatter extends Formatter {
   }
 
   @Override
-  public String format(LogRecord record) {
+  public String format(LogRecord logRecord) {
     StringBuilder builder = new StringBuilder();
-    appendDateTime(record, builder);
-    appendLevel(record, builder);
-    appendClassNameAndLineNumber(record, builder);
-    appendMessage(record, builder);
-    appendThrown(record, builder);
+    appendDateTime(logRecord, builder);
+    appendLevel(logRecord, builder);
+    appendClassNameAndLineNumber(logRecord, builder);
+    appendMessage(logRecord, builder);
+    appendThrown(logRecord, builder);
     builder.append("\n");
     return builder.toString();
   }
 
-  private void appendDateTime(LogRecord record, StringBuilder builder) {
-    builder.append(DF.format(record.getMillis()));
+  private void appendDateTime(LogRecord logRecord, StringBuilder builder) {
+    builder.append(DF.format(logRecord.getMillis()));
   }
 
-  private void appendLevel(LogRecord record, StringBuilder builder) {
-    String name = renderLevel(record);
+  private void appendLevel(LogRecord logRecord, StringBuilder builder) {
+    String name = renderLevel(logRecord);
     builder.append(" ").append(name);
   }
 
-  private String renderLevel(LogRecord record) {
-    int l = record.getLevel().intValue();
+  private String renderLevel(LogRecord logRecord) {
+    int l = logRecord.getLevel().intValue();
     if (l == Level.SEVERE.intValue()) {
       return "SEVER";
     } else if (l == Level.WARNING.intValue()) {
@@ -63,7 +63,7 @@ public class JULCustomFormatter extends Formatter {
     }
   }
 
-  private void appendClassNameAndLineNumber(LogRecord record, StringBuilder builder) {
+  private void appendClassNameAndLineNumber(LogRecord logRecord, StringBuilder builder) {
     StackTraceElement caller = findCaller(Thread.currentThread().getStackTrace());
     if (caller != null) {
       String className = caller.getClassName();
@@ -86,12 +86,12 @@ public class JULCustomFormatter extends Formatter {
     return null;
   }
 
-  private void appendMessage(LogRecord record, StringBuilder builder) {
-    builder.append(" - ").append(formatMessage(record));
+  private void appendMessage(LogRecord logRecord, StringBuilder builder) {
+    builder.append(" - ").append(formatMessage(logRecord));
   }
 
-  private void appendThrown(LogRecord record, StringBuilder builder) {
-    Throwable thrown = record.getThrown();
+  private void appendThrown(LogRecord logRecord, StringBuilder builder) {
+    Throwable thrown = logRecord.getThrown();
     if (thrown != null) {
       StringWriter sw = new StringWriter();
       thrown.printStackTrace(new PrintWriter(sw));

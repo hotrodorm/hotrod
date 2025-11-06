@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import app.DateRange;
 import app.persistence.model.ReportingTotals;
 
 @Component
@@ -59,7 +58,7 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
     this.query0 = dyn
       .literal("\n      ")
       .literal("\n      DELETE FROM account WHERE year(created) <= ")
-      .parameterNullable("maxYear", Types.INTEGER)
+      .parameter("maxYear")
       .literal(" AND balance < 0\n    ")
       .endModificationQuery();
   }
@@ -84,11 +83,10 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
   private void initializeSelect0() {
     this.select0 = dyn
       .literal("\n      ")
-      .literal("\n      ")
       .literal("\n      SELECT sum(balance) AS balance, count(*) AS count\n      FROM account\n      WHERE created BETWEEN ")
-      .parameterNullable("minDate", Types.DATE)
+      .variable("dr.minDate")
       .literal(" AND ")
-      .parameterNullable("maxDate", Types.DATE)
+      .variable("dr.maxDate")
       .literal("\n    ")
       .endSelectQuery();
   }
@@ -132,10 +130,9 @@ public class ReportingDAO implements Serializable, ApplicationContextAware {
 
   };
 
-  public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate) {
+  public ReportingTotals getTotals(DateRange dr) {
     Parameters params = this.dyn.newParameters();
-    params.add("minDate", minDate);
-    params.add("maxDate", maxDate);
+    params.add("dr", dr);
     RowReader0 rr = new RowReader0();
     PreparedSelectQuery<ReportingTotals> preparedQuery = this.select0.prepare(params, rr);
     logQuery(preparedQuery);

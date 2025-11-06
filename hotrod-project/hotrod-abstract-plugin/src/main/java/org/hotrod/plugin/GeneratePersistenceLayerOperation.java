@@ -97,30 +97,15 @@ public class GeneratePersistenceLayerOperation {
             + "localproperties file exists but it's not a regular file: " + this.localproperties);
       }
 
-      BufferedReader r = null;
-      Properties props = null;
-
-      try {
-        props = new Properties();
-        r = new BufferedReader(new FileReader(p));
+      Properties props = new Properties();
+      try (BufferedReader r = new BufferedReader(new FileReader(p))) {
         props.load(r);
-
       } catch (FileNotFoundException e) {
         throw new ErrorMessageException(
             Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
-
       } catch (IOException e) {
         throw new ErrorMessageException(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
             + e.getMessage() + ": " + this.localproperties);
-
-      } finally {
-        if (r != null) {
-          try {
-            r.close();
-          } catch (IOException e) {
-            // Swallow this exception
-          }
-        }
       }
 
       // 1.b Override default values

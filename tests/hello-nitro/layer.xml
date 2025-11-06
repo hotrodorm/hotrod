@@ -5,37 +5,37 @@
   </generators>
 
   <table name="account">
-
+<!-- 
+ -->
     <query method="applyMonthlyCharge">
       <parameter name="amount" type="Integer" />
       UPDATE account SET balance = balance - #{amount}
     </query>
 
-    <select method="findSavingAccounts">
+    <select method="findSavingAccounts" sql-injection-enabled="true">
       <parameter name="year" type="Integer" />
       SELECT *
       FROM account
       WHERE title LIKE 'SAV%'
       <if test="year != null">
-        AND year(created) = #{year}
+        AND year(created) = '$SQLINJECTION{year.toString()}'
       </if>
     </select> 
-
   </table>
 
   <dao name="ReportingDAO">
 
+<!-- 
+ -->
     <query method="deleteOldNegativeAccounts">
       <parameter name="maxYear" type="Integer" />
       DELETE FROM account WHERE year(created) &lt;= #{maxYear} AND balance &lt; 0
     </query>
-
     <select method="getTotals" vo="ReportingTotals" mode="single-row">
-      <parameter name="minDate" type="java.time.LocalDate" />
-      <parameter name="maxDate" type="java.time.LocalDate" />
+      <parameter name="dr" type="app.DateRange" />
       SELECT sum(balance) AS balance, count(*) AS count
       FROM account
-      WHERE created BETWEEN #{minDate} AND #{maxDate}
+      WHERE created BETWEEN #{dr.minDate} AND #{dr.maxDate}
     </select>
 
   </dao>

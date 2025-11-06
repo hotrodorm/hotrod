@@ -39,7 +39,7 @@ public class ForeignKeysTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate() throws InvalidConfigurationFileException {
-
+    // nothing to do
   }
 
   // Getters

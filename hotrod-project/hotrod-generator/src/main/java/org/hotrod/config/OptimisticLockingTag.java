@@ -223,6 +223,7 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
   private void validateFullRowCheckStrategy(final Metadata metadata, final String canonicalSQLName, final JdbcTable t)
       throws InvalidConfigurationFileException {
+    // Nothing to do
   }
 
   // Getters

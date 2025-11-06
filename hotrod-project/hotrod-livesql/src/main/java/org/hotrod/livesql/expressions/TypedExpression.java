@@ -10,25 +10,25 @@ import org.hotrod.livesql.queries.typesolver.TypeSource;
 public class TypedExpression extends Expression {
 
   private Expression referencedExpression;
-  protected TypeHandler<?, ?> typeHandler;
+  protected TypeHandler<?, ?> typedTypeHandler;
 
   public TypedExpression(Expression expr, Class<?> type) {
     super(expr.getPrecedence());
     TypeHandler<?, ?> th = TypeHandler.forClass(type, TypeSource.RUNTIME_DESIGNATED, null);
-    this.typeHandler = th;
+    this.typedTypeHandler = th;
     this.referencedExpression = expr;
   }
 
   public TypedExpression(Expression expr, TypeConverter<?, ?> converter) {
     super(expr.getPrecedence());
     TypeHandler<?, ?> th = TypeHandler.forConverter(converter, TypeSource.RUNTIME_DESIGNATED, null);
-    this.typeHandler = th;
+    this.typedTypeHandler = th;
     this.referencedExpression = expr;
   }
 
   @Override
   protected TypeHandler<?, ?> getTypeHandler() {
-    return this.typeHandler;
+    return this.typedTypeHandler;
   }
 
   @Override

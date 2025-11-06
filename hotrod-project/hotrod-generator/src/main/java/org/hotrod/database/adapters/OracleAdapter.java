@@ -31,6 +31,7 @@ public class OracleAdapter extends DatabaseAdapter {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(OracleAdapter.class.getName());
 
+  @SuppressWarnings("unused")
   private boolean isOracle12cOrNewer;
 
   public OracleAdapter(final DatabaseMetaData dm) throws SQLException {
@@ -101,7 +102,7 @@ public class OracleAdapter extends DatabaseAdapter {
         return new PropertyType(BigDecimal.class, m, false, TypeSource.STATIC_DIALECT_RULE, 10);
       } else if ("double precision".equalsIgnoreCase(m.getTypeName())) {
         return new PropertyType(Double.class, m, false, TypeSource.STATIC_DIALECT_RULE, 11);
-      } else if ("float".equalsIgnoreCase(m.getTypeName())) {
+      } else { // FLOAT
         if (m.getPrecision() <= 23) {
           return new PropertyType(Float.class, m, false, TypeSource.STATIC_DIALECT_RULE, 12);
         } else if (m.getPrecision() <= 52) {
@@ -416,9 +417,11 @@ public class OracleAdapter extends DatabaseAdapter {
 //    case java.sql.Types.ROWID
 //    case java.sql.Types.STRUCT
 
+    default:
+      return null;
+
     }
 
-    return null;
   }
 
   @Override

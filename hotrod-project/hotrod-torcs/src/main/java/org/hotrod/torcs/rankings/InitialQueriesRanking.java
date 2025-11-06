@@ -66,43 +66,43 @@ public class InitialQueriesRanking extends Ranking {
 
   @Override
   public Collection<RankingEntry> getEntries() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone()).collect(Collectors.toList());
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry()).collect(Collectors.toList());
   }
 
   // Ranking entries by other orderings
 
   public Collection<RankingEntry> getRankingByHighestResponseTime() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getMaxTime(), b.getMaxTime())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByHighestAvgResponseTime() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getAverageTime(), b.getAverageTime())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostExecuted() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getExecutions(), b.getExecutions())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByImpact() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getImpact(), b.getImpact())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostRecentlyExecuted() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingByMostErrors() {
-    return this.cacheByDSSQL.values().stream().map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getErrors(), b.getErrors())).collect(Collectors.toList());
   }
 
   public Collection<RankingEntry> getRankingErrorsByMostRecent() {
-    return this.cacheByDSSQL.values().stream().filter(a -> a.getErrors() > 0).map(e -> e.clone())
+    return this.cacheByDSSQL.values().stream().filter(a -> a.getErrors() > 0).map(e -> e.cloneEntry())
         .sorted((a, b) -> -Long.compare(a.getLastExecutionAt(), b.getLastExecutionAt())).collect(Collectors.toList());
   }
 

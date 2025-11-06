@@ -37,8 +37,6 @@ public class ValueTypeFactory {
   static {
     VALID_VALUE_TYPES.put(Byte.class.getName(), new ValueTypeManager<Byte>() {
 
-      private static final long serialVersionUID = 1L;
-
       @Override
       public Byte getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         byte v = rs.getByte(columnIndex);

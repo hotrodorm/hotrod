@@ -4,7 +4,7 @@ public class UnresolvableDataTypeException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
-  private DriverColumnMetaData cm;
+  private transient DriverColumnMetaData cm;
 
   public UnresolvableDataTypeException(final DriverColumnMetaData cm) {
     this.cm = cm;

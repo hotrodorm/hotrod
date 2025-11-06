@@ -10,7 +10,7 @@ public class InvalidConfigurationFileException extends Exception {
 
   private static final Logger log = Logger.getLogger(InvalidConfigurationFileException.class.getName());
 
-  private AbstractConfigurationTag tag;
+  private transient AbstractConfigurationTag tag;
 
   public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String message) {
     super(message);

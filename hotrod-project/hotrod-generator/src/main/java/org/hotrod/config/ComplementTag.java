@@ -49,7 +49,7 @@ public class ComplementTag extends EnhancedSQLPart {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected List<Object> content = new ArrayList<Object>();
+  protected List<Object> localContent = new ArrayList<Object>();
 
   // Properties - Parsed
 
@@ -68,7 +68,7 @@ public class ComplementTag extends EnhancedSQLPart {
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     this.parts = new ArrayList<DynamicSQLPart>();
-    for (Object obj : this.content) {
+    for (Object obj : this.localContent) {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj; // literal content part

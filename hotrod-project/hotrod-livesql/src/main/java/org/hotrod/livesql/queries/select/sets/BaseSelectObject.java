@@ -178,7 +178,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
     // CTEs
 
     if (this.ctes != null && !this.ctes.isEmpty()) {
-      boolean hasRecursiveCTEs = this.ctes.stream().map(c -> c.isRecursive()).reduce(false, (a, b) -> a | b);
+      boolean hasRecursiveCTEs = this.ctes.stream().map(c -> c.isRecursive()).reduce(false, (a, b) -> a || b);
       w.write(liveSQLDialect.getWithRenderer().render(hasRecursiveCTEs));
       w.write("\n");
       for (Iterator<CTE> it = this.ctes.iterator(); it.hasNext();) {

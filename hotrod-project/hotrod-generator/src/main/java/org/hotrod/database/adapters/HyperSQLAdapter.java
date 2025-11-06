@@ -137,10 +137,10 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
     // Binary
 
-    case java.sql.Types.BLOB: //  2004
+    case java.sql.Types.BLOB: // 2004
     case java.sql.Types.BINARY: // -2
     case java.sql.Types.VARBINARY: // -3
-      // BLOB, BINARY, VARBINARY 
+      // BLOB, BINARY, VARBINARY
       return new PropertyType("byte[]", m, true, TypeSource.STATIC_DIALECT_RULE, 21);
 
     // Other
@@ -386,9 +386,10 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 //    case java.sql.Types.ROWID
 //    case java.sql.Types.STRUCT
 
+    default:
+      return null;
     }
 
-    return null;
   }
 
   @Override

@@ -31,7 +31,7 @@ public class FileRegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private FragmentTag containerTag;
+    private transient FragmentTag containerTag;
 
     private FileAlreadyRegisteredException(final FragmentTag containerTag) {
       super();

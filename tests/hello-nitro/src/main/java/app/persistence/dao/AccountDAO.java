@@ -563,7 +563,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     this.query0 = dyn
       .literal("\n      ")
       .literal("\n      UPDATE account SET balance = balance - ")
-      .parameterNullable("amount", Types.INTEGER)
+      .parameter("amount")
       .literal("\n    ")
       .endModificationQuery();
   }
@@ -590,9 +590,9 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      SELECT *\n      FROM account\n      WHERE title LIKE 'SAV%'\n      ")
       .if_("year != null")
-        .literal("\n        AND year(created) = ")
-        .parameterNullable("year", Types.INTEGER)
-        .literal("\n      ")
+        .literal("\n        AND year(created) = '")
+        .parameterInjection("year.toString()")
+        .literal("'\n      ")
       .endif()
       .literal("\n    ")
       .endSelectQuery();

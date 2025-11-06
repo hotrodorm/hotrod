@@ -196,36 +196,30 @@ public class SUtil {
   }
 
   public static String loadFileAsString(final File f, final String readerEncoding) throws IOException {
-    String line;
-    BufferedReader r = null;
-    StringBuilder sb = new StringBuilder();
-    try {
-      if (readerEncoding != null) {
-        r = new BufferedReader(new InputStreamReader(new FileInputStream(f), readerEncoding));
-      } else {
-        r = new BufferedReader(new FileReader(f));
+    if (readerEncoding != null) {
+      try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f), readerEncoding))) {
+        return loadReaderIntoString(r);
       }
-      while ((line = r.readLine()) != null) {
-        sb.append(line);
-        sb.append("\n");
-      }
-      return sb.toString();
-    } finally {
-      if (r != null) {
-        r.close();
+    } else {
+      try (BufferedReader r = new BufferedReader(new FileReader(f))) {
+        return loadReaderIntoString(r);
       }
     }
   }
 
+  private static String loadReaderIntoString(BufferedReader r) throws IOException {
+    String line;
+    StringBuilder sb = new StringBuilder();
+    while ((line = r.readLine()) != null) {
+      sb.append(line);
+      sb.append("\n");
+    }
+    return sb.toString();
+  }
+
   public static void saveStringToFile(final String txt, final File f) throws IOException {
-    Writer w = null;
-    try {
-      w = new BufferedWriter(new FileWriter(f));
+    try (Writer w = new BufferedWriter(new FileWriter(f))) {
       w.write(txt);
-    } finally {
-      if (w != null) {
-        w.close();
-      }
     }
   }
 

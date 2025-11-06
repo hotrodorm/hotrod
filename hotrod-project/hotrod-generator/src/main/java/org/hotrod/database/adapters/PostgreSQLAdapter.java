@@ -190,9 +190,12 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
     case java.sql.Types.OTHER:
       throw new UnresolvableDataTypeException(m);
 
-    }
-
     // Unrecognized type
+
+    default:
+      throw new UnresolvableDataTypeException(m);
+
+    }
 
     throw new UnresolvableDataTypeException(m);
 
@@ -432,9 +435,10 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 //    case java.sql.Types.ROWID
 //    case java.sql.Types.STRUCT
 
+    default:
+      return null;
     }
 
-    return null;
   }
 
   @Override

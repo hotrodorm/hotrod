@@ -144,7 +144,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
   }
 
   public final List<AbstractMethodTag<?>> getMethods() {
-    List<AbstractMethodTag<?>> methods = new ArrayList<AbstractMethodTag<?>>();
+    List<AbstractMethodTag<?>> methods = new ArrayList<>();
     methods.addAll(this.sequences.toList());
     methods.addAll(this.queries.toList());
     methods.addAll(this.selects.toList());

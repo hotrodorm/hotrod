@@ -157,7 +157,7 @@ public class FacetTag extends AbstractConfigurationTag {
   // Apply current CS
 
   public void applyCurrentCatalogSchema(final CatalogSchema cs) {
-
+    // do nothing
   }
 
   // Getters

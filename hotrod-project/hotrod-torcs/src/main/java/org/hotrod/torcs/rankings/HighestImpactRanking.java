@@ -146,7 +146,7 @@ public class HighestImpactRanking extends Ranking {
 
   @Override
   public List<RankingEntry> getEntries() {
-    return this.sorted.stream().map(e -> e.clone()).collect(Collectors.toList());
+    return this.sorted.stream().map(e -> e.cloneEntry()).collect(Collectors.toList());
   }
 
 }

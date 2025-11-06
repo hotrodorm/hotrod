@@ -200,8 +200,8 @@ public class VOMetadata {
 
     private static final long serialVersionUID = 1L;
 
-    private VOProperty duplicate;
-    private VOProperty initial;
+    private transient VOProperty duplicate;
+    private transient VOProperty initial;
 
     public DuplicatePropertyNameException(final VOProperty duplicate, final VOProperty initial) {
       this.duplicate = duplicate;

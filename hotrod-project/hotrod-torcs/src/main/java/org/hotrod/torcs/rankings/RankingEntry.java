@@ -90,7 +90,7 @@ public class RankingEntry {
 
   // Cloning
 
-  public RankingEntry clone() {
+  public RankingEntry cloneEntry() {
     return new RankingEntry(this);
   }
 

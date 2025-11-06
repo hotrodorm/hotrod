@@ -4,7 +4,6 @@ import java.sql.Types;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.config.ComplementDAOTag;
 import org.hotrod.config.ComplementTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.ParameterTag;
@@ -119,8 +118,6 @@ public class NitroRenderer {
       render((ParameterisableTextPart) p, w, level);
     } else if (p instanceof CollectionOfPartsTag) {
       render((CollectionOfPartsTag) p, w, level);
-    } else if (p instanceof ComplementDAOTag) {
-      render((ComplementDAOTag) p, w, level);
     } else {
       throw new ErrorMessageException(
           "Could not render Nitro query: unrecognized Dynamic SQL part of type '" + p.getClass().getName() + "'");
@@ -305,12 +302,6 @@ public class NitroRenderer {
 
   private void render(CollectionOfPartsTag t, ClassWriter w, int level) throws ErrorMessageException {
     log.fine("[" + level + "] render(CollectionOfParts)");
-
-  }
-
-  private void render(ComplementDAOTag t, ClassWriter w, int level) throws ErrorMessageException {
-    log.fine("[" + level + "] render(ComplementDAO)");
-
   }
 
   // Utils

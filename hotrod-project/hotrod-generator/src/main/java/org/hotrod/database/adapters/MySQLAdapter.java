@@ -108,7 +108,7 @@ public class MySQLAdapter extends DatabaseAdapter {
             TypeSource.STATIC_DIALECT_RULE, 12);
       } else if (m.getTypeName().toUpperCase().equals("INT")) {
         return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE, TypeSource.STATIC_DIALECT_RULE, 13);
-      } else if (m.getTypeName().toUpperCase().equals("INT UNSIGNED")) {
+      } else { // INT UNSIGNED
         return new PropertyType(Long.class, m, false, new ValueRange(0L, 0L, 256L * 256 * 256 * 256 - 1),
             TypeSource.STATIC_DIALECT_RULE, 14);
       }
@@ -116,7 +116,7 @@ public class MySQLAdapter extends DatabaseAdapter {
     case java.sql.Types.BIGINT:
       if (m.getTypeName().toUpperCase().equals("BIGINT")) {
         return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE, TypeSource.STATIC_DIALECT_RULE, 15);
-      } else if (m.getTypeName().toUpperCase().equals("BIGINT UNSIGNED")) {
+      } else { // BIGINT UNSIGNED
         return new PropertyType(BigInteger.class, m, false, TypeSource.STATIC_DIALECT_RULE, 16);
       }
 
@@ -400,9 +400,10 @@ public class MySQLAdapter extends DatabaseAdapter {
 //    case java.sql.Types.ROWID
 //    case java.sql.Types.STRUCT
 
+    default:
+      return null;
     }
 
-    return null;
   }
 
   @Override
