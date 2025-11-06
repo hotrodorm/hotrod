@@ -79,7 +79,7 @@ In the example above we can see:
 - It defines three parameters.
 - The SQL statement is an UPDATE that does not return any rows.
 - The parameter `soldOn` is **applied** to the query using the `#{}` construct.
-- The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause. Notice that the attribute `sql-injection-enabled` must be used to enable SQL Injection.
+- The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause. Notice that the attribute `sql-injection-enabled` must be used to enable SQL Injection in the query.
 - Dynamic SQL is used to filter rows by `branch_id` if the parameter `branchId` has a non-null value. If the parameter
 is null, the section `and branch_id = #{branchId}` is not included in the SQL statement at all.
 
