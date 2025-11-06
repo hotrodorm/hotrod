@@ -34,9 +34,9 @@ Entities for tables, views, and Nitro SELECTs separate their *Layout* (the struc
 
 LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, row locking, and more.
 
-### Built-In Slow Performance Query Detection
+### Built-In Low Performance Query Detection
 
-UUnlike other ORMs, HotRod includes a built-in Torcs layer that monitors all queries executed by your application and ranks them in different ways. By observing these assessments, you can identify bottlenecks, execution patterns, execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing performance issues.
+Unlike other ORMs, HotRod includes a built-in Torcs layer that monitors all queries executed by your application and ranks them in different ways. By observing these assessments, you can identify bottlenecks, execution patterns, execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing performance issues.
 
 ### Advanced Dynamic SQL
 
