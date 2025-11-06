@@ -1,74 +1,130 @@
 # Highlights of HotRod 5 ORM
 
-As developers ourselves we started HotRod when we decided that we didn't like any of the available ORM solutions at the time.
+As developers ourselves, we built HotRod because we were dissatisfied with the available ORM solutions at the time.
 
-The initial goal of HotRod was to speed up the initial development of an app. This included quick prototyping and also providing basic support for the gradual growth of the app. In short, when a project was just starting schema discovery could give an edge to the team; then, when the project kept on growing LiveSQL, Dynamic SQL, and Nitro could provide more complex functionality with little effort.
+Our initial goal for HotRod was to accelerate the app development process. This included enabling quick prototyping and offering foundational support for the app's gradual growth. Essentially, during the project's early stages, schema discovery provided a competitive edge to the team; as the project expanded, features like LiveSQL, Dynamic SQL, and Nitro facilitated more complex functionality with minimal effort.
 
-Some time later we realized we also wanted to reduce the operational cost of the apps. Apart from the coding phase itself we decided to consider the debugging, testing, support, maintenance, and above all the stability and performance of the apps themselves. That's when Torcs, SQL Injection safety, API simplification, compile-time syntax checks, and many others features came into play.
+Sime time later we recognized the need to lower the operational costs associated with running apps. Beyond the coding phase, we aimed to improve debugging, testing, support, maintenance, and, most importantly, the stability and performance of the applications themselves. This realization led us to incorporate features such as Torcs, SQL injection safety, API simplification, compile-time syntax checks, and many others.
 
 ## Signature Features
 
-This is a list of distinctive features that we don't find in most ORM competitors. We believe HotRod shines when it comes to these features.
+This is a list of distinctive features that we don't find in most ORM competitors. We believe HotRod excels in these areas.
 
-**Entity Tuples**. SQL queries can retrieve fully-separated tuples for joined tables and views. This includes fully-modeled entities with naming rules and column type resolution, as well as additional on-the-fly computed columns, all with compilation-time syntax check while you type.
+### Entity Tuples
 
-**Schema Discovery**. The discovery mechanism generates a fully-functional persistence layer in minutes. By specifying an existing database schema HotRod can discover all the tables and views in it and generate the fully-named and fully-typed persistence layer. This persistence layer is used by CRUD and in LiveSQL queries so you can start prototyping right away. The schema discovery can also work on multiple schemas using rules with extra configuration.
+SQL queries can retrieve fully separated tuples for joined tables and views. This includes completely modeled entities with naming conventions and column type resolutions, as well as additional on-the-fly computed columns, all of this with compilation-time syntax checks as you type.
 
-**Advanced CRUD**. Once the first rounds of prototyping are complete CRUD still offers advanced functionality to continue supporting the growth of the application, including flexible predicates, advanced ordering, query pagination, multiple strategies of optimistic locking, and more.
+### Schema Discovery
 
-**Configurable Data Type Resolution**. The flexible data type resolution engine uses SQL dialect-based, custom rule-based, designated data types, and JDBC data types to decide the types of all tables and query columns. The persistence layer gives you full control of the data types you use when interacting with the database.
+The discovery mechanism generates a fully-functional persistence layer in minutes. By specifying an existing database schema HotRod can discover all the tables and views in it and generate the fully-named and fully-typed persistence layer. This layer is utilized by CRUD operations and in LiveSQL queries, allowing for immediate prototyping. The schema discovery can also operate across multiple schemas, utilizing rules with additional configuration.
 
-**Segregated Entity Modeling**. The entities for tables, views, and Nitro SELECTs separate their Layout (structure of the tables and queries) from their Model (custom behavior and implementation). This way their custom, hand-written domain logic is fully protected from the ever-changing nature of the tables and query structures. The persistence layer always updates the Layout classes to keep them up-to-date with the latest structure of the tables, views, and queries, while keeping your custom domain logic intact in the Model classes.
+### Advanced CRUD
 
-**Feature-Rich LiveSQL**. LiveSQL allows you to add flexible queries from your app with compilation-time syntax check while you type. The comprehensive syntax includes the SELECT, INSERT, UPDATE, and DELETE SQL statements, as well as, all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, row locking, and more.
+Once the initial prototyping is complete, CRUD continues to offer advanced functionality to support the application’s growth. This includes flexible predicates, advanced ordering, query pagination, multiple strategies for optimistic locking, and more.
 
-**Built-In Slow Performance Query Detection**. Unlike other ORMs HotRod includes the built-in Torcs layer that watches all the queries run by your application and ranks them in different ways. By observing these rankings you can identify the bottlenecks of your application, their execution patterns, their execution plans, their error rates, etc. The understanding &ndash; not of the predicted, but &ndash; of the *actual* runtime behavior of your app is the first step to address its bottlenecks.
+### Configurable Data Type Resolution
 
-**Advanced Dynamic SQL**. Feature-full query definition that declares rules for inclusion or exclusion of SQL segments using JEXL syntax. In short, the same dynamic query will take many shapes when executed with different runtime parameters. DynamicSQL includes basic constructs such as IF/CHOOSE to advanced ones such as TRIM/FOREACH/BIND and nesting of SQL segments. Native SQL can always be added to any SQL segment.
+The flexible data type resolution engine employs SQL dialect-based, custom rule-based, designated data types, and JDBC data types to determine the types for all tables and query columns. The Data type Resolution grants you full control over the data types used in database interactions.
 
-**SQL Injection Safety**. Free of SQL Injection in all CRUD and LiveSQL queries. Only Nitro offers SQL Injection &ndash; always disabled by default &ndash; if deliberately enabled on a per-query basis when the specific use case requires it.
+### Segregated Entity Modeling
 
-**Out-of-the-box Cursors**. All CRUD, Nitro, and LiveSQL queries can stream data instead of materializing big data sets in memory before consuming them. This can dramatically reduce the memory footprint of your app, improve the app performance, and optimize the use of the hardware resources.
+Entities for tables, views, and Nitro SELECTs separate their *Layout* (the structure of tables and queries) from their *Model* (custom behavior and implementation). This ensures that your hand-written domain logic remains safe from the ever-changing nature of table and query structures. When the persistence layer is updated the layout classes are refreshed to reflect the latest structures of tables, views, and queries while preserving your custom domain logic within the model classes.
+
+### Feature-Rich LiveSQL
+
+LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, row locking, and more.
+
+### Built-In Slow Performance Query Detection
+
+UUnlike other ORMs, HotRod includes a built-in Torcs layer that monitors all queries executed by your application and ranks them in different ways. By observing these assessments, you can identify bottlenecks, execution patterns, execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing performance issues.
+
+### Advanced Dynamic SQL
+
+This feature allows for flexible query definitions by declaring rules for including or excluding SQL segments using JEXL syntax. In short, the same dynamic query can take multiple forms when executed with different runtime parameters. DynamicSQL incorporates basic constructs such as IF and CHOOSE, as well as advanced features like TRIM, FOREACH, BIND, and nesting of SQL segments. Native SQL can always be appended to any SQL segment as needed.
+
+### SQL Injection Safety
+
+CRUD and LiveSQL queries are entirely free from SQL injection vulnerabilities. Nitro does allow SQL injection &mdash; although always disabled by default &mdash; if explicitly enabled on a per-query basis when the specific use case warrants it.
+
+### Out-of-the-box Cursors
+
+All CRUD, Nitro, and LiveSQL queries can stream data rather than materializing large datasets in memory before consumption. This capability can significantly reduce the memory footprint of your application, improve performance, and optimize the use of hardware resources.
 
 ## World-Class Features
 
-This is a list of HotRod features that you would expect from any typical high-end ORM.
+This section highlights the features of HotRod that are expected from any high-end Object-Relational Mapping (ORM) solution.
 
-**LiveSQL Live Syntax Check**. LiveSQL uses a builder pattern that allows the compiler to check the syntax of queries while you type. This prevents you typing clauses out of order or illegal expressions such as typing an ORDER BY clause before a WHERE clause or trying to compare incompatible types such as a DATE value against a BOOLEAN value. Trivial errors are detected immediately.
+### LiveSQL Live Syntax Check
 
-**Automatic Dialect Translation**. The CRUD and LiveSQL queries are automatically translated to the specific SQL available in each database engine. This is segregated by data source to account for an application using multiple different databases. While your code always uses CRUD and LiveSQL queries typed in a standard manner each dialect automatically rephrases them when they are executed. Apart from simplifying the coding of your app, this strategy also reduces the migration effort should you choose to migrate to a different database in the future.
+LiveSQL employs a builder pattern that enables the compiler to check the syntax of queries in real-time as you type. This prevents issues such as entering clauses out of order or using illegal expressions &mdash; for instance, placing an ORDER BY clause before a WHERE clause or attempting to compare incompatible types like a DATE value against a BOOLEAN value. Trivial errors are detected immediately, enhancing overall efficiency.
 
-**Converters**. Column converters can be defined for any table, view, or even SELECT query columns. Converters perform on-the-fly data conversion between different data domains. For example, when a database CHAR is used to represent a BOOLEAN value, or when an INT value is used to represent a discrete status that your app represents as an ENUM. The converters are bidirectional so they convert data while reading from the database and also while writing back to it. The simpler variation of converters &ndash; *data casting* &ndash; is also supported when converting between compatible types such as INTEGER and DOUBLE and others.
+### Automatic Dialect Translation
 
-**SQL-Free Source Code**. The persistence layer defines and runs all the SQL code instead of your application, making your source code SQL-free. You can freely dedicate your code to implement the business logic instead of typing and debugging SQL syntax.
+Both CRUD and LiveSQL queries are automatically translated to the specific SQL syntax for each database engine. This translation is organized by data source, accommodating applications that use multiple databases. While your code consistently utilizes CRUD and LiveSQL queries in a standard format, each query is automatically rephrased by the corresponding dialect when executed. This approach not only simplifies coding but also lessens the migration effort if you decide to switch to a different database in the future.
 
-**Support for World-Class OLTP databases**. The persistence layer supports the leading relational OLTP databases, including commercial and free ones. It covers heap-based, clustered-index-based, and in-memory databases.
+### Converters
 
-**Wide Tech Stack Compatibility**. Currently developed for Java 25, Spring 6.x, and Spring Boot 3.x, it also includes compatibility back to Java 8 and Spring 3.x, and Spring Boot to 2.x.
+You can define column converters for any table, view, or SELECT query columns. These converters perform on-the-fly data conversions between different data domains. For example, a CHAR column in the database may represent a BOOLEAN value, or an INT might signify a discrete set of statuses represented as an ENUM in your application. The converters are bidirectional &mdash; they handle data conversions both when reading from and writing back to the database. A simpler version of converters, known as *data casting*, is also supported for compatible types, such as INTEGER and DOUBLE.
 
-**No-Config Mode for Easy Prototyping**. The No-Configuration mode can run with no layer configuration at all. Just point HotRod to a running database schema to discover its details and start using it in no time.
+### SQL-Free Application Code
 
-**Multi-datasource Aware**. Your app can seamlessly use one or more databases of the same or different version, edition, or even brand. The persistence layers will automatically switch on the correct SQL dialect for each one, so your app code is always free from specific customizations.
+The persistence layer stores and executes all SQL queries, freeing your application code from directly typing SQL syntax. This allows you to focus on implementing business logic instead of writing and debugging SQL queries.
 
-**Flexible Organization of the Persistence Layer**. Even though it includes sensible default settings, the layer configuration can customize your persistence layer with a rich set of settings that cover base and extra folders, packages and sub-packages, prefixes, suffixes, and more.
+### Support for World-Class OLTP databases
 
-**Pessimistic Row Locking**. To implement thread-safe operations customizable pessimistic row locking mechanisms are available by default in CRUD and LiveSQL, and Nitro.
+The persistence layer supports leading relational Online Transaction Processing (OLTP) databases, encompassing both commercial and free options. It includes heap-based, clustered-index-based, and in-memory databases.
 
-**Multiple Optimistic Locking Strategies**. To deal with real-world scenarios three separate optimistic locking strategies are implemented. These can be especially useful when the development needs to work with less-than-ideal table structures or when the development team does not have the ability or permission to modify the database table structures at will.
+### Wide Tech Stack Compatibility
 
-**Native SQL**. Native SQL can be added to any Nitro query. Native dialect SQL extensions can prove very beneficial in specific cases, specially when it comes to exploit uncommon features available only in some databases, or when your app needs to squeeze performance from the engine.
+Currently, HotRod is developed for Java 25, Spring 6.x, and Spring Boot 3.x, with backward compatibility extending to Java 8, Spring 3.x, and Spring Boot 2.x.
 
-**Configuration Partitioning**. For large apps or multiple teams per project, the layer configuration can be partitioned using fragments. These fragments (and sub-fragments) can be used to separate and tailor the configuration of sub-modules of the app.
+### No-Config Mode for Easy Prototyping
 
-**Auto-generated Identities and Sequences**. The persistence layer automatically discovers identity-generated primary keys. When it comes to sequences, these can be used by explicitly declaring them for each table they affect.
+The No-Configuration mode allows you to run HotRod without any layer configuration. Simply point it to a running database schema to discover its details and start prototyping immediately.
 
-**Previewing LiveSQL**. The final translated SQL for the dialect can always be viewed before it's run. This gives your app full access to inspect the actual SQL query being run, if you need to debug the app, to check specific SQL extensions, or if you need to see the specific parameter values or query columns returned by a query. This is different from SQL logging that can be activated separately by the operator of the application.
+### Multi-datasource Aware
 
-**SQL Logging**. Configurable SQL Logging allows the operation team to enable or disable logging of a deployed app, by changing the runtime logging configuration of it.
+Your application can seamlessly connect to one or more databases, regardless of their version, edition, or brand. The persistence layer automatically selects the correct SQL dialect for each database, ensuring your app code remains free from specific customizations.
 
-**Selecting Sequences**. Sometimes your app needs to select values from database sequences that are unrelated to tables. These are typically used to produce unique values for APIs, for file-naming, and other purposes.
+### Flexible Organization of the Persistence Layer
 
-**Composite Primary Keys Supported**. Composite and simple primary keys are fully supported in all CRUD functionality. Although still considered a basic feature, many ORMs fail to implement this feature.
+While sensible default settings are included, the layer configuration allows for customization with a rich set of options that cover base and extra folders, packages, sub-packages, prefixes, suffixes, and more.
+
+### Pessimistic Row Locking
+
+To facilitate thread-safe operations, customizable pessimistic row locking mechanisms are available by default in CRUD and LiveSQL.
+
+### Multiple Optimistic Locking Strategies
+
+To address real-world scenarios, three distinct optimistic locking strategies are implemented. These are particularly useful in situations involving less-than-ideal table structures or when the development team lacks the privileges or authority to modify existing database table structures.
+
+### Native SQL
+
+You can enhance any Nitro query with Native SQL. Using native dialect SQL extensions can be particularly beneficial for leveraging unique features available only in specific databases or when your application requires optimal performance from the database engine.
+
+### Configuration Partitioning
+
+For large applications or projects involving multiple teams, the layer configuration can be partitioned using fragments. These fragments (and sub-fragments) allow for the separation and tailoring of configuration for sub-modules of the application.
+
+### Auto-generated Identities and Sequences
+
+The persistence layer automatically discovers identity-generated primary keys. Sequences can be explicitly declared for each table they affect.
+
+### Previewing LiveSQL
+
+You can always view the final translated SQL for the dialect before execution. This transparency allows you to inspect the actual SQL query, which is invaluable for debugging, checking specific SQL extensions, or verifying parameter values and the exact list of return query columns and their types. This feature is distinct from SQL logging, which can be activated separately by the operations team.
+
+### SQL Logging
+
+Configurable SQL Logging allows the operation team to enable or disable logging of a deployed app, by changing the runtime logging configuration of it.
+
+### Selecting Sequences
+
+In certain scenarios, your application may need to select values from database sequences unrelated to tables. These sequences are typically used to generate unique values for APIs, file naming, and other purposes.
+
+### Composite Primary Keys Supported
+
+Both composite and simple primary keys are fully supported across all CRUD functionalities. Although considered a basic feature, many ORMs fail to implement the former.
 
 ## Other Features
 

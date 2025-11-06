@@ -1,30 +1,30 @@
 # HotRod ORM
 
-HotRod 5 is an open source ORM for Spring and Spring Boot geared toward high performance persistence for relational databases.
+HotRod 5 is an open-source Object-Relational Mapping (ORM) framework designed for Spring and Spring Boot, optimized for rapid development and high-performance persistence in relational databases.
 
-HotRod brings:
+## Key Features of HotRod
 
-- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and simple persistence for rapid prototyping
-- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying from your code with live syntax validation
-- [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; All the power of native SQL and Dynamic SQL when you need it
-- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Detect slow queries at runtime and get their execution plans
+HotRod offers:
 
-Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and other [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
+- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and straightforward persistence for rapid prototyping
+- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code with live syntax validation
+- [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; Harness the power of native SQL and dynamic SQL when necessary
+- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and analyze their execution plans
 
-See the [Highlights Pamphlet](./hotrod-project/docs/features.md) of HotRod ORM, [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, the [Version History](./hotrod-project/docs/version-history.md), the [Roadmap](./hotrod-project/docs/roadmap.md), and the [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md). All this functionality is available for any of the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
+Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
+
+See the [Highlights Pamphlet](./hotrod-project/docs/features.md) of HotRod ORM, learn about [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, review the [Version History](./hotrod-project/docs/version-history.md), and explore the [Roadmap](./hotrod-project/docs/roadmap.md). The comprehensive [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md) is available, covering all functionalities across the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 For documentation on the previous versions see the
 [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and the [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
 
-
-
 ## LiveSQL &mdash; At a Glance
 
-[LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) allows you to write and run queries directly from your application code. LiveSQL's inline syntax only allow valid SQL clauses and expressions.
+[LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) enables you to write and execute queries directly from your application code. Its inline syntax ensures that only valid SQL clauses and expressions are permitted.
 
-LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
+LiveSQL supports SELECT, UPDATE, DELETE, and INSERT queries, ranging from basic syntax to advanced queries. The syntax accommodates complex predicates, subqueries, Common Table Expressions (CTEs), arithmetic operators, functions, as well as standard SQL constructs such as ordering, limiting, aggregation, window functions, unions, and locking with FOR UPDATE.
 
-A simple SELECT query to compute the expression `3 * 7` in the database can be written as:
+A simple SELECT query to compute the expression 3 * 7 in the database can be written as follows:
 
 ```java
 Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
@@ -32,7 +32,7 @@ Row row = sql.select(sql.val(3).mult(7).as("total")).executeOne();
 System.out.println("total=" + row.get("total")); // total=21
 ```
 
-Selecting from a table can be done as:
+You can select from a table using the following syntax:
 
 ```java
 List<Tuple1<Product>> rows = sql
@@ -51,7 +51,7 @@ for (Tuple1<Product> r : rows) {
 }
 ```
 
-Joining multiple tables (views, subqueries, and/or CTEs) can be done as:
+You can join multiple tables, views, subqueries, and/or Common Table Expressions (CTEs) as follows:
 
 ```java
 List<Tuple2<Invoice, Client>> rows = sql
@@ -74,7 +74,7 @@ for (Tuple2<Invoice, Client> r : rows) {
 
 Behind the scenes LiveSQL automatically adapts the SQL syntax to the specific database.
 
-Any query can include joins, CTEs, subqueries, and other syntax, as shown below:
+Any SELECT query can incorporate joins, Common Table Expressions (CTEs), subqueries, and other syntax, as illustrated below:
 
 ```java
 CTE x = sql.cte("x",
@@ -101,15 +101,16 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-[CRUD](./hotrod-project/docs/docs-5/crud/README.md) provides a straightforward repertoire of database access methods that can access rows by primary keys, by example, or by predicates to execute SELECT, UPDATE, INSERT, and DELETE queries on the tables and view of the schema(s).
+[CRUD](./hotrod-project/docs/docs-5/crud/README.md) offers a straightforward set of database access methods, allowing you to access rows by primary keys, examples, or predicates. This enables the execution of SELECT, UPDATE, INSERT, and DELETE queries on the tables and views within the schema(s).
 
-To find an employee by primary key we can do:
+To find an employee by primary key, you can use:
+
 
 ```java
 Employee emp = this.employeeDAO.select(134081);
 ```
 
-Inserting a payment while retrieving the new primary key (in the column ID) can be done as:
+Inserting a payment while retrieving the new primary key from the ID column can be accomplished using the following syntax:
 
 ```java
 Payment p = new Payment();
@@ -120,7 +121,8 @@ Payment inserted = this.paymentDAO.insert(p);
 System.out.println("ID: " + inserted.getId()); // generated ID
 ```
 
-CRUD can use custom predicates, for example, to find all employees on departments 101 and 120, hired after January 15, 2024, with last names that end with 'SMITH':
+CRUD can also utilize custom predicates. For instance, you can find all employees in departments 101 and 120 who were hired after January 15, 2024, and have last names ending with "SMITH" using the following query:
+
 
 ```java
 List<Employee> emps = this.employeeDAO.select(e,
@@ -130,7 +132,7 @@ List<Employee> emps = this.employeeDAO.select(e,
   .execute();
 ```
 
-Updating the status of an invoice is also simple:
+Updating the status of an invoice is straightforward:
 
 ```java
 Invoice inv = this.invoiceDAO.select(5470);
@@ -141,14 +143,14 @@ this.invoiceDAO.update(inv);
 
 ## Nitro &mdash; At a Glance
 
-[Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when the application requires complex, non-trivial queries that go beyond the scope of LiveSQL and CRUD, or for queries that benefit from:
+[Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD, or for queries that benefit from:
 
-- [Nitro Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic to dynamically assemble queries based on runtime parameters
+- [Nitro Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic, which dynamically assembles queries based on runtime parameters
 - Native SQL extensions available in the specific database
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. All these features can be combined into any SELECT, UPDATE, INSERT, or DELETE, or in any other valid database query (CREATE, ALTER, DROP, etc.).
+Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
 
-A basic query with no parameters can be specified as:
+A basic query without parameters can be specified as follows:
 
 ```xml
 <query method="initializeBatchProcess">
@@ -162,7 +164,7 @@ This query becomes available in the persistence layer as the method:
   public void initializeBatchProcess()
 ```
 
-The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values the query will take a different shape each time. It also uses a piece of Native SQL (an optimizer hint):
+The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values, the query will take on a different structure each time. It also incorporates a piece of Native SQL (an optimizer hint):
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
@@ -189,9 +191,9 @@ List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering
 
 ## Torcs &mdash; At a Glance
 
-[Torcs](./hotrod-project/docs/docs-5/torcs/README.md) discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others. The visibility that Torcs offers about the actual running application can provide critical information to understand the bottlenecks of the application that need to be addressed.
+[Torcs](./hotrod-project/docs/docs-5/torcs/README.md) discovers slow queries at runtime by computing rankings by impact, response time, execution frequency, and others factors. The insights that Torcs provides into the actual running application can be crucial for pinpointing bottlenecks that need to be addressed.
 
-For example, the ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries in the form:
+For example, the ranking by highest response time starts automatically when Torcs is integrated into the application, providing a ranking of queries in the following format:
 
 | Rank | Execs | Errors | Min Time (ms) | Avg Time (ms) | Max Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | --:| --:| --:| --:| --:| --:| :--: | :-- |
@@ -201,7 +203,7 @@ For example, the ranking by highest response time starts automatically when Torc
 
 In this example the entries are sorted by max time in descending order.
 
-The following rankings are built-in in Torcs and can be activated programmatically. When multiple rankings are active, each one keeps its own separate data:
+The following rankings are built-in in Torcs and can be activated programmatically. When multiple rankings are active, each maintains its own separate data:
 
 - By Highest Response Time (active by default)
 - By Highest Impact
@@ -209,7 +211,7 @@ The following rankings are built-in in Torcs and can be activated programmatical
 - Initial Queries
 - Latest Queries
 
-Torcs can also retrieve execution plans programmatically in a variety of formats for any of the queries in the rankings. For example, the default format in Oracle can retrieve the execution plan for a query of interest as:
+Torcs can also programmatically retrieve execution plans in various formats for any of the queries in the rankings. For instance, the default format in Oracle allows you to obtain the execution plan for a query of interest as follows:
 
 ```log
 Plan hash value: 3305857414
