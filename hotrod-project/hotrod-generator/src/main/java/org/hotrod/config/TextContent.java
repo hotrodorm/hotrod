@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
+import org.hotrod.config.dynamicsql.NitroTokenizer;
+import org.hotrod.config.dynamicsql.NitroTokenizer.Token;
 import org.hotrod.config.dynamicsql.ParameterInjection;
 import org.hotrod.config.dynamicsql.SQLSegment;
-import org.hotrod.config.dynamicsql.Tokenizer;
-import org.hotrod.config.dynamicsql.Tokenizer.Token;
 import org.hotrod.config.dynamicsql.VariableOccurrence;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
@@ -17,6 +17,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 
+@Deprecated
 public class TextContent extends EnhancedSQLPart {
 
   // Constants
@@ -50,10 +51,10 @@ public class TextContent extends EnhancedSQLPart {
 
     parameterDefinitions.validate();
 
-    Tokenizer tokenizer = new Tokenizer(tag, this.txt);
+    NitroTokenizer tokenizer = new NitroTokenizer(tag, this.txt);
     Token token;
     while ((token = tokenizer.next()) != null) {
-//      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
+      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
       switch (token.getType()) {
 
       case SQL_PARAMETER:

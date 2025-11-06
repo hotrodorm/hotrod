@@ -20,6 +20,7 @@ import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhereTag;
@@ -169,9 +170,16 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     for (Object obj : this.content) {
       try {
-        String s = (String) obj; // literal [parameterisable] text content
-        TextContent p = new TextContent(s);
+        
+        String s = (String) obj; // content text
+        DynamicSQLPart p = new ParameterisableTextPart(s, this, this.parameters);
+        p.validate(jdbcTag, config, fragmentConfig, this.parameters);
         this.parts.add(p);
+
+        
+//        String s = (String) obj; // literal [parameterisable] text content
+//        TextContent p = new TextContent(s);
+//        this.parts.add(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter definition

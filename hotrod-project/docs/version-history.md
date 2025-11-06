@@ -2,6 +2,27 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.7 (unreleased):
+
+- Nitro:
+    - SQL Injection is now disabled by default and must be enabled explicitly if needed.
+    - SQL Injection now allows any JEXL expression, not just plain parameter names.
+    - Applied parameter ocurrences can now use JEXL expressions.
+
+## 5.1.6:
+
+- Core:
+    - Simplifying property names of 'java-type', 'java-name', and 'java-raw-type' to 'type', 'property', 'entity', and 'raw-type'. Old properties are still supported.
+    - Fixed logging in CRUD criteria queries.
+- LiveSQL:
+    - Unbound columns in LiveSQL Tuples can be simply retrieved using get("name") now.
+
+## 5.1.5:
+
+- LiveSQL:
+    - Fixing insert by example.
+    - Fixed logging in CRUD criteria queries.
+
 ## 5.1.4:
 
 - Core:

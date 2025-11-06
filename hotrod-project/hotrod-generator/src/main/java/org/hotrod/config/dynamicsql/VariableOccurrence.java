@@ -32,7 +32,7 @@ public class VariableOccurrence implements SQLSegment {
 
   @Override
   public String renderSQLFoundation(ParameterRenderer parameterRenderer) {
-    return "";
+    return "?";
   }
 
   @Override

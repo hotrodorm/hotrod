@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.dynamicsql.Tokenizer.Token;
+import org.hotrod.config.dynamicsql.NitroTokenizer.Token;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
@@ -56,71 +56,30 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 //    log.info("validate");
     super.retrievePartsAndValidate(parameterDefinitions);
 
-    Tokenizer tokenizer = new Tokenizer(tag, this.txt);
+    NitroTokenizer tokenizer = new NitroTokenizer(tag, this.txt);
     Token token;
     while ((token = tokenizer.next()) != null) {
 //      log.info("TOKEN: " + token.getType() + " - " + token.getBody());
       switch (token.getType()) {
 
       case SQL_PARAMETER:
-        String name = token.getBody();
+        String expression = token.getBody();
 
-        if (!name.matches(VALID_NAME_PATTERN)) {
-          if (name.indexOf(',') != -1) {
-            throw new InvalidConfigurationFileException(tag,
-                "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                    + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
-          } else {
-            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
-                + SQLParameter.SUFFIX + " in the body of the tag. "
-                + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
-          }
-        }
-
-        ParameterTag parameterDefinition = parameterDefinitions.findParameter(name);
+        ParameterTag parameterDefinition = parameterDefinitions.findParameter(expression);
         if (parameterDefinition != null) {
-          SQLParameter p = new SQLParameter(name, tag, false);
+          SQLParameter p = new SQLParameter(expression, tag, false);
           p.setDefinition(parameterDefinition);
           this.segments.add(p);
         } else {
-          if (parameterDefinitions.findVariable(name)) {
-            VariableOccurrence v = new VariableOccurrence(name);
-            this.segments.add(v);
-          } else {
-            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
-                + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
-          }
+          VariableOccurrence v = new VariableOccurrence(expression);
+          this.segments.add(v);
         }
         break;
 
       case PARAMETER_INJECTION:
-        name = token.getBody();
-
-        if (!name.matches(VALID_NAME_PATTERN)) {
-          if (name.indexOf(',') != -1) {
-            throw new InvalidConfigurationFileException(tag,
-                "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                    + " in the body of the tag. " + "The parameter must include a single alphanumeric name");
-          } else {
-            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
-                + SQLParameter.SUFFIX + " in the body of the tag. "
-                + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
-          }
-        }
-
-        parameterDefinition = parameterDefinitions.findParameter(name);
-        if (parameterDefinition != null) {
-          ParameterInjection p = new ParameterInjection(name);
-          this.segments.add(p);
-        } else {
-          if (parameterDefinitions.findVariable(name)) {
-            ParameterInjection p = new ParameterInjection(name);
-            this.segments.add(p);
-          } else {
-            throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
-                + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
-          }
-        }
+        // the body can be any JEXL expression; maybe we could validate its syntax
+        // against JEXL in the future
+        this.segments.add(new ParameterInjection(token.getBody()));
         break;
 
       default: // literal

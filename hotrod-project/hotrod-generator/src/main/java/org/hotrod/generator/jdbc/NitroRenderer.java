@@ -288,7 +288,7 @@ public class NitroRenderer {
     ParameterTag pt = t.getDefinition();
 //    log.info("pt=" + pt);
     if (pt.getJDBCType() == null) {
-      w.println(indent(level) + ".parameterUntyped(" + renderString(t.getName()) + ")");
+      w.println(indent(level) + ".parameter(" + renderString(t.getName()) + ")");
     } else {
       w.println(indent(level) + ".parameterNullable(" + renderString(t.getName()) + ", ", Types.class,
           "." + t.getJdbcType() + ")");

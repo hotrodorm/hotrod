@@ -2,8 +2,8 @@ package manual;
 
 import java.util.logging.Level;
 
-import org.hotrod.config.dynamicsql.Tokenizer;
-import org.hotrod.config.dynamicsql.Tokenizer.Token;
+import org.hotrod.config.dynamicsql.NitroTokenizer;
+import org.hotrod.config.dynamicsql.NitroTokenizer.Token;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 public class TestTokenizer {
@@ -13,7 +13,7 @@ public class TestTokenizer {
   }
 
   public static void main(String[] args) throws InvalidConfigurationFileException {
-    Tokenizer tokenizer = new Tokenizer(null, "#{asdasdasdas")  ;
+    NitroTokenizer tokenizer = new NitroTokenizer(null, "#{asdasdasdas")  ;
 
     int i = 0;
     Token token;

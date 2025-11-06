@@ -6,9 +6,9 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
-public class Tokenizer {
+public class NitroTokenizer {
 
-  private static final Logger log = Logger.getLogger(Tokenizer.class.getName());
+  private static final Logger log = Logger.getLogger(NitroTokenizer.class.getName());
 
   private static final String INJECTION_PREFIX = "$SQLINJECTION{";
   private static final String INJECTION_SUFFIX = "}";
@@ -21,7 +21,7 @@ public class Tokenizer {
   private String txt;
   private int pos;
 
-  public Tokenizer(AbstractConfigurationTag tag, String txt) {
+  public NitroTokenizer(AbstractConfigurationTag tag, String txt) {
     log.fine("init");
     this.tag = tag;
     this.txt = txt;

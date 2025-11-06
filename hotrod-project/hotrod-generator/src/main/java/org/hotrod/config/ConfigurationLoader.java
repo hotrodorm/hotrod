@@ -165,6 +165,9 @@ public class ConfigurationLoader {
           "Invalid XML tag or attribute in the configuration file '" + f.getPath() + "': " + XUtil.trim(e));
 
     } catch (InvalidConfigurationFileException e) {
+      if (e.getTag() == null) {
+        throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+      }
       SourceLocation loc = e.getTag().getSourceLocation();
       if (loc == null) {
         throw new ErrorMessageException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());

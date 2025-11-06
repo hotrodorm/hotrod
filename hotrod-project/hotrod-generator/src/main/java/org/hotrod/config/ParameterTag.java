@@ -147,31 +147,31 @@ public class ParameterTag extends AbstractConfigurationTag {
 
       // jdbc-type
 
-      if (this.jdbcTypeName == null) {
-        this.jdbcType = getDefaultJDBCType(this.type);
-        log.fine("this.jdbcType=" + this.jdbcType);
-        if (this.jdbcType == null) {
-          throw new InvalidConfigurationFileException(this,
-              "Could not guess the JDBC type for the parameter based on its java type '" + this.type
-                  + "'. Please include the 'jdbc-type' attribute to specify it; "
-                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
-        }
-      } else {
-        if (SUtil.isEmpty(this.jdbcTypeName)) {
-          throw new InvalidConfigurationFileException(this, //
-              "When specified, the 'jdbc-type' attribute cannot be blank; "
-                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
-        }
-        this.jdbcType = JDBCTypes.nameToType(this.jdbcTypeName);
-        if (this.jdbcType == null) {
-          throw new InvalidConfigurationFileException(this, //
-              "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
-                  + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                  + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
-        }
-      }
+//      if (this.jdbcTypeName == null) {
+//        this.jdbcType = getDefaultJDBCType(this.type);
+//        log.fine("this.jdbcType=" + this.jdbcType);
+//        if (this.jdbcType == null) {
+//          throw new InvalidConfigurationFileException(this,
+//              "Could not guess the JDBC type for the parameter based on its java type '" + this.type
+//                  + "'. Please include the 'jdbc-type' attribute to specify it; "
+//                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+//                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+//        }
+//      } else {
+//        if (SUtil.isEmpty(this.jdbcTypeName)) {
+//          throw new InvalidConfigurationFileException(this, //
+//              "When specified, the 'jdbc-type' attribute cannot be blank; "
+//                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+//                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+//        }
+//        this.jdbcType = JDBCTypes.nameToType(this.jdbcTypeName);
+//        if (this.jdbcType == null) {
+//          throw new InvalidConfigurationFileException(this, //
+//              "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
+//                  + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+//                  + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
+//        }
+//      }
 
       // sample-sql-value
 
