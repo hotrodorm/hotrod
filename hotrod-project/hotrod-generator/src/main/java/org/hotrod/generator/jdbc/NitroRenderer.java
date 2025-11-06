@@ -10,7 +10,6 @@ import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceOfParts;
-import org.hotrod.config.TextContent;
 import org.hotrod.config.VerbatimTextPart;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
@@ -136,8 +135,6 @@ public class NitroRenderer {
       render((ComplementTag) p, w, level);
     } else if (p instanceof SequenceOfParts) {
       render((SequenceOfParts) p, w, level);
-    } else if (p instanceof TextContent) {
-      render((TextContent) p, w, level);
     } else if (p instanceof LiteralTextPart) {
       render((LiteralTextPart) p, w, level);
     } else if (p instanceof IfTag) {
@@ -180,10 +177,6 @@ public class NitroRenderer {
     for (EnhancedSQLPart ep : t.getParts()) {
       this.renderEnhancedPart(ep, w, level);
     }
-  }
-
-  private void render(TextContent t, ClassWriter w, int level) throws ErrorMessageException {
-    renderSQLSegments(w, level, t.getSegments());
   }
 
   private void render(LiteralTextPart t, ClassWriter w, int level) {
