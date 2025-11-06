@@ -17,8 +17,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   private static final Logger log = Logger.getLogger(ParameterisableTextPart.class.getName());
 
-  private static final String VALID_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
-
   // Properties
 
   private String txt;
@@ -53,7 +51,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   private void validate(final AbstractConfigurationTag tag, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
-//    log.info("validate");
     super.retrievePartsAndValidate(parameterDefinitions);
 
     NitroTokenizer tokenizer = new NitroTokenizer(tag, this.txt);
@@ -71,6 +68,8 @@ public class ParameterisableTextPart extends DynamicSQLPart {
           p.setDefinition(parameterDefinition);
           this.segments.add(p);
         } else {
+          // a variable occurrence can be any JEXL expression; maybe we could validate its
+          // syntax against JEXL in the future
           VariableOccurrence v = new VariableOccurrence(expression);
           this.segments.add(v);
         }
