@@ -12,7 +12,7 @@ This is a list of distinctive features that we don't find in most ORM competitor
 
 ### Entity Tuples
 
-SQL queries can retrieve fully separated tuples for joined tables and views. This includes completely modeled entities with naming conventions and column type resolutions, as well as additional on-the-fly computed columns, all of this with compilation-time syntax checks as you type.
+SQL queries can retrieve fully separated tuples when joining two or more tables or views. This includes completely modeled entities with naming conventions and column type resolutions, as well as additional on-the-fly computed columns, all of this with compilation-time syntax checks as you type.
 
 ### Schema Discovery
 
@@ -28,7 +28,7 @@ The flexible data type resolution engine employs SQL dialect-based, custom rule-
 
 ### Updatable Entity Model
 
-Entities for tables, views, and Nitro SELECTs separate their *Layout* (the structure of tables and queries) from their *Model* (custom behavior and implementation). This ensures that your hand-written domain logic remains safe from the ever-changing nature of table and query structures. When the persistence layer is updated the layout classes are refreshed to reflect the latest structures of tables, views, and queries while preserving your custom domain logic within the model classes.
+Entities for tables, views, and Nitro SELECTs separate their *Layout* (the structure of tables and queries) from their *Model* (custom behavior and implementation). This ensures that your hand-written domain logic remains safe from the ever-changing nature of table and query structures. When the persistence layer is updated the layout classes are refreshed to reflect the latest database structures while preserving your custom domain logic within the separated model classes.
 
 ### Feature-Rich LiveSQL
 
