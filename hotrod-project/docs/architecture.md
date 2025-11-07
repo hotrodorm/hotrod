@@ -6,9 +6,13 @@ To make the generator highly configurable the meta data is compiled first from m
 - Live Database
 - HotRod Layer Configuration
 
-Once the meta data is compiled and validated, the dialect adapter is prepared for the specific database. Then the specific generator is instantiated and fed the meta data and the dialect adapter. With all those moving parts, the generator generates the persistence layer.
+Then:
 
-The explanation above can be visualized as:
+1. Once the meta data is compiled and validated, the dialect is prepared for the specific database.
+2. Then, the specific generator is instantiated and fed with the meta data and the dialect.
+3. Finally, with all those moving parts in place, the generator produces the persistence layer.
+
+This can be visualized as:
 
 ```mermaid
 graph TD;
@@ -29,7 +33,7 @@ J --> K[8. Generator];
 I --> K;
 K --> L([Persistence Layer]);
 
-M[5. Database Adapter Factory] --> N[5. Database Adapter];
+M[5. Database Dialect Factory] --> N[6. Database Dialect];
 N --> K;
 
 ```
