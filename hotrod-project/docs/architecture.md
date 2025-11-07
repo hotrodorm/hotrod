@@ -11,7 +11,7 @@ A[1. Properties Loader] --> B([Runtime Properties]);
 B --> F[6. Database Loader];
 G[(Live Database)] --> F;
 C[3. Configuration Loader] --> D([HotRod Configuration]);
-E([Database Structure]) <-- F;
+F --> E([Database Structure]);
 
 E --> H[7. Meta Data Compiler];
 D --> H;
