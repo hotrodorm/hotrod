@@ -17,11 +17,13 @@ This can be visualized as:
 ```mermaid
 graph TD;
 
+G[(Live Database)];
+
 A[1. Properties Loader] --> B([Runtime Properties]);
 style B fill:#fcf8d2
 
 B --> F[3. Database Loader];
-G[(Live Database)] --> F;
+G --> F;
 style G fill:#ffbf70
 C[2. Configuration Loader] --> D([HotRod Configuration]);
 style D fill:#fcf8d2
