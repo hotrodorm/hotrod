@@ -1,4 +1,4 @@
-# The Internal Architecture of Generator
+# The Internal Architecture of the Generator
 
 To make the generator highly configurable the meta data is compiled first from multiple sources. Namely:
 
@@ -29,9 +29,11 @@ D --> F;
 F --> E([Database Structure]);
 style E fill:#fcf8d2
 
+G --> N;
+
 E --> H[4. Meta Data Compiler];
 D --> H;
-H --> I([Meta Data]);
+H --> I([Consolidated Meta Data]);
 style I fill:#fcf8d2
 
 D --> J[7. Generator Factory];
