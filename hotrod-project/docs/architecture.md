@@ -15,7 +15,7 @@ Then:
 This can be visualized as:
 
 ```mermaid
-graph TD;
+graph LR;
 
 G[(Live Database)];
 
