@@ -17,10 +17,10 @@ This can be visualized as:
 ```mermaid
 graph TD;
 
-A[1. Properties Loader] --> B([Runtime Properties]);
-style A fill:#fcf8d2
+B([Runtime Properties]) --> A[1. Properties Loader];
+style B fill:#fcf8d2
 
-B --> F[2. Database Loader];
+A --> F[2. Database Loader];
 G[(Live Database)] --> F;
 style G fill:#fcf8d2
 C[3. Configuration Loader] --> D([HotRod Configuration]);
@@ -37,7 +37,7 @@ D --> J[7. Generator Factory];
 J --> K[8. Generator];
 I --> K;
 K --> L([Persistence Layer]);
-style K fill:#fcf8d2
+style L fill:#fcf8d2
 
 M[5. Database Dialect Factory] --> N[6. Database Dialect];
 N --> K;
