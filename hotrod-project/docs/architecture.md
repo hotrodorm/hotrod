@@ -18,20 +18,26 @@ This can be visualized as:
 graph TD;
 
 A[1. Properties Loader] --> B([Runtime Properties]);
+style A fill:#fcf8d2
 
 B --> F[2. Database Loader];
 G[(Live Database)] --> F;
+style G fill:#fcf8d2
 C[3. Configuration Loader] --> D([HotRod Configuration]);
+style D fill:#fcf8d2
 F --> E([Database Structure]);
+style E fill:#fcf8d2
 
 E --> H[4. Meta Data Compiler];
 D --> H;
 H --> I([Meta Data]);
+style I fill:#fcf8d2
 
 D --> J[7. Generator Factory];
 J --> K[8. Generator];
 I --> K;
 K --> L([Persistence Layer]);
+style K fill:#fcf8d2
 
 M[5. Database Dialect Factory] --> N[6. Database Dialect];
 N --> K;
