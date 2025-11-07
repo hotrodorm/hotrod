@@ -22,7 +22,7 @@ style B fill:#fcf8d2
 
 B --> F[3. Database Loader];
 G[(Live Database)] --> F;
-style G fill:#fcf8d2
+style G fill:#ffbf70
 C[2. Configuration Loader] --> D([HotRod Configuration]);
 style D fill:#fcf8d2
 D --> F;
