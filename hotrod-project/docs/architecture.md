@@ -20,11 +20,12 @@ graph TD;
 B([Runtime Properties]) --> A[1. Properties Loader];
 style B fill:#fcf8d2
 
-A --> F[2. Database Loader];
+A --> F[3. Database Loader];
 G[(Live Database)] --> F;
 style G fill:#fcf8d2
-C[3. Configuration Loader] --> D([HotRod Configuration]);
+C[2. Configuration Loader] --> D([HotRod Configuration]);
 style D fill:#fcf8d2
+D --> A;
 F --> E([Database Structure]);
 style E fill:#fcf8d2
 
