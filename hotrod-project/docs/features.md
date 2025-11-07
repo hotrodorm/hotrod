@@ -4,7 +4,7 @@ As developers ourselves, we built HotRod because we were dissatisfied with the a
 
 Our initial goal for HotRod was to accelerate the app development process. This included enabling quick prototyping and offering foundational support for the app's gradual growth. Essentially, during the project's early stages, schema discovery provided a competitive edge to the team; as the project expanded, features like LiveSQL, Dynamic SQL, and Nitro facilitated more complex functionality with minimal effort.
 
-Sime time later we recognized the need to lower the operational costs associated with running apps. Beyond the coding phase, we aimed to improve debugging, testing, support, maintenance, and, most importantly, the stability and performance of the applications themselves. This realization led us to incorporate features such as Torcs, SQL injection safety, API simplification, compile-time syntax checks, and many others.
+Some time later we recognized the need to lower the operational costs associated with running apps. Beyond the coding phase, we aimed to improve debugging, testing, support, maintenance, and, most importantly, the stability and performance of the applications themselves. This realization led us to incorporate features such as Torcs, SQL injection safety, API simplification, compile-time syntax checks, and many others.
 
 ## Signature Features
 
