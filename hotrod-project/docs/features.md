@@ -36,7 +36,7 @@ LiveSQL allows you to create flexible queries from your application, complete wi
 
 ### Built-In Low Performance Query Detection
 
-Unlike other ORMs, HotRod includes a built-in Torcs layer that monitors all queries executed by your application and ranks them in different ways. By observing these assessments, you can identify bottlenecks, execution patterns, execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing performance issues.
+Torcs automatically monitors all queries executed by your application and ranks them in multiple ways. By observing these rankings, you can identify bottlenecks, execution patterns, query execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing any performance issues in the persistence layer.
 
 ### Advanced Dynamic SQL
 
@@ -48,7 +48,7 @@ CRUD and LiveSQL queries are entirely free from SQL injection vulnerabilities. N
 
 ### Out-of-the-box Cursors
 
-All CRUD, Nitro, and LiveSQL queries can stream data rather than materializing large datasets in memory before consumption. This capability can significantly reduce the memory footprint of your application, improve performance, and optimize the use of hardware resources.
+CRUD, Nitro, and LiveSQL queries can stream data rather than materializing large datasets in memory before consumption. This capability can significantly reduce the memory footprint of your application, improve performance, and optimize the use of hardware resources.
 
 ## World-Class Features
 
@@ -122,7 +122,7 @@ Configurable SQL Logging allows the operation team to enable or disable logging 
 
 In certain scenarios, your application may need to select values from database sequences unrelated to tables. These sequences are typically used to generate unique values for APIs, file naming, and other purposes.
 
-### Composite Primary Keys Supported
+### Composite Primary Keys
 
 Both composite and simple primary keys are fully supported across all CRUD functionalities. Although considered a basic feature, many ORMs fail to implement the former.
 
