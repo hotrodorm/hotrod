@@ -29,7 +29,7 @@ D --> F;
 F --> E([Database Structure]);
 style E fill:#fcf8d2
 
-G --> N;
+G --> M;
 
 E --> H[4. Meta Data Compiler];
 D --> H;
