@@ -101,7 +101,7 @@ The parameter(s) in the call correspond to the list of primary key values. If th
 For example, for a table with a composite key consisting of three columns (VARCHAR, DATE, INTEGER), this method can be used as follows:
 
 ```java
-Payment p = this.paymentDAO.select("INT", LocalDate.of(2025, 10, 23), 7);
+Payment p = this.paymentDAO.select("AMT", LocalDate.of(2025, 10, 23), 7);
 ```
 
 
