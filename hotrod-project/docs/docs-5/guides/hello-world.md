@@ -78,7 +78,7 @@ The complete `pom.xml` file will look like:
     <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.1.214</version>
+      <version>2.2.224</version>
     </dependency>
 
   </dependencies>
@@ -115,7 +115,7 @@ The complete `pom.xml` file will look like:
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.214</version>
+            <version>2.2.224</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -207,8 +207,8 @@ We see the layer generation details:
 [INFO] --- hotrod-maven-plugin:5.0.0:gen (default-cli) @ myapp ---
 [INFO] HotRod Generator version 5.0.0 (build 20250520-023716) - Generate
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
-[INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
-[INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
+[INFO] Database Name: H2 - version 2.2 (2.2.224 (2022-06-13))
+[INFO] JDBC Driver: H2 JDBC Driver - version 2.2 (2.2.224 (2022-06-13)) - implements JDBC Specification 4.2
 [INFO] HotRod Adapter: H2 Adapter
 [INFO]  
 [INFO] Current Schema: PUBLIC
