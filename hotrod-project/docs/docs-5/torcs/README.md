@@ -1,16 +1,22 @@
 # Torcs
 
-Torcs gathers and consolidates statistical data of queries run by the application, with the aims of detecting slow running queries and of shedding light into their overall impact in the application performance. It also helps finding the root causes of the queries' slowness by retrieving their execution plans.
-
-Torcs is available since HotRod version 4.3.
+Torcs is a powerful tool designed for detecting low query performance within your application. It streamlines the process of gathering statistical data related to query execution, enabling developers and database administrators to pinpoint slow-running queries and understand their impact on application performance. In short, it enhances the ability to maintain high-performance applications by enabling clearer visibility into database operations.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
+
+Key Features of Torcs:
+
+- **Statistical Data Collection**: Torcs consolidates relevant data about query performance, making it easier to identify trends over time. Facilitates data-driven decision-making for performance tuning.
+- **Slow Query Detection**: By flagging queries that exceed acceptable execution times, Torcs helps prioritize optimization efforts.
+- **Execution Plans Retrieval**: It not only detects slow queries but also provides access to their execution plans, allowing for deeper analysis and understanding of inefficiencies. Aids in root cause analysis, leading to targeted optimizations.
+
+Torcs has been available since HotRod version 4.3.
 
 Torcs is not to be confused with the Torcs CTP module. The latter focuses on more comprehensive execution plans for middle tier to high end databases, that can be visualized and analized using Check The Plan (http://checktheplan.com) 's web site.
 
 ## Example
 
-The ranking by highest response time starts automatically when Torcs is added to the application and can provide a ranking of queries like:
+When Torcs is integrated into your application, it automatically starts ranking queries by their response time. The examples below shows a ranking compiled by Torcs:
 
 | Rank | Execs | Errors | Avg Time (ms) | Observed Time (ms) | Impact (ms) | Data Source | SQL |
 | :--: | --:| --:| --:| --:| --:| :--: | :-- |
@@ -21,32 +27,44 @@ The ranking by highest response time starts automatically when Torcs is added to
 
 ## Limitations
 
-Torcs does not aim to replace the official database statistical information produced by a DBA using the engine's sophisticated mechanisms. This information is much more comprehensive compared to what Torcs can provide. It must be noted, however, that some well-known and pricy monitoring tools in the market fail to provide useful insight data, especially when it comes to open source databases.
+While Torcs offers powerful capabilities for monitoring query performance, it also has certain limitations that users should keep in mind. Understanding these limitations can help you effectively integrate Torcs into your application monitoring strategy.
 
-Torcs can easily provide a wealth of information to a crafty developer who can start detecting slow queries, extracting live execution plans, and improving slow queries. All of this without the assistance of an expensive &ndash; or elusive &ndash; DBA.
+Key limitations:
 
-Consider that Torcs is local to the application instance and only sees queries that are run by the application instance. It does not see queries executed by other application instances, queries executed by other entirely different applications, or queries executed by internal and/or scheduled database processes. While queries such as these can place a load into the database and slow it down, Torcs will be unaware of them.
+| Limitation | Description |
+| :-- | :-- |
+| Not a Replacement for DBA Tools | Torcs is not intended to replace comprehensive database statistical information produced by DBAs. Current DBA tools deliver more detailed insights due to sophisticated mechanisms |
+| Scope of Monitoring | Torcs operates only within the local application instance. It does not monitor queries from other instances, different applications, or internal/scheduled database processes |
+| Awareness of Load Factors | It cannot detect downtime or performance issues caused by queries running outside the monitored application instance, which could still impact performance |
+| JDBC Driver Compatibility | While Torcs works with any JDBC driver, it does not implement the "database sharding" extension in JDBC 4.3. This could affect applications relying on sharding functionalities |
 
-**Note**: Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3) it does not implement the "database sharding" extension defined in JDBC 4.3, a functionality that is rarely used
+For organizations requiring detailed, cross-instance performance insights, Torcs should be used in conjunction with traditional DBA tools.
+
+Be aware that external queries (e.g., from different applications or scheduled tasks) can affect overall performance, even though Torcs won't capture this information.
+
+Even though Torcs works well with any JDBC driver (including the JDBC spec 4.3) it does not implement the "database sharding" extension defined in JDBC 4.3, a functionality that is rarely used
 by applications. Nevertheless, if your application or server is relying on this functionality, do not use Torcs.
 
 ## What Does Torcs Do?
 
-It's aware of SQL queries run by your application and can rank them or just record them. In short, Torcs:
+Torcs actively monitors SQL queries executed by your application, enabling effective performance analysis and optimization.
 
-- Can find slow queries
-- Can find the most impactful queries
-- Can log query executions
-- Can provide execution plans for queries
-- Includes five built-in rankings that rank queries according to different criteria
-- Allows custom observers to gather query execution stats with custom logic
-- Is multi-data source aware, when using the same or different database engines
-- Can save rankings details to Excel (XLSX) format
+Core Functionalities of Torcs:
 
+| Functionality | Description |
+| :---- | :--- |
+| Slow Query Detection | Identifies queries that have high response time, helping developers optimize them |
+| Impactful Query Identification | Ranks queries based on their overall impact on application performance, allowing for prioritization of optimization efforts |
+| Query Execution Logging | Can log queries based on multiple criteria and custom rules |
+| Execution Plans Analysis | Retrieves execution plans for slow queries, facilitating deeper analysis to uncover inefficiencies |
+| Built-in Rankings | Includes five predefined rankings to categorize queries based on various performance criteria |
+| Custom Observers | Enables developers to implement custom logic to gather specific query execution statistics tailored to their needs |
+| Multi-Data Source Awareness | Supports monitoring across multiple data sources, even when using different database engines, enhancing versatility |
+| Excel Export Functionality | Allows users to save ranking details in Excel (XLSX) format for further analysis and reporting |
 
 ## Enabling Torcs
 
-Torcs is enabled by wrapping the application `DataSource`(s) into `TorcsDataSource`s. To do this:
+To integrate Torcs into your application, you need to wrap the application's DataSource(s) with TorcsDataSource. The first step is to add the necessary Torcs module to your Maven project.
 
 Add the Torcs module to the Maven's pom.xml, as in:
 
