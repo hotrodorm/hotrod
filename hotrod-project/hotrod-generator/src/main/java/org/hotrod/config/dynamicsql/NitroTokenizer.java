@@ -3,7 +3,7 @@ package org.hotrod.config.dynamicsql;
 import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.JDBCParameterOccurrence;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 public class NitroTokenizer {
@@ -33,7 +33,7 @@ public class NitroTokenizer {
     if (this.pos >= this.txt.length()) {
       return null;
     }
-    int sp = this.txt.indexOf(SQLParameter.PREFIX, pos);
+    int sp = this.txt.indexOf(JDBCParameterOccurrence.PREFIX, pos);
     int ip = this.txt.indexOf(INJECTION_PREFIX, pos);
 //    log.info("  sp=" + sp + " ip=" + ip);
     if (sp == -1) { // no SQL parameter
@@ -90,14 +90,14 @@ public class NitroTokenizer {
   }
 
   private Token sqlParameter(int sp) throws InvalidConfigurationFileException {
-    int ss = this.txt.indexOf(SQLParameter.SUFFIX, sp + SQLParameter.PREFIX.length());
+    int ss = this.txt.indexOf(JDBCParameterOccurrence.SUFFIX, sp + JDBCParameterOccurrence.PREFIX.length());
     if (ss == -1) {
       throw new InvalidConfigurationFileException(tag,
-          "Unmatched SQL parameter delimiters: the start '" + SQLParameter.PREFIX
-              + "' of the SQL parameter was found, but not the end '" + SQLParameter.SUFFIX + "' of it.");
+          "Unmatched SQL parameter delimiters: the start '" + JDBCParameterOccurrence.PREFIX
+              + "' of the SQL parameter was found, but not the end '" + JDBCParameterOccurrence.SUFFIX + "' of it.");
     }
-    String body = this.txt.substring(sp + SQLParameter.PREFIX.length(), ss);
-    this.pos = ss + SQLParameter.SUFFIX.length();
+    String body = this.txt.substring(sp + JDBCParameterOccurrence.PREFIX.length(), ss);
+    this.pos = ss + JDBCParameterOccurrence.SUFFIX.length();
     return new Token(TokenType.SQL_PARAMETER, body);
   }
 

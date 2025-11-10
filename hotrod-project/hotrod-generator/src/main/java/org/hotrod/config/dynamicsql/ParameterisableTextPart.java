@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.JDBCParameterOccurrence;
 import org.hotrod.config.dynamicsql.NitroTokenizer.Token;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -64,7 +64,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
         ParameterTag parameterDefinition = parameterDefinitions.findParameter(expression);
         if (parameterDefinition != null) {
-          SQLParameter p = new SQLParameter(expression, tag, false);
+          JDBCParameterOccurrence p = new JDBCParameterOccurrence(expression, tag, false);
           p.setDefinition(parameterDefinition);
           this.segments.add(p);
         } else {

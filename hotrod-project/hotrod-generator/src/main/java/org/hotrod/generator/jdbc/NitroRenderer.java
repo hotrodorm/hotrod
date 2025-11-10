@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.hotrod.config.ComplementTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.JDBCParameterOccurrence;
 import org.hotrod.config.SequenceOfParts;
 import org.hotrod.config.VerbatimTextPart;
 import org.hotrod.config.dynamicsql.BindTag;
@@ -256,8 +256,8 @@ public class NitroRenderer {
 
   private void renderSQLSegments(ClassWriter w, int level, List<SQLSegment> segments) throws ErrorMessageException {
     for (SQLSegment s : segments) {
-      if (s instanceof SQLParameter) {
-        render((SQLParameter) s, w, level);
+      if (s instanceof JDBCParameterOccurrence) {
+        render((JDBCParameterOccurrence) s, w, level);
       } else if (s instanceof LiteralTextPart) {
         render((LiteralTextPart) s, w, level);
       } else if (s instanceof VariableOccurrence) {
@@ -273,7 +273,7 @@ public class NitroRenderer {
     }
   }
 
-  private void render(SQLParameter t, ClassWriter w, int level) throws ErrorMessageException {
+  private void render(JDBCParameterOccurrence t, ClassWriter w, int level) throws ErrorMessageException {
     log.fine("[" + level + "] render(SQLParameter) -- " + t.getName());
     ParameterTag pt = t.getDefinition();
 //    log.info("pt=" + pt);

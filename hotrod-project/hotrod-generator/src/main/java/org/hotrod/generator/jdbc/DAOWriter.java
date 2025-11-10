@@ -701,22 +701,22 @@ public class DAOWriter {
 
       if (byExample) {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         } else {
-          w.println("      .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+          w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
               + SUtil.escapeJavaString(sqlId) + "\").endif()");
         }
       } else {
 
         // Always include column
         if (!cm.belongsToPK()) {
-          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         }
 
         // Never include column
@@ -726,7 +726,7 @@ public class DAOWriter {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+          w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
               + SUtil.escapeJavaString(sqlId) + "\").endif()");
         }
 
@@ -753,9 +753,9 @@ public class DAOWriter {
       if (byExample) { // by example
 
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
+          w.println("        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
-          w.println("      .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
+          w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
         }
 
@@ -765,22 +765,22 @@ public class DAOWriter {
         if (!cm.belongsToPK()) {
           if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
             w.println(
-                "      .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
+                "        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
           } else {
-            w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+            w.println("        .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
                 "." + jdbcType + converterParam + ")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() != null) {
           if (mechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("      .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
+            w.println("        .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
           } else {
             String si = mechanics.getSequenceInlineSQL();
-            w.println("      .literal(\"" + SUtil.escapeJavaString(si) + "\")");
+            w.println("        .literal(\"" + SUtil.escapeJavaString(si) + "\")");
           }
         }
         if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("      .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+          w.println("        .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
               "." + jdbcType + converterParam + ")");
         }
 
@@ -791,7 +791,7 @@ public class DAOWriter {
 
         // Conditionally include column
         if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("      .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
+          w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
         }
 

@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -71,7 +70,7 @@ public class PaymentDAO implements Serializable, ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      SELECT *\n      FROM invoice\n      WHERE amount > ")
-      .parameterNullable("minAmount", Types.INTEGER)
+      .parameter("minAmount")
       .literal("\n    ")
       .endSelectQuery();
   }

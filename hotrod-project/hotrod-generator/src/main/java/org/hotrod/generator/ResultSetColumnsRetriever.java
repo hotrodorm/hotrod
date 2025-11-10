@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.JDBCParameterOccurrence;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
@@ -58,12 +58,12 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     private List<JDBCType> parameterJDBCTypes = new ArrayList<>();
 
     @Override
-    public String render(final SQLParameter parameter) {
+    public String render(final JDBCParameterOccurrence parameter) {
       log.fine("prepare view 0.1 -- parameter=" + parameter.getDefinition());
       JDBCType jdbcType = parameter.getDefinition().getJDBCType();
       parameterJDBCTypes.add(jdbcType);
       String parameterSampleValue = parameter.getDefinition().getSampleSQLValue();
-      String adapterSampleValue = adapter.provideSampleValueFor(jdbcType);
+      String adapterSampleValue = jdbcType == null ? null : adapter.provideSampleValueFor(jdbcType);
       adapterSampleValue = adapterSampleValue != null ? ("(" + adapterSampleValue + ")") : null;
       String sample = parameterSampleValue != null ? parameterSampleValue : adapterSampleValue;
       return sample != null ? sample : "?";

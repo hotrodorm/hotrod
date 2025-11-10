@@ -8,11 +8,11 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
 
-public class SQLParameter implements SQLSegment {
+public class JDBCParameterOccurrence implements SQLSegment {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SQLParameter.class.getName());
+  private static final Logger log = Logger.getLogger(JDBCParameterOccurrence.class.getName());
 
   private static final String VALID_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
 
@@ -35,7 +35,7 @@ public class SQLParameter implements SQLSegment {
   // Constructor
 
   // Java Parameter
-  public SQLParameter(final String name, final AbstractConfigurationTag tag, final boolean isVariable)
+  public JDBCParameterOccurrence(final String name, final AbstractConfigurationTag tag, final boolean isVariable)
       throws InvalidConfigurationFileException {
     log.fine("init");
     initialize(name, tag, false);
