@@ -32,11 +32,11 @@ Entities for tables, views, and Nitro SELECTs separate their *Layout* (the struc
 
 ### Feature-Rich LiveSQL
 
-LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, row locking, and more.
+LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, lateral joins, row locking, and more.
 
 ### Built-In Low Performance Query Detection
 
-Torcs automatically monitors all queries executed by your application and ranks them in multiple ways. By observing these rankings, you can identify bottlenecks, execution patterns, query execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing any performance issues in the persistence layer.
+Torcs automatically monitors all queries executed by your application and ranks them in multiple ways. By observing these rankings, you can identify bottlenecks, execution patterns, query execution plans, and error rates. Understanding the actual runtime behavior of your app &mdash; rather than the predicted one &mdash; is critical to addressing any performance issues in the persistence layer. All of this without the assistance of an expensive or elusive DBA.
 
 ### Advanced Dynamic SQL
 

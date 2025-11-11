@@ -10,6 +10,8 @@ Key Features of Torcs:
 - **Slow Query Detection**: By flagging queries that exceed acceptable execution times, Torcs helps prioritize optimization efforts.
 - **Execution Plans Retrieval**: It not only detects slow queries but also provides access to their execution plans, allowing for deeper analysis and understanding of inefficiencies. Aids in root cause analysis, leading to targeted optimizations.
 
+Torcs can be especially useful when your team lacks access to an expensive or elusive DBA, as well as to database monitoring tools.
+
 Torcs has been available since HotRod version 4.3.
 
 Torcs is not to be confused with the Torcs CTP module. The latter focuses on more comprehensive execution plans for middle tier to high end databases, that can be visualized and analized using Check The Plan (http://checktheplan.com) 's web site.

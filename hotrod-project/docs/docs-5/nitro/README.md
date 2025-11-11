@@ -13,7 +13,6 @@ query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md).
 - Expose long, complex, and tedious queries as simple methods in classes.
 - Use well-tested, pre-existent queries "as is" from your application.
 
-
 ## Example
 
 The following query uses native DB2 features and Dynamic SQL:
@@ -33,6 +32,42 @@ The following query uses native DB2 features and Dynamic SQL:
 
 Depending on the value of the `regionId` parameter the query changes form. Note that the `SELECTIVITY` clauses are a part of the DB2 dialect
 that allows the developer to tune query performance.
+
+# Nitro
+
+## Example
+
+## Update Queries
+
+## Select Queries
+
+### Entity Select Queries
+
+### Free Select Queries
+
+### Layout and Model Classes
+
+### Property Names
+
+### Property Types
+
+### Fetch Mode
+
+### The Select Foundation and Complement
+
+## Native SQL
+
+## Nitro Dynamic SQL
+
+## Parameters
+
+### Applied Parameters
+
+### SQL Injection Parameters
+
+### Parameter Declaration and Occurrences
+
+
 
 
 ## Nitro Queries
