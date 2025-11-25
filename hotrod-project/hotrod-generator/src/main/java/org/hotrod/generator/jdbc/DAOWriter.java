@@ -753,7 +753,8 @@ public class DAOWriter {
       if (byExample) { // by example
 
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-          w.println("        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
+          w.println(
+              "        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
           w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
               + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");

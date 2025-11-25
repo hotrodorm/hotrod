@@ -23,7 +23,7 @@
   <dao name="PaymentDAO">
 
     <select method="getBigInvoices" vo="BigInvoice">
-      <parameter name="minAmount" type="Integer" />
+      <parameter name="minAmount" java-type="java.lang.Integer" />
       <column name="amount" type="Double" />
       <column name="status" converter="InvoiceStatusConverter" />
       SELECT *

@@ -1,5 +1,6 @@
 package app;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.dynamicsql.Row;
@@ -42,12 +43,8 @@ public class App {
 
   private void demoLiveSQLSelect() {
     EmployeeTable e = this.employeeDAO.newTable();
-    List<Row> rows = this.sql
-        .select()
-        .from(e)
-        .where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
-        .orderBy(e.branchId.desc())
-        .execute();
+    List<Row> rows = this.sql.select().from(e).where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
+        .orderBy(e.branchId.desc()).execute();
     for (Row r : rows) {
       System.out.println("1. LiveSQL SELECT: " + r);
     }
@@ -66,8 +63,12 @@ public class App {
     EmployeeTable e = this.employeeDAO.newTable();
     Employee values = new Employee();
     values.setBranchId(15);
+    
+    List<Integer> ids = Arrays.asList(1, 2, 3, 4);
+    Integer[] array = ids.toArray(new Integer[0]);
+    
     int count = this.employeeDAO
-        .update(values, e, e.lastName.lower().like("%smith%").and(e.branchId.eq(2)))
+        .update(values, e, e.lastName.lower().like("%smith%").and(e.branchId.in(array)).and(e.branchId.eq(2)))
         .execute();
     System.out.println("3. LiveSQL UPDATE - rows: " + count);
   }
