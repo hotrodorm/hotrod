@@ -186,12 +186,11 @@ public class ColumnTag extends AbstractConfigurationTag {
 
       this.converterTag = null;
 
-      String t = null;
       if (this.javaType != null) {
         if (this.type != null) {
           throw new InvalidConfigurationFileException(this,
-              "The old attribute 'java-type' of the tag <" + super.getTagName()
-                  + "> cannot at the same time as the new 'type' attribute. " + "Use the latter only.");
+              "The deprecated attribute 'java-type' of the tag <" + super.getTagName()
+                  + "> cannot be present at the same time as the 'type' attribute. " + "Use one or the other.");
         }
         if (SUtil.isEmpty(this.javaType)) {
           throw new InvalidConfigurationFileException(this,
@@ -202,7 +201,7 @@ public class ColumnTag extends AbstractConfigurationTag {
           throw new InvalidConfigurationFileException(this, "The attribute 'java-type' of the tag <"
               + super.getTagName() + "> must specify a valid class name, but found '" + this.javaType + "'.");
         }
-        t = this.javaType;
+        this.type = TypesUtil.expand(this.javaType);
       } else if (this.type != null) {
         if (SUtil.isEmpty(this.type)) {
           throw new InvalidConfigurationFileException(this,
@@ -213,21 +212,22 @@ public class ColumnTag extends AbstractConfigurationTag {
           throw new InvalidConfigurationFileException(this, "The attribute 'type' of the tag <" + super.getTagName()
               + "> must specify a valid class name, but found '" + this.type + "'.");
         }
-        t = this.type;
+        this.type = TypesUtil.expand(this.type);
       } else {
-        throw new InvalidConfigurationFileException(this,
-            "The 'type' attribute of the tag <" + super.getTagName() + "> must be specified.");
+        this.type = null;
       }
-      this.type = TypesUtil.expand(t);
 
     } else {
 
       // converter
 
       if (this.type != null) {
+        throw new InvalidConfigurationFileException(this, "Invalid attributes 'type' and 'converter' of tag <"
+            + super.getTagName() + ">: " + "these attributes are mutually exclusive; use one or the other.");
+      }
+      if (this.javaType != null) {
         throw new InvalidConfigurationFileException(this, "Invalid attributes 'java-type' and 'converter' of tag <"
-            + super.getTagName() + ">: "
-            + "these attributes are mutually exclusive, so only one of them can be specified in a column definition.");
+            + super.getTagName() + ">: " + "these attributes are mutually exclusive; use one or the other.");
       }
       if (SUtil.isEmpty(this.converter)) {
         throw new InvalidConfigurationFileException(this, "Attribute 'converter' of tag <" + super.getTagName()
@@ -235,7 +235,7 @@ public class ColumnTag extends AbstractConfigurationTag {
       }
       this.converterTag = config.getConverterTagByName(this.converter);
       if (this.converterTag == null) {
-        throw new InvalidConfigurationFileException(this, "Converter '" + this.converter + "' not found.");
+        throw new InvalidConfigurationFileException(this, "Invalid converter '" + this.converter + "': converter not found.");
       }
 
     }
