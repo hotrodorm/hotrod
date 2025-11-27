@@ -44,12 +44,11 @@ public class LayerResourcesBeanWriter {
 
   private ClassWriter w;
 
-  public LayerResourcesBeanWriter(final JDBCTag jdbcTag, final RuntimeTypeSolverTag runtimeTypeSolver,
-      final String qualifier) {
+  public LayerResourcesBeanWriter(final JDBCTag jdbcTag, final RuntimeTypeSolverTag runtimeTypeSolver) {
     log.fine("init");
     this.jdbcTag = jdbcTag;
     this.runtimeTypeSolver = runtimeTypeSolver;
-    this.qualifier = qualifier;
+    this.qualifier = this.jdbcTag.getQualifier();
     this.className = this.jdbcTag.getLayerResources().getClassName();
     String suffix = SUtil.coalesce(this.qualifier, "");
     this.suffixLower = suffix.toLowerCase();
@@ -71,7 +70,7 @@ public class LayerResourcesBeanWriter {
       this.writeConverterBeans();
       this.writeLayerConfig();
 
-      if (this.qualifier != null) {
+      if (this.jdbcTag.generateQualifierBeans()) {
         this.writeDataSourceProperties();
         this.writeDataSource();
         this.writeDialectProperties();
@@ -204,7 +203,7 @@ public class LayerResourcesBeanWriter {
         + "this.liveSQLDialectMajorVersion,");
     w.println("        this.liveSQLDialectMinorVersion);");
     w.println("    ", LiveSQL.class, " ls = new ", LiveSQL.class,
-        "(liveSQLDialect, dataSource, \"" + this.getLayerConfigQualifier() + "\", layerConfig.getTypeRules());");
+        "(liveSQLDialect, dataSource, \"" + this.getLayerConfigQualifier() + "\", layerConfig);");
     w.println("    return ls;");
     w.println("  }");
 

@@ -72,6 +72,7 @@
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="package" type="xsd:string" />
     <xsd:attribute name="qualifier" type="xsd:string" />
+    <xsd:attribute name="qualifier-beans" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="discover-type">

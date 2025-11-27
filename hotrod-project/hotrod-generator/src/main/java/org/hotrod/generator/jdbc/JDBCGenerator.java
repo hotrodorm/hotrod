@@ -101,8 +101,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    this.layerConfig = new LayerResourcesBeanWriter(this.jdbcTag, this.config.getRuntimeTypeSolverTag(),
-        this.jdbcTag.getQualifier());
+    this.layerConfig = new LayerResourcesBeanWriter(this.jdbcTag, this.config.getRuntimeTypeSolverTag());
 
     // Add tables
 

@@ -46,9 +46,11 @@ public class JDBCTag extends AbstractGeneratorTag {
   private String sBaseDir = null;
   private String sPackage = null;
   private String qualifier = null;
+  private String sQualifierBeans = null;
 
   private File baseDir;
   private ClassPackage layerPackage;
+  private boolean generateQualifierBeans;
 
   private DiscoverTag discover = null;
   private JDBCLayerResourcesTag layerResources = null;
@@ -100,6 +102,11 @@ public class JDBCTag extends AbstractGeneratorTag {
   @XmlAttribute(name = "qualifier")
   public void setSQualifier(final String qualifier) {
     this.qualifier = qualifier;
+  }
+
+  @XmlAttribute(name = "qualifier-beans")
+  public void setSQualifierBeans(final String sQualifierBeans) {
+    this.sQualifierBeans = sQualifierBeans;
   }
 
   @XmlElement(name = "discover")
@@ -211,6 +218,25 @@ public class JDBCTag extends AbstractGeneratorTag {
       }
     }
 
+    // qualifier-beans
+
+    if (this.sQualifierBeans != null) {
+      if (this.qualifier == null) {
+        throw new InvalidConfigurationFileException(this,
+            "Invalid 'qualifier-beans' attribute: the 'qualifier-beans' attribute cannot be specified when the 'qualifier' attribute is not present.");
+      }
+      if ("true".equals(this.sQualifierBeans)) {
+        this.generateQualifierBeans = true;
+      } else if ("false".equals(this.sQualifierBeans)) {
+        this.generateQualifierBeans = false;
+      } else {
+        throw new InvalidConfigurationFileException(this,
+            "When specified, the qualifier-beans attribute must be either 'true' or 'false'.");
+      }
+    } else {
+      this.generateQualifierBeans = this.qualifier != null;
+    }
+
     // discovery
 
     if (this.discover != null) {
@@ -265,6 +291,10 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   public String getQualifier() {
     return qualifier;
+  }
+
+  public boolean generateQualifierBeans() {
+    return generateQualifierBeans;
   }
 
   public File getBaseDir() {

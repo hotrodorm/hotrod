@@ -26,6 +26,7 @@ This tag includes the following attribute:
 | `base-dir` | Specifies the base dir for all generated classes| `src/main/java` |
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
 | `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as dataSource and LiveSQL beans) when the application uses multiple data sources. Use a different qualifier for each dataSource. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on how to use it | *none* |
+| `qualifier-beans`  | Valid values are `true` or `false`. Indicates that the additional layer related beans (DataSourceProperties, DataSource, and LiveSQL) should be generated in the layer resources bean. These are typically useful in Spring Boot applications; should be turned off for plain Spring apps running in web containers. Only valid when a qualifier is defined | `true` when the qualifier is present, `false` otherwise |
 
 ## Default Configuration
 
