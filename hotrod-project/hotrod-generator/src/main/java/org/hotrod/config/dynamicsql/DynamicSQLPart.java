@@ -22,6 +22,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.Metadata;
 
 public abstract class DynamicSQLPart extends EnhancedSQLPart {
@@ -243,6 +244,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
 
   // Simple Static (non-dynamic) Rendering
 
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {

@@ -91,7 +91,7 @@ The following example illustrates how an IF tag works. In this example, the main
 
 ```xml
 <select method="searchEmployees" vo="Employee">
-  <parameter name="f" java-type="app.data.EmployeeFilter" />
+  <parameter name="f" type="app.data.EmployeeFilter" />
   SELECT * FROM employee WHERE active = 'Y'
   <if test="f != null">
     <if test="f.firstName != null"> AND first_name = #{f.firstName}</if>
@@ -124,7 +124,7 @@ The following example includes a choose operator that implements four types of o
 
 ```xml
   <select method="listEmployees" vo="Employee">
-    <parameter name="ordering" java-type="Integer" />
+    <parameter name="ordering" type="Integer" />
     SELECT *, salary * 1.31 as gross_salary FROM employee WHERE active = 'Y'
     <choose>
       <when test="ordering == 1"> ORDER BY first_name</when>
@@ -144,7 +144,7 @@ The following example makes it possible to use a list of values in a SQL IN pred
 
 ```xml
 <select method="findEmployees" vo="EmployeeVO">
-  <parameter name="ids" java-type="java.lang.Integer[]" jdbc-type="NUMERIC" />
+  <parameter name="ids" type="java.lang.Integer[]" />
   SELECT * FROM employee WHERE id IN
   <foreach item="id" collection="ids" open="(" separator=", " close=")">
     #{id}
@@ -183,7 +183,7 @@ The BIND tag binds a variable in the parameter scope, so it can be used by other
 
 ```xml
 <select method="findClientsByPartialName" vo="Client">
-  <parameter name="partialName" java-type="String" />
+  <parameter name="partialName" type="String" />
   <bind name="pattern" value="'%' || partialName || '%'" />
   SELECT *
   FROM client
@@ -205,9 +205,9 @@ The example below decides to include or exclude columns in the select list at ru
 
 ```xml
   <select method="getEmployeeData" vo="EmployeeData">
-    <parameter name="fn" java-type="Boolean" />
-    <parameter name="ln" java-type="Boolean" />
-    <parameter name="hd" java-type="Boolean" />
+    <parameter name="fn" type="Boolean" />
+    <parameter name="ln" type="Boolean" />
+    <parameter name="hd" type="Boolean" />
     SELECT
     <trim separator=", ">
       <if test="fn != null">first_name</if>
@@ -243,19 +243,21 @@ For example:
 
 ```xml
   <select method="getEmployeeData" vo="EmployeeData">
-    <parameter name="fn" java-type="Boolean" />
-    <parameter name="ln" java-type="Boolean" />
-    <parameter name="hd" java-type="Boolean" />
+    <parameter name="fn" type="Boolean" />
+    <parameter name="ln" type="Boolean" />
+    <parameter name="hd" type="Boolean" />
     SELECT * FROM employee
-    <where>
-      <if test="f.first != null">OR first_name = #{f.first}</if>
-      <if test="f.last != null">OR last_name = #{f.last}</if>
-      <if test="f.hiredDate != null">OR hired_on = #{f.hiredDate}</if>
-    </trim>
+    <where separator="OR">
+      <if test="f.first != null">first_name = #{f.first}</if>
+      <if test="f.last != null">last_name = #{f.last}</if>
+      <if test="f.hiredDate != null">hired_on = #{f.hiredDate}</if>
+    </where>
   </select>
 ```
 
 In this case the WHERE tag assembles any of these three IF tags prepending `WHERE` to the whole section and adding `OR` between them. If none of them is selected nothing will be added to the query, not even the `WHERE` section.
+
+The default separator is `AND`.
 
 If the supplied parameters are (firstName = `Anne`, lastName = `null`, hiredDate = `2025-03-15`) the query will be assembled as:
 
@@ -271,8 +273,8 @@ If the supplied parameters are (firstName = `Anne`, lastName = `null`, hiredDate
 
 Notice that:
 - The `WHERE` clause was included, since at least one inner IF tag was included.
-- The `OR` in `OR first_name = ?` was removed, since this is the first included tag.
-- The `OR` in `OR hired_on = ?` was not removed, since this is not the first included tag.
+- The `OR` separator was not added to `first_name = ?` since this is the first included tag.
+- The `OR` separator was added to `OR hired_on = ?` since this is not the first included tag.
 - The second inner tag was not included, since its condition was not met.
 
 
@@ -284,12 +286,12 @@ For example:
 
 ```xml
   <query method="markOutstandingInvoices">
-    <parameter name="newStatus" java-type="String" />
-    <parameter name="dueDate" java-type="java.util.Date" />
+    <parameter name="newStatus" type="String" />
+    <parameter name="dueDate" type="java.util.Date" />
     UPDATE invoice
     <set>
-      <if test="newStatus != null">, invoice_status = #{newStatus}</when>
-      <if test="dueDate != null">, invoice_due_date = #{dueDate}</when>
+      <if test="newStatus != null">invoice_status = #{newStatus}</if>
+      <if test="dueDate != null">invoice_due_date = #{dueDate}</if>
     </set>
     WHERE total_amount_due > amount_paid
   </query>

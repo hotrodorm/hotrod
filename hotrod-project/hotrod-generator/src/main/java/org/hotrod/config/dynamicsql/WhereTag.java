@@ -3,9 +3,11 @@ package org.hotrod.config.dynamicsql;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "where")
 public class WhereTag extends DynamicSQLPart {
@@ -22,7 +24,14 @@ public class WhereTag extends DynamicSQLPart {
 
   // Properties
 
+  private String separator = null;
+
   // JAXB Setters
+
+  @XmlAttribute
+  public void setSeparator(final String separator) {
+    this.separator = separator;
+  }
 
   // Getters
 
@@ -31,7 +40,13 @@ public class WhereTag extends DynamicSQLPart {
   @Override
   protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
-    // No attributes; nothing to do
+
+    // separator
+
+    if (this.separator == null) {
+      this.separator = "AND";
+    }
+
   }
 
   @Override
@@ -56,11 +71,20 @@ public class WhereTag extends DynamicSQLPart {
 
   }
 
+  @Override
+  public String renderSQLFoundation(final ParameterRenderer parameterRenderer) {
+    return "";
+  }
+
   // Rendering
 
   @Override
   protected boolean shouldRenderTag() {
     return true;
+  }
+
+  public String getSeparator() {
+    return separator;
   }
 
   @Override

@@ -16,8 +16,8 @@ The example shown below includes two parameter definitions:
 
 ```xml
   <select method="findClientsActiveAccounts" vo="ActiveAccount">
-    <parameter name="clientId" java-type="Integer" />
-    <parameter name="type" java-type="String" />
+    <parameter name="clientId" type="Integer" />
+    <parameter name="type" type="String" />
     SELECT *
     FROM account
     WHERE id = #{clientId}
@@ -84,8 +84,8 @@ Can be passed to the query:
 
 ```xml
   <query method="findClientsActiveAccounts" vo="ActiveAccount">
-    <parameter name="salaryIncrease" java-type="Integer" />
-    <parameter name="branch" java-type="com.app.Branch" />
+    <parameter name="salaryIncrease" type="Integer" />
+    <parameter name="branch" type="com.app.Branch" />
     UPDATE employee
     SET salary = salary + #{salaryIncrease}
     WHERE salary > #{branch.dept[1].minSalary}
@@ -137,13 +137,13 @@ During column discovery the generator replaces each parameter with a [sample SQL
 of the corresponding type. For applied parameters this sample value depends on the corresponding JDBC type of
 the parameter and the specific database engine; for injected parameters this is a dummy String value.
 
+<!--
 ## The JDBC Type
 
-In addition to its Java type HotRod may need to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
-attribute. It can also be explicitly indicated using the `jdbc-type` attribute in the &lt;parameter tag, as in:
+In addition to its type HotRod may need to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` attribute:
 
 ```xml
-<parameter name="clientId" java-type="Integer" jdbc-type="INTEGER" />
+<parameter name="clientId" type="Integer" jdbc-type="INTEGER" />
 ```
 
 For the full list of JDBC types see the [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) class documentation.
@@ -178,13 +178,15 @@ For parameters with typical Java types it's not necessary to include the `jdbc-t
 If the `java-type` of a parameter is not covered in this table, the developer needs to specify the `jdbc-type` explicitly. Typically this attribute is
 used only for uncommon or exotic parameter types such as UUIDs, geometry types, arrays, Objects, etc.
 
+-->
+
 ## The Sample SQL Value
 
 When HotRod is in the process of discovering the resulting columns of a SELECT query it will replace each parameter
 with a sample value. This value is auto-generated according to the `jdbc-type` as discussed before or it can be
 directly specified using the `sample-sql-value` attribute in the &lt;parameter> tag, as in:
 
-    <parameter name="clientId" java-type="Integer" sample-sql-value="123" />
+    <parameter name="clientId" type="Integer" sample-sql-value="123" />
 
 The value in the `sample-sql-value` attribute is a SQL text value, not a Java value. It will replace the parameter in
 the SELECT query with the aim of producing a valid SQL query. It may even be evaluated by the database engine used

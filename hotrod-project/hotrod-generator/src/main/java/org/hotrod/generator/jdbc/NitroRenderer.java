@@ -190,7 +190,11 @@ public class NitroRenderer {
 
   private void render(WhereTag t, ClassWriter w, int level) throws ErrorMessageException {
     log.fine("[" + level + "] render(where)");
-    w.println(indent(level) + ".where(\"AND\")");
+    if (t.getSeparator() == null) {
+      w.println(indent(level) + ".where(null)");
+    } else {
+      w.println(indent(level) + ".where(\"" + SUtil.escapeJavaString(t.getSeparator()) + "\")");
+    }
     render(t.getParts(), w, level + 1, p -> p instanceof IfTag);
     w.println(indent(level) + ".endwhere()");
   }

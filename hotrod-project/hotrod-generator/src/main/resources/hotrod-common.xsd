@@ -323,6 +323,7 @@
 
   <xsd:complexType name="where-type">
     <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="separator" type="xsd:string" />
   </xsd:complexType>
 
   <!-- trim -->

@@ -30,6 +30,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -182,22 +183,27 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter definition
+          param.validate();
           this.parameters.add(param);
         } catch (ClassCastException e2) {
           try {
             ColumnTag col = (ColumnTag) obj; // column
+            col.validate(config, adapter);
             this.columns.add(col);
           } catch (ClassCastException e3) {
             try {
               ComplementTag p = (ComplementTag) obj; // complement
+              p.validate(jdbcTag, config, fragmentConfig, parameters, adapter);
               this.parts.add(p);
             } catch (ClassCastException e4) {
               try {
                 DynamicSQLPart dyn = (DynamicSQLPart) obj; // dynamicsql
+                dyn.validate(jdbcTag, config, fragmentConfig, parameters);
                 this.parts.add(dyn);
               } catch (ClassCastException e5) {
                 try {
                   ColumnsTag p = (ColumnsTag) obj; // columns
+                  p.validate(jdbcTag, config, fragmentConfig, null, adapter);
                   this.structuredColumns = p;
                   this.parts.add(p);
                 } catch (ClassCastException e6) {
