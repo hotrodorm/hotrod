@@ -3,11 +3,8 @@
 package app.persistence.layout;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import org.hotrod.json.JSONObject;
-
-import app.AccountTypeConverter.AccountType;
 
 public class AccountLayout implements Serializable {
 
@@ -15,14 +12,11 @@ public class AccountLayout implements Serializable {
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D8
   protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
-  protected AccountType type = null; // Type Source: STATIC_DESIGNATED
-  protected Double balance = null; // Type Source: STATIC_DESIGNATED
-  protected Boolean active = null; // Type Source: STATIC_DESIGNATED
-  protected byte[] clientPhoto = null; // Type Source: STATIC_DIALECT_RULE, rule #D20
-  protected LocalDateTime updatedAt = null; // Type Source: STATIC_DIALECT_RULE, rule #D18
-  protected Integer version = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected String type = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Integer balance = null; // Type Source: STATIC_DIALECT_RULE, rule #D8
+  protected byte[] photo = null; // Type Source: STATIC_DIALECT_RULE, rule #D21
 
   // getters & setters
 
@@ -42,52 +36,28 @@ public class AccountLayout implements Serializable {
     this.name = name;
   }
 
-  public AccountType getType() {
+  public String getType() {
     return this.type;
   }
 
-  public void setType(final AccountType type) {
+  public void setType(final String type) {
     this.type = type;
   }
 
-  public Double getBalance() {
+  public Integer getBalance() {
     return this.balance;
   }
 
-  public void setBalance(final Double balance) {
+  public void setBalance(final Integer balance) {
     this.balance = balance;
   }
 
-  public Boolean getActive() {
-    return this.active;
+  public byte[] getPhoto() {
+    return this.photo;
   }
 
-  public void setActive(final Boolean active) {
-    this.active = active;
-  }
-
-  public byte[] getClientPhoto() {
-    return this.clientPhoto;
-  }
-
-  public void setClientPhoto(final byte[] clientPhoto) {
-    this.clientPhoto = clientPhoto;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return this.updatedAt;
-  }
-
-  public void setUpdatedAt(final LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
-  public Integer getVersion() {
-    return this.version;
-  }
-
-  public void setVersion(final Integer version) {
-    this.version = version;
+  public void setPhoto(final byte[] photo) {
+    this.photo = photo;
   }
 
   // to string
@@ -99,10 +69,7 @@ public class AccountLayout implements Serializable {
     sb.append("- name=" + this.name + "\n");
     sb.append("- type=" + this.type + "\n");
     sb.append("- balance=" + this.balance + "\n");
-    sb.append("- active=" + this.active + "\n");
-    sb.append("- clientPhoto=" + this.clientPhoto + "\n");
-    sb.append("- updatedAt=" + this.updatedAt + "\n");
-    sb.append("- version=" + this.version);
+    sb.append("- photo=" + this.photo);
     return sb.toString();
   }
 
@@ -114,10 +81,7 @@ public class AccountLayout implements Serializable {
     obj.addProperty("name", this.name);
     obj.addProperty("type", this.type);
     obj.addProperty("balance", this.balance);
-    obj.addProperty("active", this.active);
-    obj.addProperty("clientPhoto", this.clientPhoto);
-    obj.addProperty("updatedAt", this.updatedAt);
-    obj.addProperty("version", this.version);
+    obj.addProperty("photo", this.photo);
     return obj;
   }
 

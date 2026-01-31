@@ -1,7 +1,6 @@
 package app;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +10,6 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,14 +19,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.MyAccount;
-import app.persistence.Product;
-import app.persistence.dao.ProductDAO;
-import app.persistence.dao.ProductDAO.ProductTable;
-import app.persistence.dao.SalesDAO;
-import app.persistence.geo.Vehicle;
-import app.persistence.geo.dao.VehicleDAO;
-import app.persistence.geo.layout.VehicleLayout;
+import app.persistence.dao.AccountDAO;
+import app.persistence.model.Account;
 
 @SpringBootApplication
 @Configuration
@@ -43,14 +35,14 @@ public class App {
 //    JULCustomFormatter.initialize(Level.FINER);
   }
 
-//  @Autowired
-//  private AccountDAO accountDAO;
-//
+  @Autowired
+  private AccountDAO accountDAO;
+
 //  @Autowired
 //  private CoinDAO coinDAO;
 
-  @Autowired
-  private ProductDAO productDAO;
+//  @Autowired
+//  private ProductDAO productDAO;
 
 //  @Autowired
 //  private BranchDAO branchDAO;
@@ -58,11 +50,11 @@ public class App {
 //  @Autowired
 //  private EmployeeDAO employeeDAO;
 
-  @Autowired
-  private SalesDAO salesDAO;
-
-  @Autowired
-  private VehicleDAO vehicleDAO;
+//  @Autowired
+//  private SalesDAO salesDAO;
+//
+//  @Autowired
+//  private VehicleDAO vehicleDAO;
 
 //  @Autowired
 //  private ADAO aDAO;
@@ -73,8 +65,8 @@ public class App {
 //  @Autowired
 //  private Test2DAO test2DAO;
 
-  @Autowired
-  private TestDAO testDAO;
+//  @Autowired
+//  private TestDAO testDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -87,11 +79,12 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+      testBlob();
 //      testSubquery();
 //      testCTE();
 //      testRecursiveCTE();
 //      testComplement();
-      testCast();
+//      testCast();
 //      testWhere();
 //      testInsert1();
 //      testForEach();
@@ -123,13 +116,21 @@ public class App {
     };
   }
 
-  private void testTuples() {
-    ProductTable p = this.productDAO.newTable();
-    List<Tuple1<Product>> rows = this.sql.select().tuples().from(p).execute();
-    for (Tuple1<Product> r : rows) {
-      Integer total = r.get("total", Integer.class);
-    }
+  private void testBlob() {
+    Account a = this.accountDAO.select(123);
+    System.out.println("### Account: " + a);
+    byte[] n = { 2, 3, 5, 7, 11, 13 };
+    a.setPhoto(n);
+    this.accountDAO.update(a);
   }
+
+//  private void testTuples() {
+//    ProductTable p = this.productDAO.newTable();
+//    List<Tuple1<Product>> rows = this.sql.select().tuples().from(p).execute();
+//    for (Tuple1<Product> r : rows) {
+//      Integer total = r.get("total", Integer.class);
+//    }
+//  }
 
   private void testSubquery() {
     System.out.println("### Subquery:");
@@ -158,55 +159,55 @@ public class App {
     System.out.println("row=" + row);
   }
 
-  private void testComplement() {
-    List<Integer> codigos = Arrays.asList(123, 456, 789);
-    List<MyAccount> ma = this.salesDAO.findMyAccounts(codigos);
-    ma.forEach(r -> System.out.println("ma=" + r));
-  }
+//  private void testComplement() {
+//    List<Integer> codigos = Arrays.asList(123, 456, 789);
+//    List<MyAccount> ma = this.salesDAO.findMyAccounts(codigos);
+//    ma.forEach(r -> System.out.println("ma=" + r));
+//  }
+//
+//  private void testCast() {
+//    ProductTable p = this.productDAO.newTable();
+//    List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VARCHAR").length().as("len")).from(p)
+//        .execute(LIVESQL_LOG);
+//    rows.forEach(r -> System.out.println("r=" + r));
+//  }
+//
+//  private void testWhere() {
+//    VehicleLayout example = new VehicleLayout();
+//    example.setName("Toyota 1");
+//    example.setVehicleCode(1123);
+//
+//    System.out.println("=== SELECT BY PK ===");
+//    Vehicle v = this.vehicleDAO.select(1234);
+//
+//    System.out.println("=== SELECT BY EXAMPLE ===");
+//    this.vehicleDAO.select(example);
+//
+//    System.out.println("=== UPDATE BY PK ===");
+//    this.vehicleDAO.update(v);
+//
+//    System.out.println("=== UPDATE BY EXAMPLE ===");
+//    this.vehicleDAO.update(example, example);
+//
+//    System.out.println("=== DELETE BY PK ===");
+//    this.vehicleDAO.delete(1234);
+//
+//    System.out.println("=== DELETE BY EXAMPLE ===");
+//    this.vehicleDAO.delete(example);
+//
+////    System.out.println("inserted=" + inserted);
+//
+//  }
 
-  private void testCast() {
-    ProductTable p = this.productDAO.newTable();
-    List<Row> rows = this.sql.select(p.pidProduct, p.pidProduct.castChar("VARCHAR").length().as("len")).from(p)
-        .execute(LIVESQL_LOG);
-    rows.forEach(r -> System.out.println("r=" + r));
-  }
-
-  private void testWhere() {
-    VehicleLayout example = new VehicleLayout();
-    example.setName("Toyota 1");
-    example.setVehicleCode(1123);
-
-    System.out.println("=== SELECT BY PK ===");
-    Vehicle v = this.vehicleDAO.select(1234);
-
-    System.out.println("=== SELECT BY EXAMPLE ===");
-    this.vehicleDAO.select(example);
-
-    System.out.println("=== UPDATE BY PK ===");
-    this.vehicleDAO.update(v);
-
-    System.out.println("=== UPDATE BY EXAMPLE ===");
-    this.vehicleDAO.update(example, example);
-
-    System.out.println("=== DELETE BY PK ===");
-    this.vehicleDAO.delete(1234);
-
-    System.out.println("=== DELETE BY EXAMPLE ===");
-    this.vehicleDAO.delete(example);
-
+//  private void testInsert1() {
+//    VehicleLayout v = new VehicleLayout();
+//    v.setName("Toyota 1");
+//    v.setVehicleCode(1123);
+//
+//    Vehicle inserted = this.vehicleDAO.insert(v);
 //    System.out.println("inserted=" + inserted);
-
-  }
-
-  private void testInsert1() {
-    VehicleLayout v = new VehicleLayout();
-    v.setName("Toyota 1");
-    v.setVehicleCode(1123);
-
-    Vehicle inserted = this.vehicleDAO.insert(v);
-    System.out.println("inserted=" + inserted);
-
-  }
+//
+//  }
 
   private void testSelect1() throws SQLException {
 //    ProductTable p = this.productDAO.newTable();
@@ -221,28 +222,28 @@ public class App {
 //        .execute();
   }
 
-  private void testForEach() throws SQLException {
-    System.out.println("Searching products...");
-
-    Long[] ids = new Long[] { 100L, 102L, 104L };
-    List<Product> products = this.testDAO.select(ids);
-    products.forEach(p -> System.out.println("p=" + p));
-
-    ids = new Long[] { 105L, 106L };
-    products = this.testDAO.select(ids);
-    products.forEach(p -> System.out.println("p=" + p));
-
-  }
-
-  private void testOracleInsertSeq() throws SQLException {
-//    System.out.println("DB: " + this.productDAO.getDataSource().getConnection().getMetaData().getURL());
-
-    Product p = new Product();
-    p.setShipping(120);
-    p.setType("ghi");
-    Product inserted = this.productDAO.insert(p);
-    System.out.println("inserted=" + inserted);
-  }
+//  private void testForEach() throws SQLException {
+//    System.out.println("Searching products...");
+//
+//    Long[] ids = new Long[] { 100L, 102L, 104L };
+//    List<Product> products = this.testDAO.select(ids);
+//    products.forEach(p -> System.out.println("p=" + p));
+//
+//    ids = new Long[] { 105L, 106L };
+//    products = this.testDAO.select(ids);
+//    products.forEach(p -> System.out.println("p=" + p));
+//
+//  }
+//
+//  private void testOracleInsertSeq() throws SQLException {
+////    System.out.println("DB: " + this.productDAO.getDataSource().getConnection().getMetaData().getURL());
+//
+//    Product p = new Product();
+//    p.setShipping(120);
+//    p.setType("ghi");
+//    Product inserted = this.productDAO.insert(p);
+//    System.out.println("inserted=" + inserted);
+//  }
 
 //  private void testSubExpressions() {
 //    VehicleTable v = this.vehicleDAO.newTable();

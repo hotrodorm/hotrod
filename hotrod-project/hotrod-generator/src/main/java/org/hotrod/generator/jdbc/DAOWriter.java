@@ -1729,7 +1729,7 @@ public class DAOWriter {
     JDBC_GETTERS.put("java.math.BigDecimal", JDBCGetter.obj("getBigDecimal"));
     JDBC_GETTERS.put("java.sql.Blob", JDBCGetter.obj("getBlob"));
     JDBC_GETTERS.put("java.lang.Byte", JDBCGetter.prim("getByte"));
-    JDBC_GETTERS.put("java.lang.Byte[]", JDBCGetter.obj("getBytes"));
+    JDBC_GETTERS.put("byte[]", JDBCGetter.obj("getBytes"));
     JDBC_GETTERS.put("java.sql.Clob", JDBCGetter.obj("getClob"));
     JDBC_GETTERS.put("java.sql.Date", JDBCGetter.obj("getDate"));
     JDBC_GETTERS.put("java.lang.Double", JDBCGetter.prim("getDouble"));
@@ -1766,7 +1766,8 @@ public class DAOWriter {
 
     if (ct == null) { // No converter
       JDBCGetter g = JDBC_GETTERS.get(javaClass);
-//      log.info("- g=" + g + " method=" + (g == null ? "null" : g.getResultSetMethod()));
+      log.fine("- col=" + cn + " javaClass=" + javaClass + " g=" + g + " method="
+          + (g == null ? "null" : g.getResultSetMethod()));
       String var = "col" + ordinal;
       ExternalClass jc = ExternalClass.of(javaClass);
       if (g != null) {

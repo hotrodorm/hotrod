@@ -25,9 +25,9 @@
   <fragment file="./reporting.xml" />
  -->
 
-  <table name="account">
-    <column name="id" sequence="seq_account" />
+  <table name="account">  
   <!--
+    <column name="id" sequence="seq_account" />
   -->
   </table>
  
