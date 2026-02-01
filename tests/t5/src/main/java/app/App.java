@@ -10,6 +10,7 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.AccountDAO;
+import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.model.Account;
 
 @SpringBootApplication
@@ -79,8 +81,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testBlob();
-//      testSubquery();
+//      testBlob();
+      testSubquery();
 //      testCTE();
 //      testRecursiveCTE();
 //      testComplement();
@@ -134,8 +136,11 @@ public class App {
 
   private void testSubquery() {
     System.out.println("### Subquery:");
-    Subquery x = sql.subquery("x", sql.select(sql.literal(123).as("a")));
-    List<Row> rows = sql.select().from(x).execute(LIVESQL_LOG);
+    AccountTable a = this.accountDAO.newTable("a");
+    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
+    Select<Row> q = sql.select().from(x);
+    System.out.println("q=" + q.getPreview());
+    List<Row> rows = q.execute(LIVESQL_LOG);
     rows.forEach(r -> System.out.println("r=" + r));
   }
 

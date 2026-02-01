@@ -16,11 +16,6 @@
 
   <enum name="category" name-column="name" />
 
-  <dao name="SearchQueries">
-    <select method="searchInvoices" vo="SInvoice">
-      select * from invoice
-    </select>
-  </dao>
 
   <fragment file="./reporting.xml" />
  -->
@@ -30,5 +25,12 @@
     <column name="id" sequence="seq_account" />
   -->
   </table>
+  
+  <dao name="SearchQueries">
+    <select method="searchInvoices" vo="SInvoice">
+      select 123 as n
+    </select>
+  </dao>
+  
  
 </hotrod>

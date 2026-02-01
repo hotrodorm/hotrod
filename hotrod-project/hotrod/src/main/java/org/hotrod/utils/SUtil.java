@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -262,6 +264,16 @@ public class SUtil {
       slices.add(txt.substring(i, Math.min(len, i + width)));
     }
     return slices;
+  }
+
+//  public static String formatZ(LocalDateTime dt) {
+//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy 'at' HH:mm:ss Z");
+//    return formatter.format(dt);
+//  }
+
+  public static String format(LocalDateTime dt) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy 'at' HH:mm:ss");
+    return formatter.format(dt);
   }
 
 }
