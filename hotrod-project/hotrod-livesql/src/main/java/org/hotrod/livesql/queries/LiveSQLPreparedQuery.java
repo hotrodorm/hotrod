@@ -92,7 +92,7 @@ public class LiveSQLPreparedQuery {
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
           sb.append(" * " + ordinal + " " + name + ": " //
               + TShield.render(th) //
-              + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
+              + (th == null ? "" : th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
               + "\n");
           ordinal++;
         }

@@ -139,7 +139,7 @@ public class App {
     AccountTable a = this.accountDAO.newTable("a");
     Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
     Select<Row> q = sql.select().from(x);
-    System.out.println("q=" + q.getPreview());
+    System.out.println("q=" + q.getPreview(true));
     List<Row> rows = q.execute(LIVESQL_LOG);
     rows.forEach(r -> System.out.println("r=" + r));
   }
