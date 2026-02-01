@@ -2,12 +2,32 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.7 (unreleased):
+## 5.1.10:
+
+- Core:
+    - Fixed BLOB-type columns getters and setters.
+- Generator:
+    - Improved generation comment line.
+
+## 5.1.9:
+
+- Core:
+    - Fixing optional 'type' attribute in column tags.
+    - The 'qualifier-beans' attribute was implemented to simplify multi-datasource usage.
+- Dynamic SQL & Nitro:
+    - Adding separator attribute to WHERE tag.
+
+## 5.1.8:
 
 - Nitro:
-    - SQL Injection is now disabled by default and must be enabled explicitly if needed.
+    - Fixing java-type support in Nitro parameters.
+
+## 5.1.7:
+
+- Nitro:
+    - SQL Injection is now disabled by default and must be enabled explicitly if needed, on a per query basis.
     - SQL Injection now allows any JEXL expression, not just plain parameter names.
-    - Applied parameter ocurrences can now use JEXL expressions.
+    - Also, normal applied parameter ocurrences can now use JEXL expressions.
 
 ## 5.1.6:
 
