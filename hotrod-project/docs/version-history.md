@@ -5,7 +5,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.1.10:
 
 - Core:
-    - Fixed BLOB-type columns getters and setters.
+    - Fixed BLOB-type columns getters and setters in row readers.
 - Generator:
     - Improved generation comment line.
 
