@@ -146,9 +146,9 @@ int count = this.invoiceDAO.update(inv);
 [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD, that is when you need to:
 
 - Run queries that use other SQL statements beyond SELECT, INSERT, UPDATE, and DELETE
-- Use non-trivial expressions or functions in queries. For example, to perform regular expression matching, full text search, rollups, etc
-- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically assemble queries based on runtime parameters
-- Use native SQL extensions available in the specific database, such as optimizer hints, extensions to the SQL syntax, or other
+- Use non-trivial expressions, custom functions, regular expression matching, full text search, time zone manipulation, etc
+- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically assemble query sections into the main query according to runtime parameters
+- Use native SQL extensions available in the specific database, such as optimizer hints, extensions to the SQL syntax, rollups, etc
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
 
