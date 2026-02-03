@@ -137,7 +137,7 @@ Updating the status of an invoice is straightforward:
 ```java
 Invoice inv = this.invoiceDAO.select(5470);
 inv.setStatus("PAID");
-int rows = this.invoiceDAO.update(inv);
+int count = this.invoiceDAO.update(inv);
 ```
 
 
