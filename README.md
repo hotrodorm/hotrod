@@ -9,7 +9,7 @@ HotRod offers:
 - [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and straightforward persistence for rapid prototyping
 - [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code with live syntax validation
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; Harness the power of native SQL and dynamic SQL when necessary
-- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and analyze their execution plans
+- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and get their execution plans
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
@@ -51,7 +51,7 @@ for (Tuple1<Product> r : rows) {
 }
 ```
 
-You can join multiple tables, views, subqueries, and/or Common Table Expressions (CTEs) as follows:
+You can join multiple tables, views, subqueries, and/or Common Table Expressions (CTEs). For example, to join the tables INVOICE and CLIENT in a SELECT query &mdash; and get separate tuples for each table &mdash; you can do:
 
 ```java
 List<Tuple2<Invoice, Client>> rows = sql
@@ -68,7 +68,7 @@ for (Tuple2<Invoice, Client> r : rows) {
   Client cli = r.getB(); // same here
   System.out.println("Invoice: " + inv);
   System.out.println("Client: " + cli);
-  System.out.println("Applied Discount: " + r.getUnbound().get("appliedDiscount"));
+  System.out.println("Applied Discount: " + r.get("appliedDiscount"));
 }
 ```
 
@@ -137,16 +137,18 @@ Updating the status of an invoice is straightforward:
 ```java
 Invoice inv = this.invoiceDAO.select(5470);
 inv.setStatus("PAID");
-this.invoiceDAO.update(inv);
+int rows = this.invoiceDAO.update(inv);
 ```
 
 
 ## Nitro &mdash; At a Glance
 
-[Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD, or for queries that benefit from:
+[Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD, that is when you need to:
 
-- [Nitro Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) logic, which dynamically assembles queries based on runtime parameters
-- Native SQL extensions available in the specific database
+- Run queries that use other SQL statements beyond SELECT, INSERT, UPDATE, and DELETE
+- Use non-trivial expressions or functions in queries. For example, to perform regular expression matching, full text search, rollups, etc
+- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically assemble queries based on runtime parameters
+- Use native SQL extensions available in the specific database, such as optimizer hints, extensions to the SQL syntax, or other
 
 Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
 
@@ -161,7 +163,7 @@ A basic query without parameters can be specified as follows:
 This query becomes available in the persistence layer as the method:
 
 ```java
-  public void initializeBatchProcess()
+  void initializeBatchProcess()
 ```
 
 The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values, the query will take on a different structure each time. It also incorporates a piece of Native SQL (an optimizer hint):
@@ -186,7 +188,7 @@ The following query has parameters and uses Dynamic SQL to assemble the query dy
 Nitro makes this query available in the persistence layer as the method:
 
 ```java
-List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
+  List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
 ```
 
 ## Torcs &mdash; At a Glance
