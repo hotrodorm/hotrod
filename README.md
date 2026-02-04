@@ -205,7 +205,7 @@ For example, the ranking by highest response time starts automatically when Torc
 
 In this example the entries are sorted by max time in descending order.
 
-The following rankings are built-in in Torcs and can be activated programmatically. When multiple rankings are active, each maintains its own separate data:
+The following rankings are built-in in Torcs and can be activated programmatically. When multiple rankings are active, each one maintains its own separate statistics:
 
 - By Highest Response Time (active by default)
 - By Highest Impact
