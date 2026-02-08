@@ -129,7 +129,6 @@ public abstract class SelectObject<T> {
   protected List<T> executeLiveSQL(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
 
-
     List<T> rows = new ArrayList<>();
     try (Connection conn = context.getDataSource().getConnection()) {
 
@@ -148,6 +147,7 @@ public abstract class SelectObject<T> {
         try (ResultSet rs = ps.executeQuery()) {
 
           final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
+//          log.info("effectiveRowReader=" + effectiveRowReader);
 
           LoggingUtil.logQuery(q, loggingAdapter);
 

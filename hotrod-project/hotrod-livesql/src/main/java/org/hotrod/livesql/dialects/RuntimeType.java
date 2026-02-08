@@ -30,4 +30,9 @@ public class RuntimeType {
     return this.ruleNumber == null ? null : this.namespace + ruleNumber;
   }
 
+  @Override
+  public String toString() {
+    return "RuntimeType [type=" + type + ", namespace=" + namespace + ", ruleNumber=" + ruleNumber + "]";
+  }
+
 }

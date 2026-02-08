@@ -64,7 +64,9 @@ public class PostgreSQLDialect extends LiveSQLDialect {
       if (m.getScale() != 0) { // DECIMAL or NUMBER with decimal places
         return RuntimeType.ofDialect(BigDecimal.class, 1);
       } else { // DECIMAL or NUMBER without decimal places
-        if (m.getPrecision() <= 2) {
+        if (m.getPrecision() == 0) { // unspecified NUMERIC w/o decimal places -- read as Long by default
+          return RuntimeType.ofDialect(Long.class, 21);
+        } else if (m.getPrecision() <= 2) {
           return RuntimeType.ofDialect(Byte.class, 2);
         } else if (m.getPrecision() <= 4) {
           return RuntimeType.ofDialect(Short.class, 3);

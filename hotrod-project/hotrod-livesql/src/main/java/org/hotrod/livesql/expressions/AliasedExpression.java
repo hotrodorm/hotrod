@@ -40,7 +40,7 @@ public class AliasedExpression extends Expression {
     return new TypedExpression(this, type);
   }
 
-  public TypedExpression type(final TypeConverter<?,?> converter) {
+  public TypedExpression converter(final TypeConverter<?, ?> converter) {
     return new TypedExpression(this, converter);
   }
 
@@ -50,7 +50,7 @@ public class AliasedExpression extends Expression {
   }
 
   @Override
-  protected TypeHandler<?,?> getTypeHandler() {
+  protected TypeHandler<?, ?> getTypeHandler() {
     return this.referencedExpression.getTypeHandler();
   }
 

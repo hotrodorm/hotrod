@@ -1,5 +1,6 @@
 package org.hotrod.livesql.expressions.object;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.expressions.TypedExpression;
 
 public abstract class ObjectSyntaxExpression extends ObjectExpression {
@@ -12,6 +13,10 @@ public abstract class ObjectSyntaxExpression extends ObjectExpression {
 
   public TypedExpression type(final Class<?> type) {
     return new TypedExpression(this, type);
+  }
+
+  public TypedExpression converter(final TypeConverter<?, ?> converter) {
+    return new TypedExpression(this, converter);
   }
 
 }

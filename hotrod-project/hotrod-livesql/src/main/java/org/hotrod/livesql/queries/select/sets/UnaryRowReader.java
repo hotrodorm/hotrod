@@ -34,11 +34,13 @@ public class UnaryRowReader<T> implements RowReader<T> {
     for (Expression expr : this.queryColumns) {
       TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
       String name = Shield.getReferenceName(expr);
+//      log.info("cth=" + cth);
       if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
+//        log.info("cm=" + cm);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolveRuntimeType(cm);
-//          log.info("#" + ordinal + " th.getJavaClass()=" + th.getJavaClass());
+//          log.info("#" + ordinal + " th=" + th);
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
           throw new LiveSQLException("Could not determine the type for the column '" + name + "' in the query. "

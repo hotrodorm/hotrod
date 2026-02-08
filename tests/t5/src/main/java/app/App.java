@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
@@ -71,6 +72,9 @@ public class App {
 //  private TestDAO testDAO;
 
   @Autowired
+  private IntegerBooleanConverter ibc;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -136,12 +140,26 @@ public class App {
 
   private void testSubquery() {
     System.out.println("### Subquery:");
-    AccountTable a = this.accountDAO.newTable("a");
-    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
-    Select<Row> q = sql.select().from(x);
+    AccountTable a = this.accountDAO.newTable("t");
+//    AccountTable b = this.accountDAO.newTable("u");
+//    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
+//    Subquery x = sql.subquery("x", sql.select(a.balance, sql.val(401).as("total")).from(a).where(a.id.eq(123)));
+//    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a));
+    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a).where(a.balance.gt(0)) //
+        .union().select(sql.count()).from(a) //
+    );
+    Select<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
+//    Select<Row> q = sql.select(sql.caseWhen(sql.sum(x.num("total")).gt(0), 10).elseValue(0).end().as("x").converter(this.ibc))
+//        .from(x);
     System.out.println("q=" + q.getPreview(true));
     List<Row> rows = q.execute(LIVESQL_LOG);
-    rows.forEach(r -> System.out.println("r=" + r));
+    rows.forEach(r -> System.out.println("r=" + render(r)));
+  }
+
+  private String render(Row row) {
+    return row.keySet().stream()
+        .map(k -> k + "=" + row.get(k) + (row.get(k) == null ? "" : "(" + row.get(k).getClass().getName() + ")"))
+        .collect(Collectors.joining(",", "{", "}"));
   }
 
   private void testCTE() {

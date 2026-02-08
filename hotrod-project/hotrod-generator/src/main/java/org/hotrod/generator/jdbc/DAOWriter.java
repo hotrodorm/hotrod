@@ -8,9 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +18,7 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import org.hotrod.BuildInformation;
 import org.hotrod.config.AbstractDAOTag;
-import org.hotrod.config.Constants;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -53,6 +49,8 @@ import org.hotrod.exceptions.StaleDataException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.getters.GetterFactory;
+import org.hotrod.getters.PrimitiveJDBCGetter;
 import org.hotrod.identifiers.Id;
 import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
@@ -1699,54 +1697,6 @@ public class DAOWriter {
 
   // Utils
 
-  private static class JDBCGetter {
-
-    private String resultSetMethod;
-    private boolean returnsPrimitiveType;
-
-    private JDBCGetter(String resultSetMethod, boolean returnsPrimitiveType) {
-      this.resultSetMethod = resultSetMethod;
-      this.returnsPrimitiveType = returnsPrimitiveType;
-    }
-
-    public static JDBCGetter obj(String m) {
-      return new JDBCGetter(m, false);
-    }
-
-    public static JDBCGetter prim(String m) {
-      return new JDBCGetter(m, true);
-    }
-
-    public String getResultSetMethod() {
-      return resultSetMethod;
-    }
-
-    public boolean returnsPrimitiveType() {
-      return returnsPrimitiveType;
-    }
-
-  }
-
-  private static final Map<String, JDBCGetter> JDBC_GETTERS = new HashMap<>();
-  static {
-    JDBC_GETTERS.put("java.math.BigDecimal", JDBCGetter.obj("getBigDecimal"));
-    JDBC_GETTERS.put("java.sql.Blob", JDBCGetter.obj("getBlob"));
-    JDBC_GETTERS.put("java.lang.Byte", JDBCGetter.prim("getByte"));
-    JDBC_GETTERS.put("byte[]", JDBCGetter.obj("getBytes"));
-    JDBC_GETTERS.put("java.sql.Clob", JDBCGetter.obj("getClob"));
-    JDBC_GETTERS.put("java.sql.Date", JDBCGetter.obj("getDate"));
-    JDBC_GETTERS.put("java.lang.Double", JDBCGetter.prim("getDouble"));
-    JDBC_GETTERS.put("java.lang.Float", JDBCGetter.prim("getFloat"));
-    JDBC_GETTERS.put("java.lang.Integer", JDBCGetter.prim("getInt"));
-    JDBC_GETTERS.put("java.lang.Long", JDBCGetter.prim("getLong"));
-    JDBC_GETTERS.put("java.lang.Boolean", JDBCGetter.prim("getBoolean"));
-    JDBC_GETTERS.put("java.lang.Short", JDBCGetter.prim("getShort"));
-    JDBC_GETTERS.put("java.sql.SQLXML", JDBCGetter.obj("getSQLXML"));
-    JDBC_GETTERS.put("java.lang.String", JDBCGetter.obj("getString"));
-    JDBC_GETTERS.put("java.sql.Time", JDBCGetter.obj("getTime"));
-    JDBC_GETTERS.put("java.sql.Timestamp", JDBCGetter.obj("getTimestamp"));
-  }
-
   private void writeColumnReaderLogic(ColumnMetadata cm, int ordinal, boolean discoverable) {
     w.println();
     String setter = cm.getId().getJavaSetter();
@@ -1768,7 +1718,7 @@ public class DAOWriter {
     String indent = discoverable ? "  " : "";
 
     if (ct == null) { // No converter
-      JDBCGetter g = JDBC_GETTERS.get(javaClass);
+      PrimitiveJDBCGetter g = GetterFactory.primitiveGetterForClassName(javaClass);
       log.fine("- col=" + cn + " javaClass=" + javaClass + " g=" + g + " method="
           + (g == null ? "null" : g.getResultSetMethod()));
       String var = "col" + ordinal;
@@ -1793,7 +1743,7 @@ public class DAOWriter {
       String var = "col" + ordinal;
       String rawClass = ct.getRawClass();
       ExternalClass rc = ExternalClass.of(rawClass);
-      JDBCGetter g = JDBC_GETTERS.get(rawClass);
+      PrimitiveJDBCGetter g = GetterFactory.primitiveGetterForClassName(rawClass);
       javaClass = ct.getDomainClass();
       ExternalClass mc = ExternalClass.of(javaClass);
       String property = this.converterProperties.get(ct.getName());

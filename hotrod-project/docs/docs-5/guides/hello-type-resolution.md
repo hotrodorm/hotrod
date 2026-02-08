@@ -70,7 +70,7 @@ Add the `pom.xml` file:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.6</version>
+      <version>5.1.11</version>
     </dependency>
 
     <dependency>
@@ -101,7 +101,7 @@ Add the `pom.xml` file:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.6</version>
+        <version>5.1.11</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -353,7 +353,7 @@ public class App {
           i.category,
           i.amount.mult(1.30).as("gross").type(Double.class),
           sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end()
-            .as("vip").type(this.ynBooleanConverter),
+            .as("vip").converter(this.ynBooleanConverter),
           i.created.extract(DateTimeField.DAY).as("dom"),
           sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
           sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end()

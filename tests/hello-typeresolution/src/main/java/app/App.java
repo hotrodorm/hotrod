@@ -90,7 +90,7 @@ public class App {
           i.category,
           i.amount.mult(1.30).as("gross").type(Double.class),
           sql.caseWhen(i.amount.ge(300), "Y").elseValue("N").end()
-            .as("vip").type(this.ynBooleanConverter),
+            .as("vip").converter(this.ynBooleanConverter),
           i.created.extract(DateTimeField.DAY).as("dom"),
           sql.caseWhen(i.category.le(1999), "Y").elseValue("N").end().as("mainBranch"),
           sql.caseWhen(i.status.eq(InvoiceStatus.PAID), i.amount).elseValue(0).end()

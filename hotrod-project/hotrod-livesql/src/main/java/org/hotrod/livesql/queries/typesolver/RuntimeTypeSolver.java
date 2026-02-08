@@ -9,7 +9,6 @@ import org.hotrod.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDa
 
 public class RuntimeTypeSolver {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(RuntimeTypeSolver.class.getName());
 
   private List<TypeRule> runtimeTypeSolverRules;
@@ -36,6 +35,7 @@ public class RuntimeTypeSolver {
     // 2. Try the dialect rules (provided by default per the dialect)
 
     RuntimeType rt = this.dialect.resolveRuntimeType(cm);
+//    log.info("rt=" + rt);
     if (rt != null) {
       return TypeHandler.forClass(rt.getType(), TypeSource.RUNTIME_DIALECT_RULE, rt.getRuleNumber());
     }
@@ -43,6 +43,7 @@ public class RuntimeTypeSolver {
     // 3. Use the class proposed by the JDBC driver, if available
 
     String className = cm.getColumnClassName();
+//    log.info("JDBC Driver className=" + className);
     if (className == null) {
       // The JDBC driver does not propose a default class;
       // needs to be set directly by user

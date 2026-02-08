@@ -1,5 +1,6 @@
 package org.hotrod.livesql.expressions.character;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.expressions.TypedExpression;
 
 public abstract class CharSyntaxExpression extends CharExpression {
@@ -12,6 +13,10 @@ public abstract class CharSyntaxExpression extends CharExpression {
 
   public TypedExpression type(final Class<?> type) {
     return new TypedExpression(this, type);
+  }
+
+  public TypedExpression converter(final TypeConverter<?, ?> converter) {
+    return new TypedExpression(this, converter);
   }
 
 }

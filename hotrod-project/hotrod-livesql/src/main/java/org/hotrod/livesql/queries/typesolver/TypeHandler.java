@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
+import org.hotrod.getters.GetterFactory;
+import org.hotrod.getters.ResultSetGetter;
 
 public class TypeHandler<R, D> {
 
@@ -19,6 +21,7 @@ public class TypeHandler<R, D> {
 
   private TypeSource typeSource;
   private String ruleNumber;
+  private ResultSetGetter resultSetGetter;
 
   private TypeHandler(final Class<D> javaClass, final Class<R> rawClass, final TypeConverter<R, D> converter,
       final TypeSource typeSource, final String ruleNumber) {
@@ -27,6 +30,7 @@ public class TypeHandler<R, D> {
     this.converter = converter;
     this.typeSource = typeSource;
     this.ruleNumber = ruleNumber;
+    this.resultSetGetter = GetterFactory.forClass(converter == null ? javaClass : rawClass);
   }
 
   public static <D> TypeHandler<D, D> forClass(final Class<D> javaClass, final TypeSource typeSource,
@@ -70,6 +74,10 @@ public class TypeHandler<R, D> {
 
   public String getRuleNumber() {
     return ruleNumber;
+  }
+
+  public final ResultSetGetter getResultSetGetter() {
+    return resultSetGetter;
   }
 
   protected String render() {

@@ -33,7 +33,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.8-SNAPSHOT</version>
+      <version>5.1.11-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -64,7 +64,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.8-SNAPSHOT</version>
+        <version>5.1.11-SNAPSHOT</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>

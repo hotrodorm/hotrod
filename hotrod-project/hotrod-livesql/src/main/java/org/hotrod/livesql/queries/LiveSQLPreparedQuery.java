@@ -91,8 +91,8 @@ public class LiveSQLPreparedQuery {
           String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
           sb.append(" * " + ordinal + " " + name + ": " //
-              + TShield.render(th) //
-              + (th == null ? "" : th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()) //
+              + (th == null ? "Type not available before executing the query"
+                  : TShield.render(th) + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()))//
               + "\n");
           ordinal++;
         }
