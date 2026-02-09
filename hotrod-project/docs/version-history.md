@@ -10,7 +10,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.10:
 
-- Core:
+- CRUD & Nitro:
     - Fixed BLOB-type columns getters and setters in row readers.
 - Generator:
     - Improved generation comment line.
