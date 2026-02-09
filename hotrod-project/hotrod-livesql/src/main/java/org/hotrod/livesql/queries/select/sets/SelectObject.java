@@ -22,9 +22,7 @@ import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.util.LoggingUtil;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
-import org.hotrod.utils.TUtil;
 
 public abstract class SelectObject<T> {
 
@@ -61,6 +59,8 @@ public abstract class SelectObject<T> {
   public abstract boolean excludeTuplesFromUniqueNames();
 
   public abstract void renderTo(QueryWriter w, boolean inline);
+
+  public abstract BaseSelectObject<T> getBaseSelect();
 
   // Execution
 

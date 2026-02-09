@@ -11,8 +11,9 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.select.Select;
+import org.hotrod.livesql.queries.select.SelectFromPhase;
 import org.hotrod.livesql.queries.subqueries.Subquery;
+import org.hotrod.livesql.util.OUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -141,17 +142,31 @@ public class App {
   private void testSubquery() {
     System.out.println("### Subquery:");
     AccountTable a = this.accountDAO.newTable("t");
-//    AccountTable b = this.accountDAO.newTable("u");
+    AccountTable u = this.accountDAO.newTable("u");
+    AccountTable v = this.accountDAO.newTable("v");
+
+//    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
+//        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
+//    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
+//        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
+
 //    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
 //    Subquery x = sql.subquery("x", sql.select(a.balance, sql.val(401).as("total")).from(a).where(a.id.eq(123)));
 //    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a));
     Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a).where(a.balance.gt(0)) //
-        .union().select(sql.count()).from(a) //
+        .union().select(sql.count()).from(u) //
+        .union().select(sql.count()).from(v) //
     );
-    Select<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
+    SelectFromPhase<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
 //    Select<Row> q = sql.select(sql.caseWhen(sql.sum(x.num("total")).gt(0), 10).elseValue(0).end().as("x").converter(this.ibc))
 //        .from(x);
     System.out.println("q=" + q.getPreview(true));
+
+//    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
+//        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
+//    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
+//        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
+
     List<Row> rows = q.execute(LIVESQL_LOG);
     rows.forEach(r -> System.out.println("r=" + render(r)));
   }

@@ -2,6 +2,7 @@ package org.hotrod.livesql.queries.select.sets;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.LiveSQLLogging;
@@ -12,6 +13,8 @@ import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 
 public class AbstractSelectPhase<R> extends Select<R> {
+
+  private static final Logger log = Logger.getLogger(AbstractSelectPhase.class.getName());
 
   // Properties
 

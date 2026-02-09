@@ -16,7 +16,6 @@ import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class QueryWriter {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(QueryWriter.class.getName());
 
   private static final String INDENT = "  "; // two spaces to indent each level
@@ -30,6 +29,7 @@ public class QueryWriter {
   private SQLParameterWriter paramWriter;
 
   public QueryWriter(final LiveSQLContext context) {
+    log.fine("init");
     this.context = context;
     this.sb = new StringBuilder();
     this.level = 0;

@@ -22,6 +22,7 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.util.IdUtil;
+import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
 
 /**
@@ -43,7 +44,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   private boolean forceParenthesis;
   private SelectObject<T> anchor;
   private List<SetOperatorTerm<T>> combined;
-  private BaseSelectObject<T> lastSelect; // TODO: Remove?
+  private BaseSelectObject<T> lastSelect;
 
   private List<CombinedOrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -78,6 +79,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   public void add(final SetOperator operator, final SelectObject<T> multiset) {
     SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, multiset);
     this.combined.add(term);
+    this.lastSelect = multiset.getBaseSelect();
     multiset.setParent(this);
   }
 
@@ -86,6 +88,11 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
     this.combined.add(term);
     this.lastSelect = select;
     select.setParent(this);
+  }
+
+  @Override
+  public BaseSelectObject<T> getBaseSelect() {
+    return this.anchor.getBaseSelect();
   }
 
   public void setColumnOrderings(final List<CombinedOrderingTerm> orderingTerms) {
