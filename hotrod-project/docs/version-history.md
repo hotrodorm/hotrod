@@ -2,6 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.11 (unreleased):
+
+- LiveSQL:
+    - Primitive JDBC getters now supersede generic ones when available.
+    - Fixed set operators.
+
 ## 5.1.10:
 
 - Core:
