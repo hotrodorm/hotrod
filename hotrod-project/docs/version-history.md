@@ -7,6 +7,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL:
     - Primitive JDBC getters now supersede generic ones when available.
     - Fixed set operators.
+    - Method .type(converter) renamed to .converter(converter) for clarity purposes; the method .type(class) remains unchanged.
 
 ## 5.1.10:
 
