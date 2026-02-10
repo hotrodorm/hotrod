@@ -146,11 +146,12 @@ int count = this.invoiceDAO.update(inv);
 [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD. That is, when you need to:
 
 - Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE
-- Use non-trivial expressions in the query such as regular expression matching, custom functions, full text search, time zone manipulation, etc
 - Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically include query sections into the main query according to the runtime parameters
-- Use native SQL extensions available in the specific database, such as optimizer hints, extensions to the SQL syntax, rollups, etc
+- Use native SQL extensions available in the specific database, such as optimizer hints, regular expression matching, custom functions, full text search, rollups, etc
+- Expose long, complex, and tedious queries as simple methods called by your app
+- Use pre-existent and well-tested queries "as is" from your application
 
-Nitro can be used to gain access to all the features of a database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
+Nitro can be used to gain access to all the features available in the specific SQL dialect offered by the database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
 
 A basic query without parameters can be specified as follows:
 
@@ -163,7 +164,7 @@ A basic query without parameters can be specified as follows:
 This query becomes available in the persistence layer as the method:
 
 ```java
-  void initializeBatchProcess()
+int initializeBatchProcess()
 ```
 
 The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values, the query will take on a different structure each time. It also incorporates a piece of Native SQL (an optimizer hint):
@@ -188,7 +189,7 @@ The following query has parameters and uses Dynamic SQL to assemble the query dy
 Nitro makes this query available in the persistence layer as the method:
 
 ```java
-  List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
+List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
 ```
 
 ## Torcs &mdash; At a Glance
