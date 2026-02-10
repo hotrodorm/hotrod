@@ -148,7 +148,7 @@ int count = this.invoiceDAO.update(inv);
 - Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE
 - Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically include query sections into the main query according to the runtime parameters
 - Use native SQL extensions available in the specific database, such as optimizer hints, regular expression matching, custom functions, full text search, rollups, etc
-- Expose long, complex, and tedious queries as simple methods called by your app
+- Expose long, complex, and tedious queries as simple methods in your app
 - Use pre-existent and well-tested queries "as is" from your application
 
 Nitro can be used to gain access to all the features available in the specific SQL dialect offered by the database, as well as to squeeze performance from it by tweaking queries. These features can be combined in any SELECT, UPDATE, INSERT, or DELETE query, as well as in other valid database query such as CREATE, ALTER, or DROP.
