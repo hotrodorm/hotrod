@@ -155,7 +155,7 @@ public class App {
 //    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a));
     Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a).where(a.balance.gt(0)) //
         .union().select(sql.count()).from(u) //
-        .union().select(sql.count()).from(v) //
+        .union().select(sql.count()).from(v).where(v.id.lt(100)) //
     );
     SelectFromPhase<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
 //    Select<Row> q = sql.select(sql.caseWhen(sql.sum(x.num("total")).gt(0), 10).elseValue(0).end().as("x").converter(this.ibc))
