@@ -167,7 +167,7 @@ This query becomes available in the persistence layer as the bean method:
 int initializeBatchProcess()
 ```
 
-The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values, the query will take on a different structure each time. It also incorporates a piece of Native SQL (an optimizer hint):
+The following query has parameters and uses Dynamic SQL to assemble the query dynamically. Depending on the specific runtime values, the query will take on a different structure each time. It also incorporates a piece of Native SQL &mdash; an optimizer hint:
 
 ```xml
 <select method="searchVehicles" vo="Vehicle">
