@@ -26,13 +26,13 @@ Once the initial prototyping is complete, CRUD continues to offer advanced funct
 
 The flexible data type resolution engine employs SQL dialect-based, custom rule-based, designated data types, and JDBC data types to determine the types for all tables and query columns. The Data type Resolution grants you full control over the data types used in database interactions.
 
-### Updatable Entity Model
+### Customizable Entity Model
 
 Entities for tables, views, and Nitro SELECTs separate their *Layout* (the structure of tables and queries) from their *Model* (custom behavior and implementation). This ensures that your hand-written domain logic remains safe from the ever-changing nature of table and query structures. When the persistence layer is updated the layout classes are refreshed to reflect the latest database structures while preserving your custom domain logic within the separated model classes.
 
 ### Feature-Rich LiveSQL
 
-LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, lateral joins, row locking, and more.
+LiveSQL allows you to create flexible queries from your application, complete with compilation-time syntax checks as you type. The comprehensive syntax covers SELECT, INSERT, UPDATE, and DELETE SQL statements, in addition to all major SQL clauses and expressions, set operators, window functions, SQL meta-expressions, subqueries, plain and recursive CTEs, semi-joins, self-joins, lateral joins, row locking, and more.
 
 ### Built-In Low Performance Query Detection
 
@@ -44,7 +44,7 @@ This feature allows for flexible query definitions by declaring rules for includ
 
 ### SQL Injection Safety
 
-CRUD and LiveSQL queries are entirely free from SQL injection vulnerabilities. Nitro does allow SQL injection &mdash; although always disabled by default &mdash; if explicitly enabled on a per-query basis when the specific use case warrants it.
+CRUD and LiveSQL queries are entirely free from SQL injection vulnerabilities. Nitro does allow SQL injection &mdash; always disabled by default &mdash; if explicitly enabled on a per-query basis when the specific use case warrants it.
 
 ### Out-of-the-box Cursors
 
@@ -114,7 +114,7 @@ The persistence layer automatically discovers identity-generated primary keys. S
 
 You can always view the final translated SQL for the dialect before execution. This transparency allows you to inspect the actual SQL query, which is invaluable for debugging, checking specific SQL extensions, or verifying parameter values and the exact list of return query columns and their types. This feature is distinct from SQL logging, which can be activated separately by the operations team.
 
-### SQL Logging
+### SQL Logging for CRUD, LiveSQL, and Nitro
 
 Configurable SQL Logging allows the operation team to enable or disable logging of a deployed app, by changing the runtime logging configuration of it.
 
