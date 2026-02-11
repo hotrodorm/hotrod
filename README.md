@@ -161,7 +161,7 @@ A basic query without parameters can be specified as follows:
 </query>
 ```
 
-This query becomes available in the persistence layer as the method:
+This query becomes available in the persistence layer as the bean method:
 
 ```java
 int initializeBatchProcess()
@@ -187,7 +187,7 @@ The following query has parameters and uses Dynamic SQL to assemble the query dy
 </select>
 ```
 
-Nitro makes this query available in the persistence layer as the method:
+Nitro makes this query available in the persistence layer as the bean method:
 
 ```java
 List<Vehicle> searchVehicles(String brandName, Integer minYear, Integer ordering)
