@@ -127,7 +127,7 @@ CRUD can also utilize custom predicates. For instance, you can find all employee
 ```java
 List<Employee> emps = this.employeeDAO.select(e,
     e.deptId.in(101, 120)
-    .and(e.hiredDate.gt(LocalDate.of(2025, 1, 15)))
+    .and(e.hiredDate.gt(LocalDate.of(2024, 1, 15)))
     .and(e.lastName.upper().like('%SMITH'))
   .execute();
 ```
