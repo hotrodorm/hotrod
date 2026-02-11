@@ -64,8 +64,8 @@ List<Tuple2<Invoice, Client>> rows = sql
   .execute();
 
 for (Tuple2<Invoice, Client> r : rows) {
-  Invoice inv = r.getA() // all columns correctly named, cast, typed, and/or converted here
-  Client cli = r.getB(); // same here
+  Invoice inv = r.getA(); // all columns correctly named, cast, typed, and/or converted here
+  Client cli = r.getB();  // same here
   System.out.println("Invoice: " + inv);
   System.out.println("Client: " + cli);
   System.out.println("Applied Discount: " + r.get("appliedDiscount"));
@@ -145,7 +145,7 @@ int count = this.invoiceDAO.update(inv);
 
 [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD. That is, when you need to:
 
-- Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE
+- Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE, including calling stored procedures and functions
 - Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically include query sections into the main query according to the runtime parameters
 - Use native SQL extensions available in the specific database, such as optimizer hints, regular expression matching, custom functions, full text search, rollups, etc
 - Expose long, complex, and tedious queries as simple methods in your app
@@ -179,9 +179,10 @@ The following query has parameters and uses Dynamic SQL to assemble the query dy
   WHERE brand like = '%' || #{brandName} || '%'
   <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
-    <if test="ordering == 1">ORDER BY price</if>
-    <if test="ordering == 2">ORDER BY price DESC</if>
-    <if test="ordering == 3">ORDER BY avg_reviews DESC</if>
+    <when test="ordering == 1">ORDER BY price</if>
+    <when test="ordering == 2">ORDER BY price DESC</if>
+    <when test="ordering == 3">ORDER BY avg_reviews DESC</if>
+    <otherwise>ORDER BY purchase_date</otherwise>
   </choose>
 </select>
 ```
