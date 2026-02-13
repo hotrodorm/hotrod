@@ -78,12 +78,12 @@ Dynamic SQL includes the following tags:
 | `<choose>` | Include only the first `<when>` content that evaluates to true and ignore the rest. If an `<otherwise>` tag is included at the end, then include this one if all `<when>` tags failed the test condition |
 | `<foreach>` | Iterate over an collection or array of elements. The inner content is included &mdash; and reevaluated &mdash; once per each element |
 | `<bind>` | Binds a variable in the parameter scope, so it can be used by other tags or content. Once a variable is bound in a scope, it cannot be rebinded in that scope |
-| `<trim>` | A trim section includes multiple `<if>` tags; trim will collect all inner content that evaluated to true and will join them with a defined separator |
+| `<trim>` | A trim section includes multiple `<if>` tags; trim will collect all inner content that evaluated to true and will join them with a specified separator |
 | `<where>` | A variation of the trim tag tailored to be used as a WHERE clause; each inner `<if>` can potentially be include or excluded, and this tags joins them using and AND or OR operators |
 | `<set>` | A variation o f the trim tag tailored to be used as the SET clause of an UPDATE statement; each inner `<if>` can potentially be include or excluded, and the set section joins them using commas |
 
 
-### 4.1 The `<if>` Tag
+### 4.1 The &lt;if> Tag
 
 The IF tag is one of the simplest operators. It includes a `test` predicate and the nested content can include SQL sections, parameters inclusion, and other DynamicSQL operators. The content is only included if the test predicate evaluates to true at runtime.
 
@@ -106,18 +106,17 @@ The inner IF tags will only be evaluated if the parent IF evaluates to true; oth
 An IF tag can nest static SQL, parameters, and other DynamicSQL tags.
 
 
-### 4.2 The `<choose>` Tag
+### 4.2 The &lt;choose> Tag
 
 
 The CHOOSE tag picks the first nested WHEN tag that evaluates to true and discard the rest. If none is selected and an OTHERWISE tag is declared, then this one will be selected.
 
-The WHEN tag takes a similar form of the IF tag; that is, it has `test` predicate and has nested content.
+The following rules apply to the CHOOSE tag:
 
-There can be only one OTHERWISE tag and is declared after the WHEN tags. It's simpler since it doesn't have attributes, but only content.
-
-**Note**: The CHOOSE tag cannot directly include SQL content, but only WHEN and OTHERWISE tags.
-
-The WHEN and OTHERWISE tag can nest static SQL, parameters, and other DynamicSQL tags.
+- Can include one or more WHEN tags. They take a similar form of the IF tag; that is, it has `test` predicate and has nested content.
+- After all the WHEN tags (if any) there can be one OTHERWISE tag. This one doesn't have attributes, but only content.
+- Note that the CHOOSE tag cannot directly include SQL content, but only WHEN and OTHERWISE tags.
+- The WHEN and OTHERWISE tag can nest static SQL, parameters, and other DynamicSQL tags.
 
 The following example includes a choose operator that implements four types of ordering for the query:
 
@@ -135,7 +134,7 @@ The following example includes a choose operator that implements four types of o
   </select>
 ```
 
-### 4.3 The `<foreach>` Tag
+### 4.3 The &lt;foreach> Tag
 
 The FOREACH tag iterates over a collection or array of items. In every iteration the current item is available for use in the variable scope. The nested content is included and reevaluared once per each item.
 
@@ -176,7 +175,7 @@ In the example above, if the array of Integers included 341, 570, and 115, the q
 **Note**: The FOREACH tag can render long queries when the array or collection includes many values. Keep in mind that there could be a performance penalty in the database when filtering by many values. Also, some database engines and JDBC drivers may place a limit in the size of the SQL statement; most databases will accept a 10000-character long SQL query, but may reject 50000-character long one.
 
 
-### 4.4 The `<bind>` Tag
+### 4.4 The &lt;bind> Tag
 
 The BIND tag binds a variable in the parameter scope, so it can be used by other content in the rest of the query.
 
@@ -196,8 +195,7 @@ In this example `pattern` is not a parameter provided by in the parameter contex
 The bind operator does not have a body and, therefore, cannot nest other sections.
 
 
-
-### 4.5 The `<trim>` Tag
+### 4.5 The &lt;trim> Tag
 
 The TRIM tag includes multiple IF tags. Each IF tag is evaluated for inclusion and the included ones make it to the query. The TRIM tag joins them with the defined separator.
 
@@ -235,7 +233,7 @@ Therefore:
 - A `<trim prefix='SET' prefixOverrifes=",">` tag is equivalent to a `<set>` tag.
 
 
-### 4.6 The `<where>` Tag
+### 4.6 The &lt;where> Tag
 
 A WHRE tag is a tailored TRIM tag that simplifies the writing of dynamic WHERE clauses.
 
@@ -278,7 +276,7 @@ Notice that:
 - The second inner tag was not included, since its condition was not met.
 
 
-### 4.7 The `<set>` Tag
+### 4.7 The &lt;set> Tag
 
 A SET tag is a tailored TRIM tag that simplifies the writing of dynamic SET clauses.
 

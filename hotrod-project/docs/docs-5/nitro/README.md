@@ -1,17 +1,17 @@
 # Nitro
 
-Nitro brings DynamicSQL functionality to defined queries. These queries can also take full advantage
-of all native SQL extensions available in the database.
+Nitro allows you to combines native SQL with Dynamic SQL to access all SQL features available in the SQL dialect.
+
+In short, Nitro queries can be useful to:
+
+- Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE, including calling stored procedures and functions
+- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically include query sections into the main query according to the runtime parameters
+- Use native SQL extensions available in the specific database, such as optimizer hints, regular expression matching, custom functions, full text search, rollups, etc., and implement high performance queries
+- Expose long, complex, and tedious queries as simple methods in your app
+- Use pre-existent and well-tested queries "as is" from your application
 
 Get started with the [Hello Nitro](../guides/hello-nitro.md) example.
 
-Nitro queries can be useful to:
-
-- Use native SQL features to gain access to advanced database features, and to implement high performance queries.
-- Use DynamicSQL to define queries that change their form at runtime by enabling, disabling, or rendering sections of the
-query according to parameters values. See [DynamicSQL](./nitro-dynamicsql.md).
-- Expose long, complex, and tedious queries as simple methods in classes.
-- Use well-tested, pre-existent queries "as is" from your application.
 
 ## Example
 

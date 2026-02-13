@@ -13,7 +13,7 @@ HotRod offers:
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
-See the [Highlights Pamphlet](./hotrod-project/docs/features.md) of HotRod ORM, learn about [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, review the [Version History](./hotrod-project/docs/version-history.md), and explore the [Roadmap](./hotrod-project/docs/roadmap.md). The comprehensive [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md) is available, covering all functionalities across the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
+See the [Pamphlet](./hotrod-project/docs/pamphlet.md) of HotRod ORM, learn about [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, review the [Version History](./hotrod-project/docs/version-history.md), and explore the [Roadmap](./hotrod-project/docs/roadmap.md). The [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md) covers all functionalities across the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
 
 For documentation on the previous versions see the
 [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and the [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
