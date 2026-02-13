@@ -1,10 +1,10 @@
-# Highlights of HotRod 5 ORM
+# The Pamphlet
 
 As developers ourselves, we built HotRod because we were dissatisfied with the available ORM solutions at the time.
 
 Our initial goal for HotRod was to accelerate the app development process. This included enabling quick prototyping and offering foundational support for the app's gradual growth. Essentially, during the project's early stages, schema discovery provided a competitive edge to the team; as the project expanded, features like LiveSQL, Dynamic SQL, and Nitro facilitated more complex functionality with minimal effort.
 
-Some time later we recognized the need to lower the operational costs associated with running apps. Beyond the coding phase, we aimed to improve debugging, testing, support, maintenance, and, most importantly, the stability and performance of the applications themselves. This realization led us to incorporate features such as Torcs, SQL injection safety, API simplification, compile-time syntax checks, and many others.
+Some time later we recognized the need to lower the operational costs associated with running apps. Beyond the coding phase, we aimed to improve debugging, testing, support, maintenance, and, most importantly, the stability and performance of the applications themselves. This realization led us to incorporate new features such as Torcs, SQL injection safety, API simplification, and compile-time syntax checks.
 
 ## Signature Features
 
