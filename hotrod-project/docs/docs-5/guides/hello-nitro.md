@@ -220,7 +220,7 @@ These four Nitro queries become available to your application in the correspondi
     - `public int deleteOldNegativeAccounts()`
     - `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
 
-A few notes:
+A few notes that you can skip now (but read them later):
 
 1. The `<query>` Nitro methods return an `int` that represent the number of rows affected by the query.
 2. The `<select>` Nitro methods return SQL rows.
