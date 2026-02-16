@@ -6,7 +6,7 @@ directly applied in the query, can be used to govern DynamicSQL sections, or bot
 To include parameters in your query use the `<parameter>` tag.
 
 
-## The `<parameter>` Tag
+## The &lt;parameter> Tag
 
 A `<parameter>` tag defines a parameter that will be received by the query. A query can
 define zero, one, or more parameters. The parameters can be plain values or complex
@@ -137,48 +137,6 @@ During column discovery the generator replaces each parameter with a [sample SQL
 of the corresponding type. For applied parameters this sample value depends on the corresponding JDBC type of
 the parameter and the specific database engine; for injected parameters this is a dummy String value.
 
-<!--
-## The JDBC Type
-
-In addition to its type HotRod may need to determine its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` attribute:
-
-```xml
-<parameter name="clientId" type="Integer" jdbc-type="INTEGER" />
-```
-
-For the full list of JDBC types see the [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) class documentation.
-
-For parameters with typical Java types it's not necessary to include the `jdbc-type` attribute. HotRod assigns it according to the following table:
-
-| `java-type` | `jdbc-type` |
-| -- | -- |
-| `Byte` or `java.lang.Byte`       | TINYINT                 | 
-| `Short` or `java.lang.Short`     | SMALLINT                | 
-| `Integer` or `java.lang.Integer` | INTEGER                 | 
-| `Long` or `java.lang.Long`       | BIGINT                  | 
-| `Float` or `java.lang.Float`    | REAL                    | 
-| `Double` or `java.lang.Double`   | DOUBLE                  | 
-| `java.math.BigInteger`         | DECIMAL                 |  
-| `java.math.BigDecimal`         | DECIMAL                 | 
-| `Char` or `java.lang.Char`       | CHAR                    | 
-| `String` or `java.lang.String`   | VARCHAR                 | 
-| `java.util.Date`               | TIMESTAMP               | 
-| `java.sql.Date`                | DATE                    | 
-| `java.sql.Timestamp`           | TIMESTAMP               | 
-| `java.sql.Time`                | TIME                    | 
-| `java.time.LocalDateTime`      | TIMESTAMP               | 
-| `java.time.OffsetDateTime`     | TIMESTAMP_WITH_TIMEZONE | 
-| `java.time.ZonedDateTime`      | TIMESTAMP_WITH_TIMEZONE | 
-| `java.time.LocalDate`          | DATE                    | 
-| `java.time.LocalTime`          | TIME                    | 
-| `Boolean` or `java.lang.Boolean` | BOOLEAN                 |
-| `byte[]`                       | BLOB                    | 
-
-
-If the `java-type` of a parameter is not covered in this table, the developer needs to specify the `jdbc-type` explicitly. Typically this attribute is
-used only for uncommon or exotic parameter types such as UUIDs, geometry types, arrays, Objects, etc.
-
--->
 
 ## The Sample SQL Value
 
