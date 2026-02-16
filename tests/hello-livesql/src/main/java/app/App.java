@@ -51,33 +51,24 @@ public class App {
   }
 
   private void demoLiveSQLInsert() {
-    Employee emp = new Employee();
-    emp.setFirstName("Bob");
-    emp.setLastName("Marley");
-    emp.setBranchId(420);
-    Employee inserted = this.employeeDAO.insert(emp);
-    System.out.println("2. LiveSQL INSERT: " + inserted);
+    EmployeeTable e = this.employeeDAO.newTable();
+    int count = this.sql.insert(e).columns(e.firstName, e.lastName, e.branchId)
+        .values(sql.val("Bob"), sql.val("Marley"), sql.val(420)).execute();
+    System.out.println("2. LiveSQL INSERT count: " + count);
   }
 
   private void demoLiveSQLUpdate() {
     EmployeeTable e = this.employeeDAO.newTable();
-    Employee values = new Employee();
-    values.setBranchId(15);
-    
-    List<Integer> ids = Arrays.asList(1, 2, 3, 4);
-    Integer[] array = ids.toArray(new Integer[0]);
-    
-    int count = this.employeeDAO
-        .update(values, e, e.lastName.lower().like("%smith%").and(e.branchId.in(array)).and(e.branchId.eq(2)))
-        .execute();
-    System.out.println("3. LiveSQL UPDATE - rows: " + count);
+    Integer[] ids = Arrays.asList(1, 2, 3, 4).toArray(new Integer[0]);
+    int count = this.sql.update(e).set(e.branchId, 15)
+        .where(e.lastName.lower().like("%smith%").and(e.branchId.in(ids)).and(e.branchId.eq(2))).execute();
+    System.out.println("3. LiveSQL UPDATE - count: " + count);
   }
 
   private void demoLiveSQLDelete() {
-    Employee example = new Employee();
-    example.setBranchId(7);
-    int count = this.employeeDAO.delete(example);
-    System.out.println("4. LiveSQL DELETE - rows: " + count);
+    EmployeeTable e = this.employeeDAO.newTable();
+    int count = this.sql.delete(e).where(e.branchId.eq(7)).execute();
+    System.out.println("4. LiveSQL DELETE - count: " + count);
   }
 
 }
