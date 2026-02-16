@@ -37,6 +37,7 @@ public class App {
       demoNitro2();
       demoNitro3();
       demoNitro4();
+      demoNitro5();
     };
   }
 
@@ -53,14 +54,19 @@ public class App {
   }
 
   private void demoNitro3() {
+    int count = this.accountDAO.createProjectSequence("WIDGET7");
+    System.out.println("Created project sequence.");
+  }
+
+  private void demoNitro4() {
     Integer year = 2015;
-    
+
     int count = this.reportingDAO.deleteOldNegativeAccounts(year);
     System.out.println("Deleted a total " + count + " old account(s).");
   }
 
-  private void demoNitro4() {
-    DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));       
+  private void demoNitro5() {
+    DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
     ReportingTotals totals = this.reportingDAO.getTotals(dr);
     System.out.println("September 2025: " + totals.getCount() + " accounts, $" + totals.getBalance() + " balance.");
   }

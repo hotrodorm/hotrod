@@ -182,6 +182,11 @@ Create the `layer.xml` file with:
       </if>
     </select>
 
+    <query method="createProjectSequence" sql-injection-enabled="true">
+      <parameter name="suffix" type="String" />
+      CREATE SEQUENCE seq_project_$SQLINJECTION{suffix}
+    </query>
+
   </table>
 
   <dao name="ReportingDAO">
@@ -210,6 +215,7 @@ These four Nitro queries become available to your application in the correspondi
 - AccountDAO:
     - `public int applyMonthlyCharge(Integer amount)`
     - `public List<Account> findSavingAccounts(Integer year)`
+    - `public int createProjectSequence(String suffix)`
 - ReportingDAO:
     - `public int deleteOldNegativeAccounts()`
     - `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
@@ -256,6 +262,7 @@ The layer generation reports:
 [INFO]  
 [INFO] Table ACCOUNT included.
 [INFO]  - Query applyMonthlyCharge included.
+[INFO]  - Query createProjectSequence included.
 [INFO]  - Select findSavingAccounts included.
 [INFO] DAO ReportingDAO included.
 [INFO]  - Query deleteOldNegativeAccounts included.
@@ -322,6 +329,7 @@ public class App {
       demoNitro2();
       demoNitro3();
       demoNitro4();
+      demoNitro5();
     };
   }
 
@@ -338,12 +346,20 @@ public class App {
   }
 
   private void demoNitro3() {
-    int count = this.reportingDAO.deleteOldNegativeAccounts(2015);
-    System.out.println("Deleted a total " + count + " old account(s).");
+    int count = this.accountDAO.createProjectSequence("WIDGET7");
+    System.out.println("Created project sequence.");
   }
 
   private void demoNitro4() {
-    ReportingTotals totals = this.reportingDAO.getTotals(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
+    Integer year = 2015;
+
+    int count = this.reportingDAO.deleteOldNegativeAccounts(year);
+    System.out.println("Deleted a total " + count + " old account(s).");
+  }
+
+  private void demoNitro5() {
+    DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
+    ReportingTotals totals = this.reportingDAO.getTotals(dr);
     System.out.println("September 2025: " + totals.getCount() + " accounts, $" + totals.getBalance() + " balance.");
   }
 
@@ -379,6 +395,7 @@ Saving account:app.persistence.model.Account@7a687d8d
 - title=SAV2307
 - created=2024-09-11
 - balance=5
+Created project sequence.
 Deleted a total 0 old account(s).
 September 2025: 2 accounts, $155 balance.
 ```

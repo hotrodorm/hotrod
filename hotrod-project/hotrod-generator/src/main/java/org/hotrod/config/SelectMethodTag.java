@@ -321,7 +321,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
         throw new InvalidConfigurationFileException(this,
             "SQL Injection is used in the tag <" + super.getTagName()
                 + "> but it's not enabled. If you want to use SQL Injection in this <" + super.getTagName()
-                + "> tag please enable it by adding the attribute 'sql-injection-enabled' with value 'true' to it.");
+                + "> tag please enable it by adding the attribute 'sql-injection-enabled' with value 'true' in it.");
       } else {
         feedback.warn("SQL Injection was implemented in the <" + super.getTagName() + "> method '" + this.method
             + "' in the file " + this.getSourceLocation().getFile().getName() + ":"

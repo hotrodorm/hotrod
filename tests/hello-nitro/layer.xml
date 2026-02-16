@@ -21,6 +21,11 @@
         AND year(created) = '$SQLINJECTION{year.toString()}'
       </if>
     </select> 
+
+    <query method="createProjectSequence">
+      <parameter name="suffix" type="String" />
+      CREATE SEQUENCE seq_project_$SQLINJECTION{suffix}
+    </query>
   </table>
 
   <dao name="ReportingDAO">
