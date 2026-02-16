@@ -107,10 +107,10 @@ Applying parameters is the safe way of using a parameter in a SQL query and is i
 This is the recommended way of using parameters that is known as *prepared statements* in many programming languages.
 
 Injecting parameters &ndash; essentially concatenating parameters to the query as strings values &ndash; is an alternative way of
-using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$INJECT{expression}` syntax.
+using parameters that may make your application vulnerable to SQL Injection. It's implemented using the `$SQLINJECTION{expression}` syntax.
 
 > [!CAUTION]
-> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{expression}` and directly **injecting** a String section into the query to be run using `$INJECT{expression}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
+> **IMPORTANT NOTE ON SECURITY**: SQL Injection opens the door for a security risk. There's a big difference between safely **applying** a parameter using `#{expression}` and directly **injecting** a String section into the query to be run using `$SQLINJECTION{expression}`. Only inject fully controlled Strings that are coming from inside the application, and never from any external source, such as a web parameter, an API, or a configuration file.
 
 
 Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
