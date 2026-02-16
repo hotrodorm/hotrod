@@ -1,4 +1,4 @@
-# The `<select>` Tag
+# The &lt;select> Tag
 
 This tags defines a Nitro select query in the DAO.
 

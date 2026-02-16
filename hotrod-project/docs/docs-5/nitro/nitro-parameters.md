@@ -116,6 +116,8 @@ using parameters that may make your application vulnerable to SQL Injection. It'
 Nevertheless, depending on the specifics of a query, sometimes it's not possible to apply parameters but only to inject them as strings.
 Parameter injection should be avoided if possible; if unavoidable, it needs to be used with extreme care.
 
+**Note**: SQL Injection is always disabled by default. To use SQL Injection in a query you must enable it by declaring the attribute `sql-injection-enable` with value `true` in the query tag. See the [&lt;select>](../config/tags/select.md) and [&lt;query>](../config/tags/query.md) tags for details.
+
 
 ## Location of Applied and Injected Expressions
 

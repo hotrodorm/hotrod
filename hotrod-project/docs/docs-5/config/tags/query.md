@@ -1,4 +1,4 @@
-# The `<query>` Tag
+# The &lt;query> Tag
 
 This tags defines a Nitro General Purpose query in the DAO.
 
