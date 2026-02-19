@@ -2,7 +2,6 @@ package app;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -11,9 +10,6 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.select.SelectFromPhase;
-import org.hotrod.livesql.queries.subqueries.Subquery;
-import org.hotrod.livesql.util.OUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,9 +18,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.AccountDAO;
-import app.persistence.dao.AccountDAO.AccountTable;
-import app.persistence.model.Account;
+import app.persistence.dao.K1DAO;
+import app.persistence.dao.K1DAO.K1Table;
+import app.persistence.dao.K2DAO;
+import app.persistence.dao.K2DAO.K2Table;
+import app.persistence.dao.K3DAO;
+import app.persistence.dao.K3DAO.K3Table;
+import app.persistence.dao.K4DAO;
+import app.persistence.dao.K4DAO.K4Table;
+import app.persistence.dao.S1DAO;
+import app.persistence.dao.S1DAO.S1Table;
+import app.persistence.dao.S2DAO;
+import app.persistence.dao.S2DAO.S2Table;
+import app.persistence.dao.S3DAO;
+import app.persistence.dao.S3DAO.S3Table;
+import app.persistence.dao.S4DAO;
+import app.persistence.dao.S4DAO.S4Table;
 
 @SpringBootApplication
 @Configuration
@@ -32,15 +41,17 @@ public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
 
-  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
-      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
+//  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
+//      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> true, msg -> log.fine(msg), () -> true,
+      msg -> log.finer(msg));
 
   static {
 //    JULCustomFormatter.initialize(Level.FINER);
   }
 
-  @Autowired
-  private AccountDAO accountDAO;
+//  @Autowired
+//  private AccountDAO accountDAO;
 
 //  @Autowired
 //  private CoinDAO coinDAO;
@@ -73,6 +84,30 @@ public class App {
 //  private TestDAO testDAO;
 
   @Autowired
+  private K1DAO k1DAO;
+
+  @Autowired
+  private K2DAO k2DAO;
+
+  @Autowired
+  private K3DAO k3DAO;
+
+  @Autowired
+  private K4DAO k4DAO;
+
+  @Autowired
+  private S1DAO s1DAO;
+
+  @Autowired
+  private S2DAO s2DAO;
+
+  @Autowired
+  private S3DAO s3DAO;
+
+  @Autowired
+  private S4DAO s4DAO;
+
+  @Autowired
   private IntegerBooleanConverter ibc;
 
   @Autowired
@@ -86,8 +121,11 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+//      testInsert1();
+//      testInsertSequence();
+      testInsertIdentity();
 //      testBlob();
-      testSubquery();
+//      testSubquery();
 //      testCTE();
 //      testRecursiveCTE();
 //      testComplement();
@@ -123,13 +161,64 @@ public class App {
     };
   }
 
-  private void testBlob() {
-    Account a = this.accountDAO.select(123);
-    System.out.println("### Account: " + a);
-    byte[] n = { 2, 3, 5, 7, 11, 13 };
-    a.setPhoto(n);
-    this.accountDAO.update(a);
+//  private void testInsert1() {
+//    K1Table t = this.k1DAO.newTable();
+//
+//    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 1 -- pk=" + pk);
+//  }
+
+  private void testInsertSequence() {
+    S1Table t = this.s1DAO.newTable();
+    S2Table u = this.s2DAO.newTable();
+    S3Table v = this.s3DAO.newTable();
+    S4Table w = this.s4DAO.newTable();
+
+    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 1 -- pk=" + pk);
+
+    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 1b -- pk=" + pk);
+
+    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 2 -- pk=" + pk2);
+
+    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 3 -- pk=" + pk3);
+
+    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 4 -- pk=" + pk4);
   }
+
+  private void testInsertIdentity() {
+    K1Table t = this.k1DAO.newTable();
+    K2Table u = this.k2DAO.newTable();
+    K3Table v = this.k3DAO.newTable();
+    K4Table w = this.k4DAO.newTable();
+
+    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 1 -- pk=" + pk);
+
+    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 1b -- pk=" + pk);
+
+    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 2 -- pk=" + pk2);
+
+    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 3 -- pk=" + pk3);
+
+    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 4 -- pk=" + pk4);
+  }
+
+//  private void testBlob() {
+//    Account a = this.accountDAO.select(123);
+//    System.out.println("### Account: " + a);
+//    byte[] n = { 2, 3, 5, 7, 11, 13 };
+//    a.setPhoto(n);
+//    this.accountDAO.update(a);
+//  }
 
 //  private void testTuples() {
 //    ProductTable p = this.productDAO.newTable();
@@ -139,37 +228,37 @@ public class App {
 //    }
 //  }
 
-  private void testSubquery() {
-    System.out.println("### Subquery:");
-    AccountTable a = this.accountDAO.newTable("t");
-    AccountTable u = this.accountDAO.newTable("u");
-    AccountTable v = this.accountDAO.newTable("v");
-
-//    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
-//        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
-//    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
-//        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
-
-//    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
-//    Subquery x = sql.subquery("x", sql.select(a.balance, sql.val(401).as("total")).from(a).where(a.id.eq(123)));
-//    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a));
-    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a).where(a.balance.gt(0)) //
-        .union().select(sql.count()).from(u) //
-        .union().select(sql.count()).from(v).where(v.id.lt(100)) //
-    );
-    SelectFromPhase<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
-//    Select<Row> q = sql.select(sql.caseWhen(sql.sum(x.num("total")).gt(0), 10).elseValue(0).end().as("x").converter(this.ibc))
-//        .from(x);
-    System.out.println("q=" + q.getPreview(true));
-
-//    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
-//        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
-//    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
-//        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
-
-    List<Row> rows = q.execute(LIVESQL_LOG);
-    rows.forEach(r -> System.out.println("r=" + render(r)));
-  }
+//  private void testSubquery() {
+//    System.out.println("### Subquery:");
+//    AccountTable a = this.accountDAO.newTable("t");
+//    AccountTable u = this.accountDAO.newTable("u");
+//    AccountTable v = this.accountDAO.newTable("v");
+//
+////    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
+////        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
+////    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
+////        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
+//
+////    Subquery x = sql.subquery("x", sql.select(sql.val(410).as("total")).union(sql.select(sql.val(850))));
+////    Subquery x = sql.subquery("x", sql.select(a.balance, sql.val(401).as("total")).from(a).where(a.id.eq(123)));
+////    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a));
+//    Subquery x = sql.subquery("x", sql.select(sql.count().as("total")).from(a).where(a.balance.gt(0)) //
+//        .union().select(sql.count()).from(u) //
+//        .union().select(sql.count()).from(v).where(v.id.lt(100)) //
+//    );
+//    SelectFromPhase<Row> q = sql.select(sql.sum(x.num("total")).as("n")).from(x);
+////    Select<Row> q = sql.select(sql.caseWhen(sql.sum(x.num("total")).gt(0), 10).elseValue(0).end().as("x").converter(this.ibc))
+////        .from(x);
+//    System.out.println("q=" + q.getPreview(true));
+//
+////    System.out.println("a.balance.getObjectInstance()=" + OUtil.hc(a.balance.getObjectInstance()) + " - "
+////        + a.balance.getObjectInstance().getAlias() + " -- a=" + OUtil.hc(a));
+////    System.out.println("u.balance.getObjectInstance()=" + OUtil.hc(u.balance.getObjectInstance()) + " - "
+////        + u.balance.getObjectInstance().getAlias() + " -- u=" + OUtil.hc(u));
+//
+//    List<Row> rows = q.execute(LIVESQL_LOG);
+//    rows.forEach(r -> System.out.println("r=" + render(r)));
+//  }
 
   private String render(Row row) {
     return row.keySet().stream()

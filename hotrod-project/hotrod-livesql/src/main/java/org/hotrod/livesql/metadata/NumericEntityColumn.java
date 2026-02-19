@@ -5,18 +5,15 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.NumericSubqueryExpression;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class NumericEntityColumn extends NumericExpression implements EntityColumn {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(NumericEntityColumn.class.getName());
 
   // Properties
-
-  private TableOrView<?> objectInstance;
 
   private String name;
   private String type;
@@ -27,10 +24,10 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
 
   // Constructor
 
-  public NumericEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
-      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
+  public NumericEntityColumn(final String name, final String property, final String type, final Integer columnSize,
+      final Integer decimalDigits, final TypeHandler<?, ?> handler) {
     super(Expression.PRECEDENCE_COLUMN);
-    this.objectInstance = objectInstance;
+    log.fine("init");
     this.name = name;
     this.property = property;
     this.type = type;
@@ -49,11 +46,6 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    if (this.objectInstance.getAlias() != null) {
-      w.write(
-          w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
-      w.write(".");
-    }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
@@ -74,42 +66,22 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
   }
 
   @Override
-  public final TableOrView<?> getObjectInstance() {
-    return objectInstance;
-  }
-
-  @Override
-  public final Name getCatalog() {
-    return this.objectInstance.getCatalog();
-  }
-
-  @Override
-  public final Name getSchema() {
-    return this.objectInstance.getSchema();
-  }
-
-  @Override
-  public final Name getObjectName() {
-    return this.objectInstance.getName();
-  }
-
-  @Override
-  public final String getType() {
+  public String getType() {
     return type;
   }
 
   @Override
-  public final Integer getColumnSize() {
+  public Integer getColumnSize() {
     return columnSize;
   }
 
   @Override
-  public final Integer getDecimalDigits() {
+  public Integer getDecimalDigits() {
     return decimalDigits;
   }
 
   @Override
-  public final String getProperty() {
+  public String getProperty() {
     return property;
   }
 

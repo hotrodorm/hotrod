@@ -5,16 +5,16 @@ import org.hotrod.livesql.expressions.EquatableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SortableExpression;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityInstanceColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class ConvertedColumn<R, D> extends EquatableExpression implements EntityColumn {
+public class ConvertedColumn<R, D> extends EquatableExpression implements EntityInstanceColumn {
 
-  private TableOrView objectInstance;
+  private TableOrView<?> objectInstance;
   private String canonicalName;
   private TypeConverter<R, D> converter;
 
@@ -23,7 +23,7 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
   private Integer columnSize;
   private Integer decimalDigits;
 
-  public ConvertedColumn(final TableOrView objectInstance, final String canonicalName, final String property,
+  public ConvertedColumn(final TableOrView<?> objectInstance, final String canonicalName, final String property,
       final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<R, D> handler,
       final TypeConverter<R, D> converter) {
     super(Expression.PRECEDENCE_COLUMN);
@@ -79,7 +79,7 @@ public class ConvertedColumn<R, D> extends EquatableExpression implements Entity
   // EntityColumn
 
   @Override
-  public TableOrView getObjectInstance() {
+  public TableOrView<?> getObjectInstance() {
     return this.objectInstance;
   }
 

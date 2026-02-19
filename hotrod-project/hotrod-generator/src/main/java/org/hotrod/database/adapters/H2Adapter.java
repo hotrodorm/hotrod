@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.ValueRange;
+import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -162,7 +163,8 @@ public class H2Adapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, null, false);
+    return InsertIntegration.of(true, false, true, false, null, false); // Sequence Inline Keys Result Set
+//    return InsertIntegration.of(true, false, false, false, null, false); // Sequence Prefetch
   }
 
   @Override

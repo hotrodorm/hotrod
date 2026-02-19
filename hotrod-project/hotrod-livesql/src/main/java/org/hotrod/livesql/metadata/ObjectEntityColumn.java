@@ -1,17 +1,19 @@
 package org.hotrod.livesql.metadata;
 
+import java.util.logging.Logger;
+
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.ObjectSubqueryExpression;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class ObjectEntityColumn extends ObjectExpression implements EntityColumn {
 
-  // Properties
+  private static final Logger log = Logger.getLogger(ObjectEntityColumn.class.getName());
 
-  private TableOrView<?> objectInstance;
+  // Properties
 
   private String name;
   private String type;
@@ -22,10 +24,10 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
 
   // Constructor
 
-  public ObjectEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
-      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
+  public ObjectEntityColumn(final String name, final String property, final String type, final Integer columnSize,
+      final Integer decimalDigits, final TypeHandler<?, ?> handler) {
     super(Expression.PRECEDENCE_COLUMN);
-    this.objectInstance = objectInstance;
+    log.fine("init");
     this.name = name;
     this.property = property;
     this.type = type;
@@ -44,18 +46,13 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    if (this.objectInstance.getAlias() != null) {
-      w.write(
-          w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
-      w.write(".");
-    }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
   // Getters
 
   @Override
-  public final String getReferenceName() {
+  public String getReferenceName() {
     return this.property;
   }
 
@@ -69,42 +66,22 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
   }
 
   @Override
-  public final TableOrView<?> getObjectInstance() {
-    return objectInstance;
-  }
-
-  @Override
-  public final Name getCatalog() {
-    return this.objectInstance.getCatalog();
-  }
-
-  @Override
-  public final Name getSchema() {
-    return this.objectInstance.getSchema();
-  }
-
-  @Override
-  public final Name getObjectName() {
-    return this.objectInstance.getName();
-  }
-
-  @Override
-  public final String getType() {
+  public String getType() {
     return type;
   }
 
   @Override
-  public final Integer getColumnSize() {
+  public Integer getColumnSize() {
     return columnSize;
   }
 
   @Override
-  public final Integer getDecimalDigits() {
+  public Integer getDecimalDigits() {
     return decimalDigits;
   }
 
   @Override
-  public final String getProperty() {
+  public String getProperty() {
     return property;
   }
 

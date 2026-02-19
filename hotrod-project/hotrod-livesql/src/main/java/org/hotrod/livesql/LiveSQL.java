@@ -104,10 +104,13 @@ import org.hotrod.livesql.expressions.object.ObjectExpression;
 import org.hotrod.livesql.expressions.object.ObjectSyntaxExpression;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.ordering.AliasOrderingTerm;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.ordering.OrdinalOrderingTerm;
 import org.hotrod.livesql.queries.DeleteFromPhase;
+import org.hotrod.livesql.queries.GeneratedKeysInsertIntoPhase;
 import org.hotrod.livesql.queries.InsertIntoPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateTablePhase;
@@ -253,7 +256,15 @@ public class LiveSQL {
 
   // Insert
 
-  public InsertIntoPhase insert(final TableOrView<?> into) {
+  public InsertIntoPhase insert(final Table<?> into) {
+    return new InsertIntoPhase(this.context, into);
+  }
+
+  public <T> GeneratedKeysInsertIntoPhase<T> insert(final TableWithGeneratedKey<?, T> into) {
+    return new GeneratedKeysInsertIntoPhase<T>(this.context, into);
+  }
+
+  public InsertIntoPhase insert(final View<?> into) {
     return new InsertIntoPhase(this.context, into);
   }
 

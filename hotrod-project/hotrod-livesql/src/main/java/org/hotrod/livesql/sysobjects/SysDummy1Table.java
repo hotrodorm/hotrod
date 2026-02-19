@@ -2,16 +2,17 @@ package org.hotrod.livesql.sysobjects;
 
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
+import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class SysDummy1Table extends Table<String> {
 
   // Properties
 
-  public CharEntityColumn ibmreqd;
+  public CharEntityInstanceColumn ibmreqd;
 
   // Constructors
 
@@ -23,7 +24,8 @@ public class SysDummy1Table extends Table<String> {
   // Initialization
 
   private void initialize() {
-    this.ibmreqd = new CharEntityColumn(this, "IBMREQD", "ibmreqd", "VARCHAR", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
+    CharEntityColumn c = new CharEntityColumn("IBMREQD", "ibmreqd", "VARCHAR", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
+    this.ibmreqd = new CharEntityInstanceColumn(this, c);
     super.add(this.ibmreqd);
   }
 

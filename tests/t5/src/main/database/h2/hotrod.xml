@@ -1,11 +1,9 @@
 <hotrod>
 
   <generators>
-  <jdbc base-dir="src/main/java"
-        package="app.persistence"
-        >
-        <model sub-package="" />
-  </jdbc>
+    <jdbc base-dir="src/main/java" package="app.persistence">
+      <model sub-package="" />
+    </jdbc>
     <!--
     <jdbc>
 -->
@@ -22,60 +20,78 @@
   <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
 
-  <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType" java-raw-type="java.lang.String"
-    class="app.AccountTypeConverter" />
+  <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType"
+    java-raw-type="java.lang.String" class="app.AccountTypeConverter" />
 
   <converter name="coin_type_stored_as_char" java-type="java.lang.Integer" java-raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
 
+<!-- 
   <table name="product">
     <column name="pid_product" sequence="seq_product" />
   </table>
 
-<!-- 
   <table name="branch" />
   <table name="other" />
   <view name="v_other" />
-   -->
+-->
 
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
+
+  <table name="s1">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s2">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s3">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s4">
+    <column name="id" sequence="seq1" />
+  </table>
+
+<!-- 
   <view name="employee_branch" />
   <table name="'abc_DEF'" />
-
 
   <table name="coin">
     <column name="type" converter="coin_type_stored_as_char" />
   </table>
-   
+
   <table name="account">
     <column name="balance" java-type="Double" />
     <column name="active" converter="boolean_stored_as_int" />
     <column name="type" converter="account_type_stored_as_char" />
   </table>
-   
+
   <table name="employee">
     <column name="name" java-name="fullName" />
     <column name="vip" converter="boolean_stored_as_int" />
     <sequence name="employee_seq" method="getSequenceNextValue" />
     <sequence name="hired_seq" method="getHiredNextValue" />
-    
+
     <select method="findVIPEmployees">
-SELECT name, vip, id
-FROM employee
-WHERE branch_id = 101
+      SELECT name, vip, id
+      FROM employee
+      WHERE branch_id = 101
     </select> 
-<!-- 
-     -->
     <query method="updateEmployees">
       update employee SET id = id
     </query>
-    
-  </table>
 
+  </table>
+ -->
 <!-- 
     <select method="getOthers" vo="Abv">
 SELECT * FROM other
     </select> 
  -->
+ 
+ <!--  
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />
 
@@ -85,26 +101,28 @@ SELECT * FROM other
       from account
       where active
       <complement>
-        AND id IN 
+        AND id IN
         <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">#{cod}</foreach>
       </complement>
     </select>
 
     <select method="findBigAccounts" vo="BigAccount">
-       <column name="ibt_balance" java-name="grossBalance" />
-select id, balance as ibt_balance,
-  case when active then 'Active' else 'Inactive' end as status,
-  cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
-from account
-where balance >= 200
+      <column name="ibt_balance" java-name="grossBalance" />
+      select id, balance as ibt_balance,
+      case when active then 'Active' else 'Inactive' end as status,
+      cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
+      from account
+      where balance >= 200
     </select>
 
     <query method="deleteAccounts">
       delete from account where type = 'SAV'
     </query>
-    
+
   </dao>
 
+ -->
+ 
 <!--
   <table name="chars" />
   <table name="numbers" />
@@ -175,10 +193,11 @@ where balance >= 300
   <fragment file="./reporting.xml" />
   <fragment file="./buscador.xml" />
   <fragment file="./test4.xml" />
--->  
+-->
 
+<!-- 
   <fragment file="./geo.xml" />
-  
+   -->
 <!--
   <fragment file="./test2.xml" />
   <table name="branch">

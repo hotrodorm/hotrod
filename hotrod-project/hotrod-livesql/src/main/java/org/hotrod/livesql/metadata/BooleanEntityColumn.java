@@ -1,5 +1,7 @@
 package org.hotrod.livesql.metadata;
 
+import java.util.logging.Logger;
+
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.BooleanSubqueryExpression;
@@ -9,21 +11,23 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class BooleanEntityColumn extends Predicate implements EntityColumn {
 
+  private static final Logger log = Logger.getLogger(BooleanEntityColumn.class.getName());
+
   // Properties
 
-  private TableOrView<?> objectInstance;
   private String name;
   private String type;
   private Integer columnSize;
   private Integer decimalDigits;
+
   private String property;
 
   // Constructor
 
-  public BooleanEntityColumn(final TableOrView<?> objectInstance, final String name, final String property,
-      final String type, final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
+  public BooleanEntityColumn(final String name, final String property, final String type, final Integer columnSize,
+      final Integer decimalDigits, final TypeHandler<?, ?> handler) {
     super(Expression.PRECEDENCE_COLUMN);
-    this.objectInstance = objectInstance;
+    log.fine("init");
     this.name = name;
     this.property = property;
     this.type = type;
@@ -42,18 +46,13 @@ public class BooleanEntityColumn extends Predicate implements EntityColumn {
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    if (this.objectInstance.getAlias() != null) {
-      w.write(
-          w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
-      w.write(".");
-    }
     w.write(w.getSQLDialect().canonicalToNatural(this.name));
   }
 
   // Getters
 
   @Override
-  public final String getReferenceName() {
+  public String getReferenceName() {
     return this.property;
   }
 
@@ -67,42 +66,22 @@ public class BooleanEntityColumn extends Predicate implements EntityColumn {
   }
 
   @Override
-  public final TableOrView<?> getObjectInstance() {
-    return objectInstance;
-  }
-
-  @Override
-  public final Name getCatalog() {
-    return this.objectInstance.getCatalog();
-  }
-
-  @Override
-  public final Name getSchema() {
-    return this.objectInstance.getSchema();
-  }
-
-  @Override
-  public final Name getObjectName() {
-    return this.objectInstance.getName();
-  }
-
-  @Override
-  public final String getType() {
+  public String getType() {
     return type;
   }
 
   @Override
-  public final Integer getColumnSize() {
+  public Integer getColumnSize() {
     return columnSize;
   }
 
   @Override
-  public final Integer getDecimalDigits() {
+  public Integer getDecimalDigits() {
     return decimalDigits;
   }
 
   @Override
-  public final String getProperty() {
+  public String getProperty() {
     return property;
   }
 

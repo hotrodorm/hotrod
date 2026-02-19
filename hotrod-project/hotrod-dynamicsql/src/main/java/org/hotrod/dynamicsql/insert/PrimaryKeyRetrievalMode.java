@@ -25,25 +25,31 @@ public enum PrimaryKeyRetrievalMode {
 // + SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and will crash if a PK value is provided
 // ^ Sybase ASE: Explicit PK value for an IDENTITY column was not implemented (Use: "SET IDENTITY_INSERT <table> ON" before explicit PK INSERT) 
 
-  NO_RETRIEVAL(new PreparedInsertNoRetrievalExecutor()), // Implemented
+  NO_RETRIEVAL(new PreparedInsertNoRetrievalExecutor(), false), // Implemented
 
-  IDENTITY_INLINE_STANDARD_RESULTSET(null), //
-  IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetExecutor()), // Implemented
-  IDENTITY_POSTFETCH(null), //
+  IDENTITY_INLINE_STANDARD_RESULTSET(null, true), //
+  IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetExecutor(), true), // Implemented
+  IDENTITY_POSTFETCH(null, true), //
 
-  SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor()), // Implemented
-  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetExecutor()), // Implemented
-  SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor()), // Implemented
-  SEQUENCE_POSTFETCH(null);
+  SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor(), true), // Implemented
+  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetExecutor(), true), // Implemented
+  SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor(), true), // Implemented
+  SEQUENCE_POSTFETCH(null, true);
 
   private InsertExecutor insertExecutor;
+  private boolean generatesKeys;
 
-  private PrimaryKeyRetrievalMode(InsertExecutor insertExecutor) {
+  private PrimaryKeyRetrievalMode(InsertExecutor insertExecutor, boolean generatesKeys) {
     this.insertExecutor = insertExecutor;
+    this.generatesKeys = generatesKeys;
   }
 
   public InsertExecutor getInsertExecutor() {
     return this.insertExecutor;
+  }
+
+  public final boolean generatesKeys() {
+    return generatesKeys;
   }
 
 }
