@@ -3,7 +3,6 @@ package org.hotrod.livesql.queries;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,10 +44,12 @@ public class GeneratedKeysInsertObject<T> {
 
   void setValues(final List<ComparableExpression> values) {
     this.values = values;
+    this.select = null;
   }
 
   void setSelect(final SelectObject<?> select) {
     this.select = select;
+    this.values = null;
   }
 
   public String getPreview(final LiveSQLContext context, boolean includeParameters) {
@@ -103,34 +104,41 @@ public class GeneratedKeysInsertObject<T> {
     log.info("*** Preparing QUERY");
     QueryWriter w = new QueryWriter(context);
 
+    InsertSelectRenderingEdits edits = this.executor.getInsertSelectEdits(this.columns);
+
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
-    List<EntityColumn> preparedColumns = new ArrayList<>();
-    List<ComparableExpression> preparedValues = new ArrayList<>();
+    log.info("* executor=" + this.executor + " this.columns[" + this.columns.size() + "]");
 
-    this.executor.validateAndPrepareInsertColumns(this.columns, this.values, preparedColumns, preparedValues);
-    log.info("* executor=" + this.executor + " preparedColumns[" + preparedColumns.size() + "]");
-
-    if (preparedColumns != null) {
+    if (this.columns != null) {
       w.write(" (");
       Separator sep = new Separator(", ");
-      for (EntityColumn c : preparedColumns) {
+      if (edits.getPrependInsertColumn() != null) {
+        w.write(sep.render());
+        w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
+      }
+      for (EntityColumn c : this.columns) {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }
       w.write(")");
     }
 
-    if (!preparedValues.isEmpty()) { // insert using values
+    if (this.values != null) { // insert using values
 
       w.write("\nVALUES (");
-      for (int i = 0; i < preparedValues.size(); i++) {
-        ComparableExpression e = preparedValues.get(i);
+      Separator sep = new Separator(", ");
+
+      if (edits.getPrependValue() != null) {
+        w.write(sep.render());
+        Shield.renderTo(edits.getPrependValue(), w);
+      }
+
+      for (int i = 0; i < this.values.size(); i++) {
+        w.write(sep.render());
+        ComparableExpression e = this.values.get(i);
         Shield.renderTo(e, w);
-        if (i < preparedValues.size() - 1) {
-          w.write(", ");
-        }
       }
       w.write(")");
 
@@ -140,13 +148,45 @@ public class GeneratedKeysInsertObject<T> {
       Set<SelectObject<?>> compiling = new HashSet<>();
       this.select.compileColumns(compiling);
       w.write("\n");
-      this.select.renderTo(w, false);
+      this.select.renderTo(w, edits, false);
     }
 
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);
     log.info("*** Preparing QUERY - COMPLETE");
 
     return pq;
+  }
+
+  public static class InsertSelectRenderingEdits {
+
+    private EntityColumn prependInsertColumn;
+    private ComparableExpression prependValue;
+    private String outputClausePrefix; // OUTPUT INSERTED. -> OUTPUT INSERTED.id
+
+    private InsertSelectRenderingEdits(EntityColumn prependInsertColumn, ComparableExpression prependValue,
+        String outputClausePrefix) {
+      this.prependInsertColumn = prependInsertColumn;
+      this.prependValue = prependValue;
+      this.outputClausePrefix = outputClausePrefix;
+    }
+
+    public static InsertSelectRenderingEdits of(EntityColumn prependInsertColumn, ComparableExpression prependValue,
+        String outputClausePrefix) {
+      return new InsertSelectRenderingEdits(prependInsertColumn, prependValue, outputClausePrefix);
+    }
+
+    public final EntityColumn getPrependInsertColumn() {
+      return prependInsertColumn;
+    }
+
+    public final ComparableExpression getPrependValue() {
+      return prependValue;
+    }
+
+    public final String getOutputClausePrefix() {
+      return outputClausePrefix;
+    }
+
   }
 
 }

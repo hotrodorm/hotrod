@@ -32,6 +32,8 @@ public abstract class SetOperator {
 
   // Rendering
 
+  public abstract boolean isUnion();
+
   protected abstract void renderTo(final QueryWriter w);
 
 //  public LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {

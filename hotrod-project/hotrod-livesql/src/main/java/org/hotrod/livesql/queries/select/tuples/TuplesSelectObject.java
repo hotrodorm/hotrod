@@ -20,6 +20,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SShield;
@@ -186,8 +187,16 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
     // Nothing to do
   }
 
-  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
+  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins,
+      final InsertSelectRenderingEdits edits) {
     Separator sep = new Separator();
+
+    if (edits.getPrependValue() != null) {
+      w.write(sep.render());
+      w.write("\n  ");
+      Shield.renderTo(edits.getPrependValue(), w);
+    }
+
     for (Expression expr : this.compiledColumns) {
 
       w.write(sep.render());

@@ -9,6 +9,11 @@ public class IntersectAllOperator extends SetOperator {
   }
 
   @Override
+  public boolean isUnion() {
+    return false;
+  }
+
+  @Override
   protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getSetOperationRenderer().renderIntersectAll(w);
   }

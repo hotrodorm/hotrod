@@ -13,8 +13,10 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.livesql.ordering.OHelper;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -22,7 +24,6 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
 import org.hotrod.livesql.util.IdUtil;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
 
 /**
@@ -141,10 +142,14 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
   // Rendering
 
   public void renderTo(final QueryWriter w) {
-    this.renderTo(w, false);
+    this.renderTo(w, null);
   }
 
-  public void renderTo(final QueryWriter w, final boolean inline) {
+  public void renderTo(final QueryWriter w, InsertSelectRenderingEdits edits) {
+    this.renderTo(w, edits, false);
+  }
+
+  public void renderTo(final QueryWriter w, InsertSelectRenderingEdits edits, final boolean inline) {
 
     boolean orderedSelect = this.orderingTerms != null && !this.orderingTerms.isEmpty();
 
@@ -180,12 +185,21 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
 
     // Single Selects
 
-    this.anchor.renderTo(w, false);
+    this.anchor.renderTo(w, edits, false);
 
     for (SetOperatorTerm<T> t : this.combined) {
       w.write("\n");
+
+      InsertSelectRenderingEdits effectiveEdits = edits;
+
+      if (t.getOperator().isUnion()) {
+        effectiveEdits = edits;
+      } else {
+        effectiveEdits = InsertSelectRenderingEdits.of(null, new CharSQLInjection("0"), null);
+      }
+
       t.getOperator().renderTo(w);
-      t.getMultiset().renderTo(w, true);
+      t.getMultiset().renderTo(w, effectiveEdits, true);
     }
 
     // Exiting level when forced parenthesis

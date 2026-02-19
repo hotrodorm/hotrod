@@ -16,6 +16,7 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -58,7 +59,7 @@ public abstract class SelectObject<T> {
 
   public abstract boolean excludeTuplesFromUniqueNames();
 
-  public abstract void renderTo(QueryWriter w, boolean inline);
+  public abstract void renderTo(QueryWriter w, InsertSelectRenderingEdits edits, boolean inline);
 
   public abstract BaseSelectObject<T> getBaseSelect();
 
@@ -87,6 +88,10 @@ public abstract class SelectObject<T> {
   }
 
   protected LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
+    return this.prepareQuery(context, null);
+  }
+
+  protected LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context, final InsertSelectRenderingEdits edits) {
 
     // Validate
 
@@ -110,7 +115,7 @@ public abstract class SelectObject<T> {
     this.compileColumns(compiling);
 
     List<Expression> columns = this.getCompiledColumns();
-    renderTo(w, false);
+    renderTo(w, edits, false);
 
 //    log.info("");
 //    t = new ToString();

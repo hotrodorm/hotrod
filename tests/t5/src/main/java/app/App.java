@@ -193,6 +193,15 @@ public class App {
 
     Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 4 -- pk=" + pk4);
+
+    List<Long> pk5s = this.sql.insert(w).columns(w.name) //
+        .select(sql.select(sql.literal("One")) //
+            .intersect().select(sql.literal("Two")) //
+            .unionAll().select(sql.literal("Two")) //
+            .except().select(sql.literal("Two")) //
+        ).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 5 -- pks=" + pk5s.stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+
   }
 
   private void testInsertIdentity() {

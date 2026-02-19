@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends GeneratedKeysInsertExecutor<T> {
@@ -23,15 +23,8 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
   }
 
   @Override
-  public void validateAndPrepareInsertColumns(List<EntityColumn> declaredColumns,
-      List<ComparableExpression> declaredValues, List<EntityColumn> preparedColumns,
-      List<ComparableExpression> preparedValues) throws LiveSQLException {
-    if (declaredColumns != null) {
-      preparedColumns.addAll(declaredColumns);
-    }
-    if (declaredValues != null) {
-      preparedValues.addAll(declaredValues);
-    }
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
+    return InsertSelectRenderingEdits.of(null, null, null);
   }
 
   @Override

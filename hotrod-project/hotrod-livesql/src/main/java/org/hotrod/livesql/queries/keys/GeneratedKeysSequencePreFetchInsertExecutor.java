@@ -13,6 +13,8 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.numeric.NumericConstant;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 
 public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKeysInsertExecutor<T> {
 
@@ -30,11 +32,9 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   }
 
   @Override
-  public void validateAndPrepareInsertColumns(List<EntityColumn> declaredColumns,
-      List<ComparableExpression> declaredValues, List<EntityColumn> preparedColumns,
-      List<ComparableExpression> preparedValues) throws LiveSQLException {
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
     boolean included = false;
-    for (EntityColumn c : declaredColumns) {
+    for (EntityColumn c : columns) {
       if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
         included = true;
       }
@@ -45,12 +45,7 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
           + "it's added automatically behind the scenes.");
     }
 
-    preparedColumns.add(this.keyColumn);
-    preparedColumns.addAll(declaredColumns);
-
-    preparedValues.add(new NumericConstant(null));
-    preparedValues.addAll(declaredValues);
-
+    return InsertSelectRenderingEdits.of(this.keyColumn, new NumericConstant(null), null);
   }
 
   @Override

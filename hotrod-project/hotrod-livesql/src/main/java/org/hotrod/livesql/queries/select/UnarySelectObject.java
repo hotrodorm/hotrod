@@ -28,6 +28,7 @@ import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
@@ -132,10 +133,16 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
 
   }
 
-  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
-//    log.info("=== 4. WRITE COLUMNS ===");
+  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins,
+      final InsertSelectRenderingEdits edits) {
     Separator sep = new Separator();
-//    log.info(">2 this@" + OUtil.hc(this) + ".expandedQueryColumns=" + this.expandedQueryColumns);
+
+    if (edits.getPrependValue() != null) {
+      w.write(sep.render());
+      w.write("\n  ");
+      Shield.renderTo(edits.getPrependValue(), w);
+    }
+
     for (Expression expr : this.compiledColumns) {
 
       w.write(sep.render());

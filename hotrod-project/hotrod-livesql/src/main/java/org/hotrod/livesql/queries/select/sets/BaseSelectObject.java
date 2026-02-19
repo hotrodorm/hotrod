@@ -18,6 +18,7 @@ import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.PredicatedJoin;
@@ -167,11 +168,15 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
   // Render
 
   public void renderTo(final QueryWriter w) {
-    this.renderTo(w, false);
+    this.renderTo(w, null, false);
+  }
+
+  public void renderTo(final QueryWriter w, final InsertSelectRenderingEdits edits) {
+    this.renderTo(w, edits, false);
   }
 
   @Override
-  public void renderTo(final QueryWriter w, final boolean inline) {
+  public void renderTo(final QueryWriter w, final InsertSelectRenderingEdits edits, final boolean inline) {
 //    log.info("=== 3. RENDER TO ===");
 
     if (inline) {
@@ -234,7 +239,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
 
     // query columns
 
-    this.writeColumns(w, this.from, this.joins);
+    this.writeColumns(w, this.from, this.joins, edits);
 
     // base table
 
@@ -359,7 +364,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
   }
 
   protected abstract void writeColumns(final QueryWriter w, final TableExpression baseTableExpression,
-      final List<Join> joins);
+      final List<Join> joins, final InsertSelectRenderingEdits edits);
 
 //  protected void writeColumns(final QueryWriter w, final TableExpression baseTableExpression, final List<Join> joins) {
 //    Separator sep = new Separator();

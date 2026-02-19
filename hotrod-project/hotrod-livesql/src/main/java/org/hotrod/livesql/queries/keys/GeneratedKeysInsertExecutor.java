@@ -8,7 +8,9 @@ import java.util.List;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 
 // Tested Modes for Each Database
 //
@@ -41,9 +43,7 @@ public abstract class GeneratedKeysInsertExecutor<T> {
     this.keyReader = keyReader;
   }
 
-  public abstract void validateAndPrepareInsertColumns(List<EntityColumn> declaredColumns,
-      List<ComparableExpression> declaredValues, List<EntityColumn> preparedColumns,
-      List<ComparableExpression> preparedValues) throws LiveSQLException;
+  public abstract InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException;
 
   public void applyParameters(LiveSQLPreparedQuery query, PreparedStatement ps) throws SQLException {
     int n = 1;

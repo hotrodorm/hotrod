@@ -111,7 +111,7 @@ public class InsertObject {
       this.select.compileColumns(compiling);
 
       w.write("\n");
-      this.select.renderTo(w, false);
+      this.select.renderTo(w, null, false);
 
     }
 

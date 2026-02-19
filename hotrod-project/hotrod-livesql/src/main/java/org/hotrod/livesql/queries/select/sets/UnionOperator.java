@@ -9,6 +9,11 @@ public class UnionOperator extends SetOperator {
   }
 
   @Override
+  public boolean isUnion() {
+    return true;
+  }
+
+  @Override
   protected void renderTo(final QueryWriter w) {
     w.getSQLDialect().getSetOperationRenderer().renderUnion(w);
   }

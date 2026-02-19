@@ -1,8 +1,10 @@
 <hotrod>
 
   <generators>
-    <jdbc>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="" abstract-vo-prefix="" abstract-vo-suffix="Prototype" />
+    <jdbc package="app.daos">
+      <dao suffix="DAO" />
+      <layout prefix="" suffix="Prototype" />
+      <model suffix="" />
     </jdbc>
   </generators>
   

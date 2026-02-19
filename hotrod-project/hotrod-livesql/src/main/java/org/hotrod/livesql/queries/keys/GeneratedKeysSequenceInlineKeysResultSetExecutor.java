@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysSequenceInlineKeysResultSetExecutor<T> extends GeneratedKeysInsertExecutor<T> {
@@ -34,28 +34,19 @@ public class GeneratedKeysSequenceInlineKeysResultSetExecutor<T> extends Generat
   }
 
   @Override
-  public void validateAndPrepareInsertColumns(List<EntityColumn> declaredColumns,
-      List<ComparableExpression> declaredValues, List<EntityColumn> preparedColumns,
-      List<ComparableExpression> preparedValues) throws LiveSQLException {
-    log.info("> validate");
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
     boolean included = false;
-    for (EntityColumn c : declaredColumns) {
+    for (EntityColumn c : columns) {
       if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
         included = true;
       }
     }
-    log.info("> included=" + included);
     if (included) {
       throw new LiveSQLException("A LiveSQL INSERT that uses an inline sequence to generate the primary key "
           + "on a table cannot explicitly include this primary key column; "
           + "it's added automatically behind the scenes.");
     }
-
-    preparedColumns.add(this.keyColumn);
-    preparedColumns.addAll(declaredColumns);
-
-    preparedValues.add(new CharSQLInjection(this.sequenceInlineSQL));
-    preparedValues.addAll(declaredValues);
+    return InsertSelectRenderingEdits.of(this.keyColumn, new CharSQLInjection(this.sequenceInlineSQL), null);
   }
 
   @Override
