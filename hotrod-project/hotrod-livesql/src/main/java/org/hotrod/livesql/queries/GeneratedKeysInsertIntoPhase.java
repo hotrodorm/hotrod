@@ -25,12 +25,12 @@ public class GeneratedKeysInsertIntoPhase<T> {
 
   public GeneratedKeysInsertColumnsPhase<T> columns(final EntityColumn... columns) {
     this.insert.setColumns(Arrays.asList(columns));
-    return new GeneratedKeysInsertColumnsPhase<>(this.context, this.insert);
+    return new GeneratedKeysInsertColumnsPhase<T>(this.context, this.insert);
   }
 
   public GeneratedKeysInsertValuesPhase<T> values(final ComparableExpression... values) {
     this.insert.setValues(Arrays.asList(values));
-    return new GeneratedKeysInsertValuesPhase<>(this.context, this.insert);
+    return new GeneratedKeysInsertValuesPhase<T>(this.context, this.insert);
   }
 
 }

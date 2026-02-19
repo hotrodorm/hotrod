@@ -3,14 +3,16 @@ package org.hotrod.livesql.queries;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
-import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.utils.Separator;
 
@@ -19,7 +21,7 @@ public class InsertObject {
   private TableOrView<?> into;
   private List<EntityColumn> columns;
   private List<ComparableExpression> values;
-  private BaseSelectObject<?> select;
+  private SelectObject<?> select;
 
   InsertObject() {
     super();
@@ -37,7 +39,7 @@ public class InsertObject {
     this.values = values;
   }
 
-  void setSelect(final BaseSelectObject<?> select) {
+  void setSelect(final SelectObject<?> select) {
     this.select = select;
   }
 
@@ -105,8 +107,11 @@ public class InsertObject {
 
     } else { // insert from query
 
+      Set<SelectObject<?>> compiling = new HashSet<>();
+      this.select.compileColumns(compiling);
+
       w.write("\n");
-      this.select.renderTo(w);
+      this.select.renderTo(w, false);
 
     }
 

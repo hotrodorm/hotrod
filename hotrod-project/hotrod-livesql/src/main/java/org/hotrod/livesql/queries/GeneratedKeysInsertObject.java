@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.LiveSQLLogging;
@@ -13,6 +15,7 @@ import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
+import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.utils.Separator;
 
@@ -24,10 +27,11 @@ public class GeneratedKeysInsertObject<T> {
   private TableOrView<?> into;
   private List<EntityColumn> columns;
   private List<ComparableExpression> values;
-//  private BaseSelectObject<?> select;
+  private SelectObject<?> select;
 
   GeneratedKeysInsertObject(GeneratedKeysInsertExecutor<T> executor) {
     super();
+    log.fine("init");
     this.executor = executor;
   }
 
@@ -43,9 +47,9 @@ public class GeneratedKeysInsertObject<T> {
     this.values = values;
   }
 
-//  void setSelect(final BaseSelectObject<?> select) {
-//    this.select = select;
-//  }
+  void setSelect(final SelectObject<?> select) {
+    this.select = select;
+  }
 
   public String getPreview(final LiveSQLContext context, boolean includeParameters) {
     LiveSQLPreparedQuery pq = this.prepareQuery(context);
@@ -72,9 +76,33 @@ public class GeneratedKeysInsertObject<T> {
     }
   }
 
+  public List<T> executeList(final LiveSQLContext context) {
+    return this.executeList(context, LiveSQLLogging.NO_LOGGING);
+  }
+
+  public List<T> executeList(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
+    log.info("> this.columns=" + this.columns + (this.columns == null ? "" : (" [" + this.columns.size() + "]")));
+    log.info("> this.values=" + this.values);
+    log.info("> this.select=" + this.select);
+    LiveSQLPreparedQuery q = this.prepareQuery(context);
+
+    LoggingUtil.logQuery(q, loggingAdapter);
+
+    try (Connection conn = context.getDataSource().getConnection()) {
+      try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
+        this.executor.applyParameters(q, ps);
+        List<T> keys = this.executor.executeList(q, conn);
+        return keys;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
     log.info("*** Preparing QUERY");
     QueryWriter w = new QueryWriter(context);
+
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
@@ -94,7 +122,7 @@ public class GeneratedKeysInsertObject<T> {
       w.write(")");
     }
 
-    if (preparedValues != null) { // insert using values
+    if (!preparedValues.isEmpty()) { // insert using values
 
       w.write("\nVALUES (");
       for (int i = 0; i < preparedValues.size(); i++) {
@@ -106,11 +134,13 @@ public class GeneratedKeysInsertObject<T> {
       }
       w.write(")");
 
-//    } else { // insert from query
-//
-//      w.write("\n");
-//      this.select.renderTo(w);
+    }
 
+    if (this.select != null) { // insert from query
+      Set<SelectObject<?>> compiling = new HashSet<>();
+      this.select.compileColumns(compiling);
+      w.write("\n");
+      this.select.renderTo(w, false);
     }
 
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);

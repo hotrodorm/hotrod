@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
@@ -25,23 +26,28 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
   public void validateAndPrepareInsertColumns(List<EntityColumn> declaredColumns,
       List<ComparableExpression> declaredValues, List<EntityColumn> preparedColumns,
       List<ComparableExpression> preparedValues) throws LiveSQLException {
-    // Nothing to do
+    if (declaredColumns != null) {
+      preparedColumns.addAll(declaredColumns);
+    }
+    if (declaredValues != null) {
+      preparedValues.addAll(declaredValues);
+    }
   }
 
   @Override
   public T executeOne(LiveSQLPreparedQuery query, Connection conn) throws SQLException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(query.getSQL(), Statement.RETURN_GENERATED_KEYS)) {
-        return execute(query, ps, conn);
+        return executeOne(query, ps, conn);
       }
     } else {
       try (PreparedStatement ps = conn.prepareStatement(query.getSQL(), generatedKeysNames)) {
-        return execute(query, ps, conn);
+        return executeOne(query, ps, conn);
       }
     }
   }
 
-  private T execute(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
+  private T executeOne(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
     super.applyParameters(query, ps);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -49,6 +55,31 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
         return super.keyReader.read(rs, 1);
       }
       return null;
+    }
+  }
+
+  @Override
+  public List<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException {
+    if (generatedKeysNames == null || generatedKeysNames.length == 0) {
+      try (PreparedStatement ps = conn.prepareStatement(query.getSQL(), Statement.RETURN_GENERATED_KEYS)) {
+        return executeList(query, ps, conn);
+      }
+    } else {
+      try (PreparedStatement ps = conn.prepareStatement(query.getSQL(), generatedKeysNames)) {
+        return executeList(query, ps, conn);
+      }
+    }
+  }
+
+  private List<T> executeList(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
+    super.applyParameters(query, ps);
+    ps.executeUpdate();
+    List<T> keys = new ArrayList<>();
+    try (ResultSet rs = ps.getGeneratedKeys()) {
+      while (rs.next()) {
+        keys.add(super.keyReader.read(rs, 1));
+      }
+      return keys;
     }
   }
 

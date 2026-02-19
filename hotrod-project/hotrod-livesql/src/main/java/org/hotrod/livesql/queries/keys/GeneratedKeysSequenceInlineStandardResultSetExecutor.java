@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -63,6 +64,21 @@ public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends Gen
           return super.keyReader.read(rs, 1);
         }
         return null;
+      }
+    }
+  }
+
+  @Override
+  public List<T> executeList(LiveSQLPreparedQuery query, Connection conn)
+      throws SQLException, DynamicExpressionException {
+    try (PreparedStatement ps = conn.prepareStatement(query.getSQL())) {
+      super.applyParameters(query, ps);
+      List<T> keys = new ArrayList<>();
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          keys.add(super.keyReader.read(rs, 1));
+        }
+        return keys;
       }
     }
   }

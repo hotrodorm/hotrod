@@ -2,7 +2,7 @@ package org.hotrod.livesql.queries;
 
 import org.hotrod.livesql.LiveSQLLogging;
 
-public interface GeneratedKeysQuery<T> extends Query {
+public interface GeneratedKeysInsertFromValuesQuery<T> extends Query {
 
   public T execute();
 

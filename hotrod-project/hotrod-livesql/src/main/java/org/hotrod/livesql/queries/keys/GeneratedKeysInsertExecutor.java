@@ -55,4 +55,6 @@ public abstract class GeneratedKeysInsertExecutor<T> {
 
   public abstract T executeOne(LiveSQLPreparedQuery query, Connection conn) throws SQLException;
 
+  public abstract List<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException;
+
 }

@@ -1,8 +1,10 @@
 package org.hotrod.livesql.queries;
 
+import java.util.List;
+
 import org.hotrod.livesql.LiveSQLLogging;
 
-public class GeneratedKeysInsertValuesPhase<T> implements GeneratedKeysInsertFromValuesQuery<T> {
+public class GeneratedKeysInsertSelectPhase<T> implements GeneratedKeysInsertFromSelectQuery<T> {
 
   // Properties
 
@@ -11,7 +13,7 @@ public class GeneratedKeysInsertValuesPhase<T> implements GeneratedKeysInsertFro
 
   // Constructor
 
-  public GeneratedKeysInsertValuesPhase(final LiveSQLContext context, final GeneratedKeysInsertObject<T> insert) {
+  public GeneratedKeysInsertSelectPhase(final LiveSQLContext context, final GeneratedKeysInsertObject<T> insert) {
     this.context = context;
     this.insert = insert;
   }
@@ -32,14 +34,12 @@ public class GeneratedKeysInsertValuesPhase<T> implements GeneratedKeysInsertFro
 
   // Execute
 
-  @Override
-  public T execute() {
-    return this.insert.executeOne(this.context);
+  public List<T> execute() {
+    return this.insert.executeList(this.context);
   }
 
-  @Override
-  public T execute(LiveSQLLogging loggingAdapter) {
-    return this.insert.executeOne(this.context, loggingAdapter);
+  public List<T> execute(LiveSQLLogging loggingAdapter) {
+    return this.insert.executeList(this.context, loggingAdapter);
   }
 
 }

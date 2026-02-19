@@ -25,7 +25,6 @@ import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
 import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.livesql.util.ToString;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SUtil;
