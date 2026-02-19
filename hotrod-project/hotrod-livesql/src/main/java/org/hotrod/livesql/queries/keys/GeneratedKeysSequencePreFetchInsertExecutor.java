@@ -84,8 +84,9 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   @Override
   public List<T> executeList(LiveSQLPreparedQuery query, Connection conn)
       throws SQLException, DynamicExpressionException {
-    throw new LiveSQLException(
-        "LiveSQL does not support inserting using sequence prefetch using a SELECT, but only using VALUES.");
+    throw new LiveSQLException("This database uses sequence-prefetch to insert in a table with generated keys. "
+        + "However, it's not possible to use this stragety in an INSERT that combines"
+        + " a SELECT. Rows can be inserted using the INSERT-VALUES combination.");
   }
 
 }

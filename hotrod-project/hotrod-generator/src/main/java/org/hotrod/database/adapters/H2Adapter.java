@@ -163,8 +163,8 @@ public class H2Adapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(true, false, true, false, null, false); // Sequence Inline Keys Result Set
-//    return InsertIntegration.of(true, false, false, false, null, false); // Sequence Prefetch
+//    return InsertIntegration.of(true, false, true, false, null, false); // Sequence Inline Keys Result Set
+    return InsertIntegration.of(true, false, false, false, null, false); // Sequence Prefetch
   }
 
   @Override

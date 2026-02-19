@@ -127,8 +127,8 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testInsert1();
-//      testInsertSequence();
-      testInsertIdentity();
+      testInsertSequence();
+//      testInsertIdentity();
 //      testBlob();
 //      testSubquery();
 //      testCTE();
