@@ -1548,7 +1548,13 @@ public class DAOWriter {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + entityType + "\", null, ", el, ".class, ", em, ".class, " + executorMemberName + ");");
+
+    w.print(", \"" + entityType + "\", null, ", el, ".class, ", em, ".class");
+    if (generatesKeys) {
+      w.print(", " + executorMemberName);
+    }
+    w.println(");");
+
     w.println("      initialize();");
     w.println("    }");
 
@@ -1569,7 +1575,13 @@ public class DAOWriter {
     }
     w.print(", ");
     w.print(nm, ".of(\"" + JUtils.escapeJavaString(name.getCanonicalSQLName()) + "\", " + name.isQuoted() + ")");
-    w.println(", \"" + entityType + "\", alias, ", el, ".class, ", em, ".class, " + executorMemberName + ");");
+
+    w.print(", \"" + entityType + "\", alias, ", el, ".class, ", em, ".class");
+    if (generatesKeys) {
+      w.print(", " + executorMemberName);
+    }
+    w.println(");");
+
     w.println("      initialize();");
     w.println("    }");
 

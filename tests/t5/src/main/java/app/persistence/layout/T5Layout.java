@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class S4Layout implements Serializable {
+public class T5Layout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

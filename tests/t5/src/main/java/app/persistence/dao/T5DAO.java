@@ -39,14 +39,11 @@ import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.NumericEntityInstanceColumn;
-import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
-import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetExecutor;
-import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -60,15 +57,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.S2;
-import app.persistence.layout.S2Layout;
+import app.persistence.T5;
+import app.persistence.layout.T5Layout;
 
 @Component
-public class S2DAO implements Serializable, ApplicationContextAware {
+public class T5DAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(S2DAO.class.getName());
+  private static final Logger log = Logger.getLogger(T5DAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,13 +91,13 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<S2> rowReader = new RowReader<S2>() {
+  private final RowReader<T5> rowReader = new RowReader<T5>() {
 
     @Override
-    public S2 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      S2 row = applicationContext.getBean(S2.class);
+    public T5 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      T5 row = applicationContext.getBean(T5.class);
 
-      Short col1 = rs.getShort("ID"); // ID
+      Long col1 = rs.getLong("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
@@ -114,31 +111,31 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public S2 parseRow(Map<String, Object> row) {
+  public T5 parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public S2 parseRow(Map<String, Object> row, String prefix) {
+  public T5 parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public S2 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    S2 m = applicationContext.getBean(S2.class);
+  public T5 parseRow(Map<String, Object> row, String prefix, String suffix) {
+    T5 m = applicationContext.getBean(T5.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toShort((Number) row.get(p + "id" + s)));
+    m.setId(CastUtil.toLong((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
     return m;
   }
 
   // BASELINE
 
-  public class S2Baseline {
+  public class T5Baseline {
 
-    private Short id;
+    private Long id;
     private String name;
 
-    public Short getId() {
+    public Long getId() {
       return this.id;
     }
 
@@ -148,8 +145,8 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   }
 
-  public S2Baseline baseline(S2 model) {
-    S2Baseline b = new S2Baseline();
+  public T5Baseline baseline(T5 model) {
+    T5Baseline b = new T5Baseline();
     b.id = model.getId();
     b.name = model.getName();
     return b;
@@ -157,8 +154,8 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // CLONE
 
-  public S2 clone(S2Layout layout) {
-    S2 m = this.applicationContext.getBean(S2.class);
+  public T5 clone(T5Layout layout) {
+    T5 m = this.applicationContext.getBean(T5.class);
     m.setId(layout.getId());
     m.setName(layout.getName());
     return m;
@@ -173,21 +170,21 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name")
-      .literaln("FROM s2")
+      .literaln("FROM t5")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
-  public S2 select(Short id) {
+  public T5 select(Long id) {
     if (id == null) return null;
-    S2 filter = new S2();
+    T5 filter = new T5();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<S2> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<T5> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<S2> rows = preparedQuery.execute(conn);
+      List<T5> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -205,7 +202,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name")
-      .literaln("FROM s2")
+      .literaln("FROM t5")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
@@ -214,15 +211,15 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<S2> select(S2Layout example, S2OrderBy... orderBies) {
+  public List<T5> select(T5Layout example, T5OrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<S2> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<T5> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<S2> rows = preparedQuery.execute(conn);
+      List<T5> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -231,8 +228,8 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<S2> select(final S2Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<S2>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<T5> select(final T5Table from, final Predicate predicate) {
+    return new CriteriaWherePhase<T5>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -241,28 +238,27 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO s2")
+      .literal("INSERT INTO t5")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
         .literal("name")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .literal("NEXT VALUE FOR seq1")
+        .parameterNullable("l.id", Types.BIGINT)
         .parameterNullable("l.name", Types.VARCHAR)
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public S2 insert(S2Layout layout) {
+  public T5 insert(T5Layout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    S2 model = this.clone(layout);
+    T5 model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Short.valueOf(pk.shortValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -275,7 +271,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO s2")
+      .literal("INSERT INTO t5")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
         .if_("e.name != null").literal("name").endif()
@@ -285,18 +281,17 @@ public class S2DAO implements Serializable, ApplicationContextAware {
         .if_("e.id != null").parameter("e.id").endif()
         .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public S2 insertByExample(S2Layout example) {
+  public T5 insertByExample(T5Layout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    S2 model = this.clone(example);
+    T5 model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Short.valueOf(pk.shortValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -309,15 +304,15 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE s2")
+      .literaln("UPDATE t5")
       .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.SMALLINT).literaln(",")
+      .literal("  id = ").parameterNullable("m.id", Types.BIGINT).literaln(",")
       .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
-  public int update(S2 model) {
+  public int update(T5 model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -337,7 +332,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE s2")
+      .literal("UPDATE t5")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
@@ -349,7 +344,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(S2Layout example, S2Layout values) {
+  public int update(T5Layout example, T5Layout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -365,7 +360,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(S2Layout values, S2Table tableOrView,
+  public UpdateWherePhase update(T5Layout values, T5Table tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -379,14 +374,14 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM s2")
+      .literaln("DELETE FROM t5")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
-  public int delete(Short id) {
+  public int delete(Long id) {
     if (id == null) return 0;
-    S2 filter = new S2();
+    T5 filter = new T5();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -406,7 +401,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM s2")
+      .literaln("DELETE FROM t5")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
@@ -414,7 +409,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(S2Layout example) {
+  public int delete(T5Layout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -429,13 +424,13 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final S2Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final T5Table from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum S2OrderBy implements OrderBy {
+  public enum T5OrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
@@ -445,7 +440,7 @@ public class S2DAO implements Serializable, ApplicationContextAware {
     private String sqlColumnName;
     private boolean ascending;
 
-    private S2OrderBy(String sqlColumnName, boolean ascending) {
+    private T5OrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -464,23 +459,20 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   // TABLE METADATA
 
-  public S2Table newTable() {
-    return new S2Table();
+  public T5Table newTable() {
+    return new T5Table();
   }
 
-  public S2Table newTable(final String alias) {
-    return new S2Table(alias);
+  public T5Table newTable(final String alias) {
+    return new T5Table(alias);
   }
 
-  public static class S2Table extends TableWithGeneratedKey<S2, Short> {
+  public static class T5Table extends Table<T5> {
 
     private static final NumericEntityColumn _ID = new NumericEntityColumn(
-      "ID", "id", "SMALLINT", 16, 0, TypeHandler.forClass(Short.class, TypeSource.STATIC_DIALECT_RULE, "D8"));
+      "ID", "id", "BIGINT", 64, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D10"));
     private static final CharEntityColumn _NAME = new CharEntityColumn(
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
-
-    private static final GeneratedKeysInsertExecutor<Short> __GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysSequenceInlineKeysResultSetExecutor<Short>(
-        KeyReader.SHORT_KEY_READER, "NEXT VALUE FOR seq1", _ID);
 
     public final NumericEntityInstanceColumn id = new NumericEntityInstanceColumn(this, _ID);
     public final CharEntityInstanceColumn name = new CharEntityInstanceColumn(this, _NAME);
@@ -490,13 +482,13 @@ public class S2DAO implements Serializable, ApplicationContextAware {
       return new AllColumns(this.id, this.name);
     }
 
-    S2Table() {
-      super(null, null, Name.of("S2", false), "Table", null, S2Layout.class, S2.class, __GENERATED_KEY_READER_EXECUTOR);
+    T5Table() {
+      super(null, null, Name.of("T5", false), "Table", null, T5Layout.class, T5.class);
       initialize();
     }
 
-    S2Table(final String alias) {
-      super(null, null, Name.of("S2", false), "Table", alias, S2Layout.class, S2.class, __GENERATED_KEY_READER_EXECUTOR);
+    T5Table(final String alias) {
+      super(null, null, Name.of("T5", false), "Table", alias, T5Layout.class, T5.class);
       initialize();
     }
 

@@ -34,6 +34,8 @@ import app.persistence.dao.S3DAO;
 import app.persistence.dao.S3DAO.S3Table;
 import app.persistence.dao.S4DAO;
 import app.persistence.dao.S4DAO.S4Table;
+import app.persistence.dao.T5DAO;
+import app.persistence.dao.T5DAO.T5Table;
 
 @SpringBootApplication
 @Configuration
@@ -106,6 +108,9 @@ public class App {
 
   @Autowired
   private S4DAO s4DAO;
+
+  @Autowired
+  private T5DAO t5DAO;
 
   @Autowired
   private IntegerBooleanConverter ibc;
@@ -195,6 +200,7 @@ public class App {
     K2Table u = this.k2DAO.newTable();
     K3Table v = this.k3DAO.newTable();
     K4Table w = this.k4DAO.newTable();
+    T5Table x = this.t5DAO.newTable();
 
     Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 1 -- pk=" + pk);
@@ -211,9 +217,12 @@ public class App {
     Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 4 -- pk=" + pk4);
 
-    List<Integer> pk5s = this.sql.insert(v).columns(v.name)
+    List<Long> pk5s = this.sql.insert(w).columns(w.name)
         .select(sql.select(sql.literal("One")).union().select(sql.literal("Two"))).execute(LIVESQL_LOG);
     System.out.println("### INSERT 5 -- pks=" + pk5s.stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+
+    int count = this.sql.insert(x).columns(x.id, x.name).values(sql.val(101), sql.val("DEF")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 6 -- count=" + count);
 
   }
 

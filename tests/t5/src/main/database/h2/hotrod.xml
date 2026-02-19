@@ -36,6 +36,8 @@
   <view name="v_other" />
 -->
 
+  <table name="t5" />
+
   <table name="k1" />
   <table name="k2" />
   <table name="k3" />

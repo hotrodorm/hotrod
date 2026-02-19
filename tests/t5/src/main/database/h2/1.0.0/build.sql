@@ -312,4 +312,8 @@ create table s4 (
   name varchar(20)
 );
 
+create table t5 (
+  id bigint primary key,
+  name varchar(20)
+);
 
