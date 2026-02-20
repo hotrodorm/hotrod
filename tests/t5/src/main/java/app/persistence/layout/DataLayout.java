@@ -6,24 +6,15 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class K3Layout implements Serializable {
+public class DataLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Layout Properties (table columns)
 
-  protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D10
   protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D15
 
   // getters & setters
-
-  public Integer getId() {
-    return this.id;
-  }
-
-  public void setId(final Integer id) {
-    this.id = id;
-  }
 
   public String getName() {
     return this.name;
@@ -38,7 +29,6 @@ public class K3Layout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name);
     return sb.toString();
   }
@@ -47,7 +37,6 @@ public class K3Layout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     return obj;
   }

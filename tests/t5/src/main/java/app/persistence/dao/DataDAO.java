@@ -37,21 +37,15 @@ import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.NumericEntityInstanceColumn;
-import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
-import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
-import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -60,15 +54,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.K2Layout;
-import app.persistence.model.K2;
+import app.persistence.layout.DataLayout;
+import app.persistence.model.Data;
 
 @Component
-public class K2DAO implements Serializable, ApplicationContextAware {
+public class DataDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(K2DAO.class.getName());
+  private static final Logger log = Logger.getLogger(DataDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,18 +88,14 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<K2> rowReader = new RowReader<K2>() {
+  private final RowReader<Data> rowReader = new RowReader<Data>() {
 
     @Override
-    public K2 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      K2 row = applicationContext.getBean(K2.class);
+    public Data readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Data row = applicationContext.getBean(Data.class);
 
-      Short col1 = rs.getShort("id"); // id
-      if (rs.wasNull()) col1 = null;
-      row.setId(col1);
-
-      String col2 = rs.getString("name"); // name
-      row.setName(col2);
+      String col1 = rs.getString("name"); // name
+      row.setName(col1);
 
       return row;
     }
@@ -114,33 +104,27 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public K2 parseRow(Map<String, Object> row) {
+  public Data parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public K2 parseRow(Map<String, Object> row, String prefix) {
+  public Data parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public K2 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    K2 m = applicationContext.getBean(K2.class);
+  public Data parseRow(Map<String, Object> row, String prefix, String suffix) {
+    Data m = applicationContext.getBean(Data.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toShort((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
     return m;
   }
 
   // BASELINE
 
-  public class K2Baseline {
+  public class DataBaseline {
 
-    private Short id;
     private String name;
-
-    public Short getId() {
-      return this.id;
-    }
 
     public String getName() {
       return this.name;
@@ -148,53 +132,21 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   }
 
-  public K2Baseline baseline(K2 model) {
-    K2Baseline b = new K2Baseline();
-    b.id = model.getId();
+  public DataBaseline baseline(Data model) {
+    DataBaseline b = new DataBaseline();
     b.name = model.getName();
     return b;
   };
 
   // CLONE
 
-  public K2 clone(K2Layout layout) {
-    K2 m = this.applicationContext.getBean(K2.class);
-    m.setId(layout.getId());
+  public Data clone(DataLayout layout) {
+    Data m = this.applicationContext.getBean(Data.class);
     m.setName(layout.getName());
     return m;
   };
 
-  // SELECT BY PRIMARY KEY
-
-  private DynamicSelectQuery selectByPrimaryKey;
-
-  private void initializeSelectbyprimarykey() {
-    this.selectByPrimaryKey = dyn
-      .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM k2")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endSelectQuery();
-  }
-
-  public K2 select(Short id) {
-    if (id == null) return null;
-    K2 filter = new K2();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedSelectQuery<K2> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      List<K2> rows = preparedQuery.execute(conn);
-      if (rows.size() == 0) return null;
-      if (rows.size() == 1) return rows.get(0);
-      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // SELECT BY EXAMPLE
 
@@ -203,26 +155,24 @@ public class K2DAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  id,")
       .literaln("  name")
-      .literaln("FROM k2")
+      .literaln("FROM data")
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<K2> select(K2Layout example, K2OrderBy... orderBies) {
+  public List<Data> select(DataLayout example, DataOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<K2> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<Data> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<K2> rows = preparedQuery.execute(conn);
+      List<Data> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -231,8 +181,8 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<K2> select(final K2Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<K2>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<Data> select(final DataTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<Data>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -241,7 +191,7 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO k2")
+      .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("name")
       .endtrim()
@@ -249,18 +199,17 @@ public class K2DAO implements Serializable, ApplicationContextAware {
       .trim(" (\n  ", ",\n  ", "\n)")
         .parameterNullable("l.name", Types.VARCHAR)
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K2 insert(K2Layout layout) {
+  public Data insert(DataLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    K2 model = this.clone(layout);
+    Data model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Short.valueOf(pk.shortValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -273,61 +222,32 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO k2")
+      .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.id != null").literal("id").endif()
         .if_("e.name != null").literal("name").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.id != null").parameter("e.id").endif()
         .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K2 insertByExample(K2Layout example) {
+  public Data insertByExample(DataLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    K2 model = this.clone(example);
+    Data model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Short.valueOf(pk.shortValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
     return model;
   }
 
-  // UPDATE BY PRIMARY KEY
-
-  private DynamicModificationQuery updateByPK;
-
-  private void initializeUpdatebypk() {
-    this.updateByPK = dyn
-      .literaln("UPDATE k2")
-      .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.SMALLINT).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
-      .literal("WHERE id = ").parameter("m.id").literaln()
-    .endModificationQuery();
-  }
-
-  public int update(K2 model) {
-    if (model.getId() == null) return 0;
-    Parameters params = this.dyn.newParameters();
-    params.add("m", model);
-    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // UPDATE BY EXAMPLE
 
@@ -335,19 +255,17 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE k2")
+      .literal("UPDATE data")
       .set()
-        .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
       .endset()
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(K2Layout example, K2Layout values) {
+  public int update(DataLayout example, DataLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -363,40 +281,14 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(K2Layout values, K2Table tableOrView,
+  public UpdateWherePhase update(DataLayout values, DataTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
-  // DELETE BY PRIMARY KEY
-
-  private DynamicModificationQuery deleteByPK;
-
-  private void initializeDeletebypk() {
-    this.deleteByPK = dyn
-      .literaln("DELETE FROM k2")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endModificationQuery();
-  }
-
-  public int delete(Short id) {
-    if (id == null) return 0;
-    K2 filter = new K2();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
-    logQuery(preparedQuery);
-    try (Connection conn = this.dataSource.getConnection()) {
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    }
-  }
+  // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // DELETE BY EXAMPLE
 
@@ -404,15 +296,14 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM k2")
+      .literaln("DELETE FROM data")
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(K2Layout example) {
+  public int delete(DataLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -427,23 +318,21 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final K2Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final DataTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum K2OrderBy implements OrderBy {
+  public enum DataOrderBy implements OrderBy {
 
-    ID("id", true),
-    ID$DESC("id", false),
     NAME("name", true),
     NAME$DESC("name", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private K2OrderBy(String sqlColumnName, boolean ascending) {
+    private DataOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -462,45 +351,38 @@ public class K2DAO implements Serializable, ApplicationContextAware {
 
   // TABLE METADATA
 
-  public K2Table newTable() {
-    return new K2Table();
+  public DataTable newTable() {
+    return new DataTable();
   }
 
-  public K2Table newTable(final String alias) {
-    return new K2Table(alias);
+  public DataTable newTable(final String alias) {
+    return new DataTable(alias);
   }
 
-  public static class K2Table extends TableWithGeneratedKey<K2, Short> {
+  public static class DataTable extends Table<Data> {
 
-    private static final NumericEntityColumn _ID = new NumericEntityColumn(
-      "id", "id", "smallint identity", 5, 0, TypeHandler.forClass(Short.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     private static final CharEntityColumn _NAME = new CharEntityColumn(
       "name", "name", "varchar", 20, null, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D15"));
 
-    private static final GeneratedKeysInsertExecutor<Short> __GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysIdentityInlineResultSetInsertExecutor<Short>(
-        KeyReader.SHORT_KEY_READER, _ID.getCanonicalName());
-
-    public final NumericEntityInstanceColumn id = new NumericEntityInstanceColumn(this, _ID);
     public final CharEntityInstanceColumn name = new CharEntityInstanceColumn(this, _NAME);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.name);
+      return new AllColumns(this.name);
     }
 
-    K2Table() {
-      super(null, null, Name.of("k2", false), "Table", null, K2Layout.class, K2.class, __GENERATED_KEY_READER_EXECUTOR);
+    DataTable() {
+      super(null, null, Name.of("data", false), "Table", null, DataLayout.class, Data.class);
       initialize();
     }
 
-    K2Table(final String alias) {
-      super(null, null, Name.of("k2", false), "Table", alias, K2Layout.class, K2.class, __GENERATED_KEY_READER_EXECUTOR);
+    DataTable(final String alias) {
+      super(null, null, Name.of("data", false), "Table", alias, DataLayout.class, Data.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.id);
       super.columns.add(this.name);
     }
 
@@ -519,13 +401,10 @@ public class K2DAO implements Serializable, ApplicationContextAware {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
-    this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
-    this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
-    this.initializeDeletebypk();
     this.initializeDeletebyexample();
   }
 
