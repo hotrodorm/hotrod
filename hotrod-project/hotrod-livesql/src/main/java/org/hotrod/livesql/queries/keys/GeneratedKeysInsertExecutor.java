@@ -6,11 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
-import org.hotrod.livesql.queries.select.sets.SelectObject;
 
 // Tested Modes for Each Database
 //

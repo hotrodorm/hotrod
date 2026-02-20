@@ -16,6 +16,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.LoggingUtil;
+import org.hotrod.utils.SUtil;
 import org.hotrod.utils.Separator;
 
 public class GeneratedKeysInsertObject<T> {
@@ -123,6 +124,11 @@ public class GeneratedKeysInsertObject<T> {
         w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }
       w.write(")");
+    }
+
+    if (edits != null && !SUtil.isEmpty(edits.getOutputClausePrefix())) {
+      w.write(" " + edits.getOutputClausePrefix());
+      w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
     }
 
     if (this.values != null) { // insert using values

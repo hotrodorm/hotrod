@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.metadata.EntityColumn;
@@ -15,10 +16,14 @@ import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends GeneratedKeysInsertExecutor<T> {
 
+  private static final Logger log = Logger
+      .getLogger(GeneratedKeysIdentityInlineResultSetInsertExecutor.class.getName());
+
   private String[] generatedKeysNames;
 
   public GeneratedKeysIdentityInlineResultSetInsertExecutor(KeyReader<T> keyReader, String... generatedKeysNames) {
     super(keyReader);
+    log.fine("init");
     this.generatedKeysNames = generatedKeysNames;
   }
 

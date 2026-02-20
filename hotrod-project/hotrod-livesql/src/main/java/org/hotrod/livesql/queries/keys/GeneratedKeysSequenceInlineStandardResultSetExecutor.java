@@ -10,12 +10,10 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
-import org.hotrod.livesql.queries.select.sets.SelectObject;
+import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends GeneratedKeysInsertExecutor<T> {
 
@@ -45,7 +43,7 @@ public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends Gen
           + "on a table cannot explicitly include this primary key column; "
           + "it's added automatically behind the scenes.");
     }
-    return InsertSelectRenderingEdits.of(this.keyColumn, new CharSQLInjection(this.sequenceInlineSQL), null);
+    return InsertSelectRenderingEdits.of(this.keyColumn, new CharSQLInjection(this.sequenceInlineSQL), "OUTPUT INSERTED.");
   }
 
   @Override
