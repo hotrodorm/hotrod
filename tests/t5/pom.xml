@@ -13,7 +13,7 @@
     <maven.compiler.target>8</maven.compiler.target>
 
     <springboot.version>2.3.4.RELEASE</springboot.version>
-    <debbie.version>1.3.3</debbie.version>
+    <debbie.version>1.3.3</debbie.version> 
     <hotrod.version>5.1.12-SNAPSHOT</hotrod.version>
   </properties>
 
