@@ -2,12 +2,6 @@
 
   <generators>
     <jdbc>
-    <!--
-    <jdbc base-dir="" package="" qualifier="">
-       <dao prefix="" suffix="" base-dir="" subpackage="" />
-       <layout prefix="" suffix="" base-dir="" subpackage="" />
-       <model prefix="" suffix="" base-dir="" subpackage="" />
-        -->
     </jdbc>
   </generators>
 
@@ -30,12 +24,36 @@
     <column name="ES_ACTIVO" java-name="esActivo" converter="util_SN_to_Boolean" />
   </table>
 -->
+<!-- 
   <table name="dates" />
 
   <table name="product">
     <column name="pid_product" sequence="seq_product" />
   </table>
-    
+     -->
+
+
+  <table name="data" />
+
+  <table name="x5" entity="T5" />
+
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
+
+  <table name="s1">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s2">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s3">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s4">
+    <column name="id" sequence="seq1" />
+  </table>
 
 <!-- 
   <table name="chars" />

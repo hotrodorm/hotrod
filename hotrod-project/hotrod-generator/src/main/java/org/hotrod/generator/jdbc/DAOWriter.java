@@ -83,7 +83,7 @@ import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineStandardResultSetExecutor;
+import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineDataResultSetExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequencePreFetchInsertExecutor;
 import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
@@ -931,10 +931,12 @@ public class DAOWriter {
       }
     }
 
-    log.info("Table: " + this.metadata.getId().getCanonicalSQLName());
-    log.info("+ sequences: " + sequences.size());
-    log.info("+ identities: " + identities.size());
-    log.info("+ defaults: " + defaults.size());
+//    log.info("Table: " + this.metadata.getId().getCanonicalSQLName());
+//    log.info("+ sequences: " + sequences.size());
+//    log.info("+ identities: " + identities.size());
+//    log.info("+ defaults: " + defaults.size());
+//    log.info("+ this.adapter.getInsertIntegration().integratesIdentities(): " +this.adapter.getInsertIntegration().integratesIdentities());
+//    log.info("+ this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns(): " +this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns());
 
     // Identity
 
@@ -963,11 +965,8 @@ public class DAOWriter {
 
     // Sequence
 
-    log.info("SEQ 1");
-
     if (sequences.size() > 0) {
       if (sequences.size() == 1) {
-        log.info("SEQ 2");
         ColumnMetadata cm = sequences.get(0);
         String sequenceInlineSQL = null;
         String sequencePreFetchSQL = null;
@@ -977,7 +976,6 @@ public class DAOWriter {
         } catch (SequencesNotSupportedException e) {
           throw new ErrorMessageException(e.getMessage());
         }
-        log.info("SEQ 3");
         if (this.adapter.getInsertIntegration().integratesSequencesKeysResultSet()) {
           if (this.adapter.getInsertIntegration().identitiesMustDeclarePKColumns()) {
             String[] pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getCanonicalSQLName())
@@ -994,7 +992,7 @@ public class DAOWriter {
             pkcols = this.metadata.getPK().getColumns().stream().map(c -> c.getId().getRenderedSQLName())
                 .toArray(String[]::new);
           }
-          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_STANDARD_RESULTSET, null, null,
+          return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_INLINE_DATA_RESULTSET, null, null,
               sequenceInlineSQL, this.adapter.getInsertIntegration().getOutputClause(), pkcols);
         } else {
           return new InsertMechanics(PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH, sequencePreFetchSQL,
@@ -1440,14 +1438,13 @@ public class DAOWriter {
 
     // Insert Executor
 
-    log.info("this.mechanics.getMode()=" + this.insertMechanics);
-
     if (generatesKeys) {
 
       Class<?> insertExecutor;
       String sequenceSelect;
       String keyEntityName;
       String keyColumnName;
+      String outputClausePrefix;
 
       ColumnMetadata pkColumn = this.metadata.getPK().getColumns().get(0);
 
@@ -1457,24 +1454,28 @@ public class DAOWriter {
         sequenceSelect = null;
         keyEntityName = null;
         keyColumnName = "_" + pkColumn.getId().getJavaConstantName() + ".getCanonicalName()";
+        outputClausePrefix = null;
         break;
       case SEQUENCE_PREFETCH:
         insertExecutor = GeneratedKeysSequencePreFetchInsertExecutor.class;
         sequenceSelect = insertMechanics.getSequencePreFetchSQL();
         keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
         keyColumnName = null;
+        outputClausePrefix = null;
         break;
-      case SEQUENCE_INLINE_STANDARD_RESULTSET:
-        insertExecutor = GeneratedKeysSequenceInlineStandardResultSetExecutor.class;
+      case SEQUENCE_INLINE_DATA_RESULTSET:
+        insertExecutor = GeneratedKeysSequenceInlineDataResultSetExecutor.class;
         sequenceSelect = insertMechanics.getSequenceInlineSQL();
         keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
         keyColumnName = null;
+        outputClausePrefix = insertMechanics.getOutputClause();
         break;
       case SEQUENCE_INLINE_KEYS_RESULTSET:
         insertExecutor = GeneratedKeysSequenceInlineKeysResultSetExecutor.class;
         sequenceSelect = insertMechanics.getSequenceInlineSQL();
         keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
         keyColumnName = null;
+        outputClausePrefix = null;
         break;
       default:
         throw new ErrorMessageException("Invalid generation mechanics selects: " + this.insertMechanics.getMode());
@@ -1491,11 +1492,15 @@ public class DAOWriter {
         w.print(", \"" + SUtil.escapeJavaString(sequenceSelect) + "\"");
       }
       if (keyEntityName != null) {
-        w.println(", " + keyEntityName + ");");
+        w.print(", " + keyEntityName);
       }
       if (keyColumnName != null) {
-        w.println(", " + keyColumnName + ");");
+        w.print(", " + keyColumnName);
       }
+      if (outputClausePrefix != null) {
+        w.print(", \"" + SUtil.escapeJavaString(outputClausePrefix) + "\"");
+      }
+      w.println(");");
 
     }
 

@@ -35,3 +35,62 @@ insert into account (id, name, type, balance) values
   (789, '1072', 'CHK', 500);
 
 -- create sequence seq_account start with 1000;
+  
+  
+-- generated keys
+
+create table data (
+  name varchar(20)
+);
+
+insert into data (name) values ('Alice');
+insert into data (name) values ('Anne');
+insert into data (name) values ('Alanis');
+
+create table k1 (
+  id tinyint AUTO_INCREMENT primary key not null,
+  name varchar(20)
+);
+
+create table k2 (
+  id smallint AUTO_INCREMENT primary key not null,
+  name varchar(20)
+);
+
+create table k3 (
+  id int AUTO_INCREMENT primary key not null,
+  name varchar(20)
+);
+
+create table k4 (
+  id bigint AUTO_INCREMENT primary key not null,
+  name varchar(20)
+);
+
+create sequence seq1 start with 51;
+
+create table s1 (
+  id tinyint primary key,
+  name varchar(20)
+);
+
+create table s2 (
+  id smallint primary key,
+  name varchar(20)
+);
+
+create table s3 (
+  id int primary key,
+  name varchar(20)
+);
+
+create table s4 (
+  id bigint primary key,
+  name varchar(20)
+);
+
+
+create table t5 (
+  id bigint primary key,
+  name varchar(20)
+);

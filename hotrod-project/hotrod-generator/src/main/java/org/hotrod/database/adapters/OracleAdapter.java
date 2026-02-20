@@ -192,9 +192,9 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return InsertIntegration.of(false, false, false, false, null, true);
-//    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, true, false, null, true)
-//        : InsertIntegration.of(false, false, false, false, null, true);
+//    return InsertIntegration.of(false, false, false, false, null, true);
+    return this.isOracle12cOrNewer ? InsertIntegration.of(true, true, false, false, null, true)
+        : InsertIntegration.of(false, false, false, false, null, true);
   }
 
   @Override

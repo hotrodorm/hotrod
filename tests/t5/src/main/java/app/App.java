@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,12 @@ import org.springframework.context.annotation.Configuration;
 
 import app.persistence.dao.DataDAO;
 import app.persistence.dao.DataDAO.DataTable;
-import app.persistence.dao.K1DAO;
-import app.persistence.dao.K1DAO.K1Table;
 import app.persistence.dao.K2DAO;
 import app.persistence.dao.K2DAO.K2Table;
 import app.persistence.dao.K3DAO;
 import app.persistence.dao.K3DAO.K3Table;
 import app.persistence.dao.K4DAO;
 import app.persistence.dao.K4DAO.K4Table;
-import app.persistence.dao.S1DAO;
-import app.persistence.dao.S1DAO.S1Table;
 import app.persistence.dao.S2DAO;
 import app.persistence.dao.S2DAO.S2Table;
 import app.persistence.dao.S3DAO;
@@ -90,8 +87,8 @@ public class App {
   @Autowired
   private DataDAO dataDAO;
 
-  @Autowired
-  private K1DAO k1DAO;
+//  @Autowired
+//  private K1DAO k1DAO;
 
   @Autowired
   private K2DAO k2DAO;
@@ -102,8 +99,8 @@ public class App {
   @Autowired
   private K4DAO k4DAO;
 
-  @Autowired
-  private S1DAO s1DAO;
+//  @Autowired
+//  private S1DAO s1DAO;
 
   @Autowired
   private S2DAO s2DAO;
@@ -132,8 +129,10 @@ public class App {
     return args -> {
       log.info("[ Starting... ]");
 //      testInsert1();
-//      testInsertIdentity();
-      testInsertSequence();
+
+//      testInsertSequence();
+      testInsertIdentity();
+
 //      testBlob();
 //      testSubquery();
 //      testCTE();
@@ -179,50 +178,18 @@ public class App {
 //  }
 
   private void testInsertIdentity() {
-    K1Table t = this.k1DAO.newTable();
+//    K1Table t = this.k1DAO.newTable();
     K2Table u = this.k2DAO.newTable();
     K3Table v = this.k3DAO.newTable();
     K4Table w = this.k4DAO.newTable();
     T5Table x = this.t5DAO.newTable();
+    DataTable d = this.dataDAO.newTable();
 
 //    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
 //    System.out.println("### INSERT 1 -- pk=" + pk);
 //
 //    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
 //    System.out.println("### INSERT 1b -- pk=" + pk);
-//
-//    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 2 -- pk=" + pk2);
-//
-//    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 3 -- pk=" + pk3);
-//
-//    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 4 -- pk=" + pk4);
-
-    List<Long> pk5s = this.sql.insert(w).columns(w.name)
-        .select(sql.select(sql.literal("One")).union().select(sql.literal("Two"))).execute(LIVESQL_LOG);
-    System.out.println(
-        "### INSERT 5 -- pks[" + pk5s.size() + "]=" + pk5s.stream().map(n -> "" + n).collect(Collectors.joining(", ")));
-
-//    int count = this.sql.insert(x).columns(x.id, x.name).values(sql.val(101), sql.val("DEF")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 6 -- count=" + count);
-
-  }
-
-  private void testInsertSequence() {
-    S1Table t = this.s1DAO.newTable();
-    S2Table u = this.s2DAO.newTable();
-    S3Table v = this.s3DAO.newTable();
-    S4Table w = this.s4DAO.newTable();
-
-    DataTable d = this.dataDAO.newTable();
-
-    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 1 -- pk=" + pk);
-
-    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 1b -- pk=" + pk);
 
     Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 2 -- pk=" + pk2);
@@ -233,14 +200,47 @@ public class App {
     Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 4 -- pk=" + pk4);
 
-    List<Long> pk5s = this.sql.insert(w).columns(w.name) //
+    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.name).from(d)).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
+        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+
+    int deleted = this.sql.delete(x).where(x.id.eq(101)).execute();
+    int count = this.sql.insert(x).columns(x.id, x.name).values(sql.val(101), sql.val("DEF")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 6 -- deleted=" + deleted + " count=" + count);
+
+  }
+
+  private void testInsertSequence() {
+//    S1Table t = this.s1DAO.newTable();
+    S2Table u = this.s2DAO.newTable();
+    S3Table v = this.s3DAO.newTable();
+    S4Table w = this.s4DAO.newTable();
+    DataTable d = this.dataDAO.newTable();
+
+//    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 1 -- pk=" + pk);
+
+//    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 1b -- pk=" + pk);
+
+    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 2 -- pk=" + pk2);
+
+    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 3 -- pk=" + pk3);
+
+    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
+    System.out.println("### INSERT 4 -- pk=" + pk4);
+
+    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name) //
         .select(sql.select(d.name).from(d) //
 //            .intersect().select(sql.literal("Two")) //
 //            .unionAll().select(sql.literal("Two")) //
 //            .unionAll().select(sql.literal("Three")) //
 //            .except().select(sql.literal("Two")) //
         ).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 5 -- pks=" + pk5s.stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
+        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
 
   }
 

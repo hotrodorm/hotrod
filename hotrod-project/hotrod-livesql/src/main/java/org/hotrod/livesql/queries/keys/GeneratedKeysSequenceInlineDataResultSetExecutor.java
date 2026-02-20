@@ -13,21 +13,24 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
+import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
-public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends GeneratedKeysInsertExecutor<T> {
+public class GeneratedKeysSequenceInlineDataResultSetExecutor<T> extends GeneratedKeysInsertExecutor<T> {
 
-  private static final Logger log = Logger.getLogger(GeneratedKeysSequenceInlineKeysResultSetExecutor.class.getName());
+  private static final Logger log = Logger.getLogger(GeneratedKeysSequenceInlineDataResultSetExecutor.class.getName());
 
   private String sequenceInlineSQL;
   private EntityColumn keyColumn;
+  private String outputClausePrefix;
 
-  public GeneratedKeysSequenceInlineStandardResultSetExecutor(KeyReader<T> keyReader, String sequenceInlineSQL,
-      EntityColumn keyColumn) {
+  public GeneratedKeysSequenceInlineDataResultSetExecutor(KeyReader<T> keyReader, String sequenceInlineSQL,
+      EntityColumn keyColumn, String outputClausePrefix) {
     super(keyReader);
     log.fine("init");
     this.sequenceInlineSQL = sequenceInlineSQL;
     this.keyColumn = keyColumn;
+    this.outputClausePrefix = outputClausePrefix;
   }
 
   @Override
@@ -43,7 +46,8 @@ public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends Gen
           + "on a table cannot explicitly include this primary key column; "
           + "it's added automatically behind the scenes.");
     }
-    return InsertSelectRenderingEdits.of(this.keyColumn, new CharSQLInjection(this.sequenceInlineSQL), "OUTPUT INSERTED.");
+    return InsertSelectRenderingEdits.of(this.keyColumn, new CharSQLInjection(this.sequenceInlineSQL),
+        this.outputClausePrefix);
   }
 
   @Override
@@ -60,7 +64,7 @@ public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends Gen
   }
 
   @Override
-  public List<T> executeList(LiveSQLPreparedQuery query, Connection conn)
+  public InsertResult<T> executeList(LiveSQLPreparedQuery query, Connection conn)
       throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(query.getSQL())) {
       super.applyParameters(query, ps);
@@ -69,7 +73,7 @@ public class GeneratedKeysSequenceInlineStandardResultSetExecutor<T> extends Gen
         while (rs.next()) {
           keys.add(super.keyReader.read(rs, 1));
         }
-        return keys;
+        return new InsertResult<T>(-1, keys);
       }
     }
   }

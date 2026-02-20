@@ -1,7 +1,5 @@
 package org.hotrod.livesql.queries;
 
-import java.util.List;
-
 import org.hotrod.livesql.LiveSQLLogging;
 
 public class GeneratedKeysInsertSelectPhase<T> implements GeneratedKeysInsertFromSelectQuery<T> {
@@ -34,11 +32,11 @@ public class GeneratedKeysInsertSelectPhase<T> implements GeneratedKeysInsertFro
 
   // Execute
 
-  public List<T> execute() {
+  public InsertResult<T> execute() {
     return this.insert.executeList(this.context);
   }
 
-  public List<T> execute(LiveSQLLogging loggingAdapter) {
+  public InsertResult<T> execute(LiveSQLLogging loggingAdapter) {
     return this.insert.executeList(this.context, loggingAdapter);
   }
 

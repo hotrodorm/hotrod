@@ -14,13 +14,9 @@ public abstract class LoggingUtil {
   }
 
   public static void logQuery(final LiveSQLPreparedQuery q, final LiveSQLLogging loggingAdapter) {
-    log.info("loggingAdapter=" + loggingAdapter + (loggingAdapter == null ? ""
-        : (" -- full=" + loggingAdapter.fullEnabled() + " basic=" + loggingAdapter.basicEnabled())));
     if (loggingAdapter != null && loggingAdapter.fullEnabled()) {
-      loggingAdapter.fullLog("*** TEST 1 ***");
       loggingAdapter.fullLog(q.getPreview(true));
     } else if (loggingAdapter != null && loggingAdapter.basicEnabled()) {
-      loggingAdapter.fullLog("*** TEST 2***");
       loggingAdapter.basicLog(q.getPreview(false));
     }
   }

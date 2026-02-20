@@ -2,19 +2,24 @@
 
   <generators>
     <jdbc>
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="" abstract-vo-prefix="" abstract-vo-suffix="Prototype" />
     </jdbc>
   </generators>
 
 <!--  
   <table name="invoice" />
   <table name="branch" />
+  <table name="account">
+    <column name="id" sequence="seq_account" />
+  </table>
   -->
 
-  <table name="account">
-  <!--
-    <column name="id" sequence="seq_account" />
-  -->
-  </table>
   
+  <table name="t5" />
+
+  <table name="data" />
+
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
 </hotrod>

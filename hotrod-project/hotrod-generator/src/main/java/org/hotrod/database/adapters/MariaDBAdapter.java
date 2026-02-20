@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
@@ -28,10 +29,25 @@ public class MariaDBAdapter extends DatabaseAdapter {
 
   private MySQLAdapter mysqlAdaper;
 
+  private boolean isMariaDB10_3OrNewer;
+
   public MariaDBAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
     log.fine("init");
     this.mysqlAdaper = new MySQLAdapter(dm);
+    this.isMariaDB10_3OrNewer = this.isMariaDB10_3OrNewer();
+  }
+
+  private boolean isMariaDB10_3OrNewer() throws SQLException {
+    int majorVersion = this.databaseMedaData.getDatabaseMajorVersion();
+    int minorVersion = this.databaseMedaData.getDatabaseMinorVersion();
+    if (majorVersion < 10) {
+      return false;
+    }
+    if (majorVersion > 10) {
+      return true;
+    }
+    return minorVersion >= 3;
   }
 
   @Override
@@ -56,7 +72,12 @@ public class MariaDBAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    return this.mysqlAdaper.getInsertIntegration();
+    if (this.isMariaDB10_3OrNewer) {
+      // Do not support SEQUENCES (available in 10.3 an newer) for now, since needs research
+      return InsertIntegration.of(true, false, false, false, null, false);
+    }else {
+      return InsertIntegration.of(true, false, false, false, null, false);
+    }
   }
 
   @Override

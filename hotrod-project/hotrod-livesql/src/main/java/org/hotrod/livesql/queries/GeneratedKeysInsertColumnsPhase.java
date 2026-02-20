@@ -34,7 +34,6 @@ public class GeneratedKeysInsertColumnsPhase<T> {
 
   public GeneratedKeysInsertSelectPhase<T> select(final Select<?> select) {
     SelectObject<?> s = SShield.getCombinedSelect(select);
-    log.info("--- s=" + s);
     this.insert.setSelect(s);
     return new GeneratedKeysInsertSelectPhase<T>(this.context, this.insert);
   }

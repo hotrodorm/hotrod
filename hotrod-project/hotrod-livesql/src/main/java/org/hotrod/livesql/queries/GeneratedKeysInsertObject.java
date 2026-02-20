@@ -78,14 +78,11 @@ public class GeneratedKeysInsertObject<T> {
     }
   }
 
-  public List<T> executeList(final LiveSQLContext context) {
+  public InsertResult<T> executeList(final LiveSQLContext context) {
     return this.executeList(context, LiveSQLLogging.NO_LOGGING);
   }
 
-  public List<T> executeList(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
-    log.info("> this.columns=" + this.columns + (this.columns == null ? "" : (" [" + this.columns.size() + "]")));
-    log.info("> this.values=" + this.values);
-    log.info("> this.select=" + this.select);
+  public InsertResult<T> executeList(final LiveSQLContext context, LiveSQLLogging loggingAdapter) {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
 
     LoggingUtil.logQuery(q, loggingAdapter);
@@ -93,8 +90,8 @@ public class GeneratedKeysInsertObject<T> {
     try (Connection conn = context.getDataSource().getConnection()) {
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
         this.executor.applyParameters(q, ps);
-        List<T> keys = this.executor.executeList(q, conn);
-        return keys;
+        InsertResult<T> r = this.executor.executeList(q, conn);
+        return r;
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -102,7 +99,6 @@ public class GeneratedKeysInsertObject<T> {
   }
 
   private LiveSQLPreparedQuery prepareQuery(final LiveSQLContext context) {
-    log.info("*** Preparing QUERY");
     QueryWriter w = new QueryWriter(context);
 
     InsertSelectRenderingEdits edits = this.executor.getInsertSelectEdits(this.columns);
@@ -110,7 +106,6 @@ public class GeneratedKeysInsertObject<T> {
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
-    log.info("* executor=" + this.executor + " this.columns[" + this.columns.size() + "]");
 
     if (this.columns != null) {
       w.write(" (");
@@ -158,7 +153,6 @@ public class GeneratedKeysInsertObject<T> {
     }
 
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);
-    log.info("*** Preparing QUERY - COMPLETE");
 
     return pq;
   }

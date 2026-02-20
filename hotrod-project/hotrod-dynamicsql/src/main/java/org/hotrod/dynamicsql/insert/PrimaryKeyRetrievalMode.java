@@ -7,7 +7,7 @@ public enum PrimaryKeyRetrievalMode {
 //                   +--------------------+---------------------------+
 //                   |  Using Identities  |      Using Sequences      |
 //            +------+--------------------+---------------------------+
-// Database   | NR   | IIS  | IIK  | IPOS | SPRE | SIS  | SIK  | SPOS |
+// Database   | NR   | IIS  | IIK  | IPOS | SPRE | SID  | SIK  | SPOS |
 // -----------+------+------+------+------+------+------+------+------+
 // Oracle     | Yes  |      | Yes* |      | Yes* |      | Yes  |      |
 // DB2        | Yes  |      | Yes* |      | Yes  |      | Yes* |      |
@@ -32,7 +32,7 @@ public enum PrimaryKeyRetrievalMode {
   IDENTITY_POSTFETCH(null, true), //
 
   SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor(), true), // Implemented
-  SEQUENCE_INLINE_STANDARD_RESULTSET(new PreparedInsertSequenceInlineStandardResultsetExecutor(), true), // Implemented
+  SEQUENCE_INLINE_DATA_RESULTSET(new PreparedInsertSequenceInlineDataResultsetExecutor(), true), // Implemented
   SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor(), true), // Implemented
   SEQUENCE_POSTFETCH(null, true);
 

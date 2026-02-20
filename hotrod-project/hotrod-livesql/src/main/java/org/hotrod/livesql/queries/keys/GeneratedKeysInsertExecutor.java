@@ -8,6 +8,7 @@ import java.util.List;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
+import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 // Tested Modes for Each Database
@@ -53,6 +54,6 @@ public abstract class GeneratedKeysInsertExecutor<T> {
 
   public abstract T executeOne(LiveSQLPreparedQuery query, Connection conn) throws SQLException;
 
-  public abstract List<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException;
+  public abstract InsertResult<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException;
 
 }

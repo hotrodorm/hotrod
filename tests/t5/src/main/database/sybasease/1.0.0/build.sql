@@ -43,3 +43,42 @@ insert into account (id, name, type, balance) values (456, '2055', 'SAV', 200)
 insert into account (id, name, type, balance) values (789, '1072', 'CHK', 500)
 
 -- create sequence seq_account start with 1000
+
+
+-- generated keys
+
+create table data (
+  name varchar(20)
+)
+
+insert into data (name) values ('Alice')
+
+insert into data (name) values ('Anne')
+
+insert into data (name) values ('Alanis')
+
+create table k1 (
+  id tinyint identity primary key not null,
+  name varchar(20)
+)
+
+create table k2 (
+  id smallint identity primary key not null,
+  name varchar(20)
+)
+
+create table k3 (
+  id int identity primary key not null,
+  name varchar(20)
+)
+
+create table k4 (
+  id bigint identity primary key not null,
+  name varchar(20)
+)
+
+create table t5 (
+  id bigint primary key,
+  name varchar(20)
+)
+

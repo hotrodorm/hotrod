@@ -9,12 +9,11 @@ import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.numeric.NumericConstant;
 import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
-import org.hotrod.livesql.queries.select.sets.SelectObject;
+import org.hotrod.livesql.queries.InsertResult;
+import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKeysInsertExecutor<T> {
 
@@ -82,7 +81,7 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   }
 
   @Override
-  public List<T> executeList(LiveSQLPreparedQuery query, Connection conn)
+  public InsertResult<T> executeList(LiveSQLPreparedQuery query, Connection conn)
       throws SQLException, DynamicExpressionException {
     throw new LiveSQLException("This database uses sequence-prefetch to insert in a table with generated keys. "
         + "Thus, it's not possible to execute an INSERT that combines a SELECT. "

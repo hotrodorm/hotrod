@@ -1,13 +1,11 @@
 package org.hotrod.livesql.queries;
 
-import java.util.List;
-
 import org.hotrod.livesql.LiveSQLLogging;
 
 public interface GeneratedKeysInsertFromSelectQuery<T> extends Query {
 
-  public List<T> execute();
+  public InsertResult<T> execute();
 
-  public List<T> execute(LiveSQLLogging loggingAdapter);
+  public InsertResult<T> execute(LiveSQLLogging loggingAdapter);
 
 }

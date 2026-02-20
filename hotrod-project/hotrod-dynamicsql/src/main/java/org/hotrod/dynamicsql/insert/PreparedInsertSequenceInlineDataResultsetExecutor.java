@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
-public class PreparedInsertSequenceInlineStandardResultsetExecutor extends InsertExecutor {
+public class PreparedInsertSequenceInlineDataResultsetExecutor extends InsertExecutor {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger
-      .getLogger(PreparedInsertSequenceInlineStandardResultsetExecutor.class.getName());
+      .getLogger(PreparedInsertSequenceInlineDataResultsetExecutor.class.getName());
 
   @Override
   public Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters, String sequencePreFetchSQL,

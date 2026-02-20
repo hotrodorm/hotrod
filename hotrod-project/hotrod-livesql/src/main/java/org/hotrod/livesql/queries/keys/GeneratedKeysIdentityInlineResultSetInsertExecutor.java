@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
+import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
 public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends GeneratedKeysInsertExecutor<T> {
@@ -57,7 +58,7 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
   }
 
   @Override
-  public List<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException {
+  public InsertResult<T> executeList(LiveSQLPreparedQuery query, Connection conn) throws SQLException {
     if (generatedKeysNames == null || generatedKeysNames.length == 0) {
       try (PreparedStatement ps = conn.prepareStatement(query.getSQL(), Statement.RETURN_GENERATED_KEYS)) {
         return executeList(query, ps, conn);
@@ -69,15 +70,16 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
     }
   }
 
-  private List<T> executeList(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
+  private InsertResult<T> executeList(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn)
+      throws SQLException {
     super.applyParameters(query, ps);
-    ps.executeUpdate();
-    List<T> keys = new ArrayList<>();
+    int count = ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
+      List<T> keys = new ArrayList<>();
       while (rs.next()) {
         keys.add(super.keyReader.read(rs, 1));
       }
-      return keys;
+      return new InsertResult<T>(count, keys);
     }
   }
 
