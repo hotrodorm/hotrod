@@ -57,7 +57,8 @@ Long id = sql.insert(e)
              .execute();
 ```
 
-See the [INSERT Database Support](#appendix-a---insert-database-support) section below for the list of databases that support this functionality.
+See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
+
 
 ## Inserting Using a SELECT without Generated Keys
 
@@ -113,7 +114,7 @@ The SELECT statement is a general SQL select that can take any complexity as nee
 
 Since the table does implement a key generation strategy the INSERT query returns an InsertResult object that includes the count of inserted rows, and a list of generated keys. The type of the keys depend on the specific column type of the primary key of the table.
 
-See the [INSERT Database Support](#appendix-a---insert-database-support) section below for the list of databases that support this functionality.
+See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
 
 
 ## Inserting Through Views
@@ -199,21 +200,21 @@ sql.insert(p)
    .execute();
 ```
 
-## Appendix A - Insert Database Support
+## Appendix A - Database Support for Insert with Generated Keys
 
-This appendix describes the available database support for the INSERT variations.
+This appendix describes the available database support for the INSERT variations when the table defines a key generation strategy.
 
 First, the SQL Standard defines that the INSERT clauses can take two main forms:
 
 - Using a VALUES clause with the values to insert a single row
 - Using a SELECT clause to insert the result of a query. This form can insert zero to many rows
 
-Second, when it comes to auto generate primary key values databases implement two main solutions for it:
+Second, when it comes to key generation databases implement two main solutions for it:
 
 - Using SEQUENCES. This is how it was done in the early days
 - Using IDENTITIES. This is the new solution that links the key generation to each table automatically. It's simpler to use, although less flexible that the original one. Nevertheless, it's probably the right fit for 99% of the cases compared to SEQUENCES
 
-Considering both aspects there are four possible combinations of cases for INSERTs that include key generation. They are depicted below:
+Considering both aspects there are four possible combinations of cases for INSERTs that include generated keys. They are depicted below:
 
 | Database   | Sequences &amp; VALUES | Sequences &amp; SELECT | Identities &amp; VALUES | Identities &amp; SELECT |
 | :--------- | :---: | :---: | :---: | :---: |
