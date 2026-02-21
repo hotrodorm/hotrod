@@ -7,7 +7,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Core:
     - Fixed bean names with upper-case acronym sections for entity and properties.
 - LiveSQL:
-    - LiveSQL INSERT with VALUES and with SELECT retrieve the generated keys and the count of rows.
+    - LiveSQL INSERT queries, with VALUES and with SELECT, now retrieve the generated keys in addition to the count of rows.
 
 ## 5.1.11:
 
@@ -69,7 +69,6 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - LiveSQL:
     - Hello LiveSQL example prepared.
     - CAST implemented.
-    - Fixing Nitro Select with Type Solver rule with Converter.
     - Improving Type Solver messaging.
     - Fixing runtime designated type as converter.
     - Type resolution details are displayed in the SQL log and preview features.
@@ -79,6 +78,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Fixing converter in runtime type solver.
     - Fixing plain and recursive CTEs.
 - Nitro:
+    - Fixing Nitro Selects with Type Solver rules that includes a converter.
     - Hello Nitro example prepared.
     - Fixing the &lt;complement> tag.
 - Torcs:
@@ -162,10 +162,10 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.0.0:
 
-This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to refactor the configuration files and persistence layer organization.
+This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to simplify the configuration files and persistence layers organization.
 
 - Core:
-    - HotRod does not use MyBatis anymore and switched to new fully independent persistence layer instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration. HotRod has been tested from Java 8 up to Java 24, Spring 4.x, 5.x, and 6.x, and with Spring Boot 2.x and 3.x.
+    - HotRod does not use MyBatis anymore and switched to new fully independent persistence layer instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration. HotRod has been tested from Java 25 back to Java 8, Spring 6.x, 5.x, and 4.x, and with Spring Boot 3.x and 2.x.
     - Major improvement of the configuration file with the aim of simplifying it.
     - Major improvement in the persistence layer organization with simpler packages clear separation of duties.
     - DATE, TIME, and TIMESTAMP database column types now default to java.time classes instead of java.sql classes.
