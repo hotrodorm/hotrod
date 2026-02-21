@@ -96,7 +96,7 @@ public class App {
 
   private void demoLiveSQLUpdate() {
     EmployeeTable e = this.employeeDAO.newTable();
-    Integer[] ids = Arrays.asList(1, 2, 3, 4).toArray(new Integer[0]);
+    Integer[] ids = new Integer[] { 1, 2, 3, 4 };
     int count = this.sql.update(e).set(e.branchId, 51)
         .where(e.lastName.lower().like("%smith%").and(e.branchId.in(ids)).and(e.branchId.eq(52))).execute();
     System.out.println("5. LiveSQL UPDATE - count: " + count);
