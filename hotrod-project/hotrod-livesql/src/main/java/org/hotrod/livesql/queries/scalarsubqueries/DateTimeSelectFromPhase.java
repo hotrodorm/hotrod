@@ -4,7 +4,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
@@ -39,7 +39,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public DateTimeSelectFromPhase join(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -50,7 +50,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public DateTimeSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -61,7 +61,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public DateTimeSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -72,7 +72,7 @@ public class DateTimeSelectFromPhase extends DateTimeSelectExpression {
     return this;
   }
 
-  public DateTimeSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public DateTimeSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }

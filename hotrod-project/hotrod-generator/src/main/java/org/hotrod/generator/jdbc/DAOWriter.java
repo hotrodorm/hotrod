@@ -60,19 +60,19 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.BinaryEntityColumnMetaData;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
-import org.hotrod.livesql.metadata.BinaryEntityInstanceColumn;
+import org.hotrod.livesql.metadata.BooleanEntityColumnMetaData;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.livesql.metadata.BooleanEntityInstanceColumn;
+import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
+import org.hotrod.livesql.metadata.DateTimeEntityColumnMetaData;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
-import org.hotrod.livesql.metadata.DateTimeEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
+import org.hotrod.livesql.metadata.NumericEntityColumnMetaData;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.NumericEntityInstanceColumn;
+import org.hotrod.livesql.metadata.ObjectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
-import org.hotrod.livesql.metadata.ObjectEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 import org.hotrod.livesql.metadata.View;
@@ -1617,6 +1617,41 @@ public class DAOWriter {
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
+      return NumericEntityColumnMetaData.class;
+    } else if ("java.lang.String".equals(javaType)) {
+      return CharEntityColumnMetaData.class;
+    } else if ("java.util.Date".equals(javaType) //
+        || "java.sql.Date".equals(javaType) //
+        || "java.sql.Timestamp".equals(javaType) //
+        || "java.sql.Time".equals(javaType) //
+        || "java.time.LocalDateTime".equals(javaType) //
+        || "java.time.LocalDate".equals(javaType) //
+        || "java.time.LocalTime".equals(javaType) //
+        || "java.time.ZonedDateTime".equals(javaType) //
+        || "java.time.OffsetDateTime".equals(javaType) //
+        || "java.time.OffsetTime".equals(javaType) //
+        || "java.time.Instant".equals(javaType) //
+    ) {
+      return DateTimeEntityColumnMetaData.class;
+    } else if ("java.lang.Boolean".equals(javaType)) {
+      return BooleanEntityColumnMetaData.class;
+    } else if ("byte[]".equals(javaType)) {
+      return BinaryEntityColumnMetaData.class;
+    }
+
+    return ObjectEntityColumnMetaData.class;
+  }
+
+  private Class<?> toLiveSQLEntityInstanceType(final String javaType) {
+    if ("java.lang.Byte".equals(javaType) || "Byte".equals(javaType) //
+        || "java.lang.Short".equals(javaType) || "Short".equals(javaType)//
+        || "java.lang.Integer".equals(javaType) || "Integer".equals(javaType) ////
+        || "java.lang.Long".equals(javaType) || "Long".equals(javaType) //
+        || "java.lang.Float".equals(javaType) || "Float".equals(javaType) //
+        || "java.lang.Double".equals(javaType) || "Double".equals(javaType) //
+        || "java.math.BigInteger".equals(javaType) //
+        || "java.math.BigDecimal".equals(javaType) //
+    ) {
       return NumericEntityColumn.class;
     } else if ("java.lang.String".equals(javaType)) {
       return CharEntityColumn.class;
@@ -1640,41 +1675,6 @@ public class DAOWriter {
     }
 
     return ObjectEntityColumn.class;
-  }
-
-  private Class<?> toLiveSQLEntityInstanceType(final String javaType) {
-    if ("java.lang.Byte".equals(javaType) || "Byte".equals(javaType) //
-        || "java.lang.Short".equals(javaType) || "Short".equals(javaType)//
-        || "java.lang.Integer".equals(javaType) || "Integer".equals(javaType) ////
-        || "java.lang.Long".equals(javaType) || "Long".equals(javaType) //
-        || "java.lang.Float".equals(javaType) || "Float".equals(javaType) //
-        || "java.lang.Double".equals(javaType) || "Double".equals(javaType) //
-        || "java.math.BigInteger".equals(javaType) //
-        || "java.math.BigDecimal".equals(javaType) //
-    ) {
-      return NumericEntityInstanceColumn.class;
-    } else if ("java.lang.String".equals(javaType)) {
-      return CharEntityInstanceColumn.class;
-    } else if ("java.util.Date".equals(javaType) //
-        || "java.sql.Date".equals(javaType) //
-        || "java.sql.Timestamp".equals(javaType) //
-        || "java.sql.Time".equals(javaType) //
-        || "java.time.LocalDateTime".equals(javaType) //
-        || "java.time.LocalDate".equals(javaType) //
-        || "java.time.LocalTime".equals(javaType) //
-        || "java.time.ZonedDateTime".equals(javaType) //
-        || "java.time.OffsetDateTime".equals(javaType) //
-        || "java.time.OffsetTime".equals(javaType) //
-        || "java.time.Instant".equals(javaType) //
-    ) {
-      return DateTimeEntityInstanceColumn.class;
-    } else if ("java.lang.Boolean".equals(javaType)) {
-      return BooleanEntityInstanceColumn.class;
-    } else if ("byte[]".equals(javaType)) {
-      return BinaryEntityInstanceColumn.class;
-    }
-
-    return ObjectEntityInstanceColumn.class;
   }
 
   private void writeOrderBy() {

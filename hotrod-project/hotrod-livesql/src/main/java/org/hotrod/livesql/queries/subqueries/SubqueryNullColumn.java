@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
@@ -53,7 +53,7 @@ public class SubqueryNullColumn extends CharSyntaxExpression implements Subquery
   @Override
   protected TypeHandler getTypeHandler() {
     try {
-      EntityColumn ec = (EntityColumn) this.column;
+      EntityColumnMetadata ec = (EntityColumnMetadata) this.column;
       return Shield.getTypeHandler(this.column);
     } catch (ClassCastException e) {
       return super.typeHandler;

@@ -10,13 +10,13 @@ import org.hotrod.livesql.expressions.Expression;
 
 public class AllColumns extends SQLMetaExpression {
 
-  private List<EntityColumn> columns;
+  private List<EntityColumnMetadata> columns;
 
-  public AllColumns(final EntityColumn... columns) {
+  public AllColumns(final EntityColumnMetadata... columns) {
     this.columns = Arrays.asList(columns);
   }
 
-  public ColumnsSubset filter(final Predicate<EntityColumn> predicate) {
+  public ColumnsSubset filter(final Predicate<EntityColumnMetadata> predicate) {
     return new ColumnsSubset(this.columns.stream().filter(predicate).collect(Collectors.toList()));
   }
 

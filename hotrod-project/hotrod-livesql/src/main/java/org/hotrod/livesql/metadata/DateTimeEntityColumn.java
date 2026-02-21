@@ -3,11 +3,11 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.subqueries.DateTimeSubqueryExpression;
-import org.hotrod.livesql.queries.typesolver.TypeHandler;
+import org.hotrod.livesql.queries.subqueries.Subquery;
 
 public class DateTimeEntityColumn extends DateTimeExpression implements EntityColumn {
 
@@ -15,25 +15,17 @@ public class DateTimeEntityColumn extends DateTimeExpression implements EntityCo
 
   // Properties
 
-  private String name;
-  private String type;
-  private Integer columnSize;
-  private Integer decimalDigits;
-
-  private String property;
+  private TableOrView<?> objectInstance;
+  private DateTimeEntityColumnMetaData entityColumn;
 
   // Constructor
 
-  public DateTimeEntityColumn(final String name, final String property, final String type, final Integer columnSize,
-      final Integer decimalDigits, final TypeHandler<?, ?> handler) {
+  public DateTimeEntityColumn(final TableOrView<?> objectInstance, final DateTimeEntityColumnMetaData entityColumn) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
-    this.name = name;
-    this.property = property;
-    this.type = type;
-    this.columnSize = columnSize;
-    this.decimalDigits = decimalDigits;
-    super.setTypeHandler(handler);
+    this.objectInstance = objectInstance;
+    this.entityColumn = entityColumn;
+    super.setTypeHandler(Shield.getTypeHandler(entityColumn));
   }
 
   @Override
@@ -46,14 +38,19 @@ public class DateTimeEntityColumn extends DateTimeExpression implements EntityCo
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    w.write(w.getSQLDialect().canonicalToNatural(this.name));
+    if (this.objectInstance.getAlias() != null) {
+      w.write(
+          w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
+      w.write(".");
+    }
+    Shield.renderTo(this.entityColumn, w);
   }
 
   // Getters
 
   @Override
   public String getReferenceName() {
-    return this.property;
+    return this.entityColumn.getProperty();
   }
 
   @Override
@@ -62,27 +59,47 @@ public class DateTimeEntityColumn extends DateTimeExpression implements EntityCo
   }
 
   public String getCanonicalName() {
-    return this.name;
+    return this.entityColumn.getCanonicalName();
+  }
+
+  @Override
+  public TableOrView<?> getObjectInstance() {
+    return objectInstance;
+  }
+
+  @Override
+  public Name getCatalog() {
+    return this.objectInstance.getCatalog();
+  }
+
+  @Override
+  public Name getSchema() {
+    return this.objectInstance.getSchema();
+  }
+
+  @Override
+  public Name getObjectName() {
+    return this.objectInstance.getName();
   }
 
   @Override
   public String getType() {
-    return type;
+    return this.entityColumn.getType();
   }
 
   @Override
   public Integer getColumnSize() {
-    return columnSize;
+    return this.entityColumn.getColumnSize();
   }
 
   @Override
   public Integer getDecimalDigits() {
-    return decimalDigits;
+    return this.entityColumn.getDecimalDigits();
   }
 
   @Override
   public String getProperty() {
-    return property;
+    return this.entityColumn.getProperty();
   }
 
 }

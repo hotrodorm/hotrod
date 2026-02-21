@@ -18,6 +18,12 @@ public class Tuple12<A, B, C, D, E, F, G, H, I, J, K, L> extends AbstractTuple {
   private K k;
   private L l;
 
+  @SuppressWarnings("unused")
+  private Tuple12() {
+    super();
+  }
+
+
   public Tuple12(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

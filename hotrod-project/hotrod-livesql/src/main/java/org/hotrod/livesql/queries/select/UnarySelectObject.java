@@ -20,7 +20,7 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -137,7 +137,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
       final InsertSelectRenderingEdits edits) {
     Separator sep = new Separator();
 
-    if (edits.getPrependValue() != null) {
+    if (edits != null && edits.getPrependValue() != null) {
       w.write(sep.render());
       w.write("\n  ");
       Shield.renderTo(edits.getPrependValue(), w);
@@ -322,7 +322,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
         cf.setAccessible(true);
         Object object = cf.get(cs);
         @SuppressWarnings("unchecked")
-        List<EntityColumn> columns = (List<EntityColumn>) object;
+        List<EntityColumnMetadata> columns = (List<EntityColumnMetadata>) object;
         return columns.stream().map(c -> (SQLExpression) c).collect(Collectors.toList());
       } else {
         return new ArrayList<>();

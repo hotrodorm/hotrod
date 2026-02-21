@@ -20,6 +20,12 @@ public class Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N> extends AbstractT
   private M m;
   private N n;
 
+  @SuppressWarnings("unused")
+  private Tuple14() {
+    super();
+  }
+
+
   public Tuple14(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l, M m, N n, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

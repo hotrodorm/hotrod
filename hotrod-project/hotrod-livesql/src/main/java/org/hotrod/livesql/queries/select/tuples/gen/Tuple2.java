@@ -8,6 +8,12 @@ public class Tuple2<A, B> extends AbstractTuple {
   private A a;
   private B b;
 
+  @SuppressWarnings("unused")
+  private Tuple2() {
+    super();
+  }
+
+
   public Tuple2(A a, B b, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

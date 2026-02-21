@@ -16,6 +16,12 @@ public class Tuple10<A, B, C, D, E, F, G, H, I, J> extends AbstractTuple {
   private I i;
   private J j;
 
+  @SuppressWarnings("unused")
+  private Tuple10() {
+    super();
+  }
+
+
   public Tuple10(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

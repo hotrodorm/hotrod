@@ -13,7 +13,7 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -191,7 +191,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       final InsertSelectRenderingEdits edits) {
     Separator sep = new Separator();
 
-    if (edits.getPrependValue() != null) {
+    if (edits != null && edits.getPrependValue() != null) {
       w.write(sep.render());
       w.write("\n  ");
       Shield.renderTo(edits.getPrependValue(), w);
@@ -205,7 +205,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
       try {
         @SuppressWarnings("unused")
-        EntityColumn entityColumn = (EntityColumn) expr;
+        EntityColumnMetadata entityColumn = (EntityColumnMetadata) expr;
         // It's a column from a table; no need to alias it
 
       } catch (ClassCastException e) {

@@ -30,7 +30,7 @@
     <dependency> <!-- HotRod -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.11</version>
+      <version>5.1.12-SNAPSHOT</version>
     </dependency>
 
     <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.11</version>
+        <version>5.1.12-SNAPSHOT</version>
         <configuration>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>

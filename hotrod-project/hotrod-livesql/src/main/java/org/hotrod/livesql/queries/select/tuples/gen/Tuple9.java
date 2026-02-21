@@ -15,6 +15,12 @@ public class Tuple9<A, B, C, D, E, F, G, H, I> extends AbstractTuple {
   private H h;
   private I i;
 
+  @SuppressWarnings("unused")
+  private Tuple9() {
+    super();
+  }
+
+
   public Tuple9(A a, B b, C c, D d, E e, F f, G g, H h, I i, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

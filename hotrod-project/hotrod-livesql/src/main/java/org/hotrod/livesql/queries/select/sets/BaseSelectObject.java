@@ -13,7 +13,7 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
@@ -280,7 +280,7 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
           } else { // using
             w.write(" USING (");
             Separator sep = new Separator();
-            for (EntityColumn c : pj.getUsingColumns()) {
+            for (EntityColumnMetadata c : pj.getUsingColumns()) {
               w.write(sep.render());
               w.write(w.getSQLDialect().canonicalToNatural(c.getReferenceName()));
             }

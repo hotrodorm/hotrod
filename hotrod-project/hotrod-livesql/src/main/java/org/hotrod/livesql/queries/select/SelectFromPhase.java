@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries.select;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
@@ -27,7 +27,7 @@ public class SelectFromPhase<R> extends LockableSelectPhase<R> {
     return this;
   }
 
-  public SelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public SelectFromPhase<R> join(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.getLastSelect().addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -37,7 +37,7 @@ public class SelectFromPhase<R> extends LockableSelectPhase<R> {
     return this;
   }
 
-  public SelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public SelectFromPhase<R> leftJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.getLastSelect().addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -47,7 +47,7 @@ public class SelectFromPhase<R> extends LockableSelectPhase<R> {
     return this;
   }
 
-  public SelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public SelectFromPhase<R> rightJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.getLastSelect().addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -57,7 +57,7 @@ public class SelectFromPhase<R> extends LockableSelectPhase<R> {
     return this;
   }
 
-  public SelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
+  public SelectFromPhase<R> fullJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
     this.getLastSelect().addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }

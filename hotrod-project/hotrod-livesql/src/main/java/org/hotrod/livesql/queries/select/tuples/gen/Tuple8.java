@@ -14,6 +14,12 @@ public class Tuple8<A, B, C, D, E, F, G, H> extends AbstractTuple {
   private G g;
   private H h;
 
+  @SuppressWarnings("unused")
+  private Tuple8() {
+    super();
+  }
+
+
   public Tuple8(A a, B b, C c, D d, E e, F f, G g, H h, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

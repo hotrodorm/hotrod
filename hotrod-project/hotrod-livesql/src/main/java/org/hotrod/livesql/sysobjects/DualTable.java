@@ -1,8 +1,8 @@
 package org.hotrod.livesql.sysobjects;
 
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.metadata.Table;
@@ -12,7 +12,7 @@ public class DualTable extends Table<String> {
 
   // Properties
 
-  public CharEntityInstanceColumn dummy;
+  public CharEntityColumn dummy;
 
   // Constructors
 
@@ -24,8 +24,8 @@ public class DualTable extends Table<String> {
   // Initialization
 
   private void initialize() {
-    CharEntityColumn c = new CharEntityColumn("DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
-    this.dummy = new CharEntityInstanceColumn(this, c);
+    CharEntityColumnMetaData c = new CharEntityColumnMetaData("DUMMY", "dummy", "VARCHAR2", 1, 0, TypeHandler.STRING_ENTITY_COLUMN);
+    this.dummy = new CharEntityColumn(this, c);
     super.add(this.dummy);
   }
 

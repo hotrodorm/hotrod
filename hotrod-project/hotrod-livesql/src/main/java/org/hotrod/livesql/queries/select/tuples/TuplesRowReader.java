@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityInstanceColumn;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.tuples.gen.TupleClassFactory;
@@ -146,10 +146,10 @@ public class TuplesRowReader<T> implements RowReader<T> {
     int ordinal = 1;
     for (Expression c : columns) {
 //      log.info("$$ c=" + c);
-      EntityInstanceColumn ec;
+      EntityColumn ec;
       ModelInstance mi;
       try {
-        ec = (EntityInstanceColumn) c;
+        ec = (EntityColumn) c;
         // Could be an entity column from the main model instances, or from a subquery
         mi = this.modelInstances.get(ec.getObjectInstance());
         // It's an entity column from the main model instances
@@ -247,10 +247,11 @@ public class TuplesRowReader<T> implements RowReader<T> {
 
     // 4. Set the unbound columns
 
+    Class<?> ac = AbstractTuple.class;
     Map<String, Object> unboundColumns = new HashMap<>();
     Field tf;
     try {
-      tf = tc.getDeclaredField("unbound");
+      tf = ac.getDeclaredField("unbound");
     } catch (NoSuchFieldException | SecurityException e) {
       throw new SQLException("Could not read tuple; could not find unbound property", e);
     }

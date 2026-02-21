@@ -9,6 +9,12 @@ public class Tuple3<A, B, C> extends AbstractTuple {
   private B b;
   private C c;
 
+  @SuppressWarnings("unused")
+  private Tuple3() {
+    super();
+  }
+
+
   public Tuple3(A a, B b, C c, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

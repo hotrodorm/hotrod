@@ -19,6 +19,12 @@ public class Tuple13<A, B, C, D, E, F, G, H, I, J, K, L, M> extends AbstractTupl
   private L l;
   private M m;
 
+  @SuppressWarnings("unused")
+  private Tuple13() {
+    super();
+  }
+
+
   public Tuple13(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l, M m, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

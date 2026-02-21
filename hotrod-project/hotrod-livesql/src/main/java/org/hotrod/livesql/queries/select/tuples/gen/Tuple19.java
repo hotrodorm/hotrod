@@ -25,6 +25,12 @@ public class Tuple19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> ex
   private R r;
   private S s;
 
+  @SuppressWarnings("unused")
+  private Tuple19() {
+    super();
+  }
+
+
   public Tuple19(A a, B b, C c, D d, E e, F f, G g, H h, I i, J j, K k, L l, M m, N n, O o, P p, Q q, R r, S s, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

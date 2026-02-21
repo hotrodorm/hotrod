@@ -10,6 +10,12 @@ public class Tuple4<A, B, C, D> extends AbstractTuple {
   private C c;
   private D d;
 
+  @SuppressWarnings("unused")
+  private Tuple4() {
+    super();
+  }
+
+
   public Tuple4(A a, B b, C c, D d, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

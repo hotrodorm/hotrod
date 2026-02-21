@@ -13,6 +13,12 @@ public class Tuple7<A, B, C, D, E, F, G> extends AbstractTuple {
   private F f;
   private G g;
 
+  @SuppressWarnings("unused")
+  private Tuple7() {
+    super();
+  }
+
+
   public Tuple7(A a, B b, C c, D d, E e, F f, G g, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

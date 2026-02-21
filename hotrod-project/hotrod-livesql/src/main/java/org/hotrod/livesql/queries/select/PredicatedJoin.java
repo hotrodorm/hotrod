@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.InvalidLiveSQLClauseException;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public abstract class PredicatedJoin extends Join {
 
   private Predicate predicate;
-  private List<EntityColumn> using;
+  private List<EntityColumnMetadata> using;
 
   public PredicatedJoin(final TableExpression tableExpression, final Predicate predicate) {
     super(tableExpression);
@@ -21,7 +21,7 @@ public abstract class PredicatedJoin extends Join {
     this.using = null;
   }
 
-  public PredicatedJoin(final TableExpression tableExpression, final EntityColumn... using) {
+  public PredicatedJoin(final TableExpression tableExpression, final EntityColumnMetadata... using) {
     super(tableExpression);
     if (using.length == 0) {
       throw new InvalidLiveSQLClauseException(
@@ -35,7 +35,7 @@ public abstract class PredicatedJoin extends Join {
     return this.predicate;
   }
 
-  public List<EntityColumn> getUsingColumns() {
+  public List<EntityColumnMetadata> getUsingColumns() {
     return this.using;
   }
 

@@ -34,11 +34,11 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
+import org.hotrod.livesql.metadata.NumericEntityColumnMetaData;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.NumericEntityInstanceColumn;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -474,16 +474,16 @@ public class S2DAO implements Serializable, ApplicationContextAware {
 
   public static class S2Table extends TableWithGeneratedKey<S2, Short> {
 
-    private static final NumericEntityColumn _ID = new NumericEntityColumn(
+    private static final NumericEntityColumnMetaData _ID = new NumericEntityColumnMetaData(
       "id", "id", "int2", 5, 0, TypeHandler.forClass(Short.class, TypeSource.STATIC_DIALECT_RULE, "D7"));
-    private static final CharEntityColumn _NAME = new CharEntityColumn(
+    private static final CharEntityColumnMetaData _NAME = new CharEntityColumnMetaData(
       "name", "name", "varchar", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
     private static final GeneratedKeysInsertExecutor<Short> __GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysSequenceInlineKeysResultSetExecutor<Short>(
         KeyReader.SHORT_KEY_READER, "NEXTVAL('seq1')", _ID);
 
-    public final NumericEntityInstanceColumn id = new NumericEntityInstanceColumn(this, _ID);
-    public final CharEntityInstanceColumn name = new CharEntityInstanceColumn(this, _NAME);
+    public final NumericEntityColumn id = new NumericEntityColumn(this, _ID);
+    public final CharEntityColumn name = new CharEntityColumn(this, _NAME);
 
     @Override
     public AllColumns star() {

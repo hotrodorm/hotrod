@@ -7,6 +7,12 @@ public class Tuple1<A> extends AbstractTuple {
 
   private A a;
 
+  @SuppressWarnings("unused")
+  private Tuple1() {
+    super();
+  }
+
+
   public Tuple1(A a, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

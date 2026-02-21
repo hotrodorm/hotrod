@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries.select.tuples;
 
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.CrossJoin;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
@@ -35,7 +35,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final EntityColumnMetadata... using) {
     this.metadata.join(new InnerJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -45,7 +45,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final EntityColumnMetadata... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -55,7 +55,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final EntityColumnMetadata... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -65,7 +65,7 @@ public class SelectTuplesFrom0Phase {
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final EntityColumnMetadata... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
@@ -102,7 +102,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase join(Subquery t, final EntityColumn... using) {
+  public SelectTuplesFrom0Phase join(Subquery t, final EntityColumnMetadata... using) {
     this.metadata.join(new InnerJoin(t, using));
     return this;
   }
@@ -112,7 +112,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase leftJoin(Subquery t, final EntityColumn... using) {
+  public SelectTuplesFrom0Phase leftJoin(Subquery t, final EntityColumnMetadata... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return this;
   }
@@ -122,7 +122,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase rightJoin(Subquery t, final EntityColumn... using) {
+  public SelectTuplesFrom0Phase rightJoin(Subquery t, final EntityColumnMetadata... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return this;
   }
@@ -132,7 +132,7 @@ public class SelectTuplesFrom0Phase {
     return this;
   }
 
-  public SelectTuplesFrom0Phase fullJoin(Subquery t, final EntityColumn... using) {
+  public SelectTuplesFrom0Phase fullJoin(Subquery t, final EntityColumnMetadata... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return this;
   }

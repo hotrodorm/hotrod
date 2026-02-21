@@ -11,6 +11,12 @@ public class Tuple5<A, B, C, D, E> extends AbstractTuple {
   private D d;
   private E e;
 
+  @SuppressWarnings("unused")
+  private Tuple5() {
+    super();
+  }
+
+
   public Tuple5(A a, B b, C c, D d, E e, Map<String, Object> unbound) {
     super(unbound);
     this.a = a;

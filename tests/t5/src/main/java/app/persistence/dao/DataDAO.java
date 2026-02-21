@@ -34,8 +34,8 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityInstanceColumn;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
@@ -361,10 +361,10 @@ public class DataDAO implements Serializable, ApplicationContextAware {
 
   public static class DataTable extends Table<Data> {
 
-    private static final CharEntityColumn _NAME = new CharEntityColumn(
+    private static final CharEntityColumnMetaData _NAME = new CharEntityColumnMetaData(
       "name", "name", "varchar", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
-    public final CharEntityInstanceColumn name = new CharEntityInstanceColumn(this, _NAME);
+    public final CharEntityColumn name = new CharEntityColumn(this, _NAME);
 
     @Override
     public AllColumns star() {

@@ -5,14 +5,14 @@ import org.hotrod.livesql.expressions.EquatableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SortableExpression;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
-import org.hotrod.livesql.metadata.EntityInstanceColumn;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class ConvertedColumn<R, D> extends EquatableExpression implements EntityInstanceColumn {
+public class ConvertedColumn<R, D> extends EquatableExpression implements EntityColumn {
 
   private TableOrView<?> objectInstance;
   private String canonicalName;

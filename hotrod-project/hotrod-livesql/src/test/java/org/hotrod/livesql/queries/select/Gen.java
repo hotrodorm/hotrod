@@ -72,7 +72,8 @@ public class Gen {
         stream(size).forEach(x -> write(w, "  private " + x + " " + x.toLowerCase() + ";\n"));
 //        w.write("  private Map<String, Object> unbound;\n");
 
-//        w.write("\n" + "  @SuppressWarnings(\"unused\")\n" + "  private " + className + "() {\n" + "  }\n" + "\n");
+        w.write("\n" + "  @SuppressWarnings(\"unused\")\n" + "  private " + className + "() {\n" + "    super();\n"
+            + "  }\n" + "\n");
 
         w.write("\n  public " + className + "("
             + stream(size).map(x -> x + " " + x.toLowerCase()).collect(Collectors.joining(", "))

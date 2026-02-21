@@ -7,6 +7,10 @@ public class AbstractTuple {
 
   private Map<String, Object> unbound;
 
+  protected AbstractTuple() {
+    this.unbound = new HashMap<>();
+  }
+
   public AbstractTuple(Map<String, Object> unbound) {
     this.unbound = unbound == null ? new HashMap<>() : unbound;
   }

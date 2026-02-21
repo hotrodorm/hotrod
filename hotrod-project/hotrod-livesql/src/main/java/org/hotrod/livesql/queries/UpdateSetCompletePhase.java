@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
@@ -20,15 +20,15 @@ public class UpdateSetCompletePhase implements DMLQuery {
 
   public static class Setter {
 
-    private EntityColumn column;
+    private EntityColumnMetadata column;
     private Expression expression;
 
-    public Setter(EntityColumn column, Expression expression) {
+    public Setter(EntityColumnMetadata column, Expression expression) {
       this.column = column;
       this.expression = expression;
     }
 
-    public EntityColumn getColumn() {
+    public EntityColumnMetadata getColumn() {
       return column;
     }
 

@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.numeric.NumericConstant;
-import org.hotrod.livesql.metadata.EntityColumn;
+import org.hotrod.livesql.metadata.EntityColumnMetadata;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -20,10 +20,10 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   private static final Logger log = Logger.getLogger(GeneratedKeysSequencePreFetchInsertExecutor.class.getName());
 
   private String sequencePreFetchSQL;
-  private EntityColumn keyColumn;
+  private EntityColumnMetadata keyColumn;
 
   public GeneratedKeysSequencePreFetchInsertExecutor(KeyReader<T> keyReader, String sequencePreFetchSQL,
-      EntityColumn keyColumn) {
+      EntityColumnMetadata keyColumn) {
     super(keyReader);
     log.fine("init");
     this.sequencePreFetchSQL = sequencePreFetchSQL;
@@ -31,9 +31,9 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   }
 
   @Override
-  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetadata> columns) throws LiveSQLException {
     boolean included = false;
-    for (EntityColumn c : columns) {
+    for (EntityColumnMetadata c : columns) {
       if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
         included = true;
       }

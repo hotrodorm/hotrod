@@ -1,6 +1,7 @@
 package org.hotrod.livesql.queries;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InsertResult<T> {
 
@@ -19,6 +20,12 @@ public class InsertResult<T> {
 
   public final List<T> getKeys() {
     return keys;
+  }
+
+  @Override
+  public String toString() {
+    return "InsertResult [count=" + count + ", " + (keys == null ? "keys[null]"
+        : "keys[" + keys.size() + "]=" + keys.stream().map(k -> "" + k).collect(Collectors.joining(","))) + "]";
   }
 
 }

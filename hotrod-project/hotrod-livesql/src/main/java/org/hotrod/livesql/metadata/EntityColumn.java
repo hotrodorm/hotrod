@@ -1,17 +1,13 @@
 package org.hotrod.livesql.metadata;
 
-public interface EntityColumn {
+public interface EntityColumn extends EntityColumnMetadata {
 
-  String getCanonicalName();
+  TableOrView<?> getObjectInstance();
 
-  String getReferenceName();
+  Name getCatalog();
 
-  String getType();
+  Name getSchema();
 
-  Integer getColumnSize();
-
-  Integer getDecimalDigits();
-
-  String getProperty();
+  Name getObjectName();
 
 }
