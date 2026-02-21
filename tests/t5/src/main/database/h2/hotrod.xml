@@ -2,7 +2,6 @@
 
   <generators>
     <jdbc base-dir="src/main/java" package="app.persistence">
-      <model sub-package="" />
     </jdbc>
     <!--
     <jdbc>
@@ -36,7 +35,7 @@
   <view name="v_other" />
 -->
 
-  <table name="data">
+  <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
   </table>
 

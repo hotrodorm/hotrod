@@ -2240,7 +2240,7 @@ public class DAOWriter {
   }
 
   public String getClassName() {
-    return this.jdbcTag.getDAOName(this.metadata.getId());
+    return this.jdbcTag.getDAOClassName(this.metadata.getId());
   }
 
   private String getOrderByClassName() {
@@ -2252,7 +2252,7 @@ public class DAOWriter {
   }
 
   public String getMemberName() {
-    return SUtil.lowerFirst(this.getClassName());
+    return this.jdbcTag.getDAOMemberName(this.metadata.getId());
   }
 
 }

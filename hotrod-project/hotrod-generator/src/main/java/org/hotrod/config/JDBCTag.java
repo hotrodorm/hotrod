@@ -354,8 +354,12 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   // DAO: Names and Packages
 
-  public String getDAOName(ObjectId id) {
-    return this.dao.getName(id);
+  public String getDAOClassName(ObjectId id) {
+    return this.dao.getClassName(id);
+  }
+
+  public String getDAOMemberName(ObjectId id) {
+    return this.dao.getMemberName(id);
   }
 
   public ClassPackage getDAOPackage(ClassPackage fragmentPackage) {

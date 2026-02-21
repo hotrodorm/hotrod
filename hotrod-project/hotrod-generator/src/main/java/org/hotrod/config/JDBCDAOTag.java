@@ -163,7 +163,7 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
 
   // Getters
 
-  public String getName(ObjectId id) {
+  public String getClassName(ObjectId id) {
     if (id.wasJavaNameSpecified()) {
       if (id.isRelatedToDatabase()) { // database object
         return this.prefix + id.getJavaClassName() + this.suffix;
@@ -172,6 +172,26 @@ public class JDBCDAOTag extends AbstractConfigurationTag {
       }
     } else {
       return this.prefix + id.getJavaClassName() + this.suffix;
+    }
+  }
+
+  public String getMemberName(ObjectId id) {
+    if (id.wasJavaNameSpecified()) {
+      if (id.isRelatedToDatabase()) { // database object
+        if (SUtil.isEmpty(this.prefix)) {
+          return id.getJavaMemberName() + this.suffix;
+        } else {
+          return this.prefix.toLowerCase() + id.getJavaClassName() + this.suffix;
+        }
+      } else { // executor
+        return id.getJavaClassName();
+      }
+    } else {
+      if (SUtil.isEmpty(this.prefix)) {
+        return id.getJavaMemberName() + this.suffix;
+      } else {
+        return this.prefix.toLowerCase() + id.getJavaClassName() + this.suffix;
+      }
     }
   }
 

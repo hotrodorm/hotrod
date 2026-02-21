@@ -19,8 +19,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.DataDAO;
-import app.persistence.dao.DataDAO.DataTable;
+import app.persistence.dao.DATALocalDAO;
+import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.dao.K2DAO;
 import app.persistence.dao.K2DAO.K2Table;
 import app.persistence.dao.K3DAO;
@@ -85,7 +85,7 @@ public class App {
 //  private TestDAO testDAO;
 
   @Autowired
-  private DataDAO dataDAO;
+  private DATALocalDAO dataLocalDAO;
 
 //  @Autowired
 //  private K1DAO k1DAO;
@@ -183,7 +183,7 @@ public class App {
     K3Table v = this.k3DAO.newTable();
     K4Table w = this.k4DAO.newTable();
     T5Table x = this.t5DAO.newTable();
-    DataTable d = this.dataDAO.newTable();
+    DATALocalTable d = this.dataLocalDAO.newTable();
 
 //    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
 //    System.out.println("### INSERT 1 -- pk=" + pk);
@@ -200,7 +200,8 @@ public class App {
     Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 4 -- pk=" + pk4);
 
-    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.NAMELocalToCity).from(d)).execute(LIVESQL_LOG);
+    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.NAMELocalToCity).from(d))
+        .execute(LIVESQL_LOG);
     System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
         + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
 
@@ -215,7 +216,7 @@ public class App {
     S2Table u = this.s2DAO.newTable();
     S3Table v = this.s3DAO.newTable();
     S4Table w = this.s4DAO.newTable();
-    DataTable d = this.dataDAO.newTable();
+    DATALocalTable d = this.dataLocalDAO.newTable();
 
 //    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
 //    System.out.println("### INSERT 1 -- pk=" + pk);
