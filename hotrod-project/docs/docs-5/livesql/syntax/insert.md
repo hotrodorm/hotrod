@@ -32,10 +32,11 @@ Can be written in LiveSQL as:
 
 ```java
 ProductTable p = this.productDAO.newTable();
-int count = sql.insert(p)
-               .columns(p.id, p.name, p.price)
-               .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
-               .execute();
+int count = sql
+    .insert(p)
+    .columns(p.id, p.name, p.price)
+    .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+    .execute();
 ```
 
 Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
@@ -51,10 +52,11 @@ The follwing example assumes the table EMPLOYEE has an IDENTITY primary key. If 
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
-Long id = sql.insert(e)
-             .columns(e.firstName, e.lastName)
-             .values(sql.val("Clara"), sql.val("Clayton"))
-             .execute();
+Long id = sql
+    .insert(e)
+    .columns(e.firstName, e.lastName)
+    .values(sql.val("Clara"), sql.val("Clayton"))
+    .execute();
 ```
 
 See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
@@ -96,7 +98,7 @@ If the table implements a key generation strategy, either with the use of an IDE
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
 CandidateTable c = this.candidateDAO.newTable();
-InsertResult r id = sql
+InsertResult<Long> r = sql
     .insert(e)
     .columns(e.firstName, e.lastName)
     .select(sql.val("Clara"), sql.val("Clayton"))
@@ -107,7 +109,7 @@ InsertResult r id = sql
     )
     .execute();
 int count = r.getCount();
-List<Integer> keys = r.getKeys();
+List<Long> keys = r.getKeys();
 ```
 
 The SELECT statement is a general SQL select that can take any complexity as needed including joins, search predicates and the full expression language.
