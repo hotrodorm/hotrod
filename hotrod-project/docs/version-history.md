@@ -2,6 +2,13 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.12 (unreleased):
+
+- Core:
+    - Fixed bean names with upper-case acronym sections for entity and properties.
+- LiveSQL:
+    - LiveSQL INSERT with VALUES and with SELECT retrieve the generated keys and the count of rows.
+
 ## 5.1.11:
 
 - LiveSQL:
