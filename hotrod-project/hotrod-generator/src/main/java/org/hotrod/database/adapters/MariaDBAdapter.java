@@ -72,12 +72,12 @@ public class MariaDBAdapter extends DatabaseAdapter {
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    if (this.isMariaDB10_3OrNewer) {
-      // Do not support SEQUENCES (available in 10.3 an newer) for now, since needs research
-      return InsertIntegration.of(true, false, false, false, null, false);
-    }else {
-      return InsertIntegration.of(true, false, false, false, null, false);
-    }
+//    if (this.isMariaDB10_3OrNewer) {
+//      // Do not support SEQUENCES (available in 10.3 an newer) for now, since needs research
+//      return InsertIntegration.of(true, false, false, false, null, false);
+//    }else {
+    return InsertIntegration.of(true, false, false, false, null, false);
+//    }
   }
 
   @Override

@@ -106,7 +106,6 @@ public class GeneratedKeysInsertObject<T> {
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
-
     if (this.columns != null) {
       w.write(" (");
       Separator sep = new Separator(", ");
@@ -131,7 +130,7 @@ public class GeneratedKeysInsertObject<T> {
       w.write("\nVALUES (");
       Separator sep = new Separator(", ");
 
-      if (edits.getPrependValue() != null) {
+      if (edits != null && edits.getPrependValue() != null) {
         w.write(sep.render());
         Shield.renderTo(edits.getPrependValue(), w);
       }
@@ -170,8 +169,8 @@ public class GeneratedKeysInsertObject<T> {
       this.outputClausePrefix = outputClausePrefix;
     }
 
-    public static InsertSelectRenderingEdits of(EntityColumnMetadata prependInsertColumn, ComparableExpression prependValue,
-        String outputClausePrefix) {
+    public static InsertSelectRenderingEdits of(EntityColumnMetadata prependInsertColumn,
+        ComparableExpression prependValue, String outputClausePrefix) {
       return new InsertSelectRenderingEdits(prependInsertColumn, prependValue, outputClausePrefix);
     }
 
