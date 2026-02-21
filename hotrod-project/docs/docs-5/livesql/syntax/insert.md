@@ -57,6 +57,7 @@ Long id = sql.insert(e)
              .execute();
 ```
 
+See the [INSERT Database Support](#appendix-a---insert-database-support) section below for the list of databases that support this functionality.
 
 ## Inserting Using a SELECT without Generated Keys
 
@@ -111,10 +112,6 @@ List<Integer> keys = r.getKeys();
 The SELECT statement is a general SQL select that can take any complexity as needed including joins, search predicates and the full expression language.
 
 Since the table does implement a key generation strategy the INSERT query returns an InsertResult object that includes the count of inserted rows, and a list of generated keys. The type of the keys depend on the specific column type of the primary key of the table.
-
-- [INSERT Database Support](#appendix-a-insert-database-support) 
-- [INSERT Database Support](#appendix-a--insert-database-support) 
-- [INSERT Database Support](#appendix-a---insert-database-support) 
 
 See the [INSERT Database Support](#appendix-a---insert-database-support) section below for the list of databases that support this functionality.
 
