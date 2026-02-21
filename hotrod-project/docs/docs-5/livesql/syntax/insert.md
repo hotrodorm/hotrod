@@ -227,7 +227,7 @@ Considering both aspects there are four possible combinations of cases for INSER
 | Sybase ASE | --  | --  | Yes | No  |
 | H2         | Yes | Yes | Yes | Yes |
 | HyperSQL   | No  | No  | Yes | Yes |
-| Derby      | Yes | No*6 | Yes | No*7 |
+| Derby      | Yes | No *6 | Yes | No *7 |
 
 
 *1 Oracle does not integrate SEQUENCES in INSERT-SELECT correctly. It works for special cases only, but not for the general case. Maybe new research will need to be done for this case.
