@@ -2,9 +2,7 @@
 
 INSERT statements insert new data into a table or view.
 
-The only return of the INSERT statement (as well as for the UPDATE and DELETE statements) is the number of inserted rows.
-
-
+The behavior of the INSERT statement varies based on whether the table uses generated keys. If the table implements generated keys, the INSERT statement will return both the number of rows inserted and the generated keys. If not, it will only return the number of rows inserted.
 
 ## Examples
 
@@ -18,7 +16,7 @@ insert into product (id, name, price)
 select id, name, price from new_catalog where stock > 0
 ```
 
-## Inserting Using VALUES without Generated Keys
+## 1. Inserting Using VALUES without Generated Keys
 
 LiveSQL can insert a single row using the `VALUES` variation of the INSERT statement. 
 
@@ -44,7 +42,7 @@ or will use a DEFAULT value, as specified by the table constraints.
 
 In this case the `count` will always be 1.
 
-## Inserting Using VALUES with Generated Keys
+## 3. Inserting Using VALUES with Generated Keys
 
 If the table implements key generation, either with the use of an IDENTITY or a SEQUENCE LiveSQL will retrieve the generated key automatically.
 
@@ -62,7 +60,7 @@ Long id = sql
 See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
 
 
-## Inserting Using a SELECT without Generated Keys
+## 3. Inserting Using a SELECT without Generated Keys
 
 LiveSQL can also execute inserts combined with a SELECT statement.
 
@@ -91,7 +89,7 @@ The SELECT statement is a general SQL select that can take any complexity as nee
 
 Since the table does not implement any key generation strategy the INSERT query returns the count of inserted rows.
 
-## Inserting Using a SELECT with Generated Keys
+## 4. Inserting Using a SELECT with Generated Keys
 
 If the table implements a key generation strategy, either with the use of an IDENTITY or a SEQUENCE LiveSQL will retrieve the count of inserted rows along with the list of generated keys.
 
@@ -119,7 +117,7 @@ Since the table does implement a key generation strategy the INSERT query return
 See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
 
 
-## Inserting Through Views
+## 5. Inserting Through Views
 
 LiveSQL can also insert rows through views. From the point of view of LiveSQL there are no major differences between inserting directly into a table or through a view.
 
@@ -175,7 +173,7 @@ int count = sql
 Consider that the insertion rules above do matter. All the rows that are being inserted should match the predicate `product_type = 'VIP'`.
 
 
-## Column Names
+## 6. Column Names
 
 Though the SQL Standard allows INSERT statements not to include the column names of the table where rows are being inserted, it's highly recommended 
 to include the list of columns of it. If only a subset of columns participate in the INSERT any column not mentioned in the INSERT statement will 
