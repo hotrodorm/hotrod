@@ -36,7 +36,9 @@
   <view name="v_other" />
 -->
 
-  <table name="data" />
+  <table name="data">
+    <column name="name" property="NAMELocalToCity" />
+  </table>
 
   <table name="t5" />
 

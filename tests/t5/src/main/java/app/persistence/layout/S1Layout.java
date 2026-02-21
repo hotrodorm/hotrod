@@ -6,22 +6,31 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class DataLayout implements Serializable {
+public class S1Layout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Layout Properties (table columns)
 
-  protected String NAMELocalToCity = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Byte id = null; // Type Source: STATIC_DIALECT_RULE, rule #D7
+  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 
-  public String getNAMELocalToCity() {
-    return this.NAMELocalToCity;
+  public Byte getId() {
+    return this.id;
   }
 
-  public void setNAMELocalToCity(final String NAMELocalToCity) {
-    this.NAMELocalToCity = NAMELocalToCity;
+  public void setId(final Byte id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(final String name) {
+    this.name = name;
   }
 
   // to string
@@ -29,7 +38,8 @@ public class DataLayout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- NAMELocalToCity=" + this.NAMELocalToCity);
+    sb.append("- id=" + this.id + "\n");
+    sb.append("- name=" + this.name);
     return sb.toString();
   }
 
@@ -37,7 +47,8 @@ public class DataLayout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("NAMELocalToCity", this.NAMELocalToCity);
+    obj.addProperty("id", this.id);
+    obj.addProperty("name", this.name);
     return obj;
   }
 

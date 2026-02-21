@@ -140,7 +140,7 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  private static final String PROPERTY_PATTERN = "[a-z][a-zA-Z0-9_]*+";
+  private static final String PROPERTY_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*+";
 
   public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
@@ -161,8 +161,8 @@ public class ColumnTag extends AbstractConfigurationTag {
         if (!this.property.matches(PROPERTY_PATTERN)) {
           throw new InvalidConfigurationFileException(this,
               "The attribute 'property' of the tag <" + super.getTagName()
-                  + "> must start with a lower case letter and continue with letters, digits, "
-                  + "and/or underscore symbols, but '" + this.property + "' was specified.");
+                  + "> must start with a letter and continue with letters, digits, "
+                  + "and/or underscore symbols; however, '" + this.property + "' was specified.");
         }
       }
     } else {
@@ -173,8 +173,8 @@ public class ColumnTag extends AbstractConfigurationTag {
       if (!this.javaName.matches(PROPERTY_PATTERN)) {
         throw new InvalidConfigurationFileException(this,
             "The attribute 'java-name' of the tag <" + super.getTagName()
-                + "> must start with a lower case letter and continue with letters, digits, "
-                + "and/or underscore symbols, but '" + this.javaName + "' was specified.");
+                + "> must start with a letter and continue with letters, digits, "
+                + "and/or underscore symbols; however, '" + this.javaName + "' was specified.");
       }
       this.property = this.javaName;
       this.javaName = null;
@@ -235,7 +235,8 @@ public class ColumnTag extends AbstractConfigurationTag {
       }
       this.converterTag = config.getConverterTagByName(this.converter);
       if (this.converterTag == null) {
-        throw new InvalidConfigurationFileException(this, "Invalid converter '" + this.converter + "': converter not found.");
+        throw new InvalidConfigurationFileException(this,
+            "Invalid converter '" + this.converter + "': converter not found.");
       }
 
     }

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.utils.BeanUtils;
 import org.hotrod.utils.SUtil;
 
 public class Id implements Comparable<Id> {
@@ -136,8 +137,8 @@ public class Id implements Comparable<Id> {
     String javaConstantName = assembleJavaConstantName(nameParts);
     String dashedName = assembleDashedName(nameParts);
 
-    boolean quoted =    adapter.canonicalNameRequiresQuoting(canonicalSQLName);
-    
+    boolean quoted = adapter.canonicalNameRequiresQuoting(canonicalSQLName);
+
     Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
         dashedName, quoted);
     return id;
@@ -153,7 +154,7 @@ public class Id implements Comparable<Id> {
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
-    List<NamePart> nameParts = splitJava(javaClassName);
+    List<NamePart> nameParts = BeanUtils.splitJava(javaClassName);
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("javaClassName must produce at least one part");
     }
@@ -176,7 +177,7 @@ public class Id implements Comparable<Id> {
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
-    List<NamePart> nameParts = splitJava(javaMemberName);
+    List<NamePart> nameParts = BeanUtils.splitJava(javaMemberName);
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("The name must produce at least one Java identifier part");
     }
@@ -213,7 +214,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
 
-    List<NamePart> javaNameParts = splitJava(javaClassName);
+    List<NamePart> javaNameParts = BeanUtils.splitJava(javaClassName);
     String javaMemberName = assembleJavaMemberName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
@@ -243,7 +244,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
 
-    List<NamePart> javaNameParts = splitJava(javaClassName);
+    List<NamePart> javaNameParts = BeanUtils.splitJava(javaClassName);
     String javaMemberName = assembleJavaMemberName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
@@ -277,7 +278,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
 
-    List<NamePart> javaNameParts = splitJava(javaMemberName);
+    List<NamePart> javaNameParts = BeanUtils.splitJava(javaMemberName);
     String javaClassName = assembleJavaClassName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
@@ -287,6 +288,7 @@ public class Id implements Comparable<Id> {
     return id;
   }
 
+  // TODO
   public static Id fromCanonicalSQLAndJavaMember(final String canonicalSQLName, final DatabaseAdapter adapter,
       final String javaMemberName) throws InvalidIdentifierException {
     if (adapter == null) {
@@ -298,16 +300,16 @@ public class Id implements Comparable<Id> {
     if (javaMemberName == null || javaMemberName.isEmpty()) {
       throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
     }
-    if (!javaMemberName.matches("[a-z_].*")) {
-      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
-    }
+//    if (!javaMemberName.matches("[a-z_].*")) {
+//      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
+//    }
 
     List<NamePart> nameParts = splitSQL(canonicalSQLName);
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
 
-    List<NamePart> javaNameParts = splitJava(javaMemberName);
+    List<NamePart> javaNameParts = BeanUtils.splitJava(javaMemberName);
     String javaClassName = assembleJavaClassName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
@@ -385,116 +387,6 @@ public class Id implements Comparable<Id> {
         parts.add(new NamePart(p));
       }
     }
-    return parts;
-  }
-
-  public static List<NamePart> splitJava(final String javaName) {
-
-    List<NamePart> parts = new ArrayList<NamePart>();
-
-    // null or empty
-
-    if (javaName == null || javaName.isEmpty()) {
-      return parts;
-    }
-
-    int lastStart = 0;
-
-    // a -- resolved
-    // A -- resolved
-    // _ -- resolved
-    // _B
-    // _aB
-    // a_aB
-    // A_Bb
-    // aBb
-    // aaBb
-    // AaBb
-    // aaaBb
-    // AaaBb
-    // AAABb
-
-    while (lastStart < javaName.length()) {
-      log(" - pos=" + lastStart);
-
-      // Single char left
-
-      if (javaName.length() - lastStart == 1) {
-        log(" - Single char left");
-        parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
-        return parts;
-      }
-
-      // Multiple chars left
-
-      boolean firstUpper = Character.isUpperCase(javaName.charAt(lastStart));
-      boolean secondUpper = Character.isUpperCase(javaName.charAt(lastStart + 1));
-
-      if (firstUpper && secondUpper) { // acronym mode (full upper)
-        log(" - acronym mode (full upper)");
-        int pos = lastStart + 2;
-        boolean goOn = true;
-        while (goOn && pos < javaName.length()) {
-          if (!Character.isUpperCase(javaName.charAt(pos))) {
-            goOn = false;
-          } else {
-            pos++;
-          }
-        }
-        if (goOn) {
-          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase(), true));
-          lastStart = javaName.length();
-        } else {
-          parts.add(new NamePart(javaName.substring(lastStart, pos - 1).toLowerCase(), true));
-          lastStart = pos - 1;
-        }
-
-      } else if (firstUpper && !secondUpper) { // class mode (upper + lower)
-        log(" - class mode (upper + lower)");
-        int pos = lastStart + 2;
-        boolean goOn = true;
-        while (goOn && pos < javaName.length()) {
-          if (Character.isUpperCase(javaName.charAt(pos))) {
-            goOn = false;
-          } else {
-            pos++;
-          }
-        }
-        if (goOn) {
-          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
-          lastStart = javaName.length();
-        } else {
-          parts.add(new NamePart(javaName.substring(lastStart, pos).toLowerCase()));
-          lastStart = pos;
-        }
-
-      } else if (!firstUpper && secondUpper) { // single-letter - split!
-        log(" - single-letter - split!");
-        parts.add(new NamePart(javaName.substring(lastStart, lastStart + 1).toLowerCase()));
-        lastStart++;
-
-      } else { // member mode (full lower)
-        log(" - member mode (full lower)");
-        int pos = lastStart + 2;
-        boolean goOn = true;
-        while (goOn && pos < javaName.length()) {
-          if (Character.isUpperCase(javaName.charAt(pos))) {
-            goOn = false;
-          } else {
-            pos++;
-          }
-        }
-        if (goOn) {
-          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
-          lastStart = javaName.length();
-        } else {
-          parts.add(new NamePart(javaName.substring(lastStart, pos).toLowerCase()));
-          lastStart = pos;
-        }
-      }
-
-    }
-
     return parts;
   }
 
@@ -664,7 +556,7 @@ public class Id implements Comparable<Id> {
     private String token;
     private boolean acronym;
 
-    private NamePart(final String token, final boolean acronym) {
+    public NamePart(final String token, final boolean acronym) {
       if (token == null) {
         throw new IllegalArgumentException("Name part 'token' can not be null");
       }
@@ -672,7 +564,7 @@ public class Id implements Comparable<Id> {
       this.acronym = acronym;
     }
 
-    private NamePart(final String token) {
+    public NamePart(final String token) {
       if (token == null) {
         throw new IllegalArgumentException("Name part 'token' can not be null");
       }

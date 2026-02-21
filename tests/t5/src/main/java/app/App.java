@@ -200,7 +200,7 @@ public class App {
     Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
     System.out.println("### INSERT 4 -- pk=" + pk4);
 
-    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.name).from(d)).execute(LIVESQL_LOG);
+    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.NAMELocalToCity).from(d)).execute(LIVESQL_LOG);
     System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
         + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
 
@@ -233,7 +233,7 @@ public class App {
     System.out.println("### INSERT 4 -- pk=" + pk4);
 
     InsertResult<Long> r5 = this.sql.insert(w).columns(w.name) //
-        .select(sql.select(d.name).from(d) //
+        .select(sql.select(d.NAMELocalToCity).from(d) //
 //            .intersect().select(sql.literal("Two")) //
 //            .unionAll().select(sql.literal("Two")) //
 //            .unionAll().select(sql.literal("Three")) //

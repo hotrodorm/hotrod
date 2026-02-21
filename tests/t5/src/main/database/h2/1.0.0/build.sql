@@ -245,14 +245,6 @@ create table "abc_DEF" (
 
 -- Validate foreign keys
 
-create table data (
-  name varchar(20)
-);
-
-insert into data (name) values ('Alice');
-insert into data (name) values ('Anne');
-insert into data (name) values ('Alanis');
-
 create table a (
   id int primary key not null,
   name varchar(20)
