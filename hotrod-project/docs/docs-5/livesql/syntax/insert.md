@@ -119,8 +119,9 @@ See the [Appendix A - Database Support for Insert with Generated Keys](#appendix
 
 ## Inserting Through Views
 
-LiveSQL can also insert rows through views. From the point of view of LiveSQL there's no difference between inserting directly
-into a table or through a view.
+LiveSQL can also insert rows through views. From the point of view of LiveSQL there are no major differences between inserting directly into a table or through a view.
+
+The main difference is that for LiveSQL a view never produces generated keys, even if the underlying tables do. Thus, all inserts through a view always return the count of inserted rows, but never a list of keys.
 
 Let's consider the following view and an insertion on it:
 
@@ -135,10 +136,11 @@ In LiveSQL the insertion could take the form:
 
 ```java
 VipProductView p = VipProductDAO.newView();
-sql.insert(p)
-   .columns(p.id, p.name, p.price, p.productType)
-   .values(sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP"))
-   .execute();
+int count = sql
+    .insert(p)
+    .columns(p.id, p.name, p.price, p.productType)
+    .values(sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP"))
+    .execute();
 ```
 
 Note, however, that not all views can be used to insert rows in the underlying tables. Each database engine imposes different
@@ -161,10 +163,11 @@ In LiveSQL the insertion could take the form:
 ```java
 VipProductView p = VipProductDAO.newView();
 NewCatalogTable c = NewCatalogDAO.newTable();
-sql.insert(p)
-   .columns(p.id, p.name, p.price, p.productType)
-   .select(sql.select(c.id, c.name, c.price, c.productType).from(c).where(c.stock.gt(0)))
-   .execute();
+int count = sql
+    .insert(p)
+    .columns(p.id, p.name, p.price, p.productType)
+    .select(sql.select(c.id, c.name, c.price, c.productType).from(c).where(c.stock.gt(0)))
+    .execute();
 ```
 
 Consider that the insertion rules above do matter. All the rows that are being inserted should match the predicate `product_type = 'VIP'`.
@@ -185,24 +188,26 @@ In short, an INSERT should include all the column names that participate in it, 
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p)
-   .columns(p.id, p.name, p.price)
-   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
-   .execute();
+int count = sql
+    .insert(p)
+    .columns(p.id, p.name, p.price)
+    .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+    .execute();
 ```
 
 It's also possible &ndash; but not recommended &ndash; to omit these columns, as in:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p)
-   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
-   .execute();
+int count = sql
+    .insert(p)
+    .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+    .execute();
 ```
 
 ## Appendix A - Database Support for Insert with Generated Keys
 
-This appendix describes the available database support for the INSERT variations when the table defines a key generation strategy.
+This appendix describes the available database support for all four INSERT variations for tables that defines a key generation strategy.
 
 First, the SQL Standard defines that the INSERT clauses can take two main forms:
 
@@ -238,7 +243,7 @@ Considering both aspects there are four possible combinations of cases for INSER
 
 *4 SQL Server reports the correct count of inserted rows for INSERT-SELECT with IDENTITIES, but only returns the last key (identity value) that was used.
 
-*5 LiveSQL does not currently support SEQUENCEs (available since version 10.3) since this requires pending research.
+*5 LiveSQL does not currently support SEQUENCES in MariaDB (available since version 10.3) since this requires pending research.
 
 *6 Apache Derby does not integrate SEQUENCES in INSERT-SELECT correctly.
 
