@@ -59,8 +59,12 @@ public class App {
 
   private void demoLiveSQLSelectRows() {
     EmployeeTable e = this.employeeDAO.newTable();
-    List<Row> rows = this.sql.select().from(e).where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
-        .orderBy(e.branchId.desc()).execute();
+    List<Row> rows = sql
+        .select()
+        .from(e)
+        .where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
+        .orderBy(e.branchId.desc())
+        .execute();
     for (Row r : rows) {
       System.out.println("1. LiveSQL SELECT ROWS: " + r);
     }
@@ -69,8 +73,13 @@ public class App {
   private void demoLiveSQLSelectTuples() {
     EmployeeTable e = this.employeeDAO.newTable();
     BranchTable b = this.branchDAO.newTable();
-    List<Tuple2<Employee, Branch>> tuples = this.sql.select().tuples().from(e).join(b, b.id.eq(e.branchId))
-        .where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%"))).orderBy(e.branchId.desc()).execute();
+    List<Tuple2<Employee, Branch>> tuples = sql
+        .select()
+        .tuples()
+        .from(e).join(b, b.id.eq(e.branchId))
+        .where(e.lastName.lower().like("%smith%").and(e.firstName.like("%e%")))
+        .orderBy(e.branchId.desc())
+        .execute();
     for (Tuple2<Employee, Branch> t : tuples) {
       System.out.println("2. LiveSQL SELECT TUPLES:");
       System.out.println("** Employee=" + t.getA());
@@ -80,31 +89,47 @@ public class App {
 
   private void demoLiveSQLInsertValues() {
     EmployeeTable e = this.employeeDAO.newTable();
-    int id = this.sql.insert(e).columns(e.firstName, e.lastName, e.branchId)
-        .values(sql.val("Bob"), sql.val("Marley"), sql.val(52)).execute();
+    int id = sql
+        .insert(e)
+        .columns(e.firstName, e.lastName, e.branchId)
+        .values(sql.val("Bob"), sql.val("Marley"), sql.val(52))
+        .execute();
     System.out.println("3. LiveSQL INSERT-VALUES -- generated id: " + id);
   }
 
   private void demoLiveSQLInsertSelect() {
     EmployeeTable e = this.employeeDAO.newTable();
     CandidateTable c = this.candidateDAO.newTable();
-    InsertResult<Integer> r = this.sql.insert(e).columns(e.firstName, e.lastName, e.branchId)
-        .select(sql.select(c.firstName, c.lastName, sql.val(54)).from(c).where(c.accepted.eq(1))).execute();
+    InsertResult<Integer> r = sql
+        .insert(e)
+        .columns(e.firstName, e.lastName, e.branchId)
+        .select(
+            sql.select(c.firstName, c.lastName, sql.val(54))
+               .from(c)
+               .where(c.accepted.eq(1))
+        )
+        .execute();
     System.out.println("4. LiveSQL INSERT-SELECT -- count: " + r.getCount() + " -- generated ids: "
         + r.getKeys().stream().map(k -> "" + k).collect(Collectors.joining(",")));
   }
 
   private void demoLiveSQLUpdate() {
     EmployeeTable e = this.employeeDAO.newTable();
-    Integer[] ids = new Integer[] { 1, 2, 3, 4 };
-    int count = this.sql.update(e).set(e.branchId, 51)
-        .where(e.lastName.lower().like("%smith%").and(e.branchId.in(ids)).and(e.branchId.eq(52))).execute();
+    Integer[] ids = new Integer[] { 51, 52, 53, 54, 70 };
+    int count = sql
+        .update(e)
+        .set(e.branchId, 51)
+        .where(e.lastName.lower().like("%smith%").and(e.branchId.in(ids)).and(e.branchId.eq(52)))
+        .execute();
     System.out.println("5. LiveSQL UPDATE - count: " + count);
   }
 
   private void demoLiveSQLDelete() {
     EmployeeTable e = this.employeeDAO.newTable();
-    int count = this.sql.delete(e).where(e.branchId.eq(57)).execute();
+    int count = sql
+        .delete(e)
+        .where(e.branchId.eq(57))
+        .execute();
     System.out.println("6. LiveSQL DELETE - count: " + count);
   }
 
