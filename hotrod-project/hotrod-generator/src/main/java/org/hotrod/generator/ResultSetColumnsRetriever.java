@@ -113,7 +113,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
           String msg = "The column '" + m.getName() + "' in the <select> tag reports the type " + m.getTypeName()
               + ", and there's no default type for it defined in " + "HotRod's database dialect.\n"
               + "Please specify a type (or a converter) either using a <column> tag inside the <select> tag, "
-              + "or a rule in the <type-solver> tag.";
+              + "or a rule in the <" + "type-solver" + "> tag.";
           throw new InvalidConfigurationFileException(ctx.getTag(), msg);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid retrieved column name: " + e.getMessage();

@@ -57,7 +57,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   protected DisplayMode displayMode;
   protected Feedback feedback;
 
-  private Long lastLog = null;
+//  private Long lastLog = null;
 
   private JDBCTag jdbcTag;
 
@@ -73,6 +73,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       final boolean incrementalMode, final Feedback feedback)
       throws FaultException, ErrorMessageException, InvalidConfigurationFileException {
 
+    log.fine("init");
 //    log.info("CONFIGURE GENERATION");
 
     this.hc = hc;

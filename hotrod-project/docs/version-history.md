@@ -4,10 +4,11 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.12 (unreleased):
 
-- Core:
-    - Fixed bean names with upper-case acronym sections for entity and properties.
 - LiveSQL:
-    - LiveSQL INSERT queries, with VALUES and with SELECT, now retrieve the generated keys in addition to the count of rows.
+    - LiveSQL INSERT queries, with VALUES and with SELECT, now retrieve the generated keys in addition to the count of rows, in the databases that supports it.
+- Generator:
+    - Fixed discover tag. When empty it should include the current schema by default.
+    - Fixed bean names (entity and properties) with upper-case acronym sections for entity and properties.
 
 ## 5.1.11:
 

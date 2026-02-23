@@ -184,7 +184,7 @@ public class SchemaTag extends AbstractConfigurationTag {
 
   @Override
   public String getInternalCaption() {
-    return this.getTagName();
+    return this.getTagName() + ":" + this.name;
   }
 
 }

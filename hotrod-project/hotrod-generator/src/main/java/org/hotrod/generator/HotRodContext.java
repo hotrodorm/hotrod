@@ -85,8 +85,6 @@ public class HotRodContext {
       }
       T.endPhase("DB connected");
 
-//      log.info("conn");
-
       // Database Version
 
       DatabaseConnectionVersion cv;
@@ -102,8 +100,6 @@ public class HotRodContext {
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
           + cv.renderJDBCSpecification());
       T.endPhase("DB Version");
-
-//      log.info("db version");
 
       // Adapter
 
@@ -121,7 +117,6 @@ public class HotRodContext {
         throw new ErrorMessageException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
       T.endPhase("DB Adapter");
-//      log.info("Adapter loaded.");
 
       // Current Catalog & Schema
 
@@ -133,8 +128,6 @@ public class HotRodContext {
         feedback.info("Current Schema: " + (loc.getCurrentSchema() == null ? "" : loc.getCurrentSchema()));
       }
       feedback.info(" ");
-
-//      log.info("catalog/schema");
 
       // Loading Configuration
 
@@ -174,8 +167,6 @@ public class HotRodContext {
       }
       T.endPhase("Configuration Loaded");
 
-//      log.info("config loaded.");
-
       // Apply current schema to declared tables with no schema and no catalog
 
       this.config.applyCurrentSchema(this.loc.getCatalogSchema());
@@ -207,9 +198,6 @@ public class HotRodContext {
 
       try {
 
-//        log.info("gen 1 - strategy=" + mst.getSelectGeneration().getStrategy());
-//        if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
-
         if (discover) { // 1. Discover
 
           List<CatalogSchema> discoverCSs = new ArrayList<>();
@@ -220,16 +208,13 @@ public class HotRodContext {
             for (ExcludeTag ex : s.getExcludeList()) {
               DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(),
                   ex.getCanonicalName());
-//                log.fine("-----> exclude: " + id);
               excludeIds.add(id);
             }
           }
 
-//            log.fine("gen 2");
           this.db = new JdbcDatabase(conn, currentCS, tables, views, discoverCSs, excludeIds, false, false, false,
               logTimes);
           removeCurrentCatalogSchema(currentCS);
-//            log.fine("gen 3");
           this.config.getFacetTables();// FIXME
 
           try {

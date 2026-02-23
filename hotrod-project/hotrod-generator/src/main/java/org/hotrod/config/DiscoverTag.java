@@ -42,6 +42,12 @@ public class DiscoverTag extends AbstractConfigurationTag {
   public void validate(final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
+    if (this.currentSchema == null && this.schemas.isEmpty()) {
+      SchemaTag currentSchema = new SchemaTag();
+      currentSchema.setCurrent();
+      this.setCurrentSchema(currentSchema);
+    }
+
     // 1. Validate the current schema
 
     if (this.currentSchema != null) {
