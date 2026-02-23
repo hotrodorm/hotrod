@@ -10,6 +10,7 @@ HotRod offers:
 - [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code with live syntax validation
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; Harness the power of native SQL and dynamic SQL when necessary
 - [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and get their execution plans
+- [Torcs CTP](./hotrod-project/docs/docs-5/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in [Check The Plan](https://checktheplan.com)
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
