@@ -2,8 +2,13 @@
 
   <generators>
     <jdbc>
+      <discover/>
     </jdbc>
   </generators>
+
+  <name-solver>
+    <name value="pty_(.+)" replace="$1" scope="table" />
+  </name-solver>
 
 <!-- 
   <table name="chars" />
@@ -20,6 +25,7 @@
   <fragment file="./reporting.xml" />
  -->
 
+<!-- 
   <table name="data" />
 
   <table name="t5" />
@@ -37,7 +43,8 @@
   <table name="s4">
     <column name="id" sequence="seq1" />
   </table>
-
+ -->
+ 
   <!--
   <table name="account">  
     <column name="id" sequence="seq_account" />

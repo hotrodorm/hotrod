@@ -1,12 +1,15 @@
 <hotrod>
 
-  <generators>
-    <jdbc base-dir="src/main/java" package="app.persistence">
-    </jdbc>
     <!--
-    <jdbc>
 -->
+  <generators>
+    <jdbc>
+    </jdbc>
   </generators>
+
+  <name-solver>
+    <name value="pty_(.+)" replace="$1" scope="table" />
+  </name-solver>
 
   <runtime-type-solver>
   <!-- 
@@ -33,8 +36,12 @@
   <table name="branch" />
   <table name="other" />
   <view name="v_other" />
+  <table name="pty_received_document" />
 -->
 
+
+<!-- 
+ -->
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
   </table>
@@ -58,7 +65,7 @@
   <table name="s4">
     <column name="id" sequence="seq1" />
   </table>
-
+ 
 <!-- 
   <view name="employee_branch" />
   <table name="'abc_DEF'" />

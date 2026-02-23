@@ -7,18 +7,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.S2DAO;
-import app.persistence.layout.S2Layout;
+import app.persistence.dao.PtyReceivedDocumentDAO;
+import app.persistence.layout.PtyReceivedDocumentLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class S2 extends S2Layout {
+public class PtyReceivedDocument extends PtyReceivedDocumentLayout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private S2DAO s2DAO;
+  private PtyReceivedDocumentDAO ptyReceivedDocumentDAO;
 
   // Add custom code below.
 

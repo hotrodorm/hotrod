@@ -1,26 +1,58 @@
 # Schema Discovery
 
-HotRod includes a mechanism to discover tables and views in schemas of the database. These discovered tables and views 
-are added to the persistent layer automatically.
+HotRod includes a mechanism to discover tables and views in schemas of the database. These discovered tables and views are added to the persistent layer automatically.
 
-Discovery is enabled by adding the `<discover>` tag inside the `<jdbc>` tag.
+Schema discovery can help with quick protoyping in the early stages of a project.
 
-Discovery is mutually exclusive with facets. If you want to use discovery you cannot define facets, and vice versa.
+In No-Config mode &mdash; when no layer configuration file is specified &mdash; schema discovery is automatically selected. It finds and add all the tables and views in the current schema to the persistence layer.
 
-It's also possible to combine discovery with declared tables and views. The persistence layer generation honors the
-details of declared tables and views.
+When you specify the layer configuration file, schema discovery is turned off by default and needs to be turned on manually. Once activated, it can be configured to discover one or more schemas.
 
-For a technical description see [`<discover>`](../config/tags/discover.md), [`<current-schema>`](../config/tags/current-schema.md), [`<schema>`](../config/tags/schema.md), [`<exclude>`](../config/tags/exclude.md), and the [Configuration File Reference](../config/README.md).
+Schema discovery plays along well with tables and view defined in the layer configuration explicitly. The declared configuration of tables and view supersedes the default ones. This way the tables and view not explicitly declared can still use the default dialect rule, while the explicit one use the declared rules.
+
+By combining the static type solver, runtime type solver, and name solver, schema discovery can create a fully functional persistence layer with very little setup, even for complex schemas or database types.
+
+Schema Discovery is mutually exclusive with facets. If you want to use discovery you cannot define facets, and vice versa.
+
+## See Also
+
+Related configuration and articles:
+
+- [&lt;discover>](../config/tags/discover.md)
+- [&lt;current-schema>](../config/tags/current-schema.md)
+- [&lt;schema>](../config/tags/schema.md)
+- [&lt;exclude>](../config/tags/exclude.md)
+- The [Configuration File Reference](../config/README.md)
 
 
 ## Examples
 
 The examples below show different cases of schema discovery.
 
+### Example #1 - No-Config Mode
 
-### Example #1 - Discovery Disabled by Default
+If the layer configuration file is not specified the schema discover is automatically enable include the current schema.
 
-Discovery is disabled by default. The configuration declares a table, a view, and a DAO.
+This is equivalent to using the following layer configuration file:
+
+```xml
+<hotrod>
+
+  <generators>
+    <jdbc>
+      <discover />
+    </jdbc>
+  </generators>
+
+</hotrod>
+```
+
+**Note**: the current schema is the schema specified by the `catalog` and `schema` when using HotRod's generation through the plugins. This name of the current schema is always defined externally, not in the layer configuration file.
+
+
+### Example #2 - Discovery Disabled by Default
+
+When a layer configuration file is used Schema Discovery is disabled by default. The following *explicit* layer configuration declares a table, a view, and a DAO.
 
 ```xml
 <hotrod>
@@ -43,10 +75,9 @@ the persistence layer. Since the tag `<discover>` is not included, no discovery 
 takes place.
 
 
-### Example #2 - Discovery Enabled for the Current Schema
+### Example #3 - Enlabing Discovery in the Current Schema
 
-Discovery is enabled. All tables and views in the current schema will be discovered and added to 
-the persistence layer.
+We can enable Schema Discovery by adding the &lt;discover> tag. This will automatically include the current schema.
 
 ```xml
 <hotrod>
@@ -60,10 +91,9 @@ the persistence layer.
 </hotrod>
 ```
 
-All tables and views in the current schema are discovered and added to the persistence layer. They are available
-for CRUD and LiveSQL.
+All tables and views in the current schema are discovered and added to the persistence layer. They are available for CRUD and LiveSQL.
 
-An empty `<discover/>` tag includes the current schema by default. In this case, the example above is equivalent to:
+As indicated above, an empty `<discover/>` tag includes the current schema by default. In this case, the example above is equivalent to:
 
 ```xml
 <hotrod>
@@ -82,9 +112,9 @@ An empty `<discover/>` tag includes the current schema by default. In this case,
 ```
 
 
-### Example #3 - Discovery with Declared Tables and Views
+### Example #4 - Discovery with Declared Tables and Views
 
-Discovery is enabled. The configuration declares a table, a view, and a DAO.
+In this case Schema Discovery is enabled and some tables are views are also declated. In this case, the layer configuration file declares one table, one view, and one DAO.
 
 ```xml
 <hotrod>
@@ -107,13 +137,12 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
 ```
 
 Since discovery is enabled, all tables and views in the current schema are included in the persistence
-layer. The custom configuration details for the declared tables and views supersedes the discovery 
-functionality.
+layer. The custom configuration details for the declared tables and views supersedes the discovery functionality.
 
-All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+In short, all tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
-### Example #4 - Specifying Schemas to Discover
+### Example #5 - Discovering Multiple Schemas
 
 The configuration indicates that the current schema, as well as two extra ones will be discovered.
 There are also declared tables, views, and DAOs:
@@ -142,22 +171,16 @@ There are also declared tables, views, and DAOs:
 </hotrod>
 ```
 
-All tables and views in the current schema are included in the persistence layer. The declared table and
-view (`client_tab` and `outst_payments`) are included in the persistence layer with their custom
+All tables and views in the current schema are included in the persistence layer. The declared table and view (`client_tab` and `outst_payments`) are included in the persistence layer with their custom
 configuration.
 
 All tables in the `sales` and `payments` schemas are also included in the persistence layer.
 
-**Note**: When the `<discover>` tag is empty and no schema is declared, then the current schema is
-included by default; the current schema is the schema specified by the `catalog` and `schema` runtime
-properties that are configured in the external configuration, and not in the main configuration file.
-If schemas are added using `<schema>` tags, then the current schema is not included by default anymore.
-If you want to include it nevertheless, add the `<current-schema>` tag.
+In short, all tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
-All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+**Note**: when schemas are added using `<schema>` tags, then the current schema that is otherwise included by default is not included anymore. If you want to include it nevertheless, add the `<current-schema>` tag.
 
-
-### Example #5 - Excluding Tables and Views from Discovery
+### Example #6 - Excluding Tables and Views from Discovery
 
 The configuration specifies tables and views that we want to exclude from the discovery:
 
@@ -196,7 +219,7 @@ with their custom settings.
 All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
-### Example #6 - Catalogs and Schemas
+### Example #7 - Catalogs and Schemas
 
 In databases that implement catalogs and schemas &ndash; e.g. SQL Server and Sybase &ndash; these can 
 be included by adding the `catalog` attribute when necessary.
@@ -226,9 +249,7 @@ be included by adding the `catalog` attribute when necessary.
 </hotrod>
 ```
 
-All tables and views in the schema `reporting` of the current catalog are in include in the persistence layer.
-Also, all tables and views of the schemas `master.accounting` and `clients.billing` are included in the persistence 
-layer except for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. 
+All tables and views in the schema `reporting` of the current catalog are in include in the persistence layer. Also, all tables and views of the schemas `master.accounting` and `clients.billing` are included in the persistence layer except for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`.
 
 The declared table `master.accounting.client_tab` and the view `outst_payments` in the current schema are also
 included in the persistence layer with their custom settings.
@@ -236,10 +257,9 @@ included in the persistence layer with their custom settings.
 All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
-### Example #7 - Catalogs Without Schemas
+### Example #8 - Catalogs Without Schemas
 
-In databases that implement catalogs but do not implement schemas &ndash; e.g. MariaDB and MySQL &ndash; these can 
-be discovered by using the `catalog` attribute. Catalogs are typìcally knowns as *databases* by theses engines.
+In databases that implement catalogs but do not implement schemas &ndash; e.g. MariaDB and MySQL &ndash; these can be discovered by using the `catalog` attribute. Catalogs are typìcally knowns as *databases* by theses engines.
 
 ```xml
 <hotrod>
@@ -264,17 +284,8 @@ be discovered by using the `catalog` attribute. Catalogs are typìcally knowns a
 ```
 
 All tables and views in the catalog/database `marketing` are in included in the persistence layer.
-Also, all tables and views of the catalog/database `insurance` and `sales` are included in the persistence 
-layer except for `insurance.mortality_table` and `sales.report_bkp`.
+Also, all tables and views of the catalog/database `insurance` and `sales` are included in the persistence layer except for `insurance.mortality_table` and `sales.report_bkp`.
 
 All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
-
-
-## See also
-
-For details see:
-
-- The [`Configuration File Reference`](../config/README.md)
-- The [`<exclude>`](../config/tags/exclude.md) tag
 
 

@@ -14,7 +14,7 @@ HotRod offers:
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
 
-See the [Pamphlet](./hotrod-project/docs/pamphlet.md) of HotRod ORM, learn about [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, review the [Version History](./hotrod-project/docs/version-history.md), and explore the [Roadmap](./hotrod-project/docs/roadmap.md). The [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md) covers all functionalities across the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md).
+The [HotRod 5 Documentation](./hotrod-project/docs/docs-5/README.md) covers all functionalities across the [Supported Databases](./hotrod-project/docs/docs-5/config/supported-databases.md). See the [Pamphlet](./hotrod-project/docs/pamphlet.md), learn about [What's New](./hotrod-project/docs/docs-5/whats-new.md) in HotRod 5, review the [Version History](./hotrod-project/docs/version-history.md), and the [Roadmap](./hotrod-project/docs/roadmap.md). 
 
 For documentation on the previous versions see the
 [HotRod 4 Documentation](./hotrod-project/docs/docs-4/README.md) and the [HotRod 3 Documentation](./hotrod-project/docs/docs-3/README.md).
@@ -40,13 +40,13 @@ List<Tuple1<Product>> rows = sql
   .select(p.star(), p.shipping.plus(p.tax).minus(p.discount).as("net"))
   .tuples()
   .from(p)
-  .where(p.shipping.plus(p.tax).minus(p.discount).lt(10))
+  .where(p.shipping.plus(p.tax).minus(p.discount).le(10))
   .orderBy(p.category, p.name.desc())
   .limit(50)
   .execute();
 
 for (Tuple1<Product> r : rows) {
-  Product prod = r.getA() // all columns correctly named, cast, typed, and/or converted here
+  Product prod = r.getA(); // all columns correctly named, cast, typed, and/or converted here
   System.out.println("Product: " + prod);
   System.out.println("Net: " + r.get("net"));
 }
@@ -102,7 +102,7 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-[CRUD](./hotrod-project/docs/docs-5/crud/README.md) offers a straightforward set of database access methods, allowing you to access rows by primary keys, examples, or predicates. This enables the execution of SELECT, UPDATE, INSERT, and DELETE queries on the tables and views within the schema(s).
+[CRUD](./hotrod-project/docs/docs-5/crud/README.md) offers a straightforward set of database access methods, allowing you to access rows by primary keys, examples, or predicates. This enables the execution of SELECT, UPDATE, INSERT, and DELETE queries on the tables and views in the database schemas.
 
 To find an employee by primary key, you can use:
 
@@ -146,9 +146,9 @@ int count = this.invoiceDAO.update(inv);
 
 [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD. That is, when you need to:
 
-- Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE, including calling stored procedures and functions
-- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to dynamically include query sections into the main query according to the runtime parameters
-- Use native SQL extensions available in the specific database, such as optimizer hints, regular expression matching, custom functions, full text search, rollups, etc
+- Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE
+- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to include or exclude query sections according to the runtime parameters
+- Use native SQL extensions available in the specific database, such as custom functions, full text search, rollups, optimizer hints, regular expression matching, etc
 - Expose long, complex, and tedious queries as simple methods in your app
 - Use pre-existent and well-tested queries "as is" from your application
 

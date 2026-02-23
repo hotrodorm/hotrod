@@ -190,7 +190,6 @@ Getting Started:
 
 - [Hello World!](./guides/hello-world.md)
 - [Starting a Maven Project from Scratch](./guides/starting-a-maven-project-from-scratch-with-postgresql.md)
-- [Using Ant for Java 8](./guides/hello-world-ant.md)
 
 Tuning the Persistence Layer:
 
@@ -198,6 +197,7 @@ Tuning the Persistence Layer:
 - [Tuning Column Types](./guides/type-resolution-mechanics.md)
 - [Exporting Column Properties](./guides/exporting-column-properties.md)
 - [Mapping Table, Views, and Column Names](./guides/mapping-table-and-column-names.md)
+- [Using Schema Discovery](./guides/schema-discovery.md)
 
 Debugging:
 
@@ -208,5 +208,6 @@ Advanced Features:
 
 - [Using Multiple DataSources](./guides/using-multiple-datasources.md)
 - [Extending LiveSQL Functions](./livesql/extending-livesql-functions.md)
+- [Using Ant - Java 8 Only](./guides/hello-world-ant.md)
 
 

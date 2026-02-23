@@ -7,18 +7,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.S2DAO;
-import app.persistence.layout.S2Layout;
+import app.persistence.dao.DataDAO;
+import app.persistence.layout.DataLayout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class S2 extends S2Layout {
+public class Data extends DataLayout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private S2DAO s2DAO;
+  private DataDAO dataDAO;
 
   // Add custom code below.
 
