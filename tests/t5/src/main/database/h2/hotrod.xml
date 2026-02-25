@@ -4,6 +4,7 @@
 -->
   <generators>
     <jdbc>
+      <discover/>
     </jdbc>
   </generators>
 

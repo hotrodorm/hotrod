@@ -62,4 +62,15 @@ create table pty_received_document (
   id bigint primary key,
   name varchar(20),
   received timestamp
-)
+);
+
+-- blob
+
+create table person (
+  id bigint primary key,
+  photo bytea   
+);
+
+insert into person (id, photo) values 
+  (1, file_read('data/car.png'));
+  
