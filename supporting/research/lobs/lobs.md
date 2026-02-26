@@ -6,13 +6,14 @@ Considerations:
 
 - It does not address LiveSQL streaming of LOBs; this needs to be considered separately
 - It does not address Nitro streaming of LOBs; this needs to be considered separately
-- It should consider all types of SQL types related to LOBs. Namely: BLOB, BINARY, VARBINARY, VARCHAR FOR BIT DATA, CLOB, NCLOB. This list may be incomplete.
-- LOBs can be used as input to the queries to insert data or as part of the search criteria. In these cases the opening and closing of streams is managed by your app.
-- LOBs can be used as output to SELECT queries. In these cases the JDBC driver/database opens the data stream, and your application can only use it and close it
-- Data streams opened by the JDBC driver/database only live while the row is being read. Therefore, they can only be used as Cursor&lt;Model>, but not as List&lt;Model>. As soon as you move to the next row the data stream is lost
-- LOB streaming is mutually exclusive with the Full Row Check streategy of Optimistic Locking. Use one or the other. The other Optimistic Locking strategies can still be combined with streaming
-- PostgreSQL requires the query to be demarcated in a transaction to stream LOBs. If there's no active transaction the query will fail
-- The solution considers creating a separate *model* class, such as `EmployeeStreaming` in addition to the typical model `Employee`. This is up for discussion and is not set in stone. Just an initial strategy
+- It should consider all types of SQL types related to BLOBs. Namely: BLOB, BINARY, VARBINARY, VARCHAR FOR BIT DATA, BYTEA, IMAGE, MEDIUMBLOB, LONGBLOB, RAW, LONG RAW. This list may be incomplete.
+- It should consider all types of SQL types related to CLOBs. Namely: CLOB, NCLOB, DBCLOB, TEXT, NTEXT, MEDIUMTEXT, LONGTEXT, GRAPHIC, VARGRAPHIC. This list may be incomplete.
+- When streaming, LOBs can be sent to the database or received from it:
+    - LOBs can be sent to the database to provide data for insertion or as part of the search criteria. In these cases the opening and closing of streams is fully managed by your app.
+    - LOBs can be received from the database in SELECT queries. In these cases the JDBC driver/database opens the data stream on your behalf, and your application can only use it (and maybe close it). Data streams opened by the JDBC driver/database only live while the row is being read. Therefore, they can only be used as Cursor&lt;Model>, but not as List&lt;Model>. As soon as you move to the second row the data stream of the first row is lost/closed
+- LOB streaming is mutually exclusive with the Full Row Check streategy of Optimistic Locking. Use one or the other. The Version Number &amp; Timestamp Optimistic Locking strategies can still be combined with streaming
+- PostgreSQL requires the query to be demarcated in a transaction to stream LOBs. If there's no active transaction the query will crash
+- The initial solution shown below considers creating a separate *model*/*layout* class(es), such as `EmployeeStreaming` in addition to the typical model `Employee`. This is up for discussion and is not set in stone. This is just an initial strategy suitable to open the discussion
 - The `EmployeeStreaming` class differs to the typical `Employee` class in the implementation of the LOBs. It defines the LOB members as `InputStream` or `Reader` instead of `byte[]` or `String`
 
 In the examples we consider an EMPLOYEE table created as:
