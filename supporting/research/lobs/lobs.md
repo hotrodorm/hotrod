@@ -1,6 +1,15 @@
 # LOBs in CRUD
 
-This initial analysis considers how CRUD could stream LOBs. It does not address LiveSQL nor Nitro.
+This initial analysis considers how CRUD could stream LOBs.
+
+Considerations:
+
+- It does not address LiveSQL streaming of LOBs; this needs to be considered separately
+- It does not address Nitro streaming of LOBs; this needs to be considered separately
+- It should consider all types of SQL types related to LOBs. Namely: BLOB, BINARY, VARBINARY, VARCHAR FOR BIT DATA, CLOB, NCLOB. This list may be incomplete.
+- LOBs can be used as input to the queries to insert data or as part of the search criteria. In these cases the opening and closing of streams is managed by your app.
+- LOBs can be used as output to SELECT queries. In these cases the JDBC driver/database opens the data stream, and your application can only use it and close it
+- Data streams opened by the JDBC driver/database only live while the row is being read. Therefore, they can only be used as Cursor&lt;Model>, but not as List&lt;Model>. As soon as you move to the next row the data stream is lost
 
 In the examples we consider an EMPLOYEE table created as:
 
@@ -47,6 +56,8 @@ With no streaming:
 ```java
 EmployeeLayout example = new EmployeeLayout();
 example.setBranch(52);
+byte[] searchedPhoto = ...;
+example.setPhoto(searchedPhoto);
 List<Employee> emps = this.employeeDAO.select(example);
 for (Employee e : emps) {
   int id = emp.getId();
@@ -59,17 +70,20 @@ for (Employee e : emps) {
 With streaming:
 
 ```java
-EmployeeLayout example = new EmployeeLayout();
-example.setBranch(52);
-try (Cursor<EmployeeStreaming> emps = this.employeeDAO.selectForStreaming(example)) {
-  for (Employee emp : emps) {
-    int id = emp.getId();
-    String name = emp.getName();
-    try (InputStream is = emp.getPhoto()) {
-      // Do something with the photo
-    }
-    try (InputStream is = emp.getDocument()) {
-      // Do something with the document
+try (InputStream isSearchedPhoto = ...) {
+  EmployeeStreaming example = new EmployeeStreaming();
+  example.setBranch(52);
+  example.setPhoto(isSearchedPhoto);
+  try (Cursor<EmployeeStreaming> emps = this.employeeDAO.selectForStreaming(example)) {
+    for (Employee emp : emps) {
+      int id = emp.getId();
+      String name = emp.getName();
+      try (InputStream is = emp.getPhoto()) {
+        // Do something with the photo
+      }
+      try (InputStream is = emp.getDocument()) {
+        // Do something with the document
+      }
     }
   }
 }
@@ -107,6 +121,8 @@ try (Cursor<EmployeeStreaming> emps = this.employeeDAO.selectForStreaming(t, t.b
   }
 }
 ```
+
+**Note**: We exclude straming in the search criteria for now, until LiveSQL implements that logic.
 
 ## 4. Insert
 
@@ -163,7 +179,7 @@ try (
   ) {
   emp.setPhoto(isPhoto);
   emp.setDocument(isDocument);
-  Employee inserted = this.employeeDAO.insertByExampleStreaming(emp);
+  Employee inserted = this.employeeDAO.insertStreaming(emp);
 }
 ```
 
@@ -202,6 +218,8 @@ With no streaming:
 ```java
 EmployeeLayout example = new EmployeeLayout();
 example.setBranch(52);
+byte[] searchedPhoto = ...;
+example.setPhoto(searchedPhoto);
 EmployeeLayout values = new EmployeeLayout();
 byte[] photo = ...;
 byte[] document = ...;
@@ -213,13 +231,15 @@ int count = this.employeeDAO.update(example, values);
 With streaming:
 
 ```java
-EmployeeLayout example = new EmployeeLayout();
-example.setBranch(52);
-EmployeeStreaming values = new EmployeeStreaming();
 try (
+    InputStream isSearchedPhoto = ...;
     InputStream isPhoto = ...;
     InputStream isDocument = ...;
   ) {
+  EmployeeStreaming example = new EmployeeStreaming();
+  example.setBranch(52);
+  example.setPhoto(isSearchedPhoto);
+  EmployeeStreaming values = new EmployeeStreaming();
   values.setPhoto(isPhoto);
   values.setDocument(isDocument);
   int count = this.employeeDAO.updateStreaming(example, values);
@@ -255,16 +275,55 @@ try (
 }
 ```
 
+**Note**: We exclude streaming in the search criteria for now, until LiveSQL implements that logic.
+
 ## 9. Delete By Primary Key
 
-Similar to Update by Primary Key
+With no streaming:
+
+```java
+int count = this.employeeDAO.delete(1054);
+```
+
+With streaming:
+
+N/A, unless we use a LOB as primary key; unlikely.
 
 ## 10. Delete By Example
 
-Similar to Update by Example
+With no streaming:
+
+```java
+EmployeeLayout example = new EmployeeLayout();
+example.setBranch(52);
+int count = this.employeeDAO.delete(example);
+```
+
+With streaming:
+
+```java
+try (
+    InputStream isPhoto = ...;
+    InputStream isDocument = ...;
+  ) {
+  EmployeeStreaming example = new EmployeeStreaming();
+  example.setPhoto(isPhoto);
+  example.setDocument(isDocument);
+  int count = this.employeeDAO.deleteStreaming(example);
+}
+```
 
 ## 11. Delete By Criteria
 
-Similar to Update by Criteria
+With no streaming:
 
+```java
+EmployeeTable t = this.employeeDAO.newTable();
+int count = this.employeeDAO.delete(values, t.branchId.eq(52)).execute();
+```
 
+With streaming:
+
+N/A
+
+**Note**: We exclude streaming in the search criteria for now, until LiveSQL implements that logic.
