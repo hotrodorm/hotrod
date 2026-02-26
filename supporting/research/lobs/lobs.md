@@ -6,8 +6,8 @@ Considerations:
 
 - It does not address LiveSQL streaming of LOBs; this needs to be considered separately
 - It does not address Nitro streaming of LOBs; this needs to be considered separately
-- It should consider all types of SQL types related to BLOBs. Namely: BLOB, BINARY, VARBINARY, VARCHAR FOR BIT DATA, BYTEA, IMAGE, MEDIUMBLOB, LONGBLOB, RAW, LONG RAW. This list may be incomplete
-- It should consider all types of SQL types related to CLOBs. Namely: CLOB, NCLOB, DBCLOB, TEXT, NTEXT, MEDIUMTEXT, LONGTEXT, GRAPHIC, VARGRAPHIC. This list may be incomplete
+- It should consider all types of SQL types related to BLOBs. Namely: BLOB, BINARY, VARBINARY, VARCHAR FOR BIT DATA, BYTEA, IMAGE, SMALLBLOB, MEDIUMBLOB, LONGBLOB, RAW, LONG RAW. This list may be incomplete
+- It should consider all types of SQL types related to CLOBs. Namely: CLOB, NCLOB, DBCLOB, TEXT, NTEXT, SMALLTEXT, MEDIUMTEXT, LONGTEXT, GRAPHIC, VARGRAPHIC. This list may be incomplete
 - When streaming, LOBs can be sent to the database or received from it:
     - LOBs can be sent to the database to provide data for insertion or as part of the search criteria. In these cases the opening and closing of streams is fully managed by your app
     - LOBs can be received from the database in SELECT queries. In these cases the JDBC driver/database opens the data stream on your behalf, and your application can only use it (and maybe close it). Data streams opened by the JDBC driver/database only live while the row is being read. Therefore, they can only be used as Cursor&lt;Model>, but not as List&lt;Model>. As soon as you move to the second row the data stream of the first row is lost/closed
@@ -23,7 +23,7 @@ CREATE TABLE employee (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
   name VARCHAR(20),
   photo BLOB,
-  document BLOB
+  document BLOB -- change this to CLOB to demo a java.io.Reader
 );
 ```
 
