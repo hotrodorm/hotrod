@@ -1,4 +1,4 @@
-# LOBs in CRUD
+# Streaming LOBs in CRUD
 
 This initial analysis considers how CRUD could stream LOBs.
 
@@ -10,6 +10,10 @@ Considerations:
 - LOBs can be used as input to the queries to insert data or as part of the search criteria. In these cases the opening and closing of streams is managed by your app.
 - LOBs can be used as output to SELECT queries. In these cases the JDBC driver/database opens the data stream, and your application can only use it and close it
 - Data streams opened by the JDBC driver/database only live while the row is being read. Therefore, they can only be used as Cursor&lt;Model>, but not as List&lt;Model>. As soon as you move to the next row the data stream is lost
+- LOB streaming is mutually exclusive with the Full Row Check streategy of Optimistic Locking. Use one or the other. The other Optimistic Locking strategies can still be combined with streaming
+- PostgreSQL requires the query to be demarcated in a transaction to stream LOBs. If there's no active transaction the query will fail
+- The solution considers creating a separate *model* class, such as `EmployeeStreaming` in addition to the typical model `Employee`. This is up for discussion and is not set in stone. Just an initial strategy
+- The `EmployeeStreaming` class differs to the typical `Employee` class in the implementation of the LOBs. It defines the LOB members as `InputStream` or `Reader` instead of `byte[]` or `String`
 
 In the examples we consider an EMPLOYEE table created as:
 
