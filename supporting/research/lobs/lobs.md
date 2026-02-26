@@ -300,7 +300,10 @@ With no streaming:
 
 ```java
 EmployeeLayout example = new EmployeeLayout();
-example.setBranch(52);
+byte[] photo = ...;
+byte[] document = ...;
+example.setPhoto(photo);
+example.setDocument(document);
 int count = this.employeeDAO.delete(example);
 ```
 
