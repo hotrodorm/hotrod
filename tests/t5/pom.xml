@@ -43,6 +43,12 @@
       <version>${hotrod.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.nocrala.tools.database</groupId>
+      <artifactId>tartarus</artifactId>
+      <version>3.2.12</version>
+    </dependency>
+
   </dependencies>
 
 <!-- 
@@ -179,7 +185,7 @@
     </profile>
 
     <profile>
-      <id>oracle-rb</id>
+      <id>oracle-sb</id>
       <dependencies>
         <dependency>
           <groupId>com.oracle.database.jdbc</groupId>
@@ -194,7 +200,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:oracle:thin:@192.168.56.95:1521:orcl</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>oracle-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.database.jdbc</groupId>
+          <artifactId>ojdbc8</artifactId>
+          <version>23.9.0.25.07</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:oracle:thin:@192.168.56.95:1521:orcl</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>oracle-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.database.jdbc</groupId>
+          <artifactId>ojdbc8</artifactId>
+          <version>23.9.0.25.07</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:oracle:thin:@192.168.56.95:1521:orcl</argument>
                 <argument>user1</argument>
@@ -410,7 +472,7 @@
     </profile>
 
     <profile>
-      <id>db2-rb</id>
+      <id>db2-sb</id>
       <dependencies>
         <dependency>
           <groupId>com.ibm.db2</groupId>
@@ -425,7 +487,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:db2://192.168.56.44:50000/empusa</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>db2-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.db2</groupId>
+          <artifactId>jcc</artifactId>
+          <version>11.5.7.0</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:db2://192.168.56.44:50000/empusa</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>db2-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.db2</groupId>
+          <artifactId>jcc</artifactId>
+          <version>11.5.7.0</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:db2://192.168.56.44:50000/empusa</argument>
                 <argument>user1</argument>
@@ -529,7 +647,7 @@
     </profile>
 
     <profile>
-      <id>postgresql-rb</id>
+      <id>postgresql-sb</id>
       <dependencies>
         <dependency>
           <groupId>org.postgresql</groupId>
@@ -544,7 +662,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:postgresql://192.168.56.200:5416/hotrod</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>postgresql-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.3.3</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:postgresql://192.168.56.200:5416/hotrod</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>postgresql-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.3.3</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:postgresql://192.168.56.200:5416/hotrod</argument>
                 <argument>user1</argument>
@@ -742,7 +916,7 @@
     </profile>
 
     <profile>
-      <id>sqlserver-rb</id>
+      <id>sqlserver-sb</id>
       <dependencies>
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
@@ -757,7 +931,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true</argument>
+                <argument>admin</argument>
+                <argument>admin</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sqlserver-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+          <version>10.2.0.jre8</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true</argument>
+                <argument>admin</argument>
+                <argument>admin</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sqlserver-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+          <version>10.2.0.jre8</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:sqlserver://192.168.56.51:1433;encrypt=true;trustServerCertificate=true</argument>
                 <argument>admin</argument>
@@ -861,7 +1091,7 @@
     </profile>
 
     <profile>
-      <id>mysql-rb</id>
+      <id>mysql-sb</id>
       <dependencies>
         <dependency>
           <groupId>mysql</groupId>
@@ -876,7 +1106,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:mysql://192.168.56.200:3820/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>mysql-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.28</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:mysql://192.168.56.200:3820/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>mysql-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.28</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:mysql://192.168.56.200:3820/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</argument>
                 <argument>user1</argument>
@@ -980,7 +1266,7 @@
     </profile>
 
     <profile>
-      <id>mariadb-rb</id>
+      <id>mariadb-sb</id>
       <dependencies>
         <dependency>
           <groupId>org.mariadb.jdbc</groupId>
@@ -995,7 +1281,63 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
+              <arguments>
+                <argument>jdbc:mysql://192.168.56.200:3111/hotrod</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>mariadb-ib</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <version>2.2.5</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.InsertBlob</mainClass>
+              <arguments>
+                <argument>jdbc:mysql://192.168.56.200:3111/hotrod</argument>
+                <argument>user1</argument>
+                <argument>pass1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>mariadb-ub</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <version>2.2.5</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+              <mainClass>app.lobs.UpdateBlob</mainClass>
               <arguments>
                 <argument>jdbc:mysql://192.168.56.200:3111/hotrod</argument>
                 <argument>user1</argument>
@@ -1193,7 +1535,7 @@
     </profile>
 
     <profile>
-      <id>h2-rb</id>
+      <id>h2-sb</id>
       <dependencies>
         <dependency>
           <groupId>com.h2database</groupId>
@@ -1208,7 +1550,7 @@
             <artifactId>exec-maven-plugin</artifactId>
             <version>3.1.0</version>
             <configuration>
-              <mainClass>app.lobs.ReadBlob</mainClass>
+              <mainClass>app.lobs.SelectBlob</mainClass>
               <arguments>
                 <argument>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from 'src/main/database/h2/1.0.0/build.sql';DB_CLOSE_DELAY=-1</argument>
                 <argument>sa</argument>

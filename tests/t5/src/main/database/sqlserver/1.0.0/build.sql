@@ -114,7 +114,7 @@ create table t5 (
 -- blob
 
 create table person (
-  id bigint primary key not null,
+  id bigint identity primary key not null,
   photo varbinary(1000)
 );
 

@@ -184,6 +184,7 @@ public class App {
     K4Table w = this.k4DAO.newTable();
     T5Table x = this.t5DAO.newTable();
     DATALocalTable d = this.dataLocalDAO.newTable();
+    
 
 //    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
 //    System.out.println("### INSERT 1 -- pk=" + pk);

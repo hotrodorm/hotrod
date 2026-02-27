@@ -98,7 +98,7 @@ create table t5 (
 -- blob
 
 create table person (
-  id bigint primary key not null,
+  id bigint primary key auto_increment not null,
   photo blob
 );
 

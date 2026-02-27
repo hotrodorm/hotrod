@@ -1,19 +1,15 @@
 package app.lobs;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class ReadBlob {
+import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+
+public class SelectBlob {
 
   public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
 
@@ -23,31 +19,36 @@ public class ReadBlob {
     String username = args[1];
     String password = args[2];
 
-    System.out.println("* url: " + url);
-    System.out.println("* username: " + username);
-    System.out.println("* password: " + password);
+    DatabaseLocation loc = new DatabaseLocation("com.ibm.db2.jcc.DB2Driver", url, username, password, null, "USER1", null);
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
-    LocalDateTime dateTime = LocalDateTime.now();
-    String ts = dateTime.format(formatter);
+    //
+//    System.out.println("* url: " + url);
+//    System.out.println("* username: " + username);
+//    System.out.println("* password: " + password);
 
-    try (Connection conn = DriverManager.getConnection(url, username, password);) {
-      try (PreparedStatement ps = conn.prepareStatement("select photo from person");) {
-        try (ResultSet rs = ps.executeQuery();) {
-          int rn = 1;
-          while (rs.next()) {
-            System.out.println("> reading row #" + rn);
-            String fn = "./output/" + ts + "-" + rn + ".png";
-            try (InputStream is = rs.getBinaryStream(1);) {
-              try (OutputStream os = new FileOutputStream(new File(fn));) {
-                long bytes = copy(is, os);
-                System.out.println("File (" + bytes + " bytes): " + fn);
-                rn++;
-              }
-            }
-          }
-        }
-      }
+//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+//    LocalDateTime dateTime = LocalDateTime.now();
+//    String ts = dateTime.format(formatter);
+
+//    try (Connection conn = DriverManager.getConnection(url, username, password);) {
+    try (Connection conn = loc.getConnection()) {
+//      try (PreparedStatement ps = conn.prepareStatement("select photo from person");) {
+//        try (ResultSet rs = ps.executeQuery();) {
+//          int rn = 1;
+//          while (rs.next()) {
+//            System.out.println("> reading row #" + rn);
+//            String fn = "./output/" + ts + "-" + rn + ".png";
+//            try (InputStream is = rs.getBinaryStream(1);) {
+//              try (OutputStream os = new FileOutputStream(new File(fn));) {
+//                long bytes = copy(is, os);
+//                System.out.println("File (" + bytes + " bytes): " + fn);
+//                rn++;
+//              }
+//            }
+//          }
+//        }
+//      }
+      conn.close();
     }
     System.out.println("=== Blob Reader - Complete ===");
 
