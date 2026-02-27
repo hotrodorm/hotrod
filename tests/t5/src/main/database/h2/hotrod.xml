@@ -1,10 +1,10 @@
 <hotrod>
 
-    <!--
--->
   <generators>
     <jdbc>
+    <!--
       <discover/>
+    -->
     </jdbc>
   </generators>
 
@@ -20,13 +20,13 @@
     <when test="scale > 0" java-type="Short" />
   </runtime-type-solver>
 
-  <converter name="boolean_stored_as_int" java-type="java.lang.Boolean" java-raw-type="java.lang.Integer"
+  <converter name="boolean_stored_as_int" type="java.lang.Boolean" raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
 
-  <converter name="account_type_stored_as_char" java-type="app.AccountTypeConverter.AccountType"
-    java-raw-type="java.lang.String" class="app.AccountTypeConverter" />
+  <converter name="account_type_stored_as_char" type="app.AccountTypeConverter.AccountType"
+    raw-type="java.lang.String" class="app.AccountTypeConverter" />
 
-  <converter name="coin_type_stored_as_char" java-type="java.lang.Integer" java-raw-type="java.lang.String"
+  <converter name="coin_type_stored_as_char" type="java.lang.Integer" raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
 
 <!-- 
@@ -37,12 +37,14 @@
   <table name="branch" />
   <table name="other" />
   <view name="v_other" />
-  <table name="pty_received_document" />
 -->
+  <table name="pty_received_document" />
 
 
 <!-- 
+  <table name="'LOCAL_House'" />
  -->
+
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
   </table>
@@ -76,13 +78,13 @@
   </table>
 
   <table name="account">
-    <column name="balance" java-type="Double" />
+    <column name="balance" type="Double" />
     <column name="active" converter="boolean_stored_as_int" />
     <column name="type" converter="account_type_stored_as_char" />
   </table>
 
   <table name="employee">
-    <column name="name" java-name="fullName" />
+    <column name="name" property="fullName" />
     <column name="vip" converter="boolean_stored_as_int" />
     <sequence name="employee_seq" method="getSequenceNextValue" />
     <sequence name="hired_seq" method="getHiredNextValue" />
@@ -109,7 +111,7 @@ SELECT * FROM other
     <sequence name="hired_seq" method="getHiredNextValue" />
 
     <select method="findMyAccounts" vo="MyAccount">
-      <parameter name="codigos" java-type="java.util.List&lt;Integer>" jdbc-type="ARRAY" />
+      <parameter name="codigos" type="java.util.List&lt;Integer>" />
       select *
       from account
       where active
@@ -179,8 +181,8 @@ SELECT * FROM other
  -->    
 <!-- 
     <query method="activateBigAccounts">
-      <parameter name="minBalance" java-type="java.lang.Long" />
-      <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
+      <parameter name="minBalance" type="java.lang.Long" />
+      <parameter name="ids" type="java.util.List" />
       UPDATE account
       SET active = true
       WHERE id IN 
@@ -222,7 +224,7 @@ where balance >= 300
    <dao name="Test2DAO">
 
     <select method="findTAccounts" vo="TAccount" mode="list">
-      <parameter name="includeBalance" java-type="Boolean" />
+      <parameter name="includeBalance" type="Boolean" />
       select id, name as xname, 7*3 as total<if test="includeBalance">, balance, type as xtype, 9 * 5 as subtotal</if>
       from account
       where balance >= 100
@@ -231,9 +233,9 @@ where balance >= 300
     <!-- ###
    <dao name="OperationDAO">
     <query method="activateBigAccounts">
-      <parameter name="minBalance" java-type="java.lang.Long" />
-      <parameter name="ids" java-type="java.util.List" jdbc-type="NUMERIC" />
-      <parameter name="filter" java-type="java.lang.String" />
+      <parameter name="minBalance" type="Long" />
+      <parameter name="ids" type="java.util.List" />
+      <parameter name="filter" type="java.lang.String" />
       UPDATE account
       SET active = true, balance = #{minBalance}
       WHERE id IN 

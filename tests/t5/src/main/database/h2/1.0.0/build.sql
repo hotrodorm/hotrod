@@ -58,6 +58,11 @@ create table t5 (
 
 -- name solver
 
+create table "LOCAL_House" (
+  id bigint primary key,
+  address varchar(100)
+);
+
 create table pty_received_document (
   id bigint primary key,
   name varchar(20),

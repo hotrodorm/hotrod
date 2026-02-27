@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +37,16 @@ import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
+import org.hotrod.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.livesql.metadata.DateTimeEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.NumericEntityColumnMetaData;
-import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
-import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -60,15 +60,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.K1Layout;
-import app.persistence.model.K1;
+import app.persistence.layout.ReceivedDocumentLayout;
+import app.persistence.model.ReceivedDocument;
 
 @Component
-public class K1DAO implements Serializable, ApplicationContextAware {
+public class ReceivedDocumentDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(K1DAO.class.getName());
+  private static final Logger log = Logger.getLogger(ReceivedDocumentDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,18 +94,21 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<K1> rowReader = new RowReader<K1>() {
+  private final RowReader<ReceivedDocument> rowReader = new RowReader<ReceivedDocument>() {
 
     @Override
-    public K1 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      K1 row = applicationContext.getBean(K1.class);
+    public ReceivedDocument readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      ReceivedDocument row = applicationContext.getBean(ReceivedDocument.class);
 
-      Byte col1 = rs.getByte("ID"); // ID
+      Long col1 = rs.getLong("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
       String col2 = rs.getString("NAME"); // NAME
       row.setName(col2);
+
+      LocalDateTime col3 = rs.getObject("RECEIVED", LocalDateTime.class); // RECEIVED
+      row.setReceived(col3);
 
       return row;
     }
@@ -114,31 +117,33 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public K1 parseRow(Map<String, Object> row) {
+  public ReceivedDocument parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix) {
+  public ReceivedDocument parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    K1 m = applicationContext.getBean(K1.class);
+  public ReceivedDocument parseRow(Map<String, Object> row, String prefix, String suffix) {
+    ReceivedDocument m = applicationContext.getBean(ReceivedDocument.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toByte((Number) row.get(p + "id" + s)));
+    m.setId(CastUtil.toLong((Number) row.get(p + "id" + s)));
     m.setName((String) row.get(p + "name" + s));
+    m.setReceived((LocalDateTime) row.get(p + "received" + s));
     return m;
   }
 
   // BASELINE
 
-  public class K1Baseline {
+  public class ReceivedDocumentBaseline {
 
-    private Byte id;
+    private Long id;
     private String name;
+    private LocalDateTime received;
 
-    public Byte getId() {
+    public Long getId() {
       return this.id;
     }
 
@@ -146,21 +151,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
       return this.name;
     }
 
+    public LocalDateTime getReceived() {
+      return this.received;
+    }
+
   }
 
-  public K1Baseline baseline(K1 model) {
-    K1Baseline b = new K1Baseline();
+  public ReceivedDocumentBaseline baseline(ReceivedDocument model) {
+    ReceivedDocumentBaseline b = new ReceivedDocumentBaseline();
     b.id = model.getId();
     b.name = model.getName();
+    b.received = model.getReceived();
     return b;
   };
 
   // CLONE
 
-  public K1 clone(K1Layout layout) {
-    K1 m = this.applicationContext.getBean(K1.class);
+  public ReceivedDocument clone(ReceivedDocumentLayout layout) {
+    ReceivedDocument m = this.applicationContext.getBean(ReceivedDocument.class);
     m.setId(layout.getId());
     m.setName(layout.getName());
+    m.setReceived(layout.getReceived());
     return m;
   };
 
@@ -172,22 +183,23 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM k1")
+      .literaln("  name,")
+      .literaln("  received")
+      .literaln("FROM pty_received_document")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
-  public K1 select(Byte id) {
+  public ReceivedDocument select(Long id) {
     if (id == null) return null;
-    K1 filter = new K1();
+    ReceivedDocument filter = new ReceivedDocument();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<ReceivedDocument> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<K1> rows = preparedQuery.execute(conn);
+      List<ReceivedDocument> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -204,25 +216,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM k1")
+      .literaln("  name,")
+      .literaln("  received")
+      .literaln("FROM pty_received_document")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.received != null").literal("received = ").parameter("e.received").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<K1> select(K1Layout example, K1OrderBy... orderBies) {
+  public List<ReceivedDocument> select(ReceivedDocumentLayout example, ReceivedDocumentOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<ReceivedDocument> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     try (Connection conn = this.dataSource.getConnection()) {
-      List<K1> rows = preparedQuery.execute(conn);
+      List<ReceivedDocument> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -231,8 +245,8 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<K1> select(final K1Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<K1>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<ReceivedDocument> select(final ReceivedDocumentTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<ReceivedDocument>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -241,28 +255,29 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO pty_received_document")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("l.id != null").literal("id").endif()
+        .literal("id")
         .literal("name")
+        .literal("received")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("l.id != null").parameter("l.id").endif()
+        .parameterNullable("l.id", Types.BIGINT)
         .parameterNullable("l.name", Types.VARCHAR)
+        .parameterNullable("l.received", Types.TIMESTAMP)
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insert(K1Layout layout) {
+  public ReceivedDocument insert(ReceivedDocumentLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(layout);
+    ReceivedDocument model = this.clone(layout);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -275,28 +290,29 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO pty_received_document")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
         .if_("e.name != null").literal("name").endif()
+        .if_("e.received != null").literal("received").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .if_("e.id != null").parameter("e.id").endif()
         .if_("e.name != null").parameter("e.name").endif()
+        .if_("e.received != null").parameter("e.received").endif()
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insertByExample(K1Layout example) {
+  public ReceivedDocument insertByExample(ReceivedDocumentLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(example);
+    ReceivedDocument model = this.clone(example);
     try (Connection conn = this.dataSource.getConnection()) {
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     }
@@ -309,15 +325,16 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE k1")
+      .literaln("UPDATE pty_received_document")
       .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.TINYINT).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
+      .literal("  id = ").parameterNullable("m.id", Types.BIGINT).literaln(",")
+      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln(",")
+      .literal("  received = ").parameterNullable("m.received", Types.TIMESTAMP).literaln()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
-  public int update(K1 model) {
+  public int update(ReceivedDocument model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -337,19 +354,21 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE k1")
+      .literal("UPDATE pty_received_document")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
+        .if_("v.received != null").literal("received = ").parameter("v.received").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.received != null").literal("received = ").parameter("e.received").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(K1Layout example, K1Layout values) {
+  public int update(ReceivedDocumentLayout example, ReceivedDocumentLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -365,11 +384,12 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(K1Layout values, K1Table tableOrView,
+  public UpdateWherePhase update(ReceivedDocumentLayout values, ReceivedDocumentTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
+    if (values.getReceived() != null) setters.add(new Setter(tableOrView.received, sql.val(values.getReceived())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -379,14 +399,14 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM k1")
+      .literaln("DELETE FROM pty_received_document")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
-  public int delete(Byte id) {
+  public int delete(Long id) {
     if (id == null) return 0;
-    K1 filter = new K1();
+    ReceivedDocument filter = new ReceivedDocument();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -406,15 +426,16 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM k1")
+      .literaln("DELETE FROM pty_received_document")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
+        .if_("e.received != null").literal("received = ").parameter("e.received").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(K1Layout example) {
+  public int delete(ReceivedDocumentLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -429,23 +450,25 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final K1Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final ReceivedDocumentTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum K1OrderBy implements OrderBy {
+  public enum ReceivedDocumentOrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
     NAME("name", true),
-    NAME$DESC("name", false);
+    NAME$DESC("name", false),
+    RECEIVED("received", true),
+    RECEIVED$DESC("received", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private K1OrderBy(String sqlColumnName, boolean ascending) {
+    private ReceivedDocumentOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -464,39 +487,39 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // TABLE METADATA
 
-  public K1Table newTable() {
-    return new K1Table();
+  public ReceivedDocumentTable newTable() {
+    return new ReceivedDocumentTable();
   }
 
-  public K1Table newTable(final String alias) {
-    return new K1Table(alias);
+  public ReceivedDocumentTable newTable(final String alias) {
+    return new ReceivedDocumentTable(alias);
   }
 
-  public static class K1Table extends TableWithGeneratedKey<K1, Byte> {
+  public static class ReceivedDocumentTable extends Table<ReceivedDocument> {
 
     private static final NumericEntityColumnMetaData _ID = new NumericEntityColumnMetaData(
-      "ID", "id", "TINYINT", 8, 0, TypeHandler.forClass(Byte.class, TypeSource.STATIC_DIALECT_RULE, "D7"));
+      "ID", "id", "BIGINT", 64, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D10"));
     private static final CharEntityColumnMetaData _NAME = new CharEntityColumnMetaData(
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
-
-    private static final GeneratedKeysInsertExecutor<Byte> __GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysIdentityInlineResultSetInsertExecutor<Byte>(
-        KeyReader.BYTE_KEY_READER, _ID.getCanonicalName());
+    private static final DateTimeEntityColumnMetaData _RECEIVED = new DateTimeEntityColumnMetaData(
+      "RECEIVED", "received", "TIMESTAMP", 26, 6, TypeHandler.forClass(LocalDateTime.class, TypeSource.STATIC_DIALECT_RULE, "D18"));
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, _ID);
     public final CharEntityColumn name = new CharEntityColumn(this, _NAME);
+    public final DateTimeEntityColumn received = new DateTimeEntityColumn(this, _RECEIVED);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.name);
+      return new AllColumns(this.id, this.name, this.received);
     }
 
-    K1Table() {
-      super(null, null, Name.of("K1", false), "Table", null, K1Layout.class, K1.class, __GENERATED_KEY_READER_EXECUTOR);
+    ReceivedDocumentTable() {
+      super(null, null, Name.of("PTY_RECEIVED_DOCUMENT", false), "Table", null, ReceivedDocumentLayout.class, ReceivedDocument.class);
       initialize();
     }
 
-    K1Table(final String alias) {
-      super(null, null, Name.of("K1", false), "Table", alias, K1Layout.class, K1.class, __GENERATED_KEY_READER_EXECUTOR);
+    ReceivedDocumentTable(final String alias) {
+      super(null, null, Name.of("PTY_RECEIVED_DOCUMENT", false), "Table", alias, ReceivedDocumentLayout.class, ReceivedDocument.class);
       initialize();
     }
 
@@ -504,6 +527,7 @@ public class K1DAO implements Serializable, ApplicationContextAware {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
       super.columns.add(this.name);
+      super.columns.add(this.received);
     }
 
   }
