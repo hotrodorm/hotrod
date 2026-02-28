@@ -113,7 +113,8 @@ With streaming:
 
 ```java
 EmployeeTable t = this.employeeDAO.newTable();
-try (Cursor<EmployeeStreaming> emps = this.employeeDAO.selectForStreaming(t, t.branchId.eq(52)).execute()) {
+EntitySelect<EmployeeStreaming> select = this.employeeDAO.selectForStreaming(t, t.branchId.eq(52));
+try (Cursor<EmployeeStreaming> emps = select.execute()) {
   for (EmployeeStreaming emp : emps) {
     int id = emp.getId();
     String name = emp.getName();
