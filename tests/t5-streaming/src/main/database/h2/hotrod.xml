@@ -1,0 +1,277 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+    <!--
+      <discover/>
+    -->
+    </jdbc>
+  </generators>
+
+  <name-solver>
+    <name value="pty_(.+)" replace="$1" scope="table" />
+  </name-solver>
+
+  <runtime-type-solver>
+  <!-- 
+    <when test="scale > 0" java-type="java.math.BigDecimal" />
+  -->
+    <when test="precision &lt; 20" java-type="Long" />
+    <when test="scale > 0" java-type="Short" />
+  </runtime-type-solver>
+
+  <converter name="boolean_stored_as_int" type="java.lang.Boolean" raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter" />
+
+  <converter name="account_type_stored_as_char" type="app.AccountTypeConverter.AccountType"
+    raw-type="java.lang.String" class="app.AccountTypeConverter" />
+
+  <converter name="coin_type_stored_as_char" type="java.lang.Integer" raw-type="java.lang.String"
+    class="app.CoinTypeConverter" />
+
+<!-- 
+  <table name="product">
+    <column name="pid_product" sequence="seq_product" />
+  </table>
+
+  <table name="branch" />
+  <table name="other" />
+  <view name="v_other" />
+-->
+  <table name="pty_received_document" />
+
+
+<!-- 
+  <table name="'LOCAL_House'" />
+ -->
+
+  <table name="data" entity="DATALocal">
+    <column name="name" property="NAMELocalToCity" />
+  </table>
+
+  <table name="t5" />
+
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
+
+  <table name="s1">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s2">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s3">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s4">
+    <column name="id" sequence="seq1" />
+  </table>
+ 
+<!-- 
+  <view name="employee_branch" />
+  <table name="'abc_DEF'" />
+
+  <table name="coin">
+    <column name="type" converter="coin_type_stored_as_char" />
+  </table>
+
+  <table name="account">
+    <column name="balance" type="Double" />
+    <column name="active" converter="boolean_stored_as_int" />
+    <column name="type" converter="account_type_stored_as_char" />
+  </table>
+
+  <table name="employee">
+    <column name="name" property="fullName" />
+    <column name="vip" converter="boolean_stored_as_int" />
+    <sequence name="employee_seq" method="getSequenceNextValue" />
+    <sequence name="hired_seq" method="getHiredNextValue" />
+
+    <select method="findVIPEmployees">
+      SELECT name, vip, id
+      FROM employee
+      WHERE branch_id = 101
+    </select> 
+    <query method="updateEmployees">
+      update employee SET id = id
+    </query>
+
+  </table>
+ -->
+<!-- 
+    <select method="getOthers" vo="Abv">
+SELECT * FROM other
+    </select> 
+ -->
+ 
+ <!--  
+  <dao name="SalesDAO">
+    <sequence name="hired_seq" method="getHiredNextValue" />
+
+    <select method="findMyAccounts" vo="MyAccount">
+      <parameter name="codigos" type="java.util.List&lt;Integer>" />
+      select *
+      from account
+      where active
+      <complement>
+        AND id IN
+        <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">#{cod}</foreach>
+      </complement>
+    </select>
+
+    <select method="findBigAccounts" vo="BigAccount">
+      <column name="ibt_balance" java-name="grossBalance" />
+      select id, balance as ibt_balance,
+      case when active then 'Active' else 'Inactive' end as status,
+      cast(case when type = 'CHK' then balance * 1.5 else balance * 1.2 end as int) as score
+      from account
+      where balance >= 200
+    </select>
+
+    <query method="deleteAccounts">
+      delete from account where type = 'SAV'
+    </query>
+
+  </dao>
+
+ -->
+ 
+<!--
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="dates" />
+  <table name="binaries" />
+  <table name="other" />
+ -->
+
+<!--
+  update(Account row);                     // no OL
+  update(Account row);                     // Version number
+  update(Account row);                     // Timestamp
+  updateOL(Account row, Account baseline); // Full row check
+
+  update(Account values, Account filter);  // by example
+  
+  delete(int pk);                          // no OL
+  delete(int pk, int versionNumber);       // Version number
+  delete(int pk, LocalDateTime timestamp); // Timestamp
+  deleteOL(Account baseline);              // Full row check
+
+  delete(Account filter);                  // by example  
+
+  <table name="b" />
+  <table name="c" />
+ -->
+
+<!-- 
+     -->
+<!-- 
+   -->
+  
+  <!--
+    <optimistic-locking strategy="version-number" column="version" />
+    <optimistic-locking strategy="timestamp" column="updated_at" />
+    <optimistic-locking strategy="full-row-check" />
+    <column name="id" sequence="seq1" />
+
+    <column name="type" converter="account_type_stored_as_char" />
+    <column name="active" converter="boolean_stored_as_int" />
+ -->    
+<!-- 
+    <query method="activateBigAccounts">
+      <parameter name="minBalance" type="java.lang.Long" />
+      <parameter name="ids" type="java.util.List" />
+      UPDATE account
+      SET active = true
+      WHERE id IN 
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">
+        #{id}
+      </foreach>
+    </query>
+ -->
+ 
+<!-- ###  
+  -->
+<!--   
+    <select method="findBigAccounts">
+select *
+from account
+where balance >= 300
+    </select> 
+
+  </table>
+ -->
+ 
+<!--
+  <fragment file="./reporting.xml" />
+  <fragment file="./buscador.xml" />
+  <fragment file="./test4.xml" />
+-->
+
+<!-- 
+  <fragment file="./geo.xml" />
+   -->
+<!--
+  <fragment file="./test2.xml" />
+  <table name="branch">
+    <column name="is_vip" converter="boolean_stored_as_int" />
+  </table>
+ -->
+
+<!-- 
+   <dao name="Test2DAO">
+
+    <select method="findTAccounts" vo="TAccount" mode="list">
+      <parameter name="includeBalance" type="Boolean" />
+      select id, name as xname, 7*3 as total<if test="includeBalance">, balance, type as xtype, 9 * 5 as subtotal</if>
+      from account
+      where balance >= 100
+    </select> 
+ -->
+    <!-- ###
+   <dao name="OperationDAO">
+    <query method="activateBigAccounts">
+      <parameter name="minBalance" type="Long" />
+      <parameter name="ids" type="java.util.List" />
+      <parameter name="filter" type="java.lang.String" />
+      UPDATE account
+      SET active = true, balance = #{minBalance}
+      WHERE id IN 
+      <foreach item="id" collection="ids" open="(" separator=", " close=")">#{id}</foreach>
+      AND ${filter}
+      
+      <if test="abc">
+        <if test="ghi">def</if>
+      </if>
+      <set>
+        <if test="t1">u1</if>
+        <if test="t2">u2</if>
+      </set>
+      <where>
+        <if test="x1">y1</if>
+        <if test="x2">y2</if>
+      </where>
+      <trim separator=" | ">
+        <if test="x1">y1</if>
+        <if test="x2">y2</if>
+      </trim>
+      <bind name="name1" value="value1" />
+      <choose>
+        <when test="a1">a1</when>
+        <when test="a2">a2</when>
+        <otherwise>a3</otherwise>
+      </choose>
+      <choose>
+        <when test="b1">b1</when>
+        <when test="b2">b2</when>
+      </choose>
+      
+    </query>
+-->
+<!-- 
+       
+  </dao>
+  -->
+</hotrod>

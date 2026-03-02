@@ -1,0 +1,14 @@
+<hotrod-fragment package="reporting">
+
+  <dao name="Reporting">
+
+  </dao>
+
+  <table name="payment" />
+
+<!-- 
+  <table name="invoice" />
+  <table name="invoice_line" />
+--> 
+
+</hotrod-fragment>

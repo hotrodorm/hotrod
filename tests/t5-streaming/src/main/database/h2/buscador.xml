@@ -1,0 +1,26 @@
+<hotrod-fragment package="buscador">
+
+  <dao name="Buscador">
+ 
+    <select method="findTareasPorFiltro" vo="FindTareasPorFiltro">
+
+      <parameter name="idArea" java-type="java.lang.Long" />
+      <parameter name="idSector" java-type="java.lang.Long" />
+
+      select *
+      from a
+      <complement>
+        <if test="idArea != null">
+        left join b on b.aid = a.id
+          <if test="idSector != null">
+            where b.val is not null
+          </if>
+        </if>
+      </complement>
+
+    </select>
+       
+  </dao>
+
+
+</hotrod-fragment>

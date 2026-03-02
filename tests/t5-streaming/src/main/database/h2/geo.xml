@@ -1,0 +1,6 @@
+<hotrod-fragment package="geo">
+
+  <table name="vehicle" />
+  <table name="land" />
+
+</hotrod-fragment>

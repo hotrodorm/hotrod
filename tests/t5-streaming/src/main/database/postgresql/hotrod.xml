@@ -1,0 +1,10 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+    </jdbc>
+  </generators>
+
+  <table name="person" />
+
+</hotrod>

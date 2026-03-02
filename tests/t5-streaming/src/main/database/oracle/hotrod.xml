@@ -1,0 +1,75 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+    </jdbc>
+  </generators>
+
+  <type-solver>
+    <when test="typeName == 'DATE'" java-type="java.sql.Date" />
+    <when test="typeName == 'TIMESTAMP(6)'" java-type="java.sql.Timestamp" />
+  </type-solver>
+  
+  <converter name="util_SN_to_Boolean"
+    java-type="java.lang.Boolean"
+    java-raw-type="java.lang.String"
+    class="app.StringBooleanConverter"
+  />
+  
+
+<!-- 
+  <table name="A" java-name="A">
+    <column name="ID" java-name="id" />
+    <column name="FECHA" java-name="fecha" java-type="java.sql.Timestamp" />
+    <column name="ES_ACTIVO" java-name="esActivo" converter="util_SN_to_Boolean" />
+  </table>
+-->
+<!-- 
+  <table name="dates" />
+
+  <table name="product">
+    <column name="pid_product" sequence="seq_product" />
+  </table>
+     -->
+
+
+  <table name="data" />
+
+  <table name="x5" entity="T5" />
+
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
+
+  <table name="s1">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s2">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s3">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s4">
+    <column name="id" sequence="seq1" />
+  </table>
+
+<!-- 
+  <table name="chars" />
+  <table name="numbers" />
+  <table name="binaries" />
+  <table name="other" />
+
+  <table name="branch">
+    <column name="is_vip" converter="boolean_stored_as_int" />
+  </table>
+  <table name="account">
+    <column name="id" sequence="seq_account" />
+  </table>
+-->
+
+<!-- 
+  <fragment file="./reporting.xml" />
+ -->
+</hotrod>

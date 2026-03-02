@@ -1,0 +1,40 @@
+<hotrod>
+
+  <generators>
+    <jdbc>
+    </jdbc>
+  </generators>
+  
+<!--
+  <table name="invoice" />
+  <table name="branch" />
+  <table name="'CASE'" />
+  <table name="account">
+    <column name="id" sequence="seq_account" />
+  </table>
+-->
+
+  
+  <table name="t5" />
+
+  <table name="data" />
+
+  <table name="k1" />
+  <table name="k2" />
+  <table name="k3" />
+  <table name="k4" />
+
+  <table name="s1">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s2">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s3">
+    <column name="id" sequence="seq1" />
+  </table>
+  <table name="s4">
+    <column name="id" sequence="seq1" />
+  </table>  
+
+</hotrod>

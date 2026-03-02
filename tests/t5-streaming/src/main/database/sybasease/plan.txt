@@ -1,0 +1,38 @@
+ 
+QUERY PLAN FOR STATEMENT 1 (at line 1).
+Optimized using Serial Mode
+
+STEP 1
+The type of query is SELECT.
+ 
+4 operator(s) under root
+ 
+ |ROOT:EMIT Operator (VA = 4)
+ |
+ |   |SORT  Operator (VA = 3)
+ |   | Using Worktable1 for internal storage.
+ |   |
+ |   |   |NESTED LOOP JOIN Operator (VA = 2) (Join Type: Inner Join)
+ |   |   |
+ |   |   |   |SCAN Operator (VA = 0)
+ |   |   |   |  FROM TABLE
+ |   |   |   |  master.dbo.invoice
+ |   |   |   |  i
+ |   |   |   |  Table Scan.
+ |   |   |   |  Forward Scan.
+ |   |   |   |  Positioning at start of table.
+ |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+ |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+ |   |   |
+ |   |   |   |SCAN Operator (VA = 1)
+ |   |   |   |  FROM TABLE
+ |   |   |   |  master.dbo.branch
+ |   |   |   |  b
+ |   |   |   |  Using Clustered Index.
+ |   |   |   |  Index : branch_id_11381000641
+ |   |   |   |  Forward Scan.
+ |   |   |   |  Positioning by key.
+ |   |   |   |  Keys are:
+ |   |   |   |    id ASC
+ |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+ |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
