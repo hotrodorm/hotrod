@@ -55,6 +55,16 @@ public class LobTests {
     . MariaDB    | Yes     | Yes     | Yes          | Yes    | Yes        | Yes          | Yes
     . H2         | Yes     | Yes     | Yes          | Yes    | Yes        | ?            | ?
     .            |         |         |              |        |            |              |
+    
+     . Database---- setBlob()--- setBinaryStream()
+     . ------------ ------------ -----------------
+     . Oracle------ Yes--------- Yes
+     . DB2--------- Yes--------- Yes
+     . PostgreSQL-- No---------- Yes
+     . SQL Server-- Yes--------- Yes
+     . MySQL------- Yes--------- Yes
+     . MariaDB----- Yes--------- Yes
+     * 
      * </pre>
      */
     System.out.println("* " + VERIFIER);
