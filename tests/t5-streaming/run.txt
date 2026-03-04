@@ -1,0 +1,8 @@
+mvn -P oracle debbie:build && mvn -P oracle exec:java
+mvn -P db2 debbie:build && mvn -P db2 exec:java
+mvn -P postgresql debbie:build && mvn -P postgresql exec:java
+mvn -P sqlserver debbie:build && mvn -P sqlserver exec:java
+mvn -P mysql debbie:build && mvn -P mysql exec:java
+mvn -P mariadb debbie:build && mvn -P mariadb exec:java
+mvn -P h2 debbie:build && mvn -P h2 exec:java
+

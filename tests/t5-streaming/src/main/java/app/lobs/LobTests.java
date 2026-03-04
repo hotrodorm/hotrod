@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -37,11 +39,14 @@ public class LobTests {
 
     selectSingleRow(tid);
     selectMultiRow(tid);
-    selectByLobs(tid);
+//    selectByLobs(tid);
+    selectByLobsOracle(tid);
     insert(tid);
     updateByPK(tid);
-    updateByLobs(tid);
-    deleteByLobs(tid);
+//    updateByLobs(tid);
+    updateByLobsOracle(tid);
+//    deleteByLobs(tid);
+    deleteByLobsOracle(tid);
 
     /**
      * <pre>
@@ -166,6 +171,48 @@ public class LobTests {
     }
   }
 
+  private static void selectByLobsOracle(String tid) throws SQLException, IOException, FileNotFoundException {
+    System.out.println("\n3. SELECT blob+clob, multi-row, with blob+clob search criteria.");
+    try (InputStream isPhoto = new FileInputStream("data/b1.png")) {
+      try (Reader readerContract = new FileReader("data/c1.txt")) {
+        try (Connection conn = getConnection()) {
+          try (PreparedStatement ps = conn.prepareStatement(
+              "SELECT id, photo, contract FROM person WHERE dbms_lob.compare(photo, ?) = 0 AND dbms_lob.compare(contract, ?) = 0");) {
+            setBlob(ps, 1, isPhoto, conn);
+            ps.setCharacterStream(2, readerContract);
+            try (ResultSet rs = ps.executeQuery()) {
+              int rn = 0;
+              while (rs.next()) {
+                rn++;
+                int id = rs.getInt(1);
+                VERIFIER.equals(rs, 2, id == 1 ? B1 : B4);
+                VERIFIER.equals(rs, 3, id == 1 ? C1 : C4);
+              }
+              VERIFIER.equals(rn, 2);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private static void setBlob(PreparedStatement ps, int ordinal, InputStream isPhoto, Connection conn)
+      throws SQLException, IOException {
+    Blob blob = conn.createBlob();
+    ps.setBlob(ordinal, blob);
+    try (OutputStream os = blob.setBinaryStream(1)) {
+      byte[] buffer = new byte[10 * 1024];
+      int nread = 0;
+      int bytes = 0;
+      while ((nread = isPhoto.read(buffer)) != -1) {
+        System.out.println("* read: " + HexaUtils.toHexa(buffer, 0, nread));
+        os.write(buffer, 0, nread);
+        bytes = bytes + nread;
+      }
+      System.out.println("* bytes=" + bytes);
+    }
+  }
+
   private static void insert(String tid) throws SQLException, IOException, FileNotFoundException {
     System.out.println("\n4. INSERT.");
     try (InputStream isPhoto = new FileInputStream("data/b5.png")) {
@@ -224,6 +271,29 @@ public class LobTests {
     }
   }
 
+  private static void updateByLobsOracle(String tid) throws SQLException, IOException, FileNotFoundException {
+    System.out.println("\n6. UPDATE by LOBs.");
+    try (InputStream streamVPhoto = new FileInputStream("data/b6.png")) {
+      try (Reader readerVContract = new FileReader("data/c6.txt")) {
+        try (InputStream streamSPhoto = new FileInputStream("data/b5.png")) {
+          try (Reader readerSContract = new FileReader("data/c5.txt")) {
+            try (Connection conn = getConnection()) {
+              try (PreparedStatement ps = conn.prepareStatement(
+                  "UPDATE person SET photo = ?, contract = ? WHERE dbms_lob.compare(photo, ?) = 0 AND dbms_lob.compare(contract, ?) = 0");) {
+                setBlob(ps, 1, streamVPhoto, conn);
+                ps.setCharacterStream(2, readerVContract);
+                setBlob(ps, 3, streamSPhoto, conn);
+                ps.setCharacterStream(4, readerSContract);
+                int count = ps.executeUpdate();
+                VERIFIER.equals(count, 2);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   private static void deleteByLobs(String tid) throws SQLException, IOException, FileNotFoundException {
     System.out.println("\n7. DELETE.");
     try (InputStream streamSPhoto = new FileInputStream("data/b6.png")) {
@@ -231,6 +301,23 @@ public class LobTests {
         try (Connection conn = getConnection()) {
           try (PreparedStatement ps = conn.prepareStatement("DELETE FROM person WHERE photo = ? AND contract = ?");) {
             ps.setBinaryStream(1, streamSPhoto);
+            ps.setCharacterStream(2, readerSContract);
+            int count = ps.executeUpdate();
+            VERIFIER.equals(count, 2);
+          }
+        }
+      }
+    }
+  }
+
+  private static void deleteByLobsOracle(String tid) throws SQLException, IOException, FileNotFoundException {
+    System.out.println("\n7. DELETE.");
+    try (InputStream streamSPhoto = new FileInputStream("data/b6.png")) {
+      try (Reader readerSContract = new FileReader("data/c6.txt")) {
+        try (Connection conn = getConnection()) {
+          try (PreparedStatement ps = conn.prepareStatement(
+              "DELETE FROM person WHERE dbms_lob.compare(photo, ?) = 0 AND dbms_lob.compare(contract, ?) = 0");) {
+            setBlob(ps, 1, streamSPhoto, conn);
             ps.setCharacterStream(2, readerSContract);
             int count = ps.executeUpdate();
             VERIFIER.equals(count, 2);
