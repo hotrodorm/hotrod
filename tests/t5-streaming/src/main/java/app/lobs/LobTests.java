@@ -42,6 +42,7 @@ public class LobTests {
 //    selectByLobs(tid);
     selectByLobsOracle(tid);
     insert(tid);
+//    selectByLobs2(tid);
     updateByPK(tid);
 //    updateByLobs(tid);
     updateByLobsOracle(tid);
@@ -52,7 +53,7 @@ public class LobTests {
      * <pre>
     . Database   | select1 | selectN | selectByLobs | insert | updateByPK | updateByLobs | deleteByLobs
     . ---------- | ------- | ------- | ------------ | ------ | ---------- | ------------ | ------------
-    . Oracle     | Yes     | Yes     | ?            | Yes    | Yes        | ?            | ?
+    . Oracle     | Yes     | Yes     | Yes*         | Yes    | Yes        | Yes*         | Yes*
     . DB2        | Yes     | Yes     | Yes          | Yes    | Yes        | Yes          | Yes
     . PostgreSQL | Yes     | Yes     | Yes          | Yes    | Yes        | Yes          | Yes
     . SQL Server | Yes     | Yes     | Yes          | Yes    | Yes        | Yes          | Yes
@@ -60,6 +61,8 @@ public class LobTests {
     . MariaDB    | Yes     | Yes     | Yes          | Yes    | Yes        | Yes          | Yes
     . H2         | Yes     | Yes     | Yes          | Yes    | Yes        | ?            | ?
     .            |         |         |              |        |            |              |
+    
+    * Oracle uses a non-standard mechanism to stream and compare blobs and clobs. But it works.
     
      . Database---- setBlob()--- setBinaryStream()
      . ------------ ------------ -----------------
@@ -242,6 +245,29 @@ public class LobTests {
             ps.setCharacterStream(2, readerContract);
             int count = ps.executeUpdate();
             VERIFIER.equals(count, 1);
+          }
+        }
+      }
+    }
+  }
+
+  private static void selectByLobs2(String tid) throws SQLException, IOException, FileNotFoundException {
+    System.out.println("\n3. SELECT blob+clob, multi-row, with blob+clob search criteria.");
+    try (InputStream isPhoto = new FileInputStream("data/b5.png")) {
+      try (Reader readerContract = new FileReader("data/c5.txt")) {
+        try (Connection conn = getConnection()) {
+          try (PreparedStatement ps = conn
+              .prepareStatement("SELECT id, photo, contract FROM person WHERE photo = ? AND contract = ?");) {
+            ps.setBinaryStream(1, isPhoto);
+            ps.setCharacterStream(2, readerContract);
+            try (ResultSet rs = ps.executeQuery()) {
+              int rn = 0;
+              while (rs.next()) {
+                rn++;
+                int id = rs.getInt(1);
+              }
+              VERIFIER.equals(rn, 1);
+            }
           }
         }
       }
