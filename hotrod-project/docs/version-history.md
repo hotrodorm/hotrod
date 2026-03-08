@@ -2,7 +2,13 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.12 (unreleased):
+## 5.1.13 (unreleased):
+
+- LiveSQL:
+    - Fixed converter metadata in LiveSQL.
+    - Refactoring of flar SELECT classes.
+
+## 5.1.12:
 
 - LiveSQL:
     - LiveSQL INSERT queries (with VALUES and also with SELECT) now retrieve the generated keys in addition to the count of rows, in the databases that supports it.
