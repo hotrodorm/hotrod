@@ -1340,7 +1340,7 @@ public class DAOWriter {
         throw new ErrorMessageException("HotRod does not support primary key generation using the " + keyClass
             + " class. The supported types are Byte, Short, Integer, and Long.");
       }
-      executorMemberName = "__GENERATED_KEY_READER_EXECUTOR";
+      executorMemberName = "GENERATED_KEY_READER_EXECUTOR";
     }
 
     Id catalog = this.metadata.getId().getCatalog();
@@ -1354,29 +1354,82 @@ public class DAOWriter {
 
     w.println();
     w.println("  // " + entityType.toUpperCase() + " METADATA");
+
     w.println();
-    w.println("  public ", ec, " new" + entityType + "() {");
-    w.println("    return new ", ec, "();");
-    w.println("  }");
-    w.println();
-    w.println("  public ", ec, " new" + entityType + "(final String alias) {");
-    w.println("    return new ", ec, "(alias);");
-    w.println("  }");
-    w.println();
-    w.print("  public static class ", ec);
-    w.print(" extends ", pc, "<", em);
+    w.println("  static class MetaData {");
+
+    // Insert Executor
+
     if (generatesKeys) {
-      w.print(", ", kc);
+
+      Class<?> insertExecutor;
+      String sequenceSelect;
+      String keyEntityName;
+      String keyColumnName;
+      String outputClausePrefix;
+
+      ColumnMetadata pkColumn = this.metadata.getPK().getColumns().get(0);
+
+      switch (this.insertMechanics.getMode()) {
+      case IDENTITY_INLINE_KEYS_RESULTSET:
+        insertExecutor = GeneratedKeysIdentityInlineResultSetInsertExecutor.class;
+        sequenceSelect = null;
+        keyEntityName = null;
+        keyColumnName = pkColumn.getId().getJavaConstantName() + ".getCanonicalName()";
+        outputClausePrefix = null;
+        break;
+      case SEQUENCE_PREFETCH:
+        insertExecutor = GeneratedKeysSequencePreFetchInsertExecutor.class;
+        sequenceSelect = insertMechanics.getSequencePreFetchSQL();
+        keyEntityName = pkColumn.getId().getJavaConstantName();
+        keyColumnName = null;
+        outputClausePrefix = null;
+        break;
+      case SEQUENCE_INLINE_DATA_RESULTSET:
+        insertExecutor = GeneratedKeysSequenceInlineDataResultSetExecutor.class;
+        sequenceSelect = insertMechanics.getSequenceInlineSQL();
+        keyEntityName = pkColumn.getId().getJavaConstantName();
+        keyColumnName = null;
+        outputClausePrefix = insertMechanics.getOutputClause();
+        break;
+      case SEQUENCE_INLINE_KEYS_RESULTSET:
+        insertExecutor = GeneratedKeysSequenceInlineKeysResultSetExecutor.class;
+        sequenceSelect = insertMechanics.getSequenceInlineSQL();
+        keyEntityName = pkColumn.getId().getJavaConstantName();
+        keyColumnName = null;
+        outputClausePrefix = null;
+        break;
+      default:
+        throw new ErrorMessageException("Invalid generation mechanics selects: " + this.insertMechanics.getMode());
+      }
+
+      ExternalClass ie = ExternalClass.of(insertExecutor);
+
+      w.println();
+      w.print("    static final ", GeneratedKeysInsertExecutor.class, "<", kc, "> " + executorMemberName + " = ");
+      w.println("new ", ie, "<", kc, ">(");
+      w.print("        ", KeyReader.class, "." + keyReader);
+      if (sequenceSelect != null) {
+        w.print(", \"" + SUtil.escapeJavaString(sequenceSelect) + "\"");
+      }
+      if (keyEntityName != null) {
+        w.print(", MetaData." + keyEntityName);
+      }
+      if (keyColumnName != null) {
+        w.print(", MetaData." + keyColumnName);
+      }
+      if (outputClausePrefix != null) {
+        w.print(", \"" + SUtil.escapeJavaString(outputClausePrefix) + "\"");
+      }
+      w.println(");");
+
     }
-    w.println("> {");
+
     w.println();
-
-    // Entity Column -- TODO
-
     int thId = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      String metaDataColumnName = "_" + cm.getId().getJavaConstantName();
+      String metaDataColumnName = cm.getId().getJavaConstantName();
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
 
@@ -1384,7 +1437,7 @@ public class DAOWriter {
 
       if (cm.getResolvedConverter() == null) { // Direct Column
 
-        w.print("    private static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
+        w.print("    static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
         w.println(" = new ", DirectEntityColumnMetaData.class, "(");
         w.print("      " //
             + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
@@ -1408,15 +1461,15 @@ public class DAOWriter {
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
         ExternalClass converterClass = ExternalClass.of(cm.getResolvedConverter().getConverterClass());
 
-        w.print("    private static final ", TypeHandler.class, "<", rawClass, ", ");
-        String thName = "_TH" + thId;
+        w.print("    static final ", TypeHandler.class, "<", rawClass, ", ");
+        String thName = "TH" + thId;
         w.print(domainClass, "> " + thName + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
         TypeSource typeSource = cm.getType().getTypeSource();
         String ruleNumber = cm.getType().getRuleNumber();
         w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
             + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
 
-        w.print("    private static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
+        w.print("    static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedColumnMetaData.class);
         w.println("<", rawClass, ", ", domainClass, ">(");
         w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
@@ -1431,73 +1484,24 @@ public class DAOWriter {
 
     }
 
-    // Insert Executor
+    w.println();
+    w.println("  }");
 
+    w.println();
+    w.println("  public ", ec, " new" + entityType + "() {");
+    w.println("    return new ", ec, "();");
+    w.println("  }");
+    w.println();
+    w.println("  public ", ec, " new" + entityType + "(final String alias) {");
+    w.println("    return new ", ec, "(alias);");
+    w.println("  }");
+    w.println();
+    w.print("  public static class ", ec);
+    w.print(" extends ", pc, "<", em);
     if (generatesKeys) {
-
-      Class<?> insertExecutor;
-      String sequenceSelect;
-      String keyEntityName;
-      String keyColumnName;
-      String outputClausePrefix;
-
-      ColumnMetadata pkColumn = this.metadata.getPK().getColumns().get(0);
-
-      switch (this.insertMechanics.getMode()) {
-      case IDENTITY_INLINE_KEYS_RESULTSET:
-        insertExecutor = GeneratedKeysIdentityInlineResultSetInsertExecutor.class;
-        sequenceSelect = null;
-        keyEntityName = null;
-        keyColumnName = "_" + pkColumn.getId().getJavaConstantName() + ".getCanonicalName()";
-        outputClausePrefix = null;
-        break;
-      case SEQUENCE_PREFETCH:
-        insertExecutor = GeneratedKeysSequencePreFetchInsertExecutor.class;
-        sequenceSelect = insertMechanics.getSequencePreFetchSQL();
-        keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
-        outputClausePrefix = null;
-        break;
-      case SEQUENCE_INLINE_DATA_RESULTSET:
-        insertExecutor = GeneratedKeysSequenceInlineDataResultSetExecutor.class;
-        sequenceSelect = insertMechanics.getSequenceInlineSQL();
-        keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
-        outputClausePrefix = insertMechanics.getOutputClause();
-        break;
-      case SEQUENCE_INLINE_KEYS_RESULTSET:
-        insertExecutor = GeneratedKeysSequenceInlineKeysResultSetExecutor.class;
-        sequenceSelect = insertMechanics.getSequenceInlineSQL();
-        keyEntityName = "_" + pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
-        outputClausePrefix = null;
-        break;
-      default:
-        throw new ErrorMessageException("Invalid generation mechanics selects: " + this.insertMechanics.getMode());
-      }
-
-      ExternalClass ie = ExternalClass.of(insertExecutor);
-
-      w.println();
-      w.print("    private static final ", GeneratedKeysInsertExecutor.class, "<", kc,
-          "> " + executorMemberName + " = ");
-      w.println("new ", ie, "<", kc, ">(");
-      w.print("        ", KeyReader.class, "." + keyReader);
-      if (sequenceSelect != null) {
-        w.print(", \"" + SUtil.escapeJavaString(sequenceSelect) + "\"");
-      }
-      if (keyEntityName != null) {
-        w.print(", " + keyEntityName);
-      }
-      if (keyColumnName != null) {
-        w.print(", " + keyColumnName);
-      }
-      if (outputClausePrefix != null) {
-        w.print(", \"" + SUtil.escapeJavaString(outputClausePrefix) + "\"");
-      }
-      w.println(");");
-
+      w.print(", ", kc);
     }
+    w.println("> {");
 
     // Entity Instance Column
 
@@ -1505,14 +1509,14 @@ public class DAOWriter {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      Class<?> liveSQLInstanceColumnType = toLiveSQLEntityInstanceType(javaType);
-      String keyEntityName = "_" + cm.getId().getJavaConstantName();
+      Class<?> liveSQLColumnType = toLiveSQLEntityInstanceType(javaType);
+      String keyEntityName = cm.getId().getJavaConstantName();
       String keyEntityInstanceName = cm.getId().getJavaMemberName();
 
-      ExternalClass lt = ExternalClass.of(liveSQLInstanceColumnType);
+      ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
       w.print("    public final ", lt, " " + keyEntityInstanceName + " = new ", lt, "(this, ");
-      w.println(keyEntityName + ");");
+      w.println("MetaData.", keyEntityName + ");");
     }
 
     // star method
@@ -1551,7 +1555,7 @@ public class DAOWriter {
 
     w.print(", \"" + entityType + "\", null, ", el, ".class, ", em, ".class");
     if (generatesKeys) {
-      w.print(", " + executorMemberName);
+      w.print(", MetaData." + executorMemberName);
     }
     w.println(");");
 
@@ -1578,7 +1582,7 @@ public class DAOWriter {
 
     w.print(", \"" + entityType + "\", alias, ", el, ".class, ", em, ".class");
     if (generatesKeys) {
-      w.print(", " + executorMemberName);
+      w.print(", MetaData." + executorMemberName);
     }
     w.println(");");
 
