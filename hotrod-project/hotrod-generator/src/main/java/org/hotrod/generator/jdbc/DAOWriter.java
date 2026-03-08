@@ -1364,8 +1364,8 @@ public class DAOWriter {
 
       Class<?> insertExecutor;
       String sequenceSelect;
-      String keyEntityName;
-      String keyColumnName;
+      String metaDataColumnName;
+      String metaDataCanonicalName;
       String outputClausePrefix;
 
       ColumnMetadata pkColumn = this.metadata.getPK().getColumns().get(0);
@@ -1374,29 +1374,29 @@ public class DAOWriter {
       case IDENTITY_INLINE_KEYS_RESULTSET:
         insertExecutor = GeneratedKeysIdentityInlineResultSetInsertExecutor.class;
         sequenceSelect = null;
-        keyEntityName = null;
-        keyColumnName = pkColumn.getId().getJavaConstantName() + ".getCanonicalName()";
+        metaDataColumnName = null;
+        metaDataCanonicalName = this.getColumnMetaDataId(pkColumn) + ".getCanonicalName()";
         outputClausePrefix = null;
         break;
       case SEQUENCE_PREFETCH:
         insertExecutor = GeneratedKeysSequencePreFetchInsertExecutor.class;
         sequenceSelect = insertMechanics.getSequencePreFetchSQL();
-        keyEntityName = pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
+        metaDataColumnName = this.getColumnMetaDataId(pkColumn);
+        metaDataCanonicalName = null;
         outputClausePrefix = null;
         break;
       case SEQUENCE_INLINE_DATA_RESULTSET:
         insertExecutor = GeneratedKeysSequenceInlineDataResultSetExecutor.class;
         sequenceSelect = insertMechanics.getSequenceInlineSQL();
-        keyEntityName = pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
+        metaDataColumnName = this.getColumnMetaDataId(pkColumn);
+        metaDataCanonicalName = null;
         outputClausePrefix = insertMechanics.getOutputClause();
         break;
       case SEQUENCE_INLINE_KEYS_RESULTSET:
         insertExecutor = GeneratedKeysSequenceInlineKeysResultSetExecutor.class;
         sequenceSelect = insertMechanics.getSequenceInlineSQL();
-        keyEntityName = pkColumn.getId().getJavaConstantName();
-        keyColumnName = null;
+        metaDataColumnName = this.getColumnMetaDataId(pkColumn);
+        metaDataCanonicalName = null;
         outputClausePrefix = null;
         break;
       default:
@@ -1412,11 +1412,11 @@ public class DAOWriter {
       if (sequenceSelect != null) {
         w.print(", \"" + SUtil.escapeJavaString(sequenceSelect) + "\"");
       }
-      if (keyEntityName != null) {
-        w.print(", MetaData." + keyEntityName);
+      if (metaDataColumnName != null) {
+        w.print(", MetaData." + metaDataColumnName);
       }
-      if (keyColumnName != null) {
-        w.print(", MetaData." + keyColumnName);
+      if (metaDataCanonicalName != null) {
+        w.print(", MetaData." + metaDataCanonicalName);
       }
       if (outputClausePrefix != null) {
         w.print(", \"" + SUtil.escapeJavaString(outputClausePrefix) + "\"");
@@ -1429,7 +1429,7 @@ public class DAOWriter {
     int thId = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      String metaDataColumnName = cm.getId().getJavaConstantName();
+      String metaDataColumnName = getColumnMetaDataId(cm);
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
 
@@ -1510,13 +1510,14 @@ public class DAOWriter {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       Class<?> liveSQLColumnType = toLiveSQLEntityInstanceType(javaType);
-      String keyEntityName = cm.getId().getJavaConstantName();
+      String metaDataColumnName = getColumnMetaDataId(cm);
+
       String keyEntityInstanceName = cm.getId().getJavaMemberName();
 
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
       w.print("    public final ", lt, " " + keyEntityInstanceName + " = new ", lt, "(this, ");
-      w.println("MetaData.", keyEntityName + ");");
+      w.println("MetaData.", metaDataColumnName + ");");
     }
 
     // star method
@@ -1599,6 +1600,10 @@ public class DAOWriter {
     w.println("    }");
     w.println();
     w.println("  }");
+  }
+
+  private String getColumnMetaDataId(ColumnMetadata cm) {
+    return cm.getId().getJavaConstantName() + "_META_DATA";
   }
 
   private String resolveType(final ColumnMetadata cm) {
