@@ -6,7 +6,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - LiveSQL:
     - Fixed converter metadata in LiveSQL.
-    - Refactoring of flar SELECT classes.
+    - Refactoring of flat SELECT classes.
 
 ## 5.1.12:
 
