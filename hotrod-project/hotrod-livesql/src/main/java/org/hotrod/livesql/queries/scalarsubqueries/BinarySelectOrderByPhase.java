@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 
 public class BinarySelectOrderByPhase extends BinarySelectExpression {
 
   // Constructor
 
-  BinarySelectOrderByPhase(final UnarySelectObject<Row> select, final OrderingTerm... orderingTerms) {
+  BinarySelectOrderByPhase(final FlatSelectObject<Row> select, final OrderingTerm... orderingTerms) {
     super(select);
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }

@@ -5,7 +5,7 @@ import java.util.Set;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 

@@ -12,11 +12,11 @@ import org.hotrod.livesql.queries.QueryWriter;
 public abstract class CriteriaPhase<T> implements EntitySelect<T> {
 
   protected LiveSQLContext context;
-  protected UnarySelectObject<T> select;
+  protected FlatSelectObject<T> select;
   protected RowReader<T> rowReader;
   protected LiveSQLLogging logger;
 
-  protected CriteriaPhase(final LiveSQLContext context, final UnarySelectObject<T> select, RowReader<T> rowReader,
+  protected CriteriaPhase(final LiveSQLContext context, final FlatSelectObject<T> select, RowReader<T> rowReader,
       LiveSQLLogging logger) {
     this.context = context;
     this.select = select;

@@ -18,7 +18,7 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.TableExpression;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -27,7 +27,7 @@ public class ObjectSelectFromPhase extends ObjectSelectExpression {
 
   // Constructor
 
-  ObjectSelectFromPhase(final UnarySelectObject<Row> select, final TableExpression t) {
+  ObjectSelectFromPhase(final FlatSelectObject<Row> select, final TableExpression t) {
     super(select);
     this.select.setBaseTableExpression(t);
   }

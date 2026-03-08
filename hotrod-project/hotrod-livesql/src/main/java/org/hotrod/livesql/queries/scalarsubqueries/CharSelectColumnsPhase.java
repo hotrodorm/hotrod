@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.queries.ctes.CTE;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
 
 public class CharSelectColumnsPhase extends CharSelectExpression {
@@ -15,7 +15,7 @@ public class CharSelectColumnsPhase extends CharSelectExpression {
   // Constructor
 
   public CharSelectColumnsPhase(final List<CTE> ctes, final boolean distinct, final CharExpression expression) {
-    super(new UnarySelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
+    super(new FlatSelectObject<Row>(ctes, distinct, true, Arrays.asList(expression).stream().collect(Collectors.toList())));
   }
 
   // Next stages

@@ -19,13 +19,13 @@ import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
 import org.hotrod.livesql.util.ColumnReader;
 
-public class UnaryRowReader<T> implements RowReader<T> {
+public class FlatRowReader<T> implements RowReader<T> {
 
-  private static final Logger log = Logger.getLogger(UnaryRowReader.class.getName());
+  private static final Logger log = Logger.getLogger(FlatRowReader.class.getName());
 
   private List<Expression> queryColumns;
 
-  public UnaryRowReader(final LiveSQLContext context, final LiveSQLPreparedQuery q, final ResultSet rs)
+  public FlatRowReader(final LiveSQLContext context, final LiveSQLPreparedQuery q, final ResultSet rs)
       throws SQLException {
     log.fine("init");
     this.queryColumns = q.getQueryColumns();

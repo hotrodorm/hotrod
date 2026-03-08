@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ToString;

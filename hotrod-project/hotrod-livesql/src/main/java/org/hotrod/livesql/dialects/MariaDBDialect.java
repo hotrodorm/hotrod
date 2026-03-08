@@ -25,8 +25,8 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.SShield;
-import org.hotrod.livesql.queries.select.UnarySelectObject.LockingConcurrency;
-import org.hotrod.livesql.queries.select.UnarySelectObject.LockingMode;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingConcurrency;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
 

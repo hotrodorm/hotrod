@@ -26,7 +26,7 @@ import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata.TuplesJoin;

@@ -26,7 +26,7 @@ public class SelectColumnsPhase<R> extends IndividualSelectPhase<R> {
       }
     }
     SelectObject<R> m = this.combined.getLastSelect();
-    UnarySelectObject<R> s = (UnarySelectObject<R>) m;
+    FlatSelectObject<R> s = (FlatSelectObject<R>) m;
     s.setResultSetColumns(Arrays.asList(resultSetColumns).stream().collect(Collectors.toList()));
   }
 

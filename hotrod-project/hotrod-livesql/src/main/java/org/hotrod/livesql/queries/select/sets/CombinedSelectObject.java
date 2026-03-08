@@ -21,8 +21,8 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.livesql.util.ToString;
 
@@ -84,7 +84,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
     multiset.setParent(this);
   }
 
-  public void add(final SetOperator operator, final UnarySelectObject<T> select) {
+  public void add(final SetOperator operator, final FlatSelectObject<T> select) {
     SetOperatorTerm<T> term = new SetOperatorTerm<>(operator, select);
     this.combined.add(term);
     this.lastSelect = select;

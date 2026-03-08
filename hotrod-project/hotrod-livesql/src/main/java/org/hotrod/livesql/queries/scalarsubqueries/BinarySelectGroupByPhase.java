@@ -5,14 +5,14 @@ import java.util.Arrays;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class BinarySelectGroupByPhase extends BinarySelectExpression {
 
   // Constructor
 
-  BinarySelectGroupByPhase(final UnarySelectObject<Row> select, final ComparableExpression... expressions) {
+  BinarySelectGroupByPhase(final FlatSelectObject<Row> select, final ComparableExpression... expressions) {
     super(select);
     this.select.setGroupBy(Arrays.asList(expressions));
   }

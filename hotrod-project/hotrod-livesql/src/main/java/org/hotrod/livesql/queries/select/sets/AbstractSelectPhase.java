@@ -10,7 +10,7 @@ import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Select;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 
 public class AbstractSelectPhase<R> extends Select<R> {
 
@@ -24,7 +24,7 @@ public class AbstractSelectPhase<R> extends Select<R> {
   public AbstractSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final boolean doNotAliasColumns) {
     this.context = context;
-    UnarySelectObject<R> s = new UnarySelectObject<>(ctes, distinct, doNotAliasColumns);
+    FlatSelectObject<R> s = new FlatSelectObject<>(ctes, distinct, doNotAliasColumns);
     this.combined = new CombinedSelectObject<>(s);
     s.setParent(this.combined);
   }
@@ -32,7 +32,7 @@ public class AbstractSelectPhase<R> extends Select<R> {
   public AbstractSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final Expression[] distinctOn,
       final boolean doNotAliasColumns) {
     this.context = context;
-    UnarySelectObject<R> s = new UnarySelectObject<>(ctes, distinctOn, doNotAliasColumns, null);
+    FlatSelectObject<R> s = new FlatSelectObject<>(ctes, distinctOn, doNotAliasColumns, null);
     this.combined = new CombinedSelectObject<>(s);
     s.setParent(this.combined);
   }

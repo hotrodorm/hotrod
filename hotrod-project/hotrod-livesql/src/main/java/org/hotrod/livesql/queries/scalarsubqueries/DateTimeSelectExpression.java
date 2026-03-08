@@ -5,17 +5,17 @@ import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 
 public class DateTimeSelectExpression extends DateTimeSyntaxExpression {
 
   // Properties
 
-  protected UnarySelectObject<Row> select;
+  protected FlatSelectObject<Row> select;
 
   // Constructor
 
-  public DateTimeSelectExpression(final UnarySelectObject<Row> select) {
+  public DateTimeSelectExpression(final FlatSelectObject<Row> select) {
     super(Expression.PRECEDENCE_PARENTHESIS);
 
     if (select == null) {

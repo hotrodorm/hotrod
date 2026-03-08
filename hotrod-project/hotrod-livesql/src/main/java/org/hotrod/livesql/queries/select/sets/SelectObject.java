@@ -21,7 +21,7 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.UnarySelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.livesql.util.ToString;
 
@@ -151,7 +151,7 @@ public abstract class SelectObject<T> {
 
         try (ResultSet rs = ps.executeQuery()) {
 
-          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
+          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new FlatRowReader<>(context, q, rs);
 //          log.info("effectiveRowReader=" + effectiveRowReader);
 
           LoggingUtil.logQuery(q, loggingAdapter);
@@ -191,7 +191,7 @@ public abstract class SelectObject<T> {
 
         try (ResultSet rs = ps.executeQuery()) {
 
-          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new UnaryRowReader<>(context, q, rs);
+          final RowReader<T> effectiveRowReader = rowReader != null ? rowReader : new FlatRowReader<>(context, q, rs);
 
           LoggingUtil.logQuery(q, loggingAdapter);
 

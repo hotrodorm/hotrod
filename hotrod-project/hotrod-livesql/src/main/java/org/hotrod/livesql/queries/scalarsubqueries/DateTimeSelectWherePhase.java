@@ -3,14 +3,14 @@ package org.hotrod.livesql.queries.scalarsubqueries;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DateTimeSelectWherePhase extends DateTimeSelectExpression {
 
   // Constructors
 
-  DateTimeSelectWherePhase(final UnarySelectObject<Row> select, final Predicate predicate) {
+  DateTimeSelectWherePhase(final FlatSelectObject<Row> select, final Predicate predicate) {
     super(select);
     this.select.setWhereCondition(predicate);
   }

@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 
 public class BinarySelectOffsetPhase extends BinarySelectExpression {
 
   // Constructor
 
-  BinarySelectOffsetPhase(final UnarySelectObject<Row> select, final int offset) {
+  BinarySelectOffsetPhase(final FlatSelectObject<Row> select, final int offset) {
     super(select);
     this.select.setOffset(offset);
   }

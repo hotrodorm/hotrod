@@ -1,13 +1,13 @@
 package org.hotrod.livesql.queries.scalarsubqueries;
 
 import org.hotrod.dynamicsql.Row;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
+import org.hotrod.livesql.queries.select.FlatSelectObject;
 
 public class BinarySelectLimitPhase extends BinarySelectExpression {
 
   // Constructor
 
-  BinarySelectLimitPhase(final UnarySelectObject<Row> select, final int limit) {
+  BinarySelectLimitPhase(final FlatSelectObject<Row> select, final int limit) {
     super(select);
     this.select.setLimit(limit);
   }

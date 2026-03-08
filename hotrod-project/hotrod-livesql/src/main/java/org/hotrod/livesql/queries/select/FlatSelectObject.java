@@ -36,9 +36,9 @@ import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.utils.Separator;
 import org.springframework.util.ReflectionUtils;
 
-public class UnarySelectObject<T> extends BaseSelectObject<T> {
+public class FlatSelectObject<T> extends BaseSelectObject<T> {
 
-  private static final Logger log = Logger.getLogger(UnarySelectObject.class.getName());
+  private static final Logger log = Logger.getLogger(FlatSelectObject.class.getName());
 
   private boolean doNotAliasColumns;
 
@@ -50,13 +50,13 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     WAIT, NO_WAIT, SKIP_LOCKED
   };
 
-  public UnarySelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
+  public FlatSelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns) {
     super(ctes, distinct);
     this.distinctOn = null;
     this.doNotAliasColumns = doNotAliasColumns;
   }
 
-  public UnarySelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns,
+  public FlatSelectObject(final List<CTE> ctes, final boolean distinct, final boolean doNotAliasColumns,
       final List<SQLExpression> resultSetColumns) {
     super(ctes, distinct);
     this.distinctOn = null;
@@ -64,7 +64,7 @@ public class UnarySelectObject<T> extends BaseSelectObject<T> {
     this.sqlExpressions = resultSetColumns;
   }
 
-  public UnarySelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
+  public FlatSelectObject(final List<CTE> ctes, final Expression[] distinctOn, final boolean doNotAliasColumns,
       final List<SQLExpression> resultSetColumns) {
     super(ctes, false);
 
