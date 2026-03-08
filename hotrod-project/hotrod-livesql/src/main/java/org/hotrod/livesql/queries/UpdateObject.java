@@ -12,7 +12,7 @@ import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.util.LoggingUtil;
@@ -35,7 +35,7 @@ public class UpdateObject {
     this.tableOrView = from;
   }
 
-  void addSetter(final EntityColumnMetadata c, final Expression e) {
+  void addSetter(final EntityColumn c, final Expression e) {
     this.setters.add(new Assignment(c, e));
   }
 
@@ -125,15 +125,15 @@ public class UpdateObject {
 
   private static class Assignment {
 
-    private EntityColumnMetadata c;
+    private EntityColumn c;
     private Expression e;
 
-    public Assignment(final EntityColumnMetadata c, final Expression e) {
+    public Assignment(final EntityColumn c, final Expression e) {
       this.c = c;
       this.e = e;
     }
 
-    public EntityColumnMetadata getColumn() {
+    public EntityColumn getColumn() {
       return c;
     }
 

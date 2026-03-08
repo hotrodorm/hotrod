@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
@@ -25,7 +25,7 @@ public class GeneratedKeysInsertObject<T> {
 
   private GeneratedKeysInsertExecutor<T> executor;
   private TableOrView<?> into;
-  private List<EntityColumnMetadata> columns;
+  private List<EntityColumnMetaData> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
 
@@ -39,7 +39,7 @@ public class GeneratedKeysInsertObject<T> {
     this.into = into;
   }
 
-  void setColumns(final List<EntityColumnMetadata> columns) {
+  void setColumns(final List<EntityColumnMetaData> columns) {
     this.columns = columns;
   }
 
@@ -113,7 +113,7 @@ public class GeneratedKeysInsertObject<T> {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
       }
-      for (EntityColumnMetadata c : this.columns) {
+      for (EntityColumnMetaData c : this.columns) {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }
@@ -158,23 +158,23 @@ public class GeneratedKeysInsertObject<T> {
 
   public static class InsertSelectRenderingEdits {
 
-    private EntityColumnMetadata prependInsertColumn;
+    private EntityColumnMetaData prependInsertColumn;
     private ComparableExpression prependValue;
     private String outputClausePrefix; // OUTPUT INSERTED. -> OUTPUT INSERTED.id
 
-    private InsertSelectRenderingEdits(EntityColumnMetadata prependInsertColumn, ComparableExpression prependValue,
+    private InsertSelectRenderingEdits(EntityColumnMetaData prependInsertColumn, ComparableExpression prependValue,
         String outputClausePrefix) {
       this.prependInsertColumn = prependInsertColumn;
       this.prependValue = prependValue;
       this.outputClausePrefix = outputClausePrefix;
     }
 
-    public static InsertSelectRenderingEdits of(EntityColumnMetadata prependInsertColumn,
+    public static InsertSelectRenderingEdits of(EntityColumnMetaData prependInsertColumn,
         ComparableExpression prependValue, String outputClausePrefix) {
       return new InsertSelectRenderingEdits(prependInsertColumn, prependValue, outputClausePrefix);
     }
 
-    public final EntityColumnMetadata getPrependInsertColumn() {
+    public final EntityColumnMetaData getPrependInsertColumn() {
       return prependInsertColumn;
     }
 

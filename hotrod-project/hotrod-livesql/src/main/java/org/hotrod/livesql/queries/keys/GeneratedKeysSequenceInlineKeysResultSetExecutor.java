@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -22,11 +22,11 @@ public class GeneratedKeysSequenceInlineKeysResultSetExecutor<T> extends Generat
   private static final Logger log = Logger.getLogger(GeneratedKeysSequenceInlineKeysResultSetExecutor.class.getName());
 
   private String sequenceInlineSQL;
-  private EntityColumnMetadata keyColumn;
+  private EntityColumnMetaData keyColumn;
   private String[] generatedKeysNames;
 
   public GeneratedKeysSequenceInlineKeysResultSetExecutor(KeyReader<T> keyReader, String sequenceInlineSQL,
-      EntityColumnMetadata keyColumn, String... generatedKeysNames) {
+      EntityColumnMetaData keyColumn, String... generatedKeysNames) {
     super(keyReader);
     log.fine("init");
     this.sequenceInlineSQL = sequenceInlineSQL;
@@ -35,9 +35,9 @@ public class GeneratedKeysSequenceInlineKeysResultSetExecutor<T> extends Generat
   }
 
   @Override
-  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetadata> columns) throws LiveSQLException {
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetaData> columns) throws LiveSQLException {
     boolean included = false;
-    for (EntityColumnMetadata c : columns) {
+    for (EntityColumnMetaData c : columns) {
       if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
         included = true;
       }

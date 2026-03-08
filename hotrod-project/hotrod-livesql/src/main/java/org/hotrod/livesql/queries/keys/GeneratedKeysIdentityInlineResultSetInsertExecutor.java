@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -29,7 +29,7 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
   }
 
   @Override
-  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetadata> columns) throws LiveSQLException {
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetaData> columns) throws LiveSQLException {
     return InsertSelectRenderingEdits.of(null, null, null);
   }
 

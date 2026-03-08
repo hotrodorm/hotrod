@@ -58,20 +58,15 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.converter.ConvertedColumn;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.BinaryEntityColumnMetaData;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
-import org.hotrod.livesql.metadata.BooleanEntityColumnMetaData;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
-import org.hotrod.livesql.metadata.CharEntityColumnMetaData;
 import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.DateTimeEntityColumnMetaData;
 import org.hotrod.livesql.metadata.DateTimeEntityColumn;
+import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumericEntityColumnMetaData;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.ObjectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
@@ -82,8 +77,8 @@ import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineDataResultSetExecutor;
+import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequencePreFetchInsertExecutor;
 import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
@@ -1381,17 +1376,16 @@ public class DAOWriter {
     int thId = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      Class<?> liveSQLColumnType = toLiveSQLEntityType(javaType);
-      String entityName = "_" + cm.getId().getJavaConstantName();
+      String metaDataColumnName = "_" + cm.getId().getJavaConstantName();
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
 
       ExternalClass jt = ExternalClass.of(javaType);
-      ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
-      if (cm.getResolvedConverter() == null) {
+      if (cm.getResolvedConverter() == null) { // Direct Column
 
-        w.println("    private static final ", lt, " " + entityName + " = new ", lt, "(");
+        w.print("    private static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
+        w.println(" = new ", DirectEntityColumnMetaData.class, "(");
         w.print("      " //
             + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
             + ", \"" + JUtils.escapeJavaString(property) + "\"" //
@@ -1408,28 +1402,29 @@ public class DAOWriter {
 
         w.println(");");
 
-      } else {
+      } else { // Converted Column
 
         ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
         ExternalClass converterClass = ExternalClass.of(cm.getResolvedConverter().getConverterClass());
 
         w.print("    private static final ", TypeHandler.class, "<", rawClass, ", ");
-        w.print(domainClass, "> th" + thId + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
+        String thName = "_TH" + thId;
+        w.print(domainClass, "> " + thName + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
         TypeSource typeSource = cm.getType().getTypeSource();
         String ruleNumber = cm.getType().getRuleNumber();
         w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
             + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
 
-        w.print("    private static final ", ConvertedColumn.class, "<", rawClass, ", ");
-        w.print(domainClass, "> " + entityName + " = new ", ConvertedColumn.class);
-        w.println("<", rawClass, ", ", domainClass, ">(this, \"" //
-            + JUtils.escapeJavaString(canonicalName) + "\", \"" //
+        w.print("    private static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
+        w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedColumnMetaData.class);
+        w.println("<", rawClass, ", ", domainClass, ">(");
+        w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
             + JUtils.escapeJavaString(property) + "\", \"" //
             + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
             + cm.getPrecision() //
             + ", " + cm.getScale() //
-            + ", th" + thId + ", th" + thId + ".getConverter());");
+            + ", " + thName + ", " + thName + ".getConverter());");
         thId++;
 
       }
@@ -1617,9 +1612,9 @@ public class DAOWriter {
         || "java.math.BigInteger".equals(javaType) //
         || "java.math.BigDecimal".equals(javaType) //
     ) {
-      return NumericEntityColumnMetaData.class;
+      return NumericEntityColumn.class;
     } else if ("java.lang.String".equals(javaType)) {
-      return CharEntityColumnMetaData.class;
+      return CharEntityColumn.class;
     } else if ("java.util.Date".equals(javaType) //
         || "java.sql.Date".equals(javaType) //
         || "java.sql.Timestamp".equals(javaType) //
@@ -1632,14 +1627,14 @@ public class DAOWriter {
         || "java.time.OffsetTime".equals(javaType) //
         || "java.time.Instant".equals(javaType) //
     ) {
-      return DateTimeEntityColumnMetaData.class;
+      return DateTimeEntityColumn.class;
     } else if ("java.lang.Boolean".equals(javaType)) {
-      return BooleanEntityColumnMetaData.class;
+      return BooleanEntityColumn.class;
     } else if ("byte[]".equals(javaType)) {
-      return BinaryEntityColumnMetaData.class;
+      return BinaryEntityColumn.class;
     }
 
-    return ObjectEntityColumnMetaData.class;
+    return ObjectEntityColumn.class;
   }
 
   private Class<?> toLiveSQLEntityInstanceType(final String javaType) {

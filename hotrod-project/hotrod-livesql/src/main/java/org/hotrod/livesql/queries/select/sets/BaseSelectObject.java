@@ -13,12 +13,12 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
+import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.PredicatedJoin;
@@ -280,9 +280,9 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
           } else { // using
             w.write(" USING (");
             Separator sep = new Separator();
-            for (EntityColumnMetadata c : pj.getUsingColumns()) {
+            for (EntityColumn c : pj.getUsingColumns()) {
               w.write(sep.render());
-              w.write(w.getSQLDialect().canonicalToNatural(c.getReferenceName()));
+              w.write(w.getSQLDialect().canonicalToNatural(c.getProperty()));
             }
             w.write(")");
           }

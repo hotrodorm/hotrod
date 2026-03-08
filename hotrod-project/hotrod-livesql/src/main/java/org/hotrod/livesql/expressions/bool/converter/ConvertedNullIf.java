@@ -13,11 +13,11 @@ public class ConvertedNullIf<R, D> extends SortableExpression {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedNullIf.class.getName());
 
-  private ConvertedColumn<R, D> c;
+  private ConvertedColumnMetaData<R, D> c;
   private TypeConverter<R, D> converter;
   private D d;
 
-  public ConvertedNullIf(final ConvertedColumn<R, D> c, final TypeConverter<R, D> converter, final D d) {
+  public ConvertedNullIf(final ConvertedColumnMetaData<R, D> c, final TypeConverter<R, D> converter, final D d) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.c = c;
     this.converter = converter;
@@ -28,9 +28,7 @@ public class ConvertedNullIf<R, D> extends SortableExpression {
   protected void renderTo(QueryWriter w) {
 
     w.write("nullif(");
-
-    super.renderInner(this.c, w);
-
+    this.c.renderTo(w);
     w.write(", ");
 
     R raw = this.converter.encode(this.d, null);

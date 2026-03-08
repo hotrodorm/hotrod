@@ -47,6 +47,7 @@
 
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
+    <column name="active" converter="boolean_stored_as_int" />
   </table>
 
   <table name="t5" />

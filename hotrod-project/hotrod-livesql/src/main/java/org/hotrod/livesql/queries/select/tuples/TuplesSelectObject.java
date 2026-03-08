@@ -13,14 +13,14 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SShield;
@@ -205,7 +205,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
       try {
         @SuppressWarnings("unused")
-        EntityColumnMetadata entityColumn = (EntityColumnMetadata) expr;
+        EntityColumn entityColumn = (EntityColumn) expr;
         // It's a column from a table; no need to alias it
 
       } catch (ClassCastException e) {

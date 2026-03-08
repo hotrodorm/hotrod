@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,19 +22,13 @@ import org.springframework.context.annotation.Configuration;
 import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.dao.K2DAO;
-import app.persistence.dao.K2DAO.K2Table;
 import app.persistence.dao.K3DAO;
-import app.persistence.dao.K3DAO.K3Table;
 import app.persistence.dao.K4DAO;
-import app.persistence.dao.K4DAO.K4Table;
 import app.persistence.dao.S2DAO;
-import app.persistence.dao.S2DAO.S2Table;
 import app.persistence.dao.S3DAO;
-import app.persistence.dao.S3DAO.S3Table;
 import app.persistence.dao.S4DAO;
-import app.persistence.dao.S4DAO.S4Table;
 import app.persistence.dao.T5DAO;
-import app.persistence.dao.T5DAO.T5Table;
+import app.persistence.model.DATALocal;
 
 @SpringBootApplication
 @Configuration
@@ -128,10 +122,11 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
+      testConverters();
 //      testInsert1();
 
 //      testInsertSequence();
-      testInsertIdentity();
+//      testInsertIdentity();
 
 //      testBlob();
 //      testSubquery();
@@ -170,6 +165,35 @@ public class App {
     };
   }
 
+  private void testConverters() {
+    {
+      System.out.println("### T1 - Plain LiveSQL");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Row> li = this.sql.select().from(t).execute();
+      for (Row r : li) {
+        System.out.println("### r=" + r);
+      }
+    }
+
+    {
+      System.out.println("### T2 - Tuples LiveSQL");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).execute();
+      for (Tuple1<DATALocal> r : li) {
+        System.out.println("### r=" + r.getA());
+      }
+    }
+
+    {
+      System.out.println("### T3 - Filtering by Converted Column");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).where(sql.not(t.active)).execute();
+      for (Tuple1<DATALocal> r : li) {
+        System.out.println("### r=" + r.getA());
+      }
+    }
+  }
+
 //  private void testInsert1() {
 //    K1Table t = this.k1DAO.newTable();
 //
@@ -177,74 +201,74 @@ public class App {
 //    System.out.println("### INSERT 1 -- pk=" + pk);
 //  }
 
-  private void testInsertIdentity() {
-//    K1Table t = this.k1DAO.newTable();
-    K2Table u = this.k2DAO.newTable();
-    K3Table v = this.k3DAO.newTable();
-    K4Table w = this.k4DAO.newTable();
-    T5Table x = this.t5DAO.newTable();
-    DATALocalTable d = this.dataLocalDAO.newTable();
-    
-
-//    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 1 -- pk=" + pk);
+//  private void testInsertIdentity() {
+////    K1Table t = this.k1DAO.newTable();
+//    K2Table u = this.k2DAO.newTable();
+//    K3Table v = this.k3DAO.newTable();
+//    K4Table w = this.k4DAO.newTable();
+//    T5Table x = this.t5DAO.newTable();
+//    DATALocalTable d = this.dataLocalDAO.newTable();
+//    
 //
-//    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 1b -- pk=" + pk);
+////    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+////    System.out.println("### INSERT 1 -- pk=" + pk);
+////
+////    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+////    System.out.println("### INSERT 1b -- pk=" + pk);
+//
+//    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 2 -- pk=" + pk2);
+//
+//    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 3 -- pk=" + pk3);
+//
+//    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 4 -- pk=" + pk4);
+//
+//    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.NAMELocalToCity).from(d))
+//        .execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
+//        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+//
+//    int deleted = this.sql.delete(x).where(x.id.eq(101)).execute();
+//    int count = this.sql.insert(x).columns(x.id, x.name).values(sql.val(101), sql.val("DEF")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 6 -- deleted=" + deleted + " count=" + count);
+//
+//  }
 
-    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 2 -- pk=" + pk2);
-
-    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 3 -- pk=" + pk3);
-
-    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 4 -- pk=" + pk4);
-
-    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name).select(sql.select(d.NAMELocalToCity).from(d))
-        .execute(LIVESQL_LOG);
-    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
-        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
-
-    int deleted = this.sql.delete(x).where(x.id.eq(101)).execute();
-    int count = this.sql.insert(x).columns(x.id, x.name).values(sql.val(101), sql.val("DEF")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 6 -- deleted=" + deleted + " count=" + count);
-
-  }
-
-  private void testInsertSequence() {
-//    S1Table t = this.s1DAO.newTable();
-    S2Table u = this.s2DAO.newTable();
-    S3Table v = this.s3DAO.newTable();
-    S4Table w = this.s4DAO.newTable();
-    DATALocalTable d = this.dataLocalDAO.newTable();
-
-//    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 1 -- pk=" + pk);
-
-//    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
-//    System.out.println("### INSERT 1b -- pk=" + pk);
-
-    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 2 -- pk=" + pk2);
-
-    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 3 -- pk=" + pk3);
-
-    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 4 -- pk=" + pk4);
-
-    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name) //
-        .select(sql.select(d.NAMELocalToCity).from(d) //
-//            .intersect().select(sql.literal("Two")) //
-//            .unionAll().select(sql.literal("Two")) //
-//            .unionAll().select(sql.literal("Three")) //
-//            .except().select(sql.literal("Two")) //
-        ).execute(LIVESQL_LOG);
-    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
-        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
-
-  }
+//  private void testInsertSequence() {
+////    S1Table t = this.s1DAO.newTable();
+//    S2Table u = this.s2DAO.newTable();
+//    S3Table v = this.s3DAO.newTable();
+//    S4Table w = this.s4DAO.newTable();
+//    DATALocalTable d = this.dataLocalDAO.newTable();
+//
+////    Byte pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+////    System.out.println("### INSERT 1 -- pk=" + pk);
+//
+////    pk = this.sql.insert(t).columns(t.name).values(sql.val("val1")).execute(LIVESQL_LOG);
+////    System.out.println("### INSERT 1b -- pk=" + pk);
+//
+//    Short pk2 = this.sql.insert(u).columns(u.name).values(sql.val("valu")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 2 -- pk=" + pk2);
+//
+//    Integer pk3 = this.sql.insert(v).columns(v.name).values(sql.val("valv")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 3 -- pk=" + pk3);
+//
+//    Long pk4 = this.sql.insert(w).columns(w.name).values(sql.val("valw")).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 4 -- pk=" + pk4);
+//
+//    InsertResult<Long> r5 = this.sql.insert(w).columns(w.name) //
+//        .select(sql.select(d.NAMELocalToCity).from(d) //
+////            .intersect().select(sql.literal("Two")) //
+////            .unionAll().select(sql.literal("Two")) //
+////            .unionAll().select(sql.literal("Three")) //
+////            .except().select(sql.literal("Two")) //
+//        ).execute(LIVESQL_LOG);
+//    System.out.println("### INSERT 5 -- count=" + r5.getCount() + " -- pks[" + r5.getKeys().size() + "]="
+//        + r5.getKeys().stream().map(n -> "" + n).collect(Collectors.joining(", ")));
+//
+//  }
 
 //  private void testBlob() {
 //    Account a = this.accountDAO.select(123);

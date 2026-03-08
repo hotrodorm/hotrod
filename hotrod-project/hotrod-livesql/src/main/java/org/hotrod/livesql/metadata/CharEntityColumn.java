@@ -3,7 +3,6 @@ package org.hotrod.livesql.metadata;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.subqueries.CharSubqueryExpression;
@@ -16,16 +15,16 @@ public class CharEntityColumn extends CharExpression implements EntityColumn {
   // Properties
 
   private TableOrView<?> objectInstance;
-  private CharEntityColumnMetaData entityColumn;
+  private EntityColumnMetaData metaData;
 
   // Constructor
 
-  public CharEntityColumn(final TableOrView<?> objectInstance, final CharEntityColumnMetaData entityColumn) {
+  public CharEntityColumn(final TableOrView<?> objectInstance, final EntityColumnMetaData metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
     this.objectInstance = objectInstance;
-    this.entityColumn = entityColumn;
-    super.setTypeHandler(Shield.getTypeHandler(entityColumn));
+    this.metaData = metaData;
+    super.setTypeHandler(metaData.getTypeHandler());
   }
 
   @Override
@@ -43,14 +42,14 @@ public class CharEntityColumn extends CharExpression implements EntityColumn {
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
-    Shield.renderTo(this.entityColumn, w);
+    this.metaData.renderTo(w);
   }
 
   // Getters
 
   @Override
   public String getReferenceName() {
-    return this.entityColumn.getProperty();
+    return this.metaData.getProperty();
   }
 
   @Override
@@ -59,7 +58,7 @@ public class CharEntityColumn extends CharExpression implements EntityColumn {
   }
 
   public String getCanonicalName() {
-    return this.entityColumn.getCanonicalName();
+    return this.metaData.getCanonicalName();
   }
 
   @Override
@@ -84,22 +83,22 @@ public class CharEntityColumn extends CharExpression implements EntityColumn {
 
   @Override
   public String getType() {
-    return this.entityColumn.getType();
+    return this.metaData.getType();
   }
 
   @Override
   public Integer getColumnSize() {
-    return this.entityColumn.getColumnSize();
+    return this.metaData.getColumnSize();
   }
 
   @Override
   public Integer getDecimalDigits() {
-    return this.entityColumn.getDecimalDigits();
+    return this.metaData.getDecimalDigits();
   }
 
   @Override
   public String getProperty() {
-    return this.entityColumn.getProperty();
+    return this.metaData.getProperty();
   }
 
 }

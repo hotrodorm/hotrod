@@ -1,6 +1,6 @@
 package org.hotrod.livesql.queries.select;
 
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class LeftOuterJoin extends PredicatedJoin {
@@ -9,7 +9,7 @@ public class LeftOuterJoin extends PredicatedJoin {
     super(tableExpression, predicate);
   }
 
-  public LeftOuterJoin(final TableExpression tableExpression, final EntityColumnMetadata... using) {
+  public LeftOuterJoin(final TableExpression tableExpression, final EntityColumn... using) {
     super(tableExpression, using);
   }
 

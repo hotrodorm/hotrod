@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.SQLExpression;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.springframework.util.ReflectionUtils;
 
 public class ReflectionUtil {
@@ -14,14 +14,14 @@ public class ReflectionUtil {
   private ReflectionUtil() {
   }
 
-  public static List<EntityColumnMetadata> getColumnsField(final Object cs, final String colName)
+  public static List<EntityColumnMetaData> getColumnsField(final Object cs, final String colName)
       throws IllegalArgumentException, IllegalAccessException {
     Field cf = ReflectionUtils.findField(cs.getClass(), colName);
     if (cf != null) {
       cf.setAccessible(true);
       Object object = cf.get(cs);
       @SuppressWarnings("unchecked")
-      List<EntityColumnMetadata> columns = (List<EntityColumnMetadata>) object;
+      List<EntityColumnMetaData> columns = (List<EntityColumnMetaData>) object;
       return columns;
     } else {
       return new ArrayList<>();

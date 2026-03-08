@@ -10,7 +10,7 @@ import java.util.Set;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.LoggingUtil;
@@ -19,7 +19,7 @@ import org.hotrod.utils.Separator;
 public class InsertObject {
 
   private TableOrView<?> into;
-  private List<EntityColumnMetadata> columns;
+  private List<EntityColumnMetaData> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
 
@@ -31,7 +31,7 @@ public class InsertObject {
     this.into = into;
   }
 
-  void setColumns(final List<EntityColumnMetadata> columns) {
+  void setColumns(final List<EntityColumnMetaData> columns) {
     this.columns = columns;
   }
 
@@ -86,7 +86,7 @@ public class InsertObject {
     if (this.columns != null) {
       w.write(" (");
       Separator sep = new Separator(", ");
-      for (EntityColumnMetadata c : this.columns) {
+      for (EntityColumnMetaData c : this.columns) {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }

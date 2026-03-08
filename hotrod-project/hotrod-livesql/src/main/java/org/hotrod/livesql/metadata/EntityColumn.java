@@ -1,6 +1,6 @@
 package org.hotrod.livesql.metadata;
 
-public interface EntityColumn extends EntityColumnMetadata {
+public interface EntityColumn {
 
   TableOrView<?> getObjectInstance();
 
@@ -9,5 +9,15 @@ public interface EntityColumn extends EntityColumnMetadata {
   Name getSchema();
 
   Name getObjectName();
+
+  String getCanonicalName();
+
+  String getProperty();
+
+  String getType();
+
+  Integer getColumnSize();
+
+  Integer getDecimalDigits();
 
 }

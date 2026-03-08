@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.InsertResult;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
@@ -42,7 +42,7 @@ public abstract class GeneratedKeysInsertExecutor<T> {
     this.keyReader = keyReader;
   }
 
-  public abstract InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetadata> columns) throws LiveSQLException;
+  public abstract InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetaData> columns) throws LiveSQLException;
 
   public void applyParameters(LiveSQLPreparedQuery query, PreparedStatement ps) throws SQLException {
     int n = 1;

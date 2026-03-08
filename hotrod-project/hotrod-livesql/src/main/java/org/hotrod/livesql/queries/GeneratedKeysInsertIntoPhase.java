@@ -3,7 +3,7 @@ package org.hotrod.livesql.queries;
 import java.util.Arrays;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 
 public class GeneratedKeysInsertIntoPhase<T> {
@@ -23,7 +23,7 @@ public class GeneratedKeysInsertIntoPhase<T> {
 
   // Next stages
 
-  public GeneratedKeysInsertColumnsPhase<T> columns(final EntityColumnMetadata... columns) {
+  public GeneratedKeysInsertColumnsPhase<T> columns(final EntityColumnMetaData... columns) {
     this.insert.setColumns(Arrays.asList(columns));
     return new GeneratedKeysInsertColumnsPhase<T>(this.context, this.insert);
   }

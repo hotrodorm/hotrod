@@ -4,7 +4,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.Available;
 import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.metadata.EntityColumnMetadata;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.select.CrossJoin;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
@@ -17,8 +17,8 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
-import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.TableExpression;
+import org.hotrod.livesql.queries.select.UnarySelectObject;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -39,7 +39,7 @@ public class CharSelectFromPhase extends CharSelectExpression {
     return this;
   }
 
-  public CharSelectFromPhase join(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
+  public CharSelectFromPhase join(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new InnerJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -49,7 +49,7 @@ public class CharSelectFromPhase extends CharSelectExpression {
     return this;
   }
 
-  public CharSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
+  public CharSelectFromPhase leftJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new LeftOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -59,7 +59,7 @@ public class CharSelectFromPhase extends CharSelectExpression {
     return this;
   }
 
-  public CharSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
+  public CharSelectFromPhase rightJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new RightOuterJoin(tableViewOrSubquery, using));
     return this;
   }
@@ -69,7 +69,7 @@ public class CharSelectFromPhase extends CharSelectExpression {
     return this;
   }
 
-  public CharSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final EntityColumnMetadata... using) {
+  public CharSelectFromPhase fullJoin(final TableExpression tableViewOrSubquery, final EntityColumn... using) {
     this.select.addJoin(new FullOuterJoin(tableViewOrSubquery, using));
     return this;
   }
