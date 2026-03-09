@@ -75,7 +75,9 @@ create table "local_house" (
   id bigint primary key
 );
 
-create view city_code as select * from local_house;
+insert into "local_house" (id) values (123), (456);
+
+create view city_code as select * from "local_house";
 
 create table pty_received_document (
   id bigint primary key,

@@ -10,7 +10,6 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
-import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,16 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.DATALocalDAO;
-import app.persistence.dao.DATALocalDAO.DATALocalTable;
-import app.persistence.dao.K2DAO;
-import app.persistence.dao.K3DAO;
-import app.persistence.dao.K4DAO;
-import app.persistence.dao.S2DAO;
-import app.persistence.dao.S3DAO;
-import app.persistence.dao.S4DAO;
-import app.persistence.dao.T5DAO;
-import app.persistence.model.DATALocal;
+import app.persistence.dao.CityNumberDAO;
+import app.persistence.dao.CityNumberDAO.CityNumberView;
 
 @SpringBootApplication
 @Configuration
@@ -78,35 +69,38 @@ public class App {
 //  @Autowired
 //  private TestDAO testDAO;
 
-  @Autowired
-  private DATALocalDAO dataLocalDAO;
+//  @Autowired
+//  private DATALocalDAO dataLocalDAO;
 
 //  @Autowired
 //  private K1DAO k1DAO;
 
-  @Autowired
-  private K2DAO k2DAO;
-
-  @Autowired
-  private K3DAO k3DAO;
-
-  @Autowired
-  private K4DAO k4DAO;
+//  @Autowired
+//  private K2DAO k2DAO;
+//
+//  @Autowired
+//  private K3DAO k3DAO;
+//
+//  @Autowired
+//  private K4DAO k4DAO;
 
 //  @Autowired
 //  private S1DAO s1DAO;
 
-  @Autowired
-  private S2DAO s2DAO;
+//  @Autowired
+//  private S2DAO s2DAO;
+//
+//  @Autowired
+//  private S3DAO s3DAO;
+//
+//  @Autowired
+//  private S4DAO s4DAO;
+//
+//  @Autowired
+//  private T5DAO t5DAO;
 
   @Autowired
-  private S3DAO s3DAO;
-
-  @Autowired
-  private S4DAO s4DAO;
-
-  @Autowired
-  private T5DAO t5DAO;
+  private CityNumberDAO cityNumberDAO;
 
   @Autowired
   private IntegerBooleanConverter ibc;
@@ -122,7 +116,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testConverters();
+      testNS();
+//      testConverters();
 //      testInsert1();
 
 //      testInsertSequence();
@@ -165,34 +160,43 @@ public class App {
     };
   }
 
-  private void testConverters() {
-    {
-      System.out.println("### T1 - Plain LiveSQL");
-      DATALocalTable t = this.dataLocalDAO.newTable();
-      List<Row> li = this.sql.select().from(t).execute();
-      for (Row r : li) {
-        System.out.println("### r=" + r);
-      }
-    }
-
-    {
-      System.out.println("### T2 - Tuples LiveSQL");
-      DATALocalTable t = this.dataLocalDAO.newTable();
-      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).execute();
-      for (Tuple1<DATALocal> r : li) {
-        System.out.println("### r=" + r.getA());
-      }
-    }
-
-    {
-      System.out.println("### T3 - Filtering by Converted Column");
-      DATALocalTable t = this.dataLocalDAO.newTable();
-      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).where(sql.not(t.active)).execute();
-      for (Tuple1<DATALocal> r : li) {
-        System.out.println("### r=" + r.getA());
-      }
+  private void testNS() {
+    System.out.println("### T1 - NS");
+    CityNumberView v = this.cityNumberDAO.newView();
+    List<Row> li = this.sql.select().from(v).execute();
+    for (Row r : li) {
+      System.out.println("### r=" + r);
     }
   }
+
+//  private void testConverters() {
+//    {
+//      System.out.println("### T1 - Plain LiveSQL");
+//      DATALocalTable t = this.dataLocalDAO.newTable();
+//      List<Row> li = this.sql.select().from(t).execute();
+//      for (Row r : li) {
+//        System.out.println("### r=" + r);
+//      }
+//    }
+//
+//    {
+//      System.out.println("### T2 - Tuples LiveSQL");
+//      DATALocalTable t = this.dataLocalDAO.newTable();
+//      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).execute();
+//      for (Tuple1<DATALocal> r : li) {
+//        System.out.println("### r=" + r.getA());
+//      }
+//    }
+//
+//    {
+//      System.out.println("### T3 - Filtering by Converted Column");
+//      DATALocalTable t = this.dataLocalDAO.newTable();
+//      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).where(sql.not(t.active)).execute();
+//      for (Tuple1<DATALocal> r : li) {
+//        System.out.println("### r=" + r.getA());
+//      }
+//    }
+//  }
 
 //  private void testInsert1() {
 //    K1Table t = this.k1DAO.newTable();

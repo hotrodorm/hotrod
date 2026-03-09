@@ -12,8 +12,8 @@
   <!-- 
     <name value="pty_(.+)" replace="$1" scope="table" />
     <name value="(.+)_house" replace="$1_estate" scope="table" />
-    <name value="(.+)_CODE" replace="$1_NUMBER" scope="view" />
  -->
+    <name value="(.+)_CODE" replace="$1_NUMBER" scope="view" />
     <name value="(.+)_Code" replace="$1_KODE2" scope="column" />
     <name value="(.+)_code" replace="$1_KODE3" scope="column" />
   </name-solver>
