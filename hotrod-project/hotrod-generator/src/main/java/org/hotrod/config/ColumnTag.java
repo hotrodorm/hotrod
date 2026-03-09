@@ -5,12 +5,15 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.ValueRange;
+import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.SQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
@@ -178,6 +181,26 @@ public class ColumnTag extends AbstractConfigurationTag {
       }
       this.property = this.javaName;
       this.javaName = null;
+    }
+
+    if (this.property == null) {
+      String replacedName = null;
+      try {
+        SQLName natural = new SQLName(this.name);
+        String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
+        replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.COLUMN);
+        log.info("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
+        if (replacedName != null) {
+          this.property = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
+          log.fine(" done.");
+        }
+      } catch (CouldNotResolveNameException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+      } catch (InvalidIdentifierException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+      }
     }
 
     // type (and old java-type)

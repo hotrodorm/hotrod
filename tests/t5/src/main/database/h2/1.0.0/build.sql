@@ -59,10 +59,23 @@ create table t5 (
 
 -- name solver
 
-create table "LOCAL_House" (
+create table "Local_House" (
   id bigint primary key,
-  address varchar(100)
+  zip_code varchar(100), -- equivalent to: Zip_Code, ZIP_CODE
+  "zip_code" varchar(100),
+  "Zip_Code" varchar(100),
+  name varchar(20)
 );
+
+create table local_house (
+  id bigint primary key
+);
+
+create table "local_house" (
+  id bigint primary key
+);
+
+create view city_code as select * from local_house;
 
 create table pty_received_document (
   id bigint primary key,

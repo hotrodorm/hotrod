@@ -64,6 +64,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   @XmlElement
   public void setTable(final TableTag table) {
+//    log.info("+table: " + table);
     this.tables.add(table);
   }
 
@@ -114,13 +115,14 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       Feedback feedback)
       throws InvalidConfigurationFileException, ErrorMessageException, FaultException, FacetNotFoundException {
 
-    log.fine("validateCommon");
+//    log.info("validateCommon - this.tables=" + this.tables.size());
 
     File parentDir = file != null ? file.getParentFile() : null;
 
     // DAOs
 
     for (TableTag t : this.tables) {
+//      log.info(">>> table=" + t.toString());
       t.validate(jdbcTag, config, fragmentConfig, adapter, currentCS, feedback);
     }
     Collections.sort(this.tables, new Comparator<TableTag>() {

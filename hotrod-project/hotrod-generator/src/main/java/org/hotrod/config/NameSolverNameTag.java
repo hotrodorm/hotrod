@@ -135,6 +135,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
   }
 
   public String tryToReplace(final String name, final Scope scope) throws CouldNotResolveNameException {
+//    log.info("* pattern=" + this.valuePattern + " [" + this.scopes() + "] -- searching " + scope + " name=" + name);
     if (name == null) {
       return null;
     }
@@ -165,6 +166,9 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
     return null;
   }
 
+  private String scopes() {
+    return (this.matchesTables ? "T" : "-") + (this.matchesViews ? "V" : "-") + (this.matchesColumns ? "C" : "-");
+  }
   // Getters
 
   // Simple Caption

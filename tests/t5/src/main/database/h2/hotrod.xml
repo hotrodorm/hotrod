@@ -9,7 +9,13 @@
   </generators>
 
   <name-solver>
+  <!-- 
     <name value="pty_(.+)" replace="$1" scope="table" />
+    <name value="(.+)_house" replace="$1_estate" scope="table" />
+    <name value="(.+)_CODE" replace="$1_NUMBER" scope="view" />
+ -->
+    <name value="(.+)_Code" replace="$1_KODE2" scope="column" />
+    <name value="(.+)_code" replace="$1_KODE3" scope="column" />
   </name-solver>
 
   <runtime-type-solver>
@@ -38,13 +44,32 @@
   <table name="other" />
   <view name="v_other" />
 -->
+
+<!--
   <table name="pty_received_document" />
 
-
-<!-- 
-  <table name="'LOCAL_House'" />
+  <table name="local_house" />
+  <table name="LOCAL_HOUSE" />
+  <table name="local_house" />
+  <table name="'LOCAL_HOUSE'" />
+  <table name="'local_house'" />
+  <table name="'Local_House'" />
  -->
 
+  <table name="'Local_House'" />
+<!-- 
+  <table name="'local_house'" />
+ --> 
+
+  <!-- 
+  <table name="local_house" />
+    <column name="'zip_code'" property="zipCode2" />
+    <column name="'Zip_Code'" property="zipCode3" />
+  </table>
+     -->
+  <view name="city_Code" />
+
+<!-- 
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
     <column name="active" converter="boolean_stored_as_int" />
@@ -69,7 +94,7 @@
   <table name="s4">
     <column name="id" sequence="seq1" />
   </table>
- 
+ --> 
 <!-- 
   <view name="employee_branch" />
   <table name="'abc_DEF'" />

@@ -18,6 +18,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.SQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
@@ -136,21 +137,6 @@ public class TableTag extends AbstractEntityDAOTag {
     this.schema = schema;
   }
 
-  @XmlAttribute(name = "extends")
-  public void setExtendsTable(final String extendsTable) {
-    this.extendsTable = extendsTable;
-  }
-
-  @XmlAttribute(name = "extends-catalog")
-  public void setExtendsCatalog(final String extendsCatalog) {
-    this.extendsCatalog = extendsCatalog;
-  }
-
-  @XmlAttribute(name = "extends-schema")
-  public void setExtendsSchema(final String extendsSchema) {
-    this.extendsSchema = extendsSchema;
-  }
-
   @XmlAttribute(name = "java-name")
   public void setJavaName(final String javaName) {
     this.javaName = javaName;
@@ -219,65 +205,6 @@ public class TableTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, msg);
     }
 
-    // extends
-
-    if (this.extendsTable == null) {
-
-      if (this.extendsCatalog != null) {
-        throw new InvalidConfigurationFileException(this,
-            "Attribute 'extends-catalog' cannot only specified if the 'extends' attribute is present");
-      }
-      if (this.extendsSchema != null) {
-        throw new InvalidConfigurationFileException(this,
-            "Attribute 'extends-schema' cannot only specified if the 'extends' attribute is present");
-      }
-      this.extendsId = null;
-
-    } else {
-
-      // extends
-
-      Id extendsTableId;
-      try {
-        extendsTableId = Id.fromTypedSQL(this.extendsTable, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid value '" + this.extendsTable + "' on 'extends' attribute: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
-      }
-
-      // extends-catalog
-
-      Id extendsCatalogId;
-      try {
-        extendsCatalogId = this.extendsCatalog == null ? null : Id.fromTypedSQL(this.extendsCatalog, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid extends-catalog name '" + this.catalog + "' on tag <" + super.getTagName()
-            + "> for the table '" + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
-      }
-
-      // extends-schema
-
-      Id extendsSchemaId;
-      try {
-        extendsSchemaId = this.extendsSchema == null ? null : Id.fromTypedSQL(this.extendsSchema, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid extends-schema name '" + this.schema + "' on tag <" + super.getTagName()
-            + "> for the table '" + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
-      }
-
-      // Assemble extendsId
-
-      try {
-        this.extendsId = new ObjectId(extendsCatalogId, extendsSchemaId, extendsTableId, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid 'extends' table object name: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
-      }
-
-    }
-
     // entity & java-name
 
     if (this.javaName == null) {
@@ -307,8 +234,10 @@ public class TableTag extends AbstractEntityDAOTag {
     if (this.entity == null) {
       String replacedName = null;
       try {
-        replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-        log.fine("### this.name=" + this.name + " -> replacedName=" + replacedName);
+        SQLName natural = new SQLName(this.name);
+        String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
+        replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.TABLE);
+//        log.info("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
         if (replacedName != null) {
           this.entity = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
           log.fine(" done.");

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.nocrala.tools.database.tartarus.utils.TUtil;
 
 @XmlRootElement(name = "name-solver")
 public class NameSolverTag extends AbstractConfigurationTag {
@@ -49,9 +50,11 @@ public class NameSolverTag extends AbstractConfigurationTag {
   }
 
   public String resolveName(final String name, final Scope scope) throws CouldNotResolveNameException {
+//    log.info("## " + TUtil.compactStackTrace());
     // log.info("this.namingRules=" + this.namingRules.size());
     for (NameSolverNameTag n : this.namingRules) {
       String newName = n.tryToReplace(name, scope);
+//      log.info(" -> newName=" + newName);
       if (newName != null) {
         // new Exception().printStackTrace();
         return newName;
