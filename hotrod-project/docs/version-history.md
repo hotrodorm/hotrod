@@ -4,6 +4,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.13 (unreleased):
 
+- Core:
+    - Forcing name-solver to use canonical names.
 - LiveSQL:
     - Fixed converter metadata in LiveSQL.
     - Refactoring of flat SELECT classes.
@@ -12,7 +14,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - LiveSQL:
     - LiveSQL INSERT queries (with VALUES and also with SELECT) now retrieve the generated keys in addition to the count of rows, in the databases that supports it.
-- Generator:
+- Core:
     - Fixed discover tag. When empty it should include the current schema by default.
     - Fixed bean names (for entities and properties) with upper-case acronym sections.
 
@@ -27,7 +29,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - CRUD & Nitro:
     - Fixed BLOB-type columns getters and setters in row readers.
-- Generator:
+- Core:
     - Improved generation comment line.
 
 ## 5.1.9:
@@ -98,6 +100,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Enhancing column export commands (TXT and XLSX).
     - Fixing the NUMERIC type in the H2 generator adapter.
     - Forcing Oracle-11 sequence prefetch on all INSERTs with sequences.
+    - Improving generator performance by retrieving the minimal amount of metadata needed. Timers added.
 - CRUD:
     - Fixing CRUD usage of layout classes instead of model classes.
     - Fixing sequences implementation in custom DAOs.
@@ -116,8 +119,6 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Nitro:
     - Hello Nitro example prepared.
     - Removed checked exceptions in all Nitro queries.
-- Generator:
-    - Improving Generator performance by retrieving the minimal amount of metadata needed. Timers added.
     - Better error messaging.
     - Improving messaging on failed type solving.
 - DynamicSQL:
@@ -181,13 +182,12 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
     - Packages are changed in the hotrod library. The runtime segment is now removed.
     - Removed old unused classes in the hotrod library.
     - The Arquetype module is removed.
+    - Log4j fully removed from HotRod in favor of JUL. This was the last module using log4j.
 - CRUD:
     - New optimistic locking Timestamp strategy implemented.
     - New optimistic locking Full Row Check implemented.
     - Cursor functionality rewritten.
     - Navigation using foreign keys removed.
-- Generator:
-    - Log4j fully removed from HotRod in favor of JUL. This was the last module using log4j.
 - Nitro:
     - Parameter injection syntax changed to `$INJECT{expression}` instead `${expression}` to prevent unintentional SQL Injection.
     - All DynamicSQL tags in Nitro can now be placed outside the complement tag as well as inside it.
@@ -206,7 +206,7 @@ This is a major release of the HotRod ORM that breaks compatibility with previou
 
 ## 4.8.3:
 
-- Generator:
+- Core:
     - Increasing generator performance.
 
 ## 4.8.1:
