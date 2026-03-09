@@ -4,11 +4,11 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.13 (unreleased):
 
-- Core:
-    - Forcing name-solver to use canonical names.
 - LiveSQL:
     - Fixed converter metadata in LiveSQL.
     - Refactoring of flat SELECT classes.
+- Core:
+    - Forcing name-solver to use canonical names in patterns for tables, views, and columns.
 
 ## 5.1.12:
 
@@ -110,7 +110,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
     - Fixing java.sql.Types import.
     - CRUD converters fixed.
     - Fixing clone() instantiation.
-- LiveSQL
+- LiveSQL:
     - Fixing updateByCriteria().
     - Converters do not throw SQLException anymore.
     - Fixing entity selects with designated column names.
