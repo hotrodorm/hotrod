@@ -2,13 +2,17 @@
 
   <generators>
     <jdbc>
+    <!-- 
       <discover/>
+       -->
     </jdbc>
   </generators>
 
   <name-solver>
     <name value="pty_(.+)" replace="$1" scope="table" />
   </name-solver>
+
+  <table name="test_identity1" />
 
 <!-- 
   <table name="chars" />

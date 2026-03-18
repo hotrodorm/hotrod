@@ -18,9 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.CityNumberDAO;
-import app.persistence.dao.CityNumberDAO.CityNumberView;
-
 @SpringBootApplication
 @Configuration
 public class App {
@@ -100,7 +97,10 @@ public class App {
 //  private T5DAO t5DAO;
 
   @Autowired
-  private CityNumberDAO cityNumberDAO;
+  private BeanOps beanOps;
+
+//  @Autowired
+//  private CityNumberDAO cityNumberDAO;
 
   @Autowired
   private IntegerBooleanConverter ibc;
@@ -116,7 +116,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testNS();
+      testTx();
+//      testNS();
 //      testConverters();
 //      testInsert1();
 
@@ -160,14 +161,20 @@ public class App {
     };
   }
 
-  private void testNS() {
-    System.out.println("### T1 - NS");
-    CityNumberView v = this.cityNumberDAO.newView();
-    List<Row> li = this.sql.select().from(v).execute();
-    for (Row r : li) {
-      System.out.println("### r=" + r);
-    }
+  private void testTx() {
+    this.beanOps.insertCategories(false);
+//    this.beanOps.insert(true);
+//    this.beanOps.insert2(true);
   }
+
+//  private void testNS() {
+//    System.out.println("### T1 - NS");
+//    CityNumberView v = this.cityNumberDAO.newView();
+//    List<Row> li = this.sql.select().from(v).execute();
+//    for (Row r : li) {
+//      System.out.println("### r=" + r);
+//    }
+//  }
 
 //  private void testConverters() {
 //    {
