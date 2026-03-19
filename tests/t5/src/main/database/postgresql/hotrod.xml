@@ -14,6 +14,9 @@
 
   <table name="test_identity1" />
 
+  <table name="k1" />
+  <table name="k2" />
+
 <!-- 
   <table name="chars" />
   <table name="numbers" />

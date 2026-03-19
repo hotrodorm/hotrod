@@ -7,18 +7,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import app.persistence.dao.TestIdentity1DAO;
-import app.persistence.layout.TestIdentity1Layout;
+import app.persistence.dao.K2DAO;
+import app.persistence.layout.K2Layout;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TestIdentity1 extends TestIdentity1Layout {
+public class K2 extends K2Layout {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   @Autowired
-  private TestIdentity1DAO testIdentity1DAO;
+  private K2DAO k2DAO;
 
   // Add custom code below.
 

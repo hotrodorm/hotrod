@@ -69,6 +69,9 @@
      -->
   <view name="city_Code" />
 
+  <table name="k1" />
+  <table name="k2" />
+
 <!-- 
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />

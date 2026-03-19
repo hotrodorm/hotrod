@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class TestIdentity1Layout implements Serializable {
+public class K2Layout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

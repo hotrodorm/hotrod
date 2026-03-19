@@ -60,15 +60,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.TestIdentity1Layout;
-import app.persistence.model.TestIdentity1;
+import app.persistence.layout.K1Layout;
+import app.persistence.model.K1;
 
 @Component
-public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
+public class K1DAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(TestIdentity1DAO.class.getName());
+  private static final Logger log = Logger.getLogger(K1DAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,11 +94,11 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<TestIdentity1> rowReader = new RowReader<TestIdentity1>() {
+  private final RowReader<K1> rowReader = new RowReader<K1>() {
 
     @Override
-    public TestIdentity1 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      TestIdentity1 row = applicationContext.getBean(TestIdentity1.class);
+    public K1 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      K1 row = applicationContext.getBean(K1.class);
 
       Integer col1 = rs.getInt("id"); // id
       if (rs.wasNull()) col1 = null;
@@ -114,16 +114,16 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public TestIdentity1 parseRow(Map<String, Object> row) {
+  public K1 parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public TestIdentity1 parseRow(Map<String, Object> row, String prefix) {
+  public K1 parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public TestIdentity1 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    TestIdentity1 m = applicationContext.getBean(TestIdentity1.class);
+  public K1 parseRow(Map<String, Object> row, String prefix, String suffix) {
+    K1 m = applicationContext.getBean(K1.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
@@ -133,7 +133,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // BASELINE
 
-  public class TestIdentity1Baseline {
+  public class K1Baseline {
 
     private Integer id;
     private String name;
@@ -148,8 +148,8 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   }
 
-  public TestIdentity1Baseline baseline(TestIdentity1 model) {
-    TestIdentity1Baseline b = new TestIdentity1Baseline();
+  public K1Baseline baseline(K1 model) {
+    K1Baseline b = new K1Baseline();
     b.id = model.getId();
     b.name = model.getName();
     return b;
@@ -157,8 +157,8 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // CLONE
 
-  public TestIdentity1 clone(TestIdentity1Layout layout) {
-    TestIdentity1 m = this.applicationContext.getBean(TestIdentity1.class);
+  public K1 clone(K1Layout layout) {
+    K1 m = this.applicationContext.getBean(K1.class);
     m.setId(layout.getId());
     m.setName(layout.getName());
     return m;
@@ -173,23 +173,23 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name")
-      .literaln("FROM test_identity1")
+      .literaln("FROM k1")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
-  public TestIdentity1 select(Integer id) {
+  public K1 select(Integer id) {
     if (id == null) return null;
-    TestIdentity1 filter = new TestIdentity1();
+    K1 filter = new K1();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<TestIdentity1> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<K1> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<TestIdentity1> rows = preparedQuery.execute(conn);
+      List<K1> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -211,7 +211,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  name")
-      .literaln("FROM test_identity1")
+      .literaln("FROM k1")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
@@ -220,17 +220,17 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .endSelectQuery();
   }
 
-  public List<TestIdentity1> select(TestIdentity1Layout example, TestIdentity1OrderBy... orderBies) {
+  public List<K1> select(K1Layout example, K1OrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<TestIdentity1> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<K1> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<TestIdentity1> rows = preparedQuery.execute(conn);
+      List<K1> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -243,8 +243,8 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<TestIdentity1> select(final TestIdentity1Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<TestIdentity1>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<K1> select(final K1Table from, final Predicate predicate) {
+    return new CriteriaWherePhase<K1>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -253,7 +253,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO test_identity1")
+      .literal("INSERT INTO k1")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("l.id != null").literal("id").endif()
         .literal("name")
@@ -266,12 +266,12 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public TestIdentity1 insert(TestIdentity1Layout layout) {
+  public K1 insert(K1Layout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    TestIdentity1 model = this.clone(layout);
+    K1 model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -293,7 +293,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO test_identity1")
+      .literal("INSERT INTO k1")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
         .if_("e.name != null").literal("name").endif()
@@ -306,12 +306,12 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public TestIdentity1 insertByExample(TestIdentity1Layout example) {
+  public K1 insertByExample(K1Layout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    TestIdentity1 model = this.clone(example);
+    K1 model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -333,7 +333,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE test_identity1")
+      .literaln("UPDATE k1")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
       .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
@@ -341,7 +341,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
     .endModificationQuery();
   }
 
-  public int update(TestIdentity1 model) {
+  public int update(K1 model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -367,7 +367,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE test_identity1")
+      .literal("UPDATE k1")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
@@ -379,7 +379,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int update(TestIdentity1Layout example, TestIdentity1Layout values) {
+  public int update(K1Layout example, K1Layout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -401,7 +401,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(TestIdentity1Layout values, TestIdentity1Table tableOrView,
+  public UpdateWherePhase update(K1Layout values, K1Table tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
@@ -415,14 +415,14 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM test_identity1")
+      .literaln("DELETE FROM k1")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
   public int delete(Integer id) {
     if (id == null) return 0;
-    TestIdentity1 filter = new TestIdentity1();
+    K1 filter = new K1();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -448,7 +448,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM test_identity1")
+      .literaln("DELETE FROM k1")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
@@ -456,7 +456,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int delete(TestIdentity1Layout example) {
+  public int delete(K1Layout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -477,13 +477,13 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final TestIdentity1Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final K1Table from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum TestIdentity1OrderBy implements OrderBy {
+  public enum K1OrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
@@ -493,7 +493,7 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
     private String sqlColumnName;
     private boolean ascending;
 
-    private TestIdentity1OrderBy(String sqlColumnName, boolean ascending) {
+    private K1OrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -520,19 +520,19 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
     static final DirectEntityColumnMetaData ID_META_DATA = new DirectEntityColumnMetaData(
       "id", "id", "int4", 10, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D8"));
     static final DirectEntityColumnMetaData NAME_META_DATA = new DirectEntityColumnMetaData(
-      "name", "name", "varchar", 40, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+      "name", "name", "varchar", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
   }
 
-  public TestIdentity1Table newTable() {
-    return new TestIdentity1Table();
+  public K1Table newTable() {
+    return new K1Table();
   }
 
-  public TestIdentity1Table newTable(final String alias) {
-    return new TestIdentity1Table(alias);
+  public K1Table newTable(final String alias) {
+    return new K1Table(alias);
   }
 
-  public static class TestIdentity1Table extends TableWithGeneratedKey<TestIdentity1, Integer> {
+  public static class K1Table extends TableWithGeneratedKey<K1, Integer> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final CharEntityColumn name = new CharEntityColumn(this, MetaData.NAME_META_DATA);
@@ -542,13 +542,13 @@ public class TestIdentity1DAO implements Serializable, ApplicationContextAware {
       return new AllColumns(this.id, this.name);
     }
 
-    TestIdentity1Table() {
-      super(null, null, Name.of("test_identity1", false), "Table", null, TestIdentity1Layout.class, TestIdentity1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    K1Table() {
+      super(null, null, Name.of("k1", false), "Table", null, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
       initialize();
     }
 
-    TestIdentity1Table(final String alias) {
-      super(null, null, Name.of("test_identity1", false), "Table", alias, TestIdentity1Layout.class, TestIdentity1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    K1Table(final String alias) {
+      super(null, null, Name.of("k1", false), "Table", alias, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
       initialize();
     }
 
