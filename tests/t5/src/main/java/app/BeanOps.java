@@ -22,9 +22,9 @@ public class BeanOps {
   private TestIdentity1DAO testIdentity1DAO;
 
   @Transactional
-  public void insertCategories(boolean abort) {
+  public void insertCategories(String id, boolean abort) {
     TestIdentity1Layout c1 = new TestIdentity1Layout();
-    c1.setName("Name 1");
+    c1.setName("Name " + id + "-1");
     this.testIdentity1DAO.insertByExample(c1);
 
     if (abort) {
@@ -32,7 +32,7 @@ public class BeanOps {
     }
 
     TestIdentity1Layout c2 = new TestIdentity1Layout();
-    c2.setName("Name 2");
+    c2.setName("Name " + id + "-2");
     this.testIdentity1DAO.insertByExample(c2);
 
   }

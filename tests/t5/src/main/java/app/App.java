@@ -162,7 +162,16 @@ public class App {
   }
 
   private void testTx() {
-    this.beanOps.insertCategories(false);
+    try {
+      this.beanOps.insertCategories("A", false);
+    } catch (Exception e) {
+      log.info("aborted A.");
+    }
+    try {
+      this.beanOps.insertCategories("B", false);
+    } catch (Exception e) {
+      log.info("aborted B.");
+    }
 //    this.beanOps.insert(true);
 //    this.beanOps.insert2(true);
   }
