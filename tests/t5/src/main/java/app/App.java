@@ -116,7 +116,8 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testTx();
+//      testTx();
+      testTxLiveSQL();
 //      testNS();
 //      testConverters();
 //      testInsert1();
@@ -161,19 +162,34 @@ public class App {
     };
   }
 
-  private void testTx() {
+//  private void testTx() {
+//    try {
+//      this.beanOps.insertCategories("A", false);
+//    } catch (Exception e) {
+//      log.info("aborted A.");
+//    }
+//    try {
+//      this.beanOps.insertCategories("B", false);
+//    } catch (Exception e) {
+//      log.info("aborted B.");
+//    }
+////    this.beanOps.insert(true);
+////    this.beanOps.insert2(true);
+//  }
+
+  private void testTxLiveSQL() {
     try {
-      this.beanOps.insertCategories("A", false);
+      this.beanOps.insertCategoriesL("A", true);
     } catch (Exception e) {
       log.info("aborted A.");
     }
     try {
-      this.beanOps.insertCategories("B", false);
+      this.beanOps.insertCategoriesL("B", false);
     } catch (Exception e) {
       log.info("aborted B.");
     }
-//    this.beanOps.insert(true);
-//    this.beanOps.insert2(true);
+//this.beanOps.insert(true);
+//this.beanOps.insert2(true);
   }
 
 //  private void testNS() {

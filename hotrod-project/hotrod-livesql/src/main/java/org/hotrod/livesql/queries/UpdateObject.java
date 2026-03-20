@@ -57,7 +57,9 @@ public class UpdateObject {
 
     LoggingUtil.logQuery(q, loggingAdapter);
 
-    try (Connection conn = context.getDataSource().getConnection()) {
+    Connection conn = null;
+    try {
+      conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
         // 1. Apply parameters
@@ -75,6 +77,8 @@ public class UpdateObject {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    } finally {
+      context.releaseConnection(conn);
     }
   }
 

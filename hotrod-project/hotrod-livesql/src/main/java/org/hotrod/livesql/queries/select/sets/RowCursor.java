@@ -32,7 +32,7 @@ public class RowCursor<T> implements Cursor<T> {
 
     try {
 
-      this.conn = context.getDataSource().getConnection();
+      this.conn = context.getConnection();
       this.ps = this.conn.prepareStatement(q.getSQL());
 
       context.getLiveSQLDialect().enableSelectStreaming(this.ps, fetchSize);
@@ -62,6 +62,8 @@ public class RowCursor<T> implements Cursor<T> {
     } catch (SQLException e) {
       this.close();
       throw e;
+    } finally {
+      context.releaseConnection(this.conn);
     }
 
   }

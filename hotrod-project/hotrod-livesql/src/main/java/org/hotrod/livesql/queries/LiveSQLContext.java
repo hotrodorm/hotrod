@@ -1,9 +1,12 @@
 package org.hotrod.livesql.queries;
 
+import java.sql.Connection;
+
 import javax.sql.DataSource;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 public class LiveSQLContext {
 
@@ -22,8 +25,14 @@ public class LiveSQLContext {
     return liveSQLDialect;
   }
 
-  public DataSource getDataSource() {
-    return dataSource;
+  public Connection getConnection() {
+    return DataSourceUtils.getConnection(this.dataSource);
+  }
+
+  public void releaseConnection(Connection conn) {
+    if (conn != null) {
+      DataSourceUtils.releaseConnection(conn, this.dataSource);
+    }
   }
 
   public RuntimeTypeSolver getTypeSolver() {

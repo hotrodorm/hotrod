@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.numeric.NumericConstant;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderingEdits;
 import org.hotrod.livesql.queries.InsertResult;
@@ -31,9 +32,9 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
   }
 
   @Override
-  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumnMetaData> columns) throws LiveSQLException {
+  public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
     boolean included = false;
-    for (EntityColumnMetaData c : columns) {
+    for (EntityColumn c : columns) {
       if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
         included = true;
       }

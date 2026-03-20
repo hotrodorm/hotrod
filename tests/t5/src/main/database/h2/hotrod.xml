@@ -134,7 +134,16 @@
 SELECT * FROM other
     </select> 
  -->
- 
+
+  <dao name="SalesDAO">
+
+    <sequence name="hired_seq" method="getHiredNextValue" />
+
+    <select method="find1" vo="MyAccount">
+      select * from k1
+    </select>
+    
+  </dao> 
  <!--  
   <dao name="SalesDAO">
     <sequence name="hired_seq" method="getHiredNextValue" />

@@ -2,10 +2,10 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.14 (unreleased):
+## 5.1.14:
 
 - Core:
-    - Declarative transactions fixed.
+    - Declarative transactions fixed in CRUD and Nitro.
 
 ## 5.1.13:
 

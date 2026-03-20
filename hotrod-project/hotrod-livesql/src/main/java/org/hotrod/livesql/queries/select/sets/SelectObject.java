@@ -20,8 +20,8 @@ import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderin
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.util.LoggingUtil;
 import org.hotrod.livesql.util.ToString;
 
@@ -135,8 +135,9 @@ public abstract class SelectObject<T> {
       final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
 
     List<T> rows = new ArrayList<>();
-    try (Connection conn = context.getDataSource().getConnection()) {
-
+    Connection conn = null;
+    try {
+      conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
         // 1. Apply parameters
@@ -168,6 +169,8 @@ public abstract class SelectObject<T> {
     } catch (SQLException e) {
       log.log(Level.SEVERE, e.getMessage());
       throw new RuntimeException(e);
+    } finally {
+      context.releaseConnection(conn);
     }
 
   }
@@ -175,8 +178,9 @@ public abstract class SelectObject<T> {
   protected T executeLiveSQLOne(final LiveSQLContext context, final LiveSQLPreparedQuery q,
       final RowReader<T> rowReader, final LiveSQLLogging loggingAdapter) {
 
-    try (Connection conn = context.getDataSource().getConnection()) {
-
+    Connection conn = null;
+    try {
+      conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
         // 1. Apply parameters
@@ -212,6 +216,8 @@ public abstract class SelectObject<T> {
     } catch (SQLException e) {
       log.log(Level.SEVERE, e.getMessage());
       throw new RuntimeException(e);
+    } finally {
+      context.releaseConnection(conn);
     }
   }
 

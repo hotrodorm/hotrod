@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
@@ -25,7 +26,7 @@ public class GeneratedKeysInsertObject<T> {
 
   private GeneratedKeysInsertExecutor<T> executor;
   private TableOrView<?> into;
-  private List<EntityColumnMetaData> columns;
+  private List<EntityColumn> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
 
@@ -39,7 +40,7 @@ public class GeneratedKeysInsertObject<T> {
     this.into = into;
   }
 
-  void setColumns(final List<EntityColumnMetaData> columns) {
+  void setColumns(final List<EntityColumn> columns) {
     this.columns = columns;
   }
 
@@ -66,8 +67,9 @@ public class GeneratedKeysInsertObject<T> {
     LiveSQLPreparedQuery q = this.prepareQuery(context);
 
     LoggingUtil.logQuery(q, loggingAdapter);
-
-    try (Connection conn = context.getDataSource().getConnection()) {
+    Connection conn = null;
+    try {
+      conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
         this.executor.applyParameters(q, ps);
         T key = this.executor.executeOne(q, conn);
@@ -75,6 +77,8 @@ public class GeneratedKeysInsertObject<T> {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    } finally {
+      context.releaseConnection(conn);
     }
   }
 
@@ -87,7 +91,9 @@ public class GeneratedKeysInsertObject<T> {
 
     LoggingUtil.logQuery(q, loggingAdapter);
 
-    try (Connection conn = context.getDataSource().getConnection()) {
+    Connection conn = null;
+    try {
+      conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
         this.executor.applyParameters(q, ps);
         InsertResult<T> r = this.executor.executeList(q, conn);
@@ -95,6 +101,8 @@ public class GeneratedKeysInsertObject<T> {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    } finally {
+      context.releaseConnection(conn);
     }
   }
 
@@ -113,7 +121,7 @@ public class GeneratedKeysInsertObject<T> {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
       }
-      for (EntityColumnMetaData c : this.columns) {
+      for (EntityColumn c : this.columns) {
         w.write(sep.render());
         w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
       }
