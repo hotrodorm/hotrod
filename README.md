@@ -1,15 +1,15 @@
-# HotRod ORM
+# HotRod ORM Suite
 
-HotRod 5 is an open-source Object-Relational Mapping (ORM) framework designed for Spring and Spring Boot, optimized for rapid development and high-performance persistence in relational databases.
+HotRod 5 is an open-source Object-Relational Mapping (ORM) suite of products designed for Spring and Spring Boot, focused on rapid development and high-performance persistence in relational databases.
 
-## Key Features of HotRod
+## HotRod Products
 
-HotRod offers:
+As of version 5 the HotRod Suite includes:
 
-- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Quick and straightforward persistence for rapid prototyping
-- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Flexible SQL querying directly from your code with live syntax validation
+- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Start prototyping your application in minutes with the straightforward persistence included in CRUD
+- [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Use flexible SQL querying directly from your code with live syntax validation
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; Harness the power of native SQL and dynamic SQL when necessary
-- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and get their execution plans
+- [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and retrieve their execution plans
 - [Torcs CTP](./hotrod-project/docs/docs-5/torcs-ctp/README.md) &mdash; Generate execution plans of slow queries and visualize them in [Check The Plan](https://checktheplan.com)
 
 Get started with the [Hello World](./hotrod-project/docs/docs-5/guides/hello-world.md) example and explore additional [Hello World Examples](./hotrod-project/docs/docs-5/README.md#examples).
