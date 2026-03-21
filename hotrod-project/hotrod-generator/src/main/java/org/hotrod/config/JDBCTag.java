@@ -47,10 +47,12 @@ public class JDBCTag extends AbstractGeneratorTag {
   private String sPackage = null;
   private String qualifier = null;
   private String sQualifierBeans = null;
+  private String sPostConstruct = null;
 
   private File baseDir;
   private ClassPackage layerPackage;
   private boolean generateQualifierBeans;
+  private boolean useJakartaPostConstruct;
 
   private DiscoverTag discover = null;
   private JDBCLayerResourcesTag layerResources = null;
@@ -107,6 +109,11 @@ public class JDBCTag extends AbstractGeneratorTag {
   @XmlAttribute(name = "qualifier-beans")
   public void setSQualifierBeans(final String sQualifierBeans) {
     this.sQualifierBeans = sQualifierBeans;
+  }
+
+  @XmlAttribute(name = "postconstruct")
+  public void setSPostConstruct(final String sPostConstruct) {
+    this.sPostConstruct = sPostConstruct;
   }
 
   @XmlElement(name = "discover")
@@ -237,6 +244,20 @@ public class JDBCTag extends AbstractGeneratorTag {
       this.generateQualifierBeans = this.qualifier != null;
     }
 
+    // postconstruct
+
+    if (this.sPostConstruct == null) {
+      this.useJakartaPostConstruct = false;
+    } else if ("javax".equals(this.sPostConstruct)) {
+      this.useJakartaPostConstruct = false;
+    } else if ("jakarta".equals(this.sPostConstruct)) {
+      this.useJakartaPostConstruct = true;
+    } else {
+      throw new InvalidConfigurationFileException(this,
+          "Invalid 'postconstruct' attribute: the valid values are 'javax' or 'jakarta' but found '"
+              + this.sPostConstruct + "'.");
+    }
+
     // discovery
 
     if (this.discover != null) {
@@ -295,6 +316,10 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   public boolean generateQualifierBeans() {
     return generateQualifierBeans;
+  }
+
+  public boolean useJakartaPostConstruct() {
+    return useJakartaPostConstruct;
   }
 
   public File getBaseDir() {

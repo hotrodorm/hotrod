@@ -348,7 +348,13 @@ public class DAOWriter {
     w.println();
     w.println("  // INTERNAL METHODS");
     w.println();
-    w.println("  @", Const.POST_CONSTRUCT);
+
+    if (this.jdbcTag.useJakartaPostConstruct()) {
+      w.println("  @", Const.JAKARTA_POST_CONSTRUCT);
+    } else {
+      w.println("  @", Const.JAVAX_POST_CONSTRUCT);
+    }
+
     w.println("  private void initializeContext() {");
     if (!this.isExecutor()) {
       w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");

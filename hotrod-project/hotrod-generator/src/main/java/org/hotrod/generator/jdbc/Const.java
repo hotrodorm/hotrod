@@ -22,7 +22,8 @@ public class Const {
   public static final ExternalClass VALUE = ExternalClass.of("org.springframework.beans.factory.annotation.Value");
   public static final ExternalClass APPLICATION_CONTEXT = ExternalClass
       .of("org.springframework.context.ApplicationContext");
-  public static final ExternalClass POST_CONSTRUCT = ExternalClass.of("javax.annotation.PostConstruct");
+  public static final ExternalClass JAVAX_POST_CONSTRUCT = ExternalClass.of("javax.annotation.PostConstruct");
+  public static final ExternalClass JAKARTA_POST_CONSTRUCT = ExternalClass.of("jakarta.annotation.PostConstruct");
 
   public static final ExternalClass SQL_EXCEPTION = ExternalClass.of("java.sql.SQLException");
   public static final ExternalClass CALLABLE_STATEMENT = ExternalClass.of("java.sql.CallableStatement");
