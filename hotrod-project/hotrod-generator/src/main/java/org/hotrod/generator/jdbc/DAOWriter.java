@@ -1371,6 +1371,67 @@ public class DAOWriter {
     w.println();
     w.println("  static class MetaData {");
 
+    // Columns Meta Data
+
+    w.println();
+    int thId = 0;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String metaDataColumnName = getColumnMetaDataId(cm);
+      String canonicalName = cm.getId().getCanonicalSQLName();
+      String property = cm.getId().getJavaMemberName();
+
+      ExternalClass jt = ExternalClass.of(javaType);
+
+      if (cm.getResolvedConverter() == null) { // Direct Column
+
+        w.print("    static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
+        w.println(" = new ", DirectEntityColumnMetaData.class, "(");
+        w.print("      " //
+            + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
+            + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+            + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+            + ", " + cm.getPrecision() //
+            + ", " + cm.getScale() //
+            + ", ");
+
+        w.print(TypeHandler.class, ".forClass(", jt, ".class, ");
+        TypeSource typeSource = cm.getType().getTypeSource();
+        String ruleNumber = cm.getType().getRuleNumber();
+        w.print(TypeSource.class, "." + typeSource.name() + ", "
+            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ")");
+
+        w.println(");");
+
+      } else { // Converted Column
+
+        ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
+        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+        ExternalClass converterClass = ExternalClass.of(cm.getResolvedConverter().getConverterClass());
+
+        w.print("    static final ", TypeHandler.class, "<", rawClass, ", ");
+        String thName = "TH" + thId;
+        w.print(domainClass, "> " + thName + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
+        TypeSource typeSource = cm.getType().getTypeSource();
+        String ruleNumber = cm.getType().getRuleNumber();
+        w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
+            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
+
+        w.print("    static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
+        w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedColumnMetaData.class);
+        w.println("<", rawClass, ", ", domainClass, ">(");
+        w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
+            + JUtils.escapeJavaString(property) + "\", \"" //
+            + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
+            + cm.getPrecision() //
+            + ", " + cm.getScale() //
+            + ", " + thName + ", " + thName + ".getConverter());");
+        thId++;
+
+      }
+
+    }
+
     // Insert Executor
 
     if (generatesKeys) {
@@ -1435,65 +1496,6 @@ public class DAOWriter {
         w.print(", \"" + SUtil.escapeJavaString(outputClausePrefix) + "\"");
       }
       w.println(");");
-
-    }
-
-    w.println();
-    int thId = 0;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String javaType = resolveType(cm);
-      String metaDataColumnName = getColumnMetaDataId(cm);
-      String canonicalName = cm.getId().getCanonicalSQLName();
-      String property = cm.getId().getJavaMemberName();
-
-      ExternalClass jt = ExternalClass.of(javaType);
-
-      if (cm.getResolvedConverter() == null) { // Direct Column
-
-        w.print("    static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
-        w.println(" = new ", DirectEntityColumnMetaData.class, "(");
-        w.print("      " //
-            + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
-            + ", \"" + JUtils.escapeJavaString(property) + "\"" //
-            + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
-            + ", " + cm.getPrecision() //
-            + ", " + cm.getScale() //
-            + ", ");
-
-        w.print(TypeHandler.class, ".forClass(", jt, ".class, ");
-        TypeSource typeSource = cm.getType().getTypeSource();
-        String ruleNumber = cm.getType().getRuleNumber();
-        w.print(TypeSource.class, "." + typeSource.name() + ", "
-            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ")");
-
-        w.println(");");
-
-      } else { // Converted Column
-
-        ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
-        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
-        ExternalClass converterClass = ExternalClass.of(cm.getResolvedConverter().getConverterClass());
-
-        w.print("    static final ", TypeHandler.class, "<", rawClass, ", ");
-        String thName = "TH" + thId;
-        w.print(domainClass, "> " + thName + " = ", TypeHandler.class, ".forConverter(new ", converterClass);
-        TypeSource typeSource = cm.getType().getTypeSource();
-        String ruleNumber = cm.getType().getRuleNumber();
-        w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
-            + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
-
-        w.print("    static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
-        w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedColumnMetaData.class);
-        w.println("<", rawClass, ", ", domainClass, ">(");
-        w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
-            + JUtils.escapeJavaString(property) + "\", \"" //
-            + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
-            + cm.getPrecision() //
-            + ", " + cm.getScale() //
-            + ", " + thName + ", " + thName + ".getConverter());");
-        thId++;
-
-      }
 
     }
 
