@@ -28,7 +28,7 @@ The XLM configuration file includes the following tag structure:
     * [`<converter>`](./tags/converter.md)
     * [`<table>`](tags/table.md)
         * [`<column>`](tags/column.md)
-        * [`<optimistic-locking>`](tags/optimistic-locking.md)
+        * [`<sequence>`](tags/sequence.md)
         * [`<query>`](tags/query.md)
             * [`<parameter>`](tags/parameter.md)
             * *SQL query*
@@ -37,16 +37,17 @@ The XLM configuration file includes the following tag structure:
             * `<parameter>`
             * *SQL query*
             * [`<column>`](tags/column.md)
-            * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+            * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<trim>`, `<where>`, `<set>`, `<foreach>`, `<bind>`
             * [`<complement>`](tags/complement.md)
-                * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-    * [`<enum>`](tags/enum.md)
-        * `<non-persistent>`
+                * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<trim>`, `<where>`, `<set>`, `<foreach>`, `<bind>`
+        * [`<optimistic-locking>`](tags/optimistic-locking.md)
     * [`<view>`](tags/view.md)
         * `<column>`
+        * `<sequence>`
         * `<query>`
         * `<select>`
     * [`<dao>`](tags/dao.md)
+        * `<sequence>`
         * `<query>`
         * `<select>`
     * [`<fragment>`](tags/fragment.md)
