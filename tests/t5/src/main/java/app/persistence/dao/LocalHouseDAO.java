@@ -38,14 +38,11 @@ import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
-import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -60,15 +57,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.K1Layout;
-import app.persistence.model.K1;
+import app.persistence.layout.LocalHouseLayout;
+import app.persistence.model.LocalHouse;
 
 @Component
-public class K1DAO implements Serializable, ApplicationContextAware {
+public class LocalHouseDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(K1DAO.class.getName());
+  private static final Logger log = Logger.getLogger(LocalHouseDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,18 +91,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<K1> rowReader = new RowReader<K1>() {
+  private final RowReader<LocalHouse> rowReader = new RowReader<LocalHouse>() {
 
     @Override
-    public K1 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      K1 row = applicationContext.getBean(K1.class);
+    public LocalHouse readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      LocalHouse row = applicationContext.getBean(LocalHouse.class);
 
-      Byte col1 = rs.getByte("ID"); // ID
+      Long col1 = rs.getLong("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
 
-      String col2 = rs.getString("NAME"); // NAME
-      row.setName(col2);
+      String col2 = rs.getString("ZIP_CODE"); // ZIP_CODE
+      row.setZipCode(col2);
+
+      String col3 = rs.getString("zip_code"); // zip_code
+      row.setZipKode3(col3);
+
+      String col4 = rs.getString("Zip_Code"); // Zip_Code
+      row.setZipKode2(col4);
+
+      String col5 = rs.getString("NAME"); // NAME
+      row.setName(col5);
 
       return row;
     }
@@ -114,32 +120,50 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public K1 parseRow(Map<String, Object> row) {
+  public LocalHouse parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix) {
+  public LocalHouse parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    K1 m = applicationContext.getBean(K1.class);
+  public LocalHouse parseRow(Map<String, Object> row, String prefix, String suffix) {
+    LocalHouse m = applicationContext.getBean(LocalHouse.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toByte((Number) row.get(p + "id" + s)));
+    m.setId(CastUtil.toLong((Number) row.get(p + "id" + s)));
+    m.setZipCode((String) row.get(p + "zipCode" + s));
+    m.setZipKode3((String) row.get(p + "zipKode3" + s));
+    m.setZipKode2((String) row.get(p + "zipKode2" + s));
     m.setName((String) row.get(p + "name" + s));
     return m;
   }
 
   // BASELINE
 
-  public class K1Baseline {
+  public class LocalHouseBaseline {
 
-    private Byte id;
+    private Long id;
+    private String zipCode;
+    private String zipKode3;
+    private String zipKode2;
     private String name;
 
-    public Byte getId() {
+    public Long getId() {
       return this.id;
+    }
+
+    public String getZipCode() {
+      return this.zipCode;
+    }
+
+    public String getZipKode3() {
+      return this.zipKode3;
+    }
+
+    public String getZipKode2() {
+      return this.zipKode2;
     }
 
     public String getName() {
@@ -148,18 +172,24 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   }
 
-  public K1Baseline baseline(K1 model) {
-    K1Baseline b = new K1Baseline();
+  public LocalHouseBaseline baseline(LocalHouse model) {
+    LocalHouseBaseline b = new LocalHouseBaseline();
     b.id = model.getId();
+    b.zipCode = model.getZipCode();
+    b.zipKode3 = model.getZipKode3();
+    b.zipKode2 = model.getZipKode2();
     b.name = model.getName();
     return b;
   };
 
   // CLONE
 
-  public K1 clone(K1Layout layout) {
-    K1 m = this.applicationContext.getBean(K1.class);
+  public LocalHouse clone(LocalHouseLayout layout) {
+    LocalHouse m = this.applicationContext.getBean(LocalHouse.class);
     m.setId(layout.getId());
+    m.setZipCode(layout.getZipCode());
+    m.setZipKode3(layout.getZipKode3());
+    m.setZipKode2(layout.getZipKode2());
     m.setName(layout.getName());
     return m;
   };
@@ -172,24 +202,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
+      .literaln("  zip_code,")
+      .literaln("  \"zip_code\",")
+      .literaln("  \"Zip_Code\",")
       .literaln("  name")
-      .literaln("FROM k1")
+      .literaln("FROM \"Local_House\"")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
-  public K1 select(Byte id) {
+  public LocalHouse select(Long id) {
     if (id == null) return null;
-    K1 filter = new K1();
+    LocalHouse filter = new LocalHouse();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<LocalHouse> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<K1> rows = preparedQuery.execute(conn);
+      List<LocalHouse> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -210,27 +243,33 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
+      .literaln("  zip_code,")
+      .literaln("  \"zip_code\",")
+      .literaln("  \"Zip_Code\",")
       .literaln("  name")
-      .literaln("FROM k1")
+      .literaln("FROM \"Local_House\"")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.zipCode != null").literal("zip_code = ").parameter("e.zipCode").endif()
+        .if_("e.zipKode3 != null").literal("\"zip_code\" = ").parameter("e.zipKode3").endif()
+        .if_("e.zipKode2 != null").literal("\"Zip_Code\" = ").parameter("e.zipKode2").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<K1> select(K1Layout example, K1OrderBy... orderBies) {
+  public List<LocalHouse> select(LocalHouseLayout example, LocalHouseOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<LocalHouse> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<K1> rows = preparedQuery.execute(conn);
+      List<LocalHouse> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -243,8 +282,8 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<K1> select(final K1Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<K1>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<LocalHouse> select(final LocalHouseTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<LocalHouse>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -253,30 +292,35 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO \"Local_House\"")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("l.id != null").literal("id").endif()
+        .literal("id")
+        .literal("zip_code")
+        .literal("\"zip_code\"")
+        .literal("\"Zip_Code\"")
         .literal("name")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("l.id != null").parameter("l.id").endif()
+        .parameterNullable("l.id", Types.BIGINT)
+        .parameterNullable("l.zipCode", Types.VARCHAR)
+        .parameterNullable("l.zipKode3", Types.VARCHAR)
+        .parameterNullable("l.zipKode2", Types.VARCHAR)
         .parameterNullable("l.name", Types.VARCHAR)
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insert(K1Layout layout) {
+  public LocalHouse insert(LocalHouseLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(layout);
+    LocalHouse model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     } finally {
@@ -293,30 +337,35 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO \"Local_House\"")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
+        .if_("e.zipCode != null").literal("zip_code").endif()
+        .if_("e.zipKode3 != null").literal("\"zip_code\"").endif()
+        .if_("e.zipKode2 != null").literal("\"Zip_Code\"").endif()
         .if_("e.name != null").literal("name").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .if_("e.id != null").parameter("e.id").endif()
+        .if_("e.zipCode != null").parameter("e.zipCode").endif()
+        .if_("e.zipKode3 != null").parameter("e.zipKode3").endif()
+        .if_("e.zipKode2 != null").parameter("e.zipKode2").endif()
         .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insertByExample(K1Layout example) {
+  public LocalHouse insertByExample(LocalHouseLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(example);
+    LocalHouse model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     } finally {
@@ -333,15 +382,18 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE k1")
+      .literaln("UPDATE \"Local_House\"")
       .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.TINYINT).literaln(",")
+      .literal("  id = ").parameterNullable("m.id", Types.BIGINT).literaln(",")
+      .literal("  zip_code = ").parameterNullable("m.zipCode", Types.VARCHAR).literaln(",")
+      .literal("  \"zip_code\" = ").parameterNullable("m.zipKode3", Types.VARCHAR).literaln(",")
+      .literal("  \"Zip_Code\" = ").parameterNullable("m.zipKode2", Types.VARCHAR).literaln(",")
       .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
-  public int update(K1 model) {
+  public int update(LocalHouse model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -367,19 +419,25 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE k1")
+      .literal("UPDATE \"Local_House\"")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
+        .if_("v.zipCode != null").literal("zip_code = ").parameter("v.zipCode").endif()
+        .if_("v.zipKode3 != null").literal("\"zip_code\" = ").parameter("v.zipKode3").endif()
+        .if_("v.zipKode2 != null").literal("\"Zip_Code\" = ").parameter("v.zipKode2").endif()
         .if_("v.name != null").literal("name = ").parameter("v.name").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.zipCode != null").literal("zip_code = ").parameter("e.zipCode").endif()
+        .if_("e.zipKode3 != null").literal("\"zip_code\" = ").parameter("e.zipKode3").endif()
+        .if_("e.zipKode2 != null").literal("\"Zip_Code\" = ").parameter("e.zipKode2").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(K1Layout example, K1Layout values) {
+  public int update(LocalHouseLayout example, LocalHouseLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -401,10 +459,13 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(K1Layout values, K1Table tableOrView,
+  public UpdateWherePhase update(LocalHouseLayout values, LocalHouseTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
+    if (values.getZipCode() != null) setters.add(new Setter(tableOrView.zipCode, sql.val(values.getZipCode())));
+    if (values.getZipKode3() != null) setters.add(new Setter(tableOrView.zipKode3, sql.val(values.getZipKode3())));
+    if (values.getZipKode2() != null) setters.add(new Setter(tableOrView.zipKode2, sql.val(values.getZipKode2())));
     if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
@@ -415,14 +476,14 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM k1")
+      .literaln("DELETE FROM \"Local_House\"")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
-  public int delete(Byte id) {
+  public int delete(Long id) {
     if (id == null) return 0;
-    K1 filter = new K1();
+    LocalHouse filter = new LocalHouse();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -448,15 +509,18 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM k1")
+      .literaln("DELETE FROM \"Local_House\"")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.zipCode != null").literal("zip_code = ").parameter("e.zipCode").endif()
+        .if_("e.zipKode3 != null").literal("\"zip_code\" = ").parameter("e.zipKode3").endif()
+        .if_("e.zipKode2 != null").literal("\"Zip_Code\" = ").parameter("e.zipKode2").endif()
         .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(K1Layout example) {
+  public int delete(LocalHouseLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -477,23 +541,29 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final K1Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final LocalHouseTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum K1OrderBy implements OrderBy {
+  public enum LocalHouseOrderBy implements OrderBy {
 
     ID("id", true),
     ID$DESC("id", false),
+    ZIP_CODE("zip_code", true),
+    ZIP_CODE$DESC("zip_code", false),
+    ZIP_KODE3("\"zip_code\"", true),
+    ZIP_KODE3$DESC("\"zip_code\"", false),
+    ZIP_KODE2("\"Zip_Code\"", true),
+    ZIP_KODE2$DESC("\"Zip_Code\"", false),
     NAME("name", true),
     NAME$DESC("name", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private K1OrderBy(String sqlColumnName, boolean ascending) {
+    private LocalHouseOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -515,46 +585,55 @@ public class K1DAO implements Serializable, ApplicationContextAware {
   static class MetaData {
 
     static final DirectEntityColumnMetaData ID_META_DATA = new DirectEntityColumnMetaData(
-      "ID", "id", "TINYINT", 8, 0, TypeHandler.forClass(Byte.class, TypeSource.STATIC_DIALECT_RULE, "D7"));
+      "ID", "id", "BIGINT", 64, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D10"));
+    static final DirectEntityColumnMetaData ZIP_CODE_META_DATA = new DirectEntityColumnMetaData(
+      "ZIP_CODE", "zipCode", "CHARACTER VARYING", 100, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+    static final DirectEntityColumnMetaData ZIP_KODE3_META_DATA = new DirectEntityColumnMetaData(
+      "zip_code", "zipKode3", "CHARACTER VARYING", 100, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+    static final DirectEntityColumnMetaData ZIP_KODE2_META_DATA = new DirectEntityColumnMetaData(
+      "Zip_Code", "zipKode2", "CHARACTER VARYING", 100, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
     static final DirectEntityColumnMetaData NAME_META_DATA = new DirectEntityColumnMetaData(
       "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
-    static final GeneratedKeysInsertExecutor<Byte> GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysIdentityInlineResultSetInsertExecutor<Byte>(
-        KeyReader.BYTE_KEY_READER, MetaData.ID_META_DATA.getCanonicalName());
-
   }
 
-  public K1Table newTable() {
-    return new K1Table();
+  public LocalHouseTable newTable() {
+    return new LocalHouseTable();
   }
 
-  public K1Table newTable(final String alias) {
-    return new K1Table(alias);
+  public LocalHouseTable newTable(final String alias) {
+    return new LocalHouseTable(alias);
   }
 
-  public static class K1Table extends TableWithGeneratedKey<K1, Byte> {
+  public static class LocalHouseTable extends Table<LocalHouse> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
+    public final CharEntityColumn zipCode = new CharEntityColumn(this, MetaData.ZIP_CODE_META_DATA);
+    public final CharEntityColumn zipKode3 = new CharEntityColumn(this, MetaData.ZIP_KODE3_META_DATA);
+    public final CharEntityColumn zipKode2 = new CharEntityColumn(this, MetaData.ZIP_KODE2_META_DATA);
     public final CharEntityColumn name = new CharEntityColumn(this, MetaData.NAME_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.name);
+      return new AllColumns(this.id, this.zipCode, this.zipKode3, this.zipKode2, this.name);
     }
 
-    K1Table() {
-      super(null, null, Name.of("K1", false), "Table", null, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    LocalHouseTable() {
+      super(null, null, Name.of("Local_House", true), "Table", null, LocalHouseLayout.class, LocalHouse.class);
       initialize();
     }
 
-    K1Table(final String alias) {
-      super(null, null, Name.of("K1", false), "Table", alias, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    LocalHouseTable(final String alias) {
+      super(null, null, Name.of("Local_House", true), "Table", alias, LocalHouseLayout.class, LocalHouse.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
+      super.columns.add(this.zipCode);
+      super.columns.add(this.zipKode3);
+      super.columns.add(this.zipKode2);
       super.columns.add(this.name);
     }
 

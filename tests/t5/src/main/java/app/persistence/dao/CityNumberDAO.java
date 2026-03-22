@@ -34,18 +34,14 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.TableWithGeneratedKey;
+import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
-import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
-import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
-import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -60,15 +56,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.K1Layout;
-import app.persistence.model.K1;
+import app.persistence.layout.CityNumberLayout;
+import app.persistence.model.CityNumber;
 
 @Component
-public class K1DAO implements Serializable, ApplicationContextAware {
+public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(K1DAO.class.getName());
+  private static final Logger log = Logger.getLogger(CityNumberDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -94,18 +90,15 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<K1> rowReader = new RowReader<K1>() {
+  private final RowReader<CityNumber> rowReader = new RowReader<CityNumber>() {
 
     @Override
-    public K1 readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      K1 row = applicationContext.getBean(K1.class);
+    public CityNumber readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      CityNumber row = applicationContext.getBean(CityNumber.class);
 
-      Byte col1 = rs.getByte("ID"); // ID
+      Long col1 = rs.getLong("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
-
-      String col2 = rs.getString("NAME"); // NAME
-      row.setName(col2);
 
       return row;
     }
@@ -114,93 +107,47 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public K1 parseRow(Map<String, Object> row) {
+  public CityNumber parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix) {
+  public CityNumber parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public K1 parseRow(Map<String, Object> row, String prefix, String suffix) {
-    K1 m = applicationContext.getBean(K1.class);
+  public CityNumber parseRow(Map<String, Object> row, String prefix, String suffix) {
+    CityNumber m = applicationContext.getBean(CityNumber.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toByte((Number) row.get(p + "id" + s)));
-    m.setName((String) row.get(p + "name" + s));
+    m.setId(CastUtil.toLong((Number) row.get(p + "id" + s)));
     return m;
   }
 
   // BASELINE
 
-  public class K1Baseline {
+  public class CityNumberBaseline {
 
-    private Byte id;
-    private String name;
+    private Long id;
 
-    public Byte getId() {
+    public Long getId() {
       return this.id;
-    }
-
-    public String getName() {
-      return this.name;
     }
 
   }
 
-  public K1Baseline baseline(K1 model) {
-    K1Baseline b = new K1Baseline();
+  public CityNumberBaseline baseline(CityNumber model) {
+    CityNumberBaseline b = new CityNumberBaseline();
     b.id = model.getId();
-    b.name = model.getName();
     return b;
   };
 
   // CLONE
 
-  public K1 clone(K1Layout layout) {
-    K1 m = this.applicationContext.getBean(K1.class);
+  public CityNumber clone(CityNumberLayout layout) {
+    CityNumber m = this.applicationContext.getBean(CityNumber.class);
     m.setId(layout.getId());
-    m.setName(layout.getName());
     return m;
   };
-
-  // SELECT BY PRIMARY KEY
-
-  private DynamicSelectQuery selectByPrimaryKey;
-
-  private void initializeSelectbyprimarykey() {
-    this.selectByPrimaryKey = dyn
-      .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM k1")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endSelectQuery();
-  }
-
-  public K1 select(Byte id) {
-    if (id == null) return null;
-    K1 filter = new K1();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      List<K1> rows = preparedQuery.execute(conn);
-      if (rows.size() == 0) return null;
-      if (rows.size() == 1) return rows.get(0);
-      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
-  }
 
   // SELECT BY EXAMPLE
 
@@ -209,28 +156,26 @@ public class K1DAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  name")
-      .literaln("FROM k1")
+      .literaln("  id")
+      .literaln("FROM city_code")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<K1> select(K1Layout example, K1OrderBy... orderBies) {
+  public List<CityNumber> select(CityNumberLayout example, CityNumberOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<K1> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<CityNumber> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<K1> rows = preparedQuery.execute(conn);
+      List<CityNumber> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -243,8 +188,8 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<K1> select(final K1Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<K1>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<CityNumber> select(final CityNumberView from, final Predicate predicate) {
+    return new CriteriaWherePhase<CityNumber>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -253,30 +198,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("l.id != null").literal("id").endif()
-        .literal("name")
+        .literal("id")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("l.id != null").parameter("l.id").endif()
-        .parameterNullable("l.name", Types.VARCHAR)
+        .parameterNullable("l.id", Types.BIGINT)
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insert(K1Layout layout) {
+  public CityNumber insert(CityNumberLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(layout);
+    CityNumber model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     } finally {
@@ -293,30 +235,27 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO k1")
+      .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
-        .if_("e.name != null").literal("name").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .if_("e.id != null").parameter("e.id").endif()
-        .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public K1 insertByExample(K1Layout example) {
+  public CityNumber insertByExample(CityNumberLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    K1 model = this.clone(example);
+    CityNumber model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      Long pk = preparedQuery.execute(conn);
-      model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
+      preparedQuery.execute(conn);
     } catch (SQLException e) {
       throw new PersistenceException(e);
     } finally {
@@ -327,39 +266,7 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     return model;
   }
 
-  // UPDATE BY PRIMARY KEY
-
-  private DynamicModificationQuery updateByPK;
-
-  private void initializeUpdatebypk() {
-    this.updateByPK = dyn
-      .literaln("UPDATE k1")
-      .literaln("SET")
-      .literal("  id = ").parameterNullable("m.id", Types.TINYINT).literaln(",")
-      .literal("  name = ").parameterNullable("m.name", Types.VARCHAR).literaln()
-      .literal("WHERE id = ").parameter("m.id").literaln()
-    .endModificationQuery();
-  }
-
-  public int update(K1 model) {
-    if (model.getId() == null) return 0;
-    Parameters params = this.dyn.newParameters();
-    params.add("m", model);
-    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
-  }
+  // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // UPDATE BY EXAMPLE
 
@@ -367,19 +274,17 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE k1")
+      .literal("UPDATE city_code")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.name != null").literal("name = ").parameter("v.name").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(K1Layout example, K1Layout values) {
+  public int update(CityNumberLayout example, CityNumberLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -401,46 +306,14 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(K1Layout values, K1Table tableOrView,
+  public UpdateWherePhase update(CityNumberLayout values, CityNumberView tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getName() != null) setters.add(new Setter(tableOrView.name, sql.val(values.getName())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
-  // DELETE BY PRIMARY KEY
-
-  private DynamicModificationQuery deleteByPK;
-
-  private void initializeDeletebypk() {
-    this.deleteByPK = dyn
-      .literaln("DELETE FROM k1")
-      .literal("WHERE id = ").parameter("f.id").literaln()
-      .endModificationQuery();
-  }
-
-  public int delete(Byte id) {
-    if (id == null) return 0;
-    K1 filter = new K1();
-    filter.setId(id);
-    Parameters params = this.dyn.newParameters();
-    params.add("f", filter);
-    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
-  }
+  // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // DELETE BY EXAMPLE
 
@@ -448,15 +321,14 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM k1")
+      .literaln("DELETE FROM city_code")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.name != null").literal("name = ").parameter("e.name").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(K1Layout example) {
+  public int delete(CityNumberLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -477,23 +349,21 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final K1Table from, final Predicate predicate) {
+  public DeleteWherePhase delete(final CityNumberView from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum K1OrderBy implements OrderBy {
+  public enum CityNumberOrderBy implements OrderBy {
 
     ID("id", true),
-    ID$DESC("id", false),
-    NAME("name", true),
-    NAME$DESC("name", false);
+    ID$DESC("id", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private K1OrderBy(String sqlColumnName, boolean ascending) {
+    private CityNumberOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -510,52 +380,45 @@ public class K1DAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // TABLE METADATA
+  // VIEW METADATA
 
   static class MetaData {
 
     static final DirectEntityColumnMetaData ID_META_DATA = new DirectEntityColumnMetaData(
-      "ID", "id", "TINYINT", 8, 0, TypeHandler.forClass(Byte.class, TypeSource.STATIC_DIALECT_RULE, "D7"));
-    static final DirectEntityColumnMetaData NAME_META_DATA = new DirectEntityColumnMetaData(
-      "NAME", "name", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
-
-    static final GeneratedKeysInsertExecutor<Byte> GENERATED_KEY_READER_EXECUTOR = new GeneratedKeysIdentityInlineResultSetInsertExecutor<Byte>(
-        KeyReader.BYTE_KEY_READER, MetaData.ID_META_DATA.getCanonicalName());
+      "ID", "id", "BIGINT", 64, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D10"));
 
   }
 
-  public K1Table newTable() {
-    return new K1Table();
+  public CityNumberView newView() {
+    return new CityNumberView();
   }
 
-  public K1Table newTable(final String alias) {
-    return new K1Table(alias);
+  public CityNumberView newView(final String alias) {
+    return new CityNumberView(alias);
   }
 
-  public static class K1Table extends TableWithGeneratedKey<K1, Byte> {
+  public static class CityNumberView extends View<CityNumber> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
-    public final CharEntityColumn name = new CharEntityColumn(this, MetaData.NAME_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.name);
+      return new AllColumns(this.id);
     }
 
-    K1Table() {
-      super(null, null, Name.of("K1", false), "Table", null, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    CityNumberView() {
+      super(null, null, Name.of("CITY_CODE", false), "View", null, CityNumberLayout.class, CityNumber.class);
       initialize();
     }
 
-    K1Table(final String alias) {
-      super(null, null, Name.of("K1", false), "Table", alias, K1Layout.class, K1.class, MetaData.GENERATED_KEY_READER_EXECUTOR);
+    CityNumberView(final String alias) {
+      super(null, null, Name.of("CITY_CODE", false), "View", alias, CityNumberLayout.class, CityNumber.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.name);
     }
 
   }
@@ -573,13 +436,10 @@ public class K1DAO implements Serializable, ApplicationContextAware {
     LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
     this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
     this.dyn = new DynamicSQL();
-    this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsert();
     this.initializeInsertbyexample();
-    this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
-    this.initializeDeletebypk();
     this.initializeDeletebyexample();
   }
 

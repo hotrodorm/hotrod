@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import app.persistence.dao.K2DAO;
-import app.persistence.dao.K2DAO.K2Table;
+import app.persistence.dao.TestIdentity1DAO;
+import app.persistence.layout.TestIdentity1Layout;
 
 @Component
 public class BeanOps {
@@ -25,24 +26,24 @@ public class BeanOps {
   @Autowired
   private K2DAO k2DAO;
 
-//  @Autowired
-//  private TestIdentity1DAO testIdentity1DAO;
-//
-//  @Transactional
-//  public void insertCategories(String id, boolean abort) {
-//    TestIdentity1Layout c1 = new TestIdentity1Layout();
-//    c1.setName("Name " + id + "-1");
-//    this.testIdentity1DAO.insertByExample(c1);
-//
-//    if (abort) {
-//      throw new RuntimeException("--- aborting tx!");
-//    }
-//
-//    TestIdentity1Layout c2 = new TestIdentity1Layout();
-//    c2.setName("Name " + id + "-2");
-//    this.testIdentity1DAO.insertByExample(c2);
-//
-//  }
+  @Autowired
+  private TestIdentity1DAO testIdentity1DAO;
+
+  @Transactional
+  public void insertCategories(String id, boolean abort) {
+    TestIdentity1Layout c1 = new TestIdentity1Layout();
+    c1.setName("Name " + id + "-1");
+    this.testIdentity1DAO.insertByExample(c1);
+
+    if (abort) {
+      throw new RuntimeException("--- aborting tx!");
+    }
+
+    TestIdentity1Layout c2 = new TestIdentity1Layout();
+    c2.setName("Name " + id + "-2");
+    this.testIdentity1DAO.insertByExample(c2);
+
+  }
 
 //  @Transactional
 //  public void insert(boolean abort) {
@@ -80,20 +81,20 @@ public class BeanOps {
 //
 //  }
 
-  @Transactional
-  public void insertCategoriesL(String id, boolean abort) {
-    K2Table t = this.k2DAO.newTable();
-
-    Integer a = this.sql.insert(t).columns(t.name).values(sql.val("Name " + id + "-1")).execute();
-    System.out.println("-> id=" + a);
-
-    if (abort) {
-      throw new RuntimeException("--- aborting tx!");
-    }
-
-    Integer b = this.sql.insert(t).columns(t.name).values(sql.val("Name " + id + "-2")).execute();
-    System.out.println("-> id=" + b);
-
-  }
+//  @Transactional
+//  public void insertCategoriesL(String id, boolean abort) {
+//    K2Table t = this.k2DAO.newTable();
+//
+//    Integer a = this.sql.insert(t).columns(t.name).values(sql.val("Name " + id + "-1")).execute();
+//    System.out.println("-> id=" + a);
+//
+//    if (abort) {
+//      throw new RuntimeException("--- aborting tx!");
+//    }
+//
+//    Integer b = this.sql.insert(t).columns(t.name).values(sql.val("Name " + id + "-2")).execute();
+//    System.out.println("-> id=" + b);
+//
+//  }
 
 }

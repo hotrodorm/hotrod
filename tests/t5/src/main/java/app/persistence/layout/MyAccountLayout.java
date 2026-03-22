@@ -6,30 +6,30 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class K1Layout implements Serializable {
+public class MyAccountLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // Layout Properties (table columns)
+  // Expression properties
 
-  protected Byte id = null; // Type Source: STATIC_DIALECT_RULE, rule #D7
-  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Byte id = null; // Source Type: STATIC_DIALECT_RULE, rule #D7
+  protected String name = null; // Source Type: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 
-  public Byte getId() {
+  public final Byte getId() {
     return this.id;
   }
 
-  public void setId(final Byte id) {
+  public final void setId(final java.lang.Byte id) {
     this.id = id;
   }
 
-  public String getName() {
+  public final String getName() {
     return this.name;
   }
 
-  public void setName(final String name) {
+  public final void setName(final java.lang.String name) {
     this.name = name;
   }
 
@@ -37,7 +37,7 @@ public class K1Layout implements Serializable {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
+    sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name);
     return sb.toString();
