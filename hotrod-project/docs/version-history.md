@@ -2,6 +2,19 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+
+## 5.1.16:
+
+- Core:
+    - Adding support for Spring Boot 4.
+- CRUD:
+    - Fixing meta data for tables with generated primary keys, using IDENTITY or SEQUENCES.
+
+## 5.1.15:
+
+- LiveSQL:
+    - Fixing declarative transactions in LiveSQL.
+
 ## 5.1.14:
 
 - Core:
