@@ -5,7 +5,7 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-project</artifactId>
-  <version>5.1.16</version>
+  <version>5.1.17-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>hotrod-project</name>
@@ -64,7 +64,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:hotrodorm/hotrod.git</developerConnection>
     <url>https://github.com/hotrodorm/hotrod</url>
-    <tag>5.1.16</tag>
+    <tag>4.1.2</tag>
   </scm>
 
   <distributionManagement>
