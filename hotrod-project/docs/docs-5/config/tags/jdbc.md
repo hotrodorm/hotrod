@@ -27,6 +27,7 @@ This tag includes the following attribute:
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
 | `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as dataSource and LiveSQL beans) when the application uses multiple data sources. Use a different qualifier for each dataSource. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on how to use it | *none* |
 | `qualifier-beans`  | Valid values are `true` or `false`. Indicates that the additional layer related beans (DataSourceProperties, DataSource, and LiveSQL) should be generated in the layer resources bean. These are typically useful in Spring Boot applications; should be turned off for plain Spring apps running in web containers. Only valid when a qualifier is defined | `true` when the qualifier is present, `false` otherwise |
+| `postconstruct`  | Indicates if the @PostConstruct annotations in the DAO use the `javax.annotation.PostConstruct` (valid up to Spring 5.x and Spring Boot 3.x) or the newer `jakarta.annotation.PostConstruct`. When using Spring Boot 4.x use the jakarta option. The valid values are `javax` and `jakarta` | `javax` |
 
 ## Default Configuration
 
@@ -34,7 +35,8 @@ If the `<jdbc>` tag is not specified &mdash; either due to the no-configuration 
 
 ```xml
   <jdbc base-dir="src/main/java"
-        package="app.persistence">
+        package="app.persistence"
+        postconstruct="javax">
     <dao    sub-package="dao"    prefix="" suffix="DAO" />
     <layout sub-package="layout" prefix="" suffix="Layout" />
     <model  sub-package="model"  prefix="" suffix="" />
