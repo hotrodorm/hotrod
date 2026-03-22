@@ -189,7 +189,7 @@ public class ColumnTag extends AbstractConfigurationTag {
         SQLName natural = new SQLName(this.name);
         String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
         replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.COLUMN);
-        log.info("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
+        log.fine("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
         if (replacedName != null) {
           this.property = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
           log.fine(" done.");
