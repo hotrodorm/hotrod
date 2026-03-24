@@ -13,12 +13,12 @@ public class ConvertedNotIn<R, D> extends BooleanSyntaxExpression {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedNotIn.class.getName());
 
-  private ConvertedColumnMetaData<R, D> c;
+  private ConvertedEntityColumn<R, D> c;
   private TypeConverter<R, D> converter;
   private D[] d;
 
   @SuppressWarnings("unchecked")
-  public ConvertedNotIn(final ConvertedColumnMetaData<R, D> c, final TypeConverter<R, D> converter, final D... d) {
+  public ConvertedNotIn(final ConvertedEntityColumn<R, D> c, final TypeConverter<R, D> converter, final D... d) {
     super(Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
     this.c = c;
     this.converter = converter;

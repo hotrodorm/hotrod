@@ -33,11 +33,13 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
-import org.hotrod.livesql.metadata.NumericEntityColumn;
-import org.hotrod.livesql.metadata.View;
+import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
@@ -46,7 +48,6 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
-import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -56,15 +57,17 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.CityNumberLayout;
-import app.persistence.model.CityNumber;
+import app.ActiveEnum;
+import app.IntegerActiveConverter;
+import app.persistence.layout.DATALocalLayout;
+import app.persistence.model.DATALocal;
 
 @Component
-public class CityNumberDAO implements Serializable, ApplicationContextAware {
+public class DATALocalDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = Logger.getLogger(CityNumberDAO.class.getName());
+  private static final Logger log = Logger.getLogger(DATALocalDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -88,17 +91,26 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private LiveSQLContext context;
 
+  // CONVERTERS
+
+  @Autowired
+  private IntegerActiveConverter converter0;
+
   // ROW READER
 
-  private final RowReader<CityNumber> rowReader = new RowReader<CityNumber>() {
+  private final RowReader<DATALocal> rowReader = new RowReader<DATALocal>() {
 
     @Override
-    public CityNumber readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      CityNumber row = applicationContext.getBean(CityNumber.class);
+    public DATALocal readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      DATALocal row = applicationContext.getBean(DATALocal.class);
 
-      Long col1 = rs.getLong("ID"); // ID
-      if (rs.wasNull()) col1 = null;
-      row.setId(col1);
+      String col1 = rs.getString("NAME"); // NAME
+      row.setNAMELocalToCity(col1);
+
+      Integer raw2 = rs.getInt("ACTIVE"); // ACTIVE
+      if (rs.wasNull()) raw2 = null;
+      ActiveEnum col2 = converter0.decode(raw2, conn);
+      row.setActive(col2);
 
       return row;
     }
@@ -107,47 +119,57 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   // PARSE ROW
 
-  public CityNumber parseRow(Map<String, Object> row) {
+  public DATALocal parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public CityNumber parseRow(Map<String, Object> row, String prefix) {
+  public DATALocal parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public CityNumber parseRow(Map<String, Object> row, String prefix, String suffix) {
-    CityNumber m = applicationContext.getBean(CityNumber.class);
+  public DATALocal parseRow(Map<String, Object> row, String prefix, String suffix) {
+    DATALocal m = applicationContext.getBean(DATALocal.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setId(CastUtil.toLong((Number) row.get(p + "id" + s)));
+    m.setNAMELocalToCity((String) row.get(p + "NAMELocalToCity" + s));
+    m.setActive((ActiveEnum) row.get(p + "active" + s));
     return m;
   }
 
   // BASELINE
 
-  public class CityNumberBaseline {
+  public class DATALocalBaseline {
 
-    private Long id;
+    private String NAMELocalToCity;
+    private ActiveEnum active;
 
-    public Long getId() {
-      return this.id;
+    public String getNAMELocalToCity() {
+      return this.NAMELocalToCity;
+    }
+
+    public ActiveEnum getActive() {
+      return this.active;
     }
 
   }
 
-  public CityNumberBaseline baseline(CityNumber model) {
-    CityNumberBaseline b = new CityNumberBaseline();
-    b.id = model.getId();
+  public DATALocalBaseline baseline(DATALocal model) {
+    DATALocalBaseline b = new DATALocalBaseline();
+    b.NAMELocalToCity = model.getNAMELocalToCity();
+    b.active = model.getActive();
     return b;
   };
 
   // CLONE
 
-  public CityNumber clone(CityNumberLayout layout) {
-    CityNumber m = this.applicationContext.getBean(CityNumber.class);
-    m.setId(layout.getId());
+  public DATALocal clone(DATALocalLayout layout) {
+    DATALocal m = this.applicationContext.getBean(DATALocal.class);
+    m.setNAMELocalToCity(layout.getNAMELocalToCity());
+    m.setActive(layout.getActive());
     return m;
   };
+
+  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
   // SELECT BY EXAMPLE
 
@@ -156,26 +178,28 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  id")
-      .literaln("FROM city_code")
+      .literaln("  \"NAME\",")
+      .literaln("  active")
+      .literaln("FROM data")
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.NAMELocalToCity != null").literal("\"NAME\" = ").parameter("e.NAMELocalToCity").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<CityNumber> select(CityNumberLayout example, CityNumberOrderBy... orderBies) {
+  public List<DATALocal> select(DATALocalLayout example, DATALocalOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<CityNumber> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<DATALocal> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<CityNumber> rows = preparedQuery.execute(conn);
+      List<DATALocal> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -188,8 +212,8 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<CityNumber> select(final CityNumberView from, final Predicate predicate) {
-    return new CriteriaWherePhase<CityNumber>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<DATALocal> select(final DATALocalTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<DATALocal>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -198,23 +222,25 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO city_code")
+      .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("id")
+        .literal("\"NAME\"")
+        .literal("active")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.id", Types.BIGINT)
+        .parameterNullable("l.NAMELocalToCity", Types.VARCHAR)
+        .parameterNullable("l.active", Types.INTEGER, this.converter0)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public CityNumber insert(CityNumberLayout layout) {
+  public DATALocal insert(DATALocalLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    CityNumber model = this.clone(layout);
+    DATALocal model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -235,23 +261,25 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO city_code")
+      .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.id != null").literal("id").endif()
+        .if_("e.NAMELocalToCity != null").literal("\"NAME\"").endif()
+        .if_("e.active != null").literal("active").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.id != null").parameter("e.id").endif()
+        .if_("e.NAMELocalToCity != null").parameter("e.NAMELocalToCity").endif()
+        .if_("e.active != null").parameter("e.active", this.converter0).endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public CityNumber insertByExample(CityNumberLayout example) {
+  public DATALocal insertByExample(DATALocalLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    CityNumber model = this.clone(example);
+    DATALocal model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -274,17 +302,19 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE city_code")
+      .literal("UPDATE data")
       .set()
-        .if_("v.id != null").literal("id = ").parameter("v.id").endif()
+        .if_("v.NAMELocalToCity != null").literal("\"NAME\" = ").parameter("v.NAMELocalToCity").endif()
+        .if_("v.active != null").literal("active = ").parameter("v.active", this.converter0).endif()
       .endset()
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.NAMELocalToCity != null").literal("\"NAME\" = ").parameter("e.NAMELocalToCity").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(CityNumberLayout example, CityNumberLayout values) {
+  public int update(DATALocalLayout example, DATALocalLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -306,10 +336,11 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(CityNumberLayout values, CityNumberView tableOrView,
+  public UpdateWherePhase update(DATALocalLayout values, DATALocalTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
+    if (values.getNAMELocalToCity() != null) setters.add(new Setter(tableOrView.NAMELocalToCity, sql.val(values.getNAMELocalToCity())));
+    if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -321,14 +352,15 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM city_code")
+      .literaln("DELETE FROM data")
       .where("AND")
-        .if_("e.id != null").literal("id = ").parameter("e.id").endif()
+        .if_("e.NAMELocalToCity != null").literal("\"NAME\" = ").parameter("e.NAMELocalToCity").endif()
+        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(CityNumberLayout example) {
+  public int delete(DATALocalLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -349,21 +381,23 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final CityNumberView from, final Predicate predicate) {
+  public DeleteWherePhase delete(final DATALocalTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum CityNumberOrderBy implements OrderBy {
+  public enum DATALocalOrderBy implements OrderBy {
 
-    ID("id", true),
-    ID$DESC("id", false);
+    NAME_LOCAL_TO_CITY("\"NAME\"", true),
+    NAME_LOCAL_TO_CITY$DESC("\"NAME\"", false),
+    ACTIVE("active", true),
+    ACTIVE$DESC("active", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private CityNumberOrderBy(String sqlColumnName, boolean ascending) {
+    private DATALocalOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -380,45 +414,50 @@ public class CityNumberDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  // VIEW METADATA
+  // TABLE METADATA
 
   static class MetaData {
 
-    static final DirectEntityColumnMetaData ID_META_DATA = new DirectEntityColumnMetaData(
-      "ID", "id", "BIGINT", 64, 0, TypeHandler.forClass(Long.class, TypeSource.STATIC_DIALECT_RULE, "D10"));
+    static final DirectEntityColumnMetaData NAME_LOCAL_TO_CITY_META_DATA = new DirectEntityColumnMetaData(
+      "NAME", "NAMELocalToCity", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+    static final TypeHandler<Integer, ActiveEnum> TH0 = TypeHandler.forConverter(new IntegerActiveConverter(), TypeSource.STATIC_DESIGNATED, null);
+    static final ConvertedEntityColumnMetaData<Integer, ActiveEnum> ACTIVE_META_DATA = new ConvertedEntityColumnMetaData<>(
+      "ACTIVE", "active", "INTEGER", 32, 0, TH0, TH0.getConverter());
 
   }
 
-  public CityNumberView newView() {
-    return new CityNumberView();
+  public DATALocalTable newTable() {
+    return new DATALocalTable();
   }
 
-  public CityNumberView newView(final String alias) {
-    return new CityNumberView(alias);
+  public DATALocalTable newTable(final String alias) {
+    return new DATALocalTable(alias);
   }
 
-  public static class CityNumberView extends View<CityNumber> {
+  public static class DATALocalTable extends Table<DATALocal> {
 
-    public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
+    public final CharEntityColumn NAMELocalToCity = new CharEntityColumn(this, MetaData.NAME_LOCAL_TO_CITY_META_DATA);
+    public final ConvertedEntityColumn<Integer, ActiveEnum> active = new ConvertedEntityColumn<>(this, MetaData.ACTIVE_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id);
+      return new AllColumns(this.NAMELocalToCity, this.active);
     }
 
-    CityNumberView() {
-      super(null, null, Name.of("CITY_CODE", false), "View", null, CityNumberLayout.class, CityNumber.class);
+    DATALocalTable() {
+      super(null, null, Name.of("DATA", false), "Table", null, DATALocalLayout.class, DATALocal.class);
       initialize();
     }
 
-    CityNumberView(final String alias) {
-      super(null, null, Name.of("CITY_CODE", false), "View", alias, CityNumberLayout.class, CityNumber.class);
+    DATALocalTable(final String alias) {
+      super(null, null, Name.of("DATA", false), "Table", alias, DATALocalLayout.class, DATALocal.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.id);
+      super.columns.add(this.NAMELocalToCity);
+      super.columns.add(this.active);
     }
 
   }

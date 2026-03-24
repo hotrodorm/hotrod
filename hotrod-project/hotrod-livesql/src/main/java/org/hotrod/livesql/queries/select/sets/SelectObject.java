@@ -44,6 +44,7 @@ public abstract class SelectObject<T> {
   // Rendering
 
   public final void compileColumns(Set<SelectObject<?>> compiling) {
+//    log.info("this=" + this);
     if (!compiling.contains(this)) {
       compiling.add(this);
       this.prepareColumnCompilation(compiling);

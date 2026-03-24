@@ -35,6 +35,10 @@
   <converter name="coin_type_stored_as_char" type="java.lang.Integer" raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
 
+
+  <converter name="active_stored_as_int" type="app.ActiveEnum" raw-type="java.lang.Integer"
+    class="app.IntegerActiveConverter" />
+
 <!-- 
   <table name="product">
     <column name="pid_product" sequence="seq_product" />
@@ -72,11 +76,12 @@
   <table name="k1" />
   <table name="k2" />
 
-<!-- 
   <table name="data" entity="DATALocal">
     <column name="name" property="NAMELocalToCity" />
-    <column name="active" converter="boolean_stored_as_int" />
+    <column name="active" converter="active_stored_as_int" />
   </table>
+
+<!-- 
 
   <table name="t5" />
 

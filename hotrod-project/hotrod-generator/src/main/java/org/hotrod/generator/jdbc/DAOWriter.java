@@ -59,7 +59,8 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.converter.ConvertedColumnMetaData;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
@@ -1423,9 +1424,9 @@ public class DAOWriter {
         w.println("(), ", TypeSource.class, "." + typeSource.name() + ", "
             + (ruleNumber == null ? "null" : "\"" + SUtil.escapeJavaString(ruleNumber) + "\"") + ");");
 
-        w.print("    static final ", ConvertedColumnMetaData.class, "<", rawClass, ", ");
-        w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedColumnMetaData.class);
-        w.println("<", rawClass, ", ", domainClass, ">(");
+        w.print("    static final ", ConvertedEntityColumnMetaData.class, "<", rawClass, ", ");
+        w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedEntityColumnMetaData.class);
+        w.println("<>(");
         w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
             + JUtils.escapeJavaString(property) + "\", \"" //
             + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
@@ -1537,8 +1538,18 @@ public class DAOWriter {
 
       ExternalClass lt = ExternalClass.of(liveSQLColumnType);
 
-      w.print("    public final ", lt, " " + keyEntityInstanceName + " = new ", lt, "(this, ");
-      w.println("MetaData.", metaDataColumnName + ");");
+      if (cm.getResolvedConverter() == null) { // Direct Column
+        w.print("    public final ", lt, " " + keyEntityInstanceName + " = new ", lt, "(this, ");
+        w.println("MetaData.", metaDataColumnName + ");");
+      } else { // Converted Column
+        ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
+        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+        w.print("    public final ", ConvertedEntityColumn.class);
+        w.print("<", rawClass, ", ", domainClass, "> ");
+        w.print(keyEntityInstanceName + " = new ", ConvertedEntityColumn.class, "<>(this, ");
+        w.println("MetaData.", metaDataColumnName + ");");
+      }
+
     }
 
     // star method

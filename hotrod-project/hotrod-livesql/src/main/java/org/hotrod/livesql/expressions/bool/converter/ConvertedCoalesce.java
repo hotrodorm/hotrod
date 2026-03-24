@@ -13,11 +13,11 @@ public class ConvertedCoalesce<R, D> extends SortableExpression {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedCoalesce.class.getName());
 
-  private ConvertedColumnMetaData<R, D> c;
+  private ConvertedEntityColumn<R, D> c;
   private TypeConverter<R, D> converter;
   private D d;
 
-  public ConvertedCoalesce(final ConvertedColumnMetaData<R, D> c, final TypeConverter<R, D> converter, final D d) {
+  public ConvertedCoalesce(final ConvertedEntityColumn<R, D> c, final TypeConverter<R, D> converter, final D d) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.c = c;
     this.converter = converter;

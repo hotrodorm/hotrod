@@ -78,11 +78,13 @@ public abstract class BaseSelectObject<T> extends SelectObject<T> {
   protected final void computeColumnsCompilation() {
     this.compiledColumns = new ArrayList<>();
     for (SQLExpression se : this.sqlExpressions) {
-
+//      log.info("se=" + se.getClass().getName());
       try {
         // Single column
         Expression single = (Expression) se;
+//        log.info("- single=" + single);
         Expression emerging = Shield.getEmergingExpression(single); // emerging is always null for wrapping columns
+//        log.info("  - emerging=" + emerging + " -- th=" + Shield.getTypeHandler(emerging));
         if (emerging != null) {
           Shield.setTypeHandler(single, Shield.getTypeHandler(emerging));
         }

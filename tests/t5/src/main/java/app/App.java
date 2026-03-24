@@ -10,6 +10,7 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import app.persistence.dao.DATALocalDAO;
+import app.persistence.dao.DATALocalDAO.DATALocalTable;
+import app.persistence.model.DATALocal;
 
 @SpringBootApplication
 @Configuration
@@ -66,8 +71,8 @@ public class App {
 //  @Autowired
 //  private TestDAO testDAO;
 
-//  @Autowired
-//  private DATALocalDAO dataLocalDAO;
+  @Autowired
+  private DATALocalDAO dataLocalDAO;
 
 //  @Autowired
 //  private K1DAO k1DAO;
@@ -116,10 +121,10 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       log.info("[ Starting... ]");
-      testTx();
+//      testTx();
 //      testTxLiveSQL();
 //      testNS();
-//      testConverters();
+      testConverters();
 //      testInsert1();
 
 //      testInsertSequence();
@@ -201,34 +206,35 @@ public class App {
 //    }
 //  }
 
-//  private void testConverters() {
-//    {
-//      System.out.println("### T1 - Plain LiveSQL");
-//      DATALocalTable t = this.dataLocalDAO.newTable();
-//      List<Row> li = this.sql.select().from(t).execute();
-//      for (Row r : li) {
-//        System.out.println("### r=" + r);
-//      }
-//    }
-//
-//    {
-//      System.out.println("### T2 - Tuples LiveSQL");
-//      DATALocalTable t = this.dataLocalDAO.newTable();
-//      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).execute();
-//      for (Tuple1<DATALocal> r : li) {
-//        System.out.println("### r=" + r.getA());
-//      }
-//    }
-//
-//    {
-//      System.out.println("### T3 - Filtering by Converted Column");
-//      DATALocalTable t = this.dataLocalDAO.newTable();
-//      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).where(sql.not(t.active)).execute();
-//      for (Tuple1<DATALocal> r : li) {
-//        System.out.println("### r=" + r.getA());
-//      }
-//    }
-//  }
+  private void testConverters() {
+    {
+      System.out.println("### T1 - Plain LiveSQL");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Row> li = this.sql.select().from(t).execute(LIVESQL_LOG);
+      for (Row r : li) {
+        System.out.println("### r=" + r);
+      }
+    }
+
+    {
+      System.out.println("### T2 - Tuples LiveSQL");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).execute(LIVESQL_LOG);
+      for (Tuple1<DATALocal> r : li) {
+        System.out.println("### r=" + r.getA());
+      }
+    }
+
+    {
+      System.out.println("### T3 - Filtering by Converted Column");
+      DATALocalTable t = this.dataLocalDAO.newTable();
+      List<Tuple1<DATALocal>> li = this.sql.select().tuples().from(t).where(t.active.eq(ActiveEnum.INACTIVE))
+          .execute(LIVESQL_LOG);
+      for (Tuple1<DATALocal> r : li) {
+        System.out.println("### r=" + r.getA());
+      }
+    }
+  }
 
 //  private void testInsert1() {
 //    K1Table t = this.k1DAO.newTable();
