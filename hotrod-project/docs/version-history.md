@@ -3,6 +3,11 @@
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 
+## 5.1.17:
+
+- LiveSQL:
+    - Fixing converted columns in LiveSQL.
+
 ## 5.1.16:
 
 - Core:
