@@ -275,13 +275,7 @@ public class DAOWriter {
   private void writeClassHeader() throws IOException {
 
     w.println("@", Const.COMPONENT);
-    w.println("public class " + this.getClassName() + " implements ", Serializable.class, ", ",
-        Const.APPLICATION_CONTEXT_AWARE, " {");
-    w.println();
-
-    // Serial Version UID
-
-    w.println("  private static final long serialVersionUID = 1L;");
+    w.println("public class " + this.getClassName() + " implements ", Const.APPLICATION_CONTEXT_AWARE, " {");
     w.println();
 
     // Loggers
