@@ -6,7 +6,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.1.18:
 
 - CRUD:
-    - DAO classes do not implement the java.io.Seralizable class anymore.
+    - The DAO classes do not implement the java.io.Seralizable interface anymore.
 
 ## 5.1.17:
 
