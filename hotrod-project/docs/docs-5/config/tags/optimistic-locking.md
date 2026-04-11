@@ -1,4 +1,4 @@
-# The `<optimistic-locking>` Tag
+# The &lt;optimistic-locking> Tag
 
 This tag can be added to a table to enable Optimistic Locking in it. It must indicate
 which strategy is desired to implement optimistic locking in the table.

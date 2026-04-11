@@ -30,7 +30,7 @@ The configuration allows you to type table, view, and columns names &mdash; thei
 
 - Normal ASCII alphanumeric identifiers
 - Reserved words
-- Identifiers with Non-ASCII characters
+- Identifiers with non-ASCII characters
 - Mixed-case identifiers
 
 For the last three cases each database uses different escaping strategies.
@@ -66,6 +66,7 @@ See [Natural Typing Identifiers](../natural-typing-identifiers.md) for more exam
 ## Inner Tags
 
 The `<table>` tag can include the following tags:
+
 - Zero or more `<column>` tags to customize table columns.
 - Zero or more `<sequence>` tags to generate methods that retrieve sequence values.
 - Zero or more `<query>` tags to generate methods for parameterized general purpose queries.
@@ -81,12 +82,16 @@ only for the columns that need to be superseded.
 See the [`<column>`](./column.md) tag for more details.
 
 
-## Extra Persistence Methods
+## Additional Custom Persistence Methods
 
-HotRod can add extra methods that could be related to the table to retrieve sequences, running general purpose queries, and Nitro queries.
+You can configure the table DAO to include extra persistence methods that you may find useful in each specific case.
+
+The configuration allows you to add any number of methods to:
+
+- Retrieve sequences values
+- Run non-SELECT queries, with/without parameters, with/without Dynamic SQL
+- SELECT queries that return entity rows. That is, rows that match this table definition
 
 See [`<sequence>`](sequence.md), [`<query>`](query.md), and [`<select>`](select.md).
-
-
 
 
