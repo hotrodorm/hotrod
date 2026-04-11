@@ -24,12 +24,46 @@ The `<view>` tag can include modifiers that can be useful in special cases, as s
 | `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
 
 
-## Natural Typing Identifiers
+## Reserved Words, Non-ASCII Characters, Mixed-Case Identifiers
 
-See [Natural Typing Identifiers](../natural-typing-identifiers.md).
+The configuration allows you to type table, view, and columns names &mdash; their identifiers &mdash; using *natural typing*, as you would do in a typical SQL script. This typing includes:
+
+- Normal ASCII alphanumeric identifiers
+- Reserved words
+- Identifiers with Non-ASCII characters
+- Mixed-case identifiers
+
+For the last three cases each database uses different escaping strategies.
+
+In short, special identifiers can be enclosed in single quotes to specify their canonical form. For example, if you created the following view in PostgreSQL with a name that includes a mixed-case letters, a Greek letter, and a space, and that also includes a column whose name is a reserved word:
+
+```sql
+CREATE VIEW "Order Type α" -- the view name has mixed-case letters, spaces, and a greek letter
+AS SELECT id, "case" -- the last column name is a reserved word in PostgreSQL
+FROM orders
+WHERE order_type = 'A1'
+```
+
+You can integrate in HotRod as:
+
+```xml
+  <view name="'Order Type α'" entity="OrderTypeA">
+    <column name="'case'" property="orderCase" />
+  </view>
+```
+
+Consider:
+
+1. When dealing with special names, these need to be enclosed in single quotes in the layer configuration file, and using their canonical names
+2. The canonical form of an identifier is the name that the database records when an object is created, and using the exact upper case/lower case form
+3. There's no need to mention the plain identifiers that don't fall into any of the special categories: `id` in this example
+4. To provide useful application names, the attribute `entity` can be used for tables and views. The persistence layer will base the layout and model names in this value
+5. To provide useful application names, the attribute `property` can be used for columns. The persistence layer will use this value for the layour members. In this example, the application would find a compilation problem in the persistence layer if the property name was `case` since this is also a reserved word in the application code.
+
+See [Natural Typing Identifiers](../natural-typing-identifiers.md) for more examples.
 
 
-## Included Tags
+## Inner Tags
 
 The `<table>` tag can include the following tags:
 - Zero or more `<column>` tags to customize table columns.

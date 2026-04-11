@@ -22,16 +22,49 @@ The `<table>` tag can include modifiers that can be useful in special cases, as 
 | `schema` | The schema of the table, if different from the default one | The current schema, specified in the runtime properties file |
 | `entity` | Sets the base Java name for the Layout, Model, and DAO classes | Camel-case identifier based on the database identifier |
 | ~~`java-name`~~ | *Deprecated*. Use `entity` instead |  |
-| `column-seam` | Rarely used. CRUD can used it to produce Java method names from multiple columns. See [Select by Unique Index](../../crud/select-by-unique-index.md), [Select Children By Foregin Key](../../crud/select-children-by-foreign-key.md), and [Select Parent By Foreign Key](../../crud/select-parent-by-foreign-key.md) | *empty-string* |
 | `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
 
 
-## Natural Typing Identifiers
+## Reserved Words, Non-ASCII Characters, Mixed-Case Identifiers
 
-See [Natural Typing Identifiers](../natural-typing-identifiers.md).
+The configuration allows you to type table, view, and columns names &mdash; their identifiers &mdash; using *natural typing*, as you would do in a typical SQL script. This typing includes:
+
+- Normal ASCII alphanumeric identifiers
+- Reserved words
+- Identifiers with Non-ASCII characters
+- Mixed-case identifiers
+
+For the last three cases each database uses different escaping strategies.
+
+In short, special identifiers can be enclosed in single quotes to specify their canonical form. For example, if you created the following table in PostgreSQL with a name that includes a mixed-case letters, a Greek letter, and a space, and that also includes a column whose name is a reserved word:
+
+```sql
+CREATE TABLE "Order Type α" ( -- the table name has mixed-case letters, spaces, and a greek letter
+  id int primary key,
+  "case" VARCHAR(200) -- this column name is a reserved word in PostgreSQL
+)
+```
+
+You can integrate in HotRod as:
+
+```xml
+  <table name="'Order Type α'" entity="OrderTypeA">
+    <column name="'case'" property="orderCase" />
+  </table>
+```
+
+Consider:
+
+1. When dealing with special names, these need to be enclosed in single quotes in the layer configuration file, and using their canonical names
+2. The canonical form of an identifier is the name that the database records when an object is created, and using the exact upper case/lower case form
+3. There's no need to mention the plain identifiers that don't fall into any of the special categories: `id` in this example
+4. To provide useful application names, the attribute `entity` can be used for tables and views. The persistence layer will base the layout and model names in this value
+5. To provide useful application names, the attribute `property` can be used for columns. The persistence layer will use this value for the layour members. In this example, the application would find a compilation problem in the persistence layer if the property name was `case` since this is also a reserved word in the application code.
+
+See [Natural Typing Identifiers](../natural-typing-identifiers.md) for more examples.
 
 
-## Included Tags
+## Inner Tags
 
 The `<table>` tag can include the following tags:
 - Zero or more `<column>` tags to customize table columns.
