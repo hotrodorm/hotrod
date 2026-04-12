@@ -1381,7 +1381,7 @@ public class DAOWriter {
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
 
-      String canonicalSQLRenderedName = this.adapter.renderSQLName(canonicalName, cm.getId().isQuoted());
+//      String canonicalSQLRenderedName = this.adapter.renderSQLName(canonicalName, cm.getId().isQuoted());
 
       ExternalClass jt = ExternalClass.of(javaType);
 
@@ -1389,9 +1389,10 @@ public class DAOWriter {
 
         w.print("    static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
         w.println(" = new ", DirectEntityColumnMetaData.class, "(");
-        w.print("      " //
-            + "\"" + JUtils.escapeJavaString(canonicalSQLRenderedName) + "\"" //
-            + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+        w.print("      ", Name.class, ".of(");
+        w.print(
+            "\"" + JUtils.escapeJavaString(cm.getId().getCanonicalSQLName()) + "\", " + cm.getId().isQuoted() + ")");
+        w.print(", \"" + JUtils.escapeJavaString(property) + "\"" //
             + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
             + ", " + cm.getPrecision() //
             + ", " + cm.getScale() //
@@ -1421,8 +1422,10 @@ public class DAOWriter {
 
         w.print("    static final ", ConvertedEntityColumnMetaData.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedEntityColumnMetaData.class);
-        w.println("<>(");
-        w.println("      \"" + JUtils.escapeJavaString(canonicalSQLRenderedName) + "\", \"" //
+        w.print("<>(");
+        w.print("      Name.of(\"" + JUtils.escapeJavaString(cm.getId().getCanonicalSQLName()) + "\", "
+            + cm.getId().isQuoted() + ")");
+        w.println(", \"" //
             + JUtils.escapeJavaString(property) + "\", \"" //
             + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
             + cm.getPrecision() //

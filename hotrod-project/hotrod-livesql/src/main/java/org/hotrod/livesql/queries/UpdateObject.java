@@ -113,7 +113,7 @@ public class UpdateObject {
         w.write(", ");
       }
       Assignment s = this.setters.get(i);
-      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getCanonicalName()));
+      w.write(w.getSQLDialect().canonicalToNatural(s.getColumn().getName()));
       w.write(" = ");
       Shield.renderTo(s.getExpression(), w);
       w.write("\n");

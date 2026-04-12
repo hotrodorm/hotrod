@@ -97,8 +97,8 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
   }
 
   @Override
-  public String getCanonicalName() {
-    return this.metaData.getName().getName();
+  public Name getName() {
+    return this.metaData.getName();
   }
 
   @Override

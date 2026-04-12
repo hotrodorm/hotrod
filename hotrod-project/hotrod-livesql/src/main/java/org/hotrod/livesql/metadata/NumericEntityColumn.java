@@ -57,8 +57,9 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
     return true;
   }
 
-  public String getCanonicalName() {
-    return this.metaData.getName().getName();
+  @Override
+  public Name getName() {
+    return this.metaData.getName();
   }
 
   @Override
