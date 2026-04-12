@@ -2,6 +2,10 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.19 (unreleased):
+
+- Core:
+    - Adds support for non-alphanumeric ASCII table and column names, as well as reserved words, and mixed-case identifiers.
 
 ## 5.1.18:
 
