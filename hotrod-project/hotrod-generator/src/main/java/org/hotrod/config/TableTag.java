@@ -18,7 +18,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.identifiers.SQLName;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
@@ -234,7 +234,7 @@ public class TableTag extends AbstractEntityDAOTag {
     if (this.entity == null) {
       String replacedName = null;
       try {
-        SQLName natural = new SQLName(this.name);
+        TypedSQLName natural = new TypedSQLName(this.name);
         String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
         replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.TABLE);
 //        log.info("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);

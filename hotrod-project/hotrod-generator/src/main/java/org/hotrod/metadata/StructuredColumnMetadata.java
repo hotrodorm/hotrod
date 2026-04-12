@@ -9,6 +9,7 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 
 public class StructuredColumnMetadata extends ColumnMetadata {
@@ -118,12 +119,12 @@ public class StructuredColumnMetadata extends ColumnMetadata {
   }
 
   public static List<StructuredColumnMetadata> promote(final String entityPrefix, final List<ColumnMetadata> cols,
-      final String aliasPrefix, final Set<String> idNames) throws IdColumnNotFoundException {
+      final String aliasPrefix, final Set<TypedSQLName> idNames) throws IdColumnNotFoundException {
     if (aliasPrefix == null) {
       throw new IllegalArgumentException("aliasPrefix cannot be null!");
     }
 
-    for (String idName : idNames) {
+    for (TypedSQLName idName : idNames) {
       if (!idIsColumn(cols, idName)) {
         throw new IdColumnNotFoundException(idName);
       }
@@ -138,8 +139,8 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     return columns;
   }
 
-  private static boolean columnIsId(final ColumnMetadata cm, final Set<String> idNames) {
-    for (String idName : idNames) {
+  private static boolean columnIsId(final ColumnMetadata cm, final Set<TypedSQLName> idNames) {
+    for (TypedSQLName idName : idNames) {
       if (cm.isConfigurationName(idName)) {
         return true;
       }
@@ -147,7 +148,7 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     return false;
   }
 
-  private static boolean idIsColumn(final List<ColumnMetadata> cols, final String idName) {
+  private static boolean idIsColumn(final List<ColumnMetadata> cols, final TypedSQLName idName) {
     for (ColumnMetadata cm : cols) {
       if (cm.isConfigurationName(idName)) {
         return true;
@@ -160,14 +161,14 @@ public class StructuredColumnMetadata extends ColumnMetadata {
 
     private static final long serialVersionUID = 1L;
 
-    private String idName;
+    private TypedSQLName idName;
 
-    public IdColumnNotFoundException(final String idName) {
+    public IdColumnNotFoundException(final TypedSQLName idName) {
       super();
       this.idName = idName;
     }
 
-    public String getIdName() {
+    public TypedSQLName getIdName() {
       return idName;
     }
 

@@ -16,6 +16,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.SUtil;
 
@@ -72,7 +73,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> ids)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<TypedSQLName> ids)
       throws InvalidConfigurationFileException {
 
     log.fine("validate");

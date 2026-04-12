@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.metadata.EntityColumnMetaData;
+import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public class ConvertedEntityColumnMetaData<R, D> extends EntityColumnMetaData {
@@ -18,10 +19,10 @@ public class ConvertedEntityColumnMetaData<R, D> extends EntityColumnMetaData {
   private Integer decimalDigits;
   private TypeHandler<R, D> handler;
 
-  public ConvertedEntityColumnMetaData(final String canonicalName, final String property, final String type,
+  public ConvertedEntityColumnMetaData(final Name name, final String property, final String type,
       final Integer columnSize, final Integer decimalDigits, final TypeHandler<R, D> handler,
       final TypeConverter<R, D> converter) {
-    super(canonicalName);
+    super(name);
     log.fine("init");
     this.converter = converter;
     this.property = property;

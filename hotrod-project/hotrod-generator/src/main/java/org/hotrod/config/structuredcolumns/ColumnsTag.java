@@ -23,6 +23,7 @@ import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -45,9 +46,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private String vo = null;
   private String id = null;
 
-  private Set<String> idNames = new HashSet<String>();
+  private Set<TypedSQLName> idNames = new HashSet<>();
 
-  private List<VOTag> vos = new ArrayList<VOTag>();
+  private List<VOTag> vos = new ArrayList<>();
   private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
@@ -170,7 +171,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
         }
         for (String id : this.id.split(",")) {
           if (!id.isEmpty()) {
-            this.idNames.add(id);
+            this.idNames.add(new TypedSQLName(id));
           }
         }
         if (this.idNames.isEmpty()) {
@@ -200,7 +201,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // expressions
 
-    Set<String> ids = new HashSet<String>(this.idNames);
+    Set<TypedSQLName> ids = new HashSet<>(this.idNames);
 
     this.expressions.validate(jdbcTag, config, fragmentConfig, connectedVOResult, ids);
     if (!ids.isEmpty()) {

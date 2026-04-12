@@ -297,7 +297,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // Validate the name column
 
-    JdbcColumn nameCol = metadata.findJdbcColumn(this.table, this.nameCol);
+    JdbcColumn nameCol = metadata.findJdbcColumn(this.table, null);
     if (nameCol == null) {
       throw new InvalidConfigurationFileException(this,
           "Could not find column '" + this.nameCol + "' on table '" + this.id.getRenderedSQLName()

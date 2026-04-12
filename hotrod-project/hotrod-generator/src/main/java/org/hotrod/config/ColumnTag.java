@@ -13,7 +13,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.identifiers.SQLName;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
@@ -31,6 +31,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
+  private TypedSQLName typedSQLName = null;
 
   @Deprecated
   private String javaName = null;
@@ -156,6 +157,7 @@ public class ColumnTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
           + "> cannot be empty. " + "Must specify a database column name.");
     }
+    this.typedSQLName = new TypedSQLName(this.name);
 
     // property (and old java-name)
 
@@ -186,8 +188,7 @@ public class ColumnTag extends AbstractConfigurationTag {
     if (this.property == null) {
       String replacedName = null;
       try {
-        SQLName natural = new SQLName(this.name);
-        String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
+        String canonicalName = adapter.canonizeName(typedSQLName.getName(), typedSQLName.isQuoted());
         replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.COLUMN);
         log.fine("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
         if (replacedName != null) {
@@ -421,7 +422,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   }
 
   void populateJdbcElements(final Metadata metadata, final JdbcTable t) throws InvalidConfigurationFileException {
-    this.column = metadata.findJdbcColumn(t, this.name);
+    this.column = metadata.findJdbcColumn(t, this.typedSQLName);
   }
 
   public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
@@ -434,7 +435,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   }
 
   public boolean isName(final String jdbcName, final DatabaseAdapter adapter) {
-    return adapter.isColumnIdentifier(jdbcName, this.name);
+    return adapter.isColumnIdentifier(jdbcName, this.typedSQLName);
   }
 
   // Indexable
@@ -468,6 +469,10 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   public String getName() {
     return name;
+  }
+
+  public final TypedSQLName getTypedSQLName() {
+    return typedSQLName;
   }
 
   public String getProperty() {

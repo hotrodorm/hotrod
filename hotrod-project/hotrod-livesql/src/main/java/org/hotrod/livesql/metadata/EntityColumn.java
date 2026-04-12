@@ -10,6 +10,7 @@ public interface EntityColumn {
 
   Name getObjectName();
 
+  @Deprecated
   String getCanonicalName();
 
   String getProperty();

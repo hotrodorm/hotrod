@@ -2,12 +2,19 @@
 
 HotRod adopts Natural Typing Identifiers when naming database objects in the configuration file.
 
-The configuration file references existing database objects by name in several places. For example,
-it needs to name a table, a view, a column, a sequence, etc. These names are known as **database identifiers**.
+The configuration file references existing database objects by name as needed. All identifiers are sbject to natural typing. This affects:
+
+- Tables
+- Views
+- Entity columns related to tables and views
+- Nitro columns
+- Sequences used by table columns for key generation
+- Sequence methods
+- Catalog and schema names used in tables, views, sequences
+- Catalog and schema names using by the discovery definitions
 
 The natural typing form allows the objects to be typed in the HotRod configuration file
-as they would be typed in a SQL statement, giving preference to lower case typing. Let's look at canonical
-identifiers first to see how they differ from natural identifiers.
+as they would be typed in a SQL statement, giving preference to lower case typing. Let's look at canonical identifiers first to see how they differ from natural identifiers.
 
 ## Canonical Identifiers
 
@@ -45,7 +52,6 @@ The database will create a table `order_line`. Each database will register the n
 [^1]: The default settings of SQL Server don't differentiate between lower and upper case identifiers. This behavior can be changed
 by changing the database encoding with one which names ends with `_CS` (case sensitive). This change has multiple side effects, so it's
 not recommended to do it unless you have a lot time to test them thoroughly.
-
 
 
 ## Natural Typing Identifiers

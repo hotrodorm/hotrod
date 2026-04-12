@@ -58,7 +58,7 @@ public class DateTimeEntityColumn extends DateTimeExpression implements EntityCo
   }
 
   public String getCanonicalName() {
-    return this.metaData.getCanonicalName();
+    return this.metaData.getName().getName();
   }
 
   @Override

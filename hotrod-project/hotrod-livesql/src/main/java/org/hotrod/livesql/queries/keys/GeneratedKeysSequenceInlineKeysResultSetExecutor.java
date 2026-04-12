@@ -39,7 +39,7 @@ public class GeneratedKeysSequenceInlineKeysResultSetExecutor<T> extends Generat
   public InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException {
     boolean included = false;
     for (EntityColumn c : columns) {
-      if (c.getCanonicalName().equals(this.keyColumn.getCanonicalName())) {
+      if (c.getCanonicalName().equals(this.keyColumn.getName().getName())) {
         included = true;
       }
     }

@@ -58,7 +58,7 @@ public class BinaryEntityColumn extends BinaryExpression implements EntityColumn
   }
 
   public String getCanonicalName() {
-    return this.metaData.getCanonicalName();
+    return this.metaData.getName().getName();
   }
 
   @Override

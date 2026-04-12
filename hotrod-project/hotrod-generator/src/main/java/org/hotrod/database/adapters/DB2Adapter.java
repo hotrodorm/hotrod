@@ -15,6 +15,7 @@ import org.hotrod.database.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -207,8 +208,11 @@ public class DB2Adapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean isColumnIdentifier(final String jdbcName, final String name) {
-    return name == null ? false : name.equalsIgnoreCase(jdbcName);
+  public boolean isColumnIdentifier(final String jdbcName, final TypedSQLName typedSQLName) {
+    if (typedSQLName == null)
+      return false;
+    return typedSQLName.isQuoted() ? typedSQLName.getName().equals(jdbcName)
+        : typedSQLName.getName().equalsIgnoreCase(jdbcName);
   }
 
   @Override

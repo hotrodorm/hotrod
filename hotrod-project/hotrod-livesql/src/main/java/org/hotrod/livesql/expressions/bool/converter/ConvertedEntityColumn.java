@@ -71,7 +71,7 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
           w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.objectInstance.getAlias())));
       w.write(".");
     }
-    w.write(w.getSQLDialect().canonicalToNatural(this.metaData.getCanonicalName()));
+    w.write(w.getSQLDialect().canonicalToNatural(this.metaData.getName().getName()));
   }
 
   // Converted Entity Column
@@ -98,7 +98,7 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
 
   @Override
   public String getCanonicalName() {
-    return this.metaData.getCanonicalName();
+    return this.metaData.getName().getName();
   }
 
   @Override

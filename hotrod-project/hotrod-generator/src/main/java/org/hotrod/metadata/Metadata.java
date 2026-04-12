@@ -30,6 +30,7 @@ import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
@@ -90,7 +91,7 @@ public class Metadata {
 
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
               jdbcTag, isFromCurrentCatalog, isFromCurrentSchema, feedback);
-          log.fine("*** tm=" + tm);
+          log.info("*** tm=" + tm);
 
           this.tables.add(tm);
 
@@ -101,6 +102,8 @@ public class Metadata {
           String voName = jdbcTag.getModelName(tm.getId());
           EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag());
           this.voRegistry.addVO(vo);
+
+          log.info("*** registered");
 
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
@@ -118,12 +121,14 @@ public class Metadata {
           throw new ErrorMessageException(e.getTag(), "Could not retrieve database meta data");
         }
       }
+      log.info("*** all tables registered");
 
       // Link table meta data by foreign keys
 
       for (TableDataSetMetadata tm : this.tables) {
         tm.linkReferencedTableMetadata(this.tables);
       }
+      log.info("*** registered 2");
 
       // Validate there are no 1-many FK relationships with enums on the many
       // side.
@@ -145,7 +150,7 @@ public class Metadata {
 
       // Separate enums metadata from tables'
 
-      log.fine("Prepare enums metadata.");
+      log.info("Prepare enums metadata.");
 
       this.enums = new LinkedHashSet<EnumDataSetMetadata>();
 
@@ -206,7 +211,7 @@ public class Metadata {
 
       // Prepare views meta data
 
-      log.fine("Prepare views metadata.");
+      log.info("Prepare views metadata.");
 
       this.views = new LinkedHashSet<TableDataSetMetadata>();
       TableDataSetMetadata vmd = null;
@@ -264,13 +269,14 @@ public class Metadata {
       // Validate against the database
 
       cr = ColumnsRetriever.getInstance(config, dloc, adapter, db, conn);
-      log.fine("ColumnsRetriever: " + cr);
+      log.info("ColumnsRetriever: " + cr);
 
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
         throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
+      log.info("validated.");
 
       // Prepare <select> methods metadata - phase 1
 
@@ -454,9 +460,9 @@ public class Metadata {
     return null;
   }
 
-  public JdbcColumn findJdbcColumn(final JdbcTable t, final String name) {
+  public JdbcColumn findJdbcColumn(final JdbcTable t, final TypedSQLName typedSQLName) {
     for (JdbcColumn c : t.getColumns()) {
-      if (this.adapter.isColumnIdentifier(c.getName(), name)) {
+      if (this.adapter.isColumnIdentifier(c.getName(), typedSQLName)) {
         return c;
       }
     }

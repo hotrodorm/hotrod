@@ -5,18 +5,22 @@ import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
 public abstract class EntityColumnMetaData {
 
-  private String canonicalName;
+  private Name name;
 
-  protected EntityColumnMetaData(String canonicalName) {
-    this.canonicalName = canonicalName;
+  protected EntityColumnMetaData(Name name) {
+    this.name = name;
   }
 
   public final void renderTo(QueryWriter w) {
-    w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.canonicalName)));
+    if (this.name.isQuoted()) {
+      w.write(w.getSQLDialect().canonicalToNatural(this.name));
+    } else {
+      w.write(w.getSQLDialect().canonicalToNatural(w.getSQLDialect().naturalToCanonical(this.name.getName())));
+    }
   }
 
-  public final String getCanonicalName() {
-    return canonicalName;
+  public final Name getName() {
+    return this.name;
   }
 
   public abstract String getReferenceName();

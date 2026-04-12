@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.InsertIntegration;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -138,8 +138,8 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean isColumnIdentifier(final String jdbcName, final String name) {
-    return this.mysqlAdaper.isColumnIdentifier(jdbcName, name);
+  public boolean isColumnIdentifier(final String jdbcName, final TypedSQLName typedSQLName) {
+    return this.mysqlAdaper.isColumnIdentifier(jdbcName, typedSQLName);
   }
 
   @Override

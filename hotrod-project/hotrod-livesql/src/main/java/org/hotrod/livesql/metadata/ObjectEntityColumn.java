@@ -58,7 +58,7 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
   }
 
   public String getCanonicalName() {
-    return this.metaData.getCanonicalName();
+    return this.metaData.getName().getName();
   }
 
   @Override

@@ -19,9 +19,9 @@ public class DirectEntityColumnMetaData extends EntityColumnMetaData {
 
   // Constructor
 
-  public DirectEntityColumnMetaData(final String canonicalName, final String property, final String type,
-      final Integer columnSize, final Integer decimalDigits, final TypeHandler<?, ?> handler) {
-    super(canonicalName);
+  public DirectEntityColumnMetaData(final Name name, final String property, final String type, final Integer columnSize,
+      final Integer decimalDigits, final TypeHandler<?, ?> handler) {
+    super(name);
     log.fine("init");
     this.property = property;
     this.type = type;

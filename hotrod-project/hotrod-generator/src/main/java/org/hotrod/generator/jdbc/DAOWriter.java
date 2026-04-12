@@ -2,7 +2,6 @@ package org.hotrod.generator.jdbc;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.Connection;
 //import java.sql.Connection;
 import java.sql.ResultSet;
@@ -1382,6 +1381,8 @@ public class DAOWriter {
       String canonicalName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
 
+      String canonicalSQLRenderedName = this.adapter.renderSQLName(canonicalName, cm.getId().isQuoted());
+
       ExternalClass jt = ExternalClass.of(javaType);
 
       if (cm.getResolvedConverter() == null) { // Direct Column
@@ -1389,7 +1390,7 @@ public class DAOWriter {
         w.print("    static final ", DirectEntityColumnMetaData.class, " " + metaDataColumnName);
         w.println(" = new ", DirectEntityColumnMetaData.class, "(");
         w.print("      " //
-            + "\"" + JUtils.escapeJavaString(canonicalName) + "\"" //
+            + "\"" + JUtils.escapeJavaString(canonicalSQLRenderedName) + "\"" //
             + ", \"" + JUtils.escapeJavaString(property) + "\"" //
             + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
             + ", " + cm.getPrecision() //
@@ -1421,7 +1422,7 @@ public class DAOWriter {
         w.print("    static final ", ConvertedEntityColumnMetaData.class, "<", rawClass, ", ");
         w.print(domainClass, "> " + metaDataColumnName + " = new ", ConvertedEntityColumnMetaData.class);
         w.println("<>(");
-        w.println("      \"" + JUtils.escapeJavaString(canonicalName) + "\", \"" //
+        w.println("      \"" + JUtils.escapeJavaString(canonicalSQLRenderedName) + "\", \"" //
             + JUtils.escapeJavaString(property) + "\", \"" //
             + JUtils.escapeJavaString(cm.getTypeName()) + "\", " //
             + cm.getPrecision() //

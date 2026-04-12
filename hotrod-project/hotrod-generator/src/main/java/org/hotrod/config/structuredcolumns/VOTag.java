@@ -31,6 +31,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -79,7 +80,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private String extendedVO = null;
   private List<String> body = null;
 
-  private Set<String> idNames;
+  private Set<TypedSQLName> idNames;
 
   private TableDataSetMetadata tableMetadata;
   private TableDataSetMetadata viewMetadata;
@@ -263,7 +264,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // id
 
-    this.idNames = new HashSet<String>();
+    this.idNames = new HashSet<>();
     if (this.id != null) {
       for (String idName : this.id.split(",")) {
         if (!idName.isEmpty()) {
@@ -272,7 +273,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 "Duplicate column '" + idName + "' on the 'id' attribute. "
                     + "The comma-separated list of column names should not include the same column more than once.");
           }
-          this.idNames.add(idName);
+          this.idNames.add(new TypedSQLName(idName));
         }
       }
       if (this.idNames.isEmpty()) {
@@ -619,7 +620,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     }
 
     if (!this.idNames.isEmpty()) {
-      for (String idName : this.idNames) {
+      for (TypedSQLName idName : this.idNames) {
         if (!idIsColumn(dm.getColumns(), idName)) {
           throw new ErrorMessageException(this,
               "Could not find column '" + idName + "' on the "
@@ -671,7 +672,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   private boolean columnIsId(final ColumnMetadata cm) {
-    for (String idName : this.idNames) {
+    for (TypedSQLName idName : this.idNames) {
       if (cm.isConfigurationName(idName)) {
         return true;
       }
@@ -679,7 +680,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return false;
   }
 
-  private boolean idIsColumn(final List<ColumnMetadata> cols, final String idName) {
+  private boolean idIsColumn(final List<ColumnMetadata> cols, final TypedSQLName idName) {
     for (ColumnMetadata cm : cols) {
       if (cm.isConfigurationName(idName)) {
         return true;

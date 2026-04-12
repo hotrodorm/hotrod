@@ -58,7 +58,7 @@ public class CharEntityColumn extends CharExpression implements EntityColumn {
   }
 
   public String getCanonicalName() {
-    return this.metaData.getCanonicalName();
+    return this.metaData.getName().getName();
   }
 
   @Override

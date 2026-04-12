@@ -92,7 +92,7 @@ public class InsertObject {
       Separator sep = new Separator(", ");
       for (EntityColumnMetaData c : this.columns) {
         w.write(sep.render());
-        w.write(w.getSQLDialect().canonicalToNatural(c.getCanonicalName()));
+        w.write(w.getSQLDialect().canonicalToNatural(c.getName().getName()));
       }
       w.write(")");
     }

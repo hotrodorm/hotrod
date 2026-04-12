@@ -104,6 +104,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
     this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), tableTag);
+    log.info("cols retrieved");
     this.pk = getKeyMetadata(this.t.getPk(), tableTag);
 
     this.uniqueIndexes = new ArrayList<>();
@@ -545,9 +546,9 @@ public class TableDataSetMetadata implements DataSetMetadata {
     return false;
   }
 
-  private ColumnMetadata findColumnMetadata(final OptimisticLockingTag vct) {
+  private ColumnMetadata findColumnMetadata(final OptimisticLockingTag olt) {
     for (ColumnMetadata m : this.cols) {
-      if (this.adapter.isColumnIdentifier(m.getName(), vct.getColumn())) {
+      if (this.adapter.isColumnIdentifier(m.getName(), olt.getTypedSQLName())) {
         return m;
       }
     }

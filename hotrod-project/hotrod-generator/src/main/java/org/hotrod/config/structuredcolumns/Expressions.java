@@ -18,6 +18,7 @@ import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ColumnsRetriever;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -60,7 +61,7 @@ public class Expressions implements ColumnsProvider {
   }
 
   public void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> idNames)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<TypedSQLName> idNames)
       throws InvalidConfigurationFileException {
     for (ExpressionTag tag : this.expressions) {
       tag.validate(jdbcTag, config, fragmentConfig, singleVOResult, idNames);

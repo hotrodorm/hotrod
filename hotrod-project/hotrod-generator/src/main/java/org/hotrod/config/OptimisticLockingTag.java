@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -26,6 +27,8 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
   private String sstrategy = null;
   private String column = null;
+
+  private TypedSQLName typedSQLName = null;
 
   public enum OptimisticLockingStrategy {
     VERSION_NUMBER("version-number", false), TIMESTAMP("timestamp", false), FULL_ROW_CHECK("full-row-check", true);
@@ -77,7 +80,6 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
   @XmlAttribute(name = "strategy")
   public void setSStrategy(final String strategy) {
-//    log.info(">>>>>>>>>>>>>>>>>>>>>> strategy=" + strategy);
     this.sstrategy = strategy;
   }
 
@@ -116,6 +118,7 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
                 + "The version number column must be specified "
                 + "when the Version Number optimistic locking strategy is selected.");
       }
+      this.typedSQLName = new TypedSQLName(this.column);
       break;
     case TIMESTAMP:
       if (SUtil.isEmpty(this.column)) {
@@ -124,12 +127,14 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
                 + "The timestamp column must be specified "
                 + "when the Version Number optimistic locking strategy is selected.");
       }
+      this.typedSQLName = new TypedSQLName(this.column);
       break;
     case FULL_ROW_CHECK:
       if (this.column != null) {
         throw new InvalidConfigurationFileException(this, "Attribute 'column' of tag <" + super.getTagName()
             + "> cannot be specified " + "when the Full Row Check optimistic locking strategy is selected.");
       }
+      this.typedSQLName = null;
       break;
     }
 
@@ -159,7 +164,7 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
     // Check the optimistic locking column exists
 
-    this.jdbcColumn = metadata.findJdbcColumn(this.jdbcTable, this.column);
+    this.jdbcColumn = metadata.findJdbcColumn(this.jdbcTable, this.typedSQLName);
     if (this.jdbcColumn == null) {
       throw new InvalidConfigurationFileException(this, "Could not find column '" + this.column + "' for table '"
           + canonicalSQLName + "' as specified in the attribute 'column' of the tag <" + super.getTagName() + ">.");
@@ -196,7 +201,7 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
 
     // Check the optimistic locking column exists
 
-    this.jdbcColumn = metadata.findJdbcColumn(this.jdbcTable, this.column);
+    this.jdbcColumn = metadata.findJdbcColumn(this.jdbcTable, this.typedSQLName);
     if (this.jdbcColumn == null) {
       throw new InvalidConfigurationFileException(this, "Could not find column '" + this.column + "' for table '"
           + canonicalSQLName + "' as specified in the attribute 'column' of the tag <" + super.getTagName() + ">.");
@@ -237,6 +242,10 @@ public class OptimisticLockingTag extends AbstractConfigurationTag {
   }
 
   // Simple Caption
+
+  public final TypedSQLName getTypedSQLName() {
+    return typedSQLName;
+  }
 
   @Override
   public String getInternalCaption() {

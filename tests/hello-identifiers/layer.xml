@@ -1,0 +1,12 @@
+<hotrod>
+
+  <generators>
+    <jdbc />
+  </generators>
+
+  <table name="'Order Type α'" entity="OrderTypeA">
+    <column name="'case'" property="orderCase" />
+
+  </table>
+
+</hotrod>

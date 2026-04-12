@@ -13,6 +13,7 @@ import org.hotrod.config.ConverterTag;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -167,7 +168,7 @@ public abstract class DatabaseAdapter {
 
   public abstract boolean isTableIdentifier(String jdbcName, String name);
 
-  public abstract boolean isColumnIdentifier(String jdbcName, String name);
+  public abstract boolean isColumnIdentifier(String jdbcName, TypedSQLName name);
 
   public abstract String formatSchemaName(String name);
 

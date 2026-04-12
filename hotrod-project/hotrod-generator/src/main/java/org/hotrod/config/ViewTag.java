@@ -18,7 +18,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.identifiers.SQLName;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtil;
@@ -206,7 +206,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     if (this.entity == null) {
       String replacedName = null;
       try {
-        SQLName natural = new SQLName(this.name);
+        TypedSQLName natural = new TypedSQLName(this.name);
         String canonicalName = adapter.canonizeName(natural.getName(), natural.isQuoted());
         replacedName = config.getNameSolverTag().resolveName(canonicalName, Scope.VIEW);
 //        log.info("### canonicalName=" + canonicalName + " -> replacedName=" + replacedName);
@@ -280,7 +280,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     }
 
     for (ColumnTag c : this.columns) {
-      JdbcColumn jc = metadata.findJdbcColumn(v, c.getName());
+      JdbcColumn jc = metadata.findJdbcColumn(v, c.getTypedSQLName());
       if (jc == null) {
         throw new InvalidConfigurationFileException(this,
             "Could not find column '" + c.getName() + "' on database view '" + this.id.getRenderedSQLName()

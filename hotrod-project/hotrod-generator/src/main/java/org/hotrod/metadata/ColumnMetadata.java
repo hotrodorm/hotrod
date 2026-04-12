@@ -16,6 +16,7 @@ import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
+import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
@@ -91,10 +92,12 @@ public class ColumnMetadata implements DriverColumnMetaData {
 
     this.tag = columnTag;
 
+    String replacedName = null;
     if (this.tag != null && this.tag.getProperty() != null) {
-      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getProperty());
+      TypedSQLName sqlName = this.tag.getTypedSQLName();
+      this.id = sqlName.isQuoted() ? Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getProperty())
+          : Id.fromTypedSQL(sqlName.getName(), adapter);
     } else {
-      String replacedName = null;
       try {
         replacedName = nameSolverTag.resolveName(c.getName(), Scope.COLUMN);
         log.fine("%%% " + this.tableName + "." + c.getName() + " -- replacedName=" + replacedName);
@@ -109,8 +112,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
         this.id = Id.fromCanonicalSQL(c.getName(), adapter);
       }
     }
-    log.fine(
-        "  > CanonicalSQLName=" + this.id.getCanonicalSQLName() + " RenderedSQLName=" + this.id.getRenderedSQLName());
+    log.info("this.id=" + this.id + " -- replacedName=" + replacedName);
 
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();
@@ -357,7 +359,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
     return this.id;
   }
 
-  public boolean isConfigurationName(final String configurationName) {
+  public boolean isConfigurationName(final TypedSQLName configurationName) {
     if (configurationName == null) {
       return false;
     }

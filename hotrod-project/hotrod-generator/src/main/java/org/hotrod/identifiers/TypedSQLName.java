@@ -3,7 +3,7 @@ package org.hotrod.identifiers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLName {
+public class TypedSQLName {
 
   private static final List<SQLQuoteDelimiters> DELIMITERS;
   static {
@@ -17,7 +17,7 @@ public class SQLName {
   private String name;
   private boolean quoted;
 
-  public SQLName(final String typedName) {
+  public TypedSQLName(final String typedName) {
     if (typedName == null) {
       throw new IllegalArgumentException("typedName cannot be null");
     }
@@ -48,6 +48,34 @@ public class SQLName {
   }
 
   // Helpers
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + (quoted ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    TypedSQLName other = (TypedSQLName) obj;
+    if (name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!name.equals(other.name))
+      return false;
+    if (quoted != other.quoted)
+      return false;
+    return true;
+  }
 
   private static class SQLQuoteDelimiters {
 

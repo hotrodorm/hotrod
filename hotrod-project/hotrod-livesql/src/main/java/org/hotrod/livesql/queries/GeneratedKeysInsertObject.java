@@ -119,7 +119,8 @@ public class GeneratedKeysInsertObject<T> {
       Separator sep = new Separator(", ");
       if (edits.getPrependInsertColumn() != null) {
         w.write(sep.render());
-        w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
+        w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getName().getName()));
+
       }
       for (EntityColumn c : this.columns) {
         w.write(sep.render());
@@ -130,7 +131,7 @@ public class GeneratedKeysInsertObject<T> {
 
     if (edits != null && !SUtil.isEmpty(edits.getOutputClausePrefix())) {
       w.write(" " + edits.getOutputClausePrefix());
-      w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getCanonicalName()));
+      w.write(w.getSQLDialect().canonicalToNatural(edits.getPrependInsertColumn().getName().getName()));
     }
 
     if (this.values != null) { // insert using values

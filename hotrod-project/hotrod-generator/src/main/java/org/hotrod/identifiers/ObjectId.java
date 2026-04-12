@@ -208,7 +208,8 @@ public class ObjectId implements Comparable<ObjectId> {
   // Helpers
 
   public String toString() {
-    return this.getRenderedSQLName();
+//    return this.getRenderedSQLName();
+    return this.catalog +"."+ this.schema + "."+ this.object;
   }
 
   @SuppressWarnings("unused")

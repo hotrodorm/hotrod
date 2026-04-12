@@ -99,7 +99,7 @@ public class Id implements Comparable<Id> {
 
     log.fine("typedName=" + typedName);
 
-    SQLName sqlName = new SQLName(typedName);
+    TypedSQLName sqlName = new TypedSQLName(typedName);
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
 
@@ -205,7 +205,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
     }
 
-    SQLName sqlName = new SQLName(typedName);
+    TypedSQLName sqlName = new TypedSQLName(typedName);
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
 
@@ -269,7 +269,7 @@ public class Id implements Comparable<Id> {
       throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
     }
 
-    SQLName sqlName = new SQLName(typedName);
+    TypedSQLName sqlName = new TypedSQLName(typedName);
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
 
@@ -300,9 +300,6 @@ public class Id implements Comparable<Id> {
     if (javaMemberName == null || javaMemberName.isEmpty()) {
       throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
     }
-//    if (!javaMemberName.matches("[a-z_].*")) {
-//      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
-//    }
 
     List<NamePart> nameParts = splitSQL(canonicalSQLName);
     if (nameParts == null || nameParts.isEmpty()) {
@@ -535,6 +532,10 @@ public class Id implements Comparable<Id> {
       sb.append(s);
     }
     return sb.toString();
+  }
+
+  public String toString() {
+    return "[" + this.canonicalSQLName + ", quoted=" + this.isQuoted + "]";
   }
 
   // comparable
