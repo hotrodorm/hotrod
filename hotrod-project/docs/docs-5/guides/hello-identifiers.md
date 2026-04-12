@@ -1,6 +1,12 @@
 # Hello Identifiers
 
-This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows how to use non-ASCII identifiers or identifiers that correspond to reserved words in the specific database.
+This guide runs a Spring Boot project with Maven and H2 in-memory database to show how to use tables, views, and column names that include characters beyond the typical ASCII alphanumeric set.
+
+It shows how to use tables and columns with:
+
+- Reserved words
+- Identifiers with non-ASCII characters or with spaces
+- Mixed-case identifiers
 
 You'll need:
 
@@ -159,13 +165,14 @@ DROP TABLE IF EXISTS "Order Type α";
 
 CREATE TABLE "Order Type α" ( -- the table name has mixed-case letters, spaces, and a greek letter
   id int primary key,
-  "case" VARCHAR(200) -- this column name is a reserved word in PostgreSQL
+  "case" VARCHAR(200) -- this column name is a reserved SQL word
 );
 
 INSERT INTO "Order Type α" (id, "case") VALUES
   (1, 'Type Alpha'),
   (2, 'Beta'),
-  (3, 'Gamma');
+  (3, 'Gamma'),
+  (4, 'Base');
 ```
 
 ### Declare the Table and the Column
@@ -222,7 +229,13 @@ We see the layer generation details:
 [INFO]  
 [INFO] Current Schema: PUBLIC
 [INFO]  
+[INFO] Discover disabled.
 [INFO]  
+[INFO] Generating all facets.
+[INFO]  
+[INFO] Table Order Type α included.
+[INFO]  
+[INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -260,21 +273,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.BranchDAO;
-import app.persistence.dao.BranchDAO.BranchTable;
-import app.persistence.dao.EmployeeDAO;
-import app.persistence.dao.EmployeeDAO.EmployeeTable;
-import app.persistence.model.Employee;
+import app.persistence.dao.OrderTypeADAO;
+import app.persistence.dao.OrderTypeADAO.OrderTypeATable;
+import app.persistence.model.OrderTypeA;
 
 @SpringBootApplication
 @Configuration
 public class App {
 
   @Autowired
-  private EmployeeDAO employeeDAO;
-
-  @Autowired
-  private BranchDAO branchDAO;
+  private OrderTypeADAO orderTypeADAO;
 
   @Autowired
   private LiveSQL sql;
@@ -292,43 +300,25 @@ public class App {
     };
   }
 
-  private void demoCRUD() throws DynamicExpressionException, SQLException {
-    Employee emp = this.employeeDAO.select(134081);
-    System.out.println("Employee #123081's name: " + emp.getFirstName());
+  private void demoCRUD() {
+    OrderTypeA ota = this.orderTypeADAO.select(3);
+    System.out.println("Order Case for Order Type A #3: " + ota.getOrderCase());
   }
 
   private void demoLiveSQL() {
-
-    System.out.println("Employees with last names that include smith from branches of type 2, 6, or 7:");
-
-    EmployeeTable e = this.employeeDAO.newTable("e");
-    BranchTable b = this.branchDAO.newTable("b");
-
+    System.out.println("List all OrderType which Order Case starts with 'B':");
+    OrderTypeATable t = this.orderTypeADAO.newTable();
     List<Row> rows = this.sql
-      .select(e.star(), b.name.as("branchName"))
-      .from(e)
-      .join(b, b.id.eq(e.branchId))
-      .where(e.lastName.lower().like("%smith%").and(b.type.in(2, 6, 7)))
-      .orderBy(b.name, e.lastName.desc())
+      .select(t.id, t.orderCase)
+      .from(t)
+      .where(t.orderCase.like("B%"))
       .execute();
-
     for (Row r : rows) {
       System.out.println(r);
     }
-
   }
 
 }
-```
-
-The LiveSQL query above executes the following query:
-
-```sql
-  SELECT e.*, b.name AS "branchName"
-  FROM employee e
-  JOIN branch b ON b.id = e.branch_id
-  WHERE lower(e.last_name) LIKE '%smith%' AND b.type IN (2, 6, 7)
-  ORDER BY b.name, e.last_name DESC
 ```
 
 ### Prepare the Runtime Properties File
@@ -357,20 +347,17 @@ The Spring Boot application starts, connects to the database and runs both queri
 
 ```log
 [ Starting example ]
-Employee #123081's name: Alice
-Employees with last names that include smith from branches of type 2, 6, or 7:
-{firstName=Steve, lastName=Locksmith, branchId=6, branchName=East Coast, id=609792}
-{firstName=Julia, lastName=Whitesmith, branchId=2, branchName=North, id=207121}
-{firstName=Anne, lastName=Smith, branchId=2, branchName=North, id=101457}
-[ Example complete ]
+Order Case for Order Type A #3: Gamma
+
+List all OrderType which Order Case starts with 'B':
+{id=2, orderCase=Beta}
+{id=4, orderCase=Base}
 ```
 
 We can see:
-- The CRUD query `select id, name from employee where id = 123081` was run and returned 1 row.
-- The LiveSQL query returned 3 rows using the correct search criteria and ordering.
+- The app uses the friendly entity and property names while, behind the scenes, the persistence layer uses the real table and column names, escaped appropriately.
+- The CRUD query returned 1 row.
+- The LiveSQL query returned 2 rows according to the search criteria.
 
 That's it! You just generated the persistence layer from the database and ran an app using it.
 
-Later on, when the database suffers changes &mdash; it will &mdash; you can just
-rerun the generation step `mvn hotrod:gen` to retrieve the latest changes to columns, tables, views, etc. and to apply
-them automatically to the persistence layer.

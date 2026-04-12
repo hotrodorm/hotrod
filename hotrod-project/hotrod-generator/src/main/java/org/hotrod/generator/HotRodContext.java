@@ -63,7 +63,7 @@ public class HotRodContext {
       final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
       final Feedback feedback, final boolean logTimes) throws ErrorMessageException, FaultException {
 
-    log.info("init");
+    log.fine("init");
 
     feedback.info("");
     feedback.info("Configuration File: " + (configFile == null ? "(no-config mode)" : configFile));
@@ -323,7 +323,7 @@ public class HotRodContext {
       log.fine("gen 11");
 //      try {
       metadata.load(config, conn, feedback);
-      log.info("gen 12");
+      log.fine("gen 12");
 //      } catch (InvalidConfigurationFileException e) {
 //        log.fine("gen 13");
 //        SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
@@ -340,15 +340,15 @@ public class HotRodContext {
 //        throw new ErrorMessageException(
 //            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
 //      }
-      log.info("gen 16");
+      log.fine("gen 16");
       T.endPhase("Facets Post-processing");
 
-      for (TableDataSetMetadata t : this.metadata.getTables()) {
-        log.info("* table=" + t.getId());
-        for (ColumnMetadata cm : t.getColumns()) {
-          log.info("** cm=" + cm.getId());
-        }
-      }
+//      for (TableDataSetMetadata t : this.metadata.getTables()) {
+//        log.info("* table=" + t.getId());
+//        for (ColumnMetadata cm : t.getColumns()) {
+//          log.info("** cm=" + cm.getId());
+//        }
+//      }
 
     } finally {
       if (conn != null) {

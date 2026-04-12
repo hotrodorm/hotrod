@@ -91,7 +91,7 @@ public class Metadata {
 
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
               jdbcTag, isFromCurrentCatalog, isFromCurrentSchema, feedback);
-          log.info("*** tm=" + tm);
+          log.fine("*** tm=" + tm);
 
           this.tables.add(tm);
 
@@ -103,7 +103,7 @@ public class Metadata {
           EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag());
           this.voRegistry.addVO(vo);
 
-          log.info("*** registered");
+          log.fine("*** registered");
 
         } catch (UnresolvableDataTypeException e) {
           DriverColumnMetaData m = e.getColumnMetadata();
@@ -121,14 +121,14 @@ public class Metadata {
           throw new ErrorMessageException(e.getTag(), "Could not retrieve database meta data");
         }
       }
-      log.info("*** all tables registered");
+      log.fine("*** all tables registered");
 
       // Link table meta data by foreign keys
 
       for (TableDataSetMetadata tm : this.tables) {
         tm.linkReferencedTableMetadata(this.tables);
       }
-      log.info("*** registered 2");
+      log.fine("*** registered 2");
 
       // Validate there are no 1-many FK relationships with enums on the many
       // side.
@@ -150,7 +150,7 @@ public class Metadata {
 
       // Separate enums metadata from tables'
 
-      log.info("Prepare enums metadata.");
+      log.fine("Prepare enums metadata.");
 
       this.enums = new LinkedHashSet<EnumDataSetMetadata>();
 
@@ -211,7 +211,7 @@ public class Metadata {
 
       // Prepare views meta data
 
-      log.info("Prepare views metadata.");
+      log.fine("Prepare views metadata.");
 
       this.views = new LinkedHashSet<TableDataSetMetadata>();
       TableDataSetMetadata vmd = null;
@@ -269,14 +269,14 @@ public class Metadata {
       // Validate against the database
 
       cr = ColumnsRetriever.getInstance(config, dloc, adapter, db, conn);
-      log.info("ColumnsRetriever: " + cr);
+      log.fine("ColumnsRetriever: " + cr);
 
       try {
         config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
         throw new ErrorMessageException(e.getTag(), e.getMessage());
       }
-      log.info("validated.");
+      log.fine("validated.");
 
       // Prepare <select> methods metadata - phase 1
 

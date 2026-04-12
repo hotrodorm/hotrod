@@ -112,7 +112,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
         this.id = Id.fromCanonicalSQL(c.getName(), adapter);
       }
     }
-    log.info("this.id=" + this.id + " -- replacedName=" + replacedName);
+    log.fine("this.id=" + this.id + " -- replacedName=" + replacedName);
 
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();

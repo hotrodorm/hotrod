@@ -104,7 +104,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
     this.classPackage = jdbcTag.getDAOPackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), tableTag);
-    log.info("cols retrieved");
+    log.fine("cols retrieved");
     this.pk = getKeyMetadata(this.t.getPk(), tableTag);
 
     this.uniqueIndexes = new ArrayList<>();

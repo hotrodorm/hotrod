@@ -41,7 +41,7 @@ public class App {
     };
   }
 
-  private void demoCRUD() throws DynamicExpressionException, SQLException {
+  private void demoCRUD() {
     OrderTypeA ota = this.orderTypeADAO.select(3);
     System.out.println("Order Case for Order Type A #3: " + ota.getOrderCase());
   }

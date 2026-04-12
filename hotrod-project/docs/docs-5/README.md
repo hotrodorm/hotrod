@@ -168,6 +168,7 @@ Explore the following examples to quickly see the functionality in action:
 - [Hello LiveSQL](./guides/hello-livesql.md) - The basic LiveSQL queries
 - [Hello Torcs](./guides/hello-torcs.md) - Single out slow queries
 - [Hello Type Resolution](./guides/hello-type-resolution.md) - See all cases of the full type resolution
+- [Hello Identifiers](./guides/hello-identifiers.md) - Shows how to use non-alphanumeric ASCII table and column names
 - [Hello Logging](./guides/hello-logging.md) - Enable query execution logs for DAOs and LiveSQL
 
 ## Reference
