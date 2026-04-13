@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -53,6 +55,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   private String implementsClasses = null;
 
+  private List<String> implementsList;
+
   // Constructor
 
   protected AbstractDAOTag(final String tagName, final boolean isEntity) {
@@ -87,6 +91,15 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
   protected void validate(final JDBCTag jdbcTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter, Feedback feedback)
       throws InvalidConfigurationFileException {
+
+    // implementClasses
+
+    if (this.implementsClasses != null) {
+      this.implementsList = Arrays.stream(this.implementsClasses.split(",")).map(i -> i.trim())
+          .filter(i -> !i.isEmpty()).collect(Collectors.toList());
+    } else {
+      this.implementsList = new ArrayList<>();
+    }
 
     // sequences
 
@@ -163,8 +176,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     return selects.toList();
   }
 
-  public String getImplementsClasses() {
-    return implementsClasses;
+  public List<String> getImplementsClasses() {
+    return this.implementsList;
   }
 
   public final Set<String> getDeclaredMethodNames() {

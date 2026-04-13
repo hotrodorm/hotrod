@@ -3,12 +3,9 @@ package org.hotrod.generator.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.BuildInformation;
-import org.hotrod.config.Constants;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.ErrorMessageException;
@@ -23,7 +20,6 @@ import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class LayoutWriter {
@@ -107,7 +103,11 @@ public class LayoutWriter {
 
     // Signature
 
-    w.println("public class " + this.getClassName() + " implements ", Serializable.class, " {");
+    w.print("public class " + this.getClassName() + " implements ", Serializable.class);
+    for (String impl : this.metadata.getDaoTag().getImplementsClasses()) {
+      w.print(", ", ExternalClass.of(impl));
+    }
+    w.println(" {");
 
     w.println();
 

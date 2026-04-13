@@ -57,8 +57,6 @@ public class TableTag extends AbstractEntityDAOTag {
   private String javaName = null;
   private String entity = null;
 
-  private String columnSeam = null;
-
   private OptimisticLockingTag optimisticLocking = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
@@ -145,11 +143,6 @@ public class TableTag extends AbstractEntityDAOTag {
   @XmlAttribute(name = "entity")
   public void setEntity(final String entity) {
     this.entity = entity;
-  }
-
-  @XmlAttribute(name = "column-seam")
-  public void setColumnSeam(final String columnSeam) {
-    this.columnSeam = columnSeam;
   }
 
   @XmlElement(name = "optimistic-locking")
@@ -270,10 +263,6 @@ public class TableTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, msg);
     }
 
-    // column-seam: no validation necessary
-
-    // implements: no validation necessary
-
     // optimistic-locking
 
     if (this.optimisticLocking != null) {
@@ -294,7 +283,7 @@ public class TableTag extends AbstractEntityDAOTag {
       cols.add(c);
     }
 
-    // sequences, queries, and selects
+    // implements, sequences, queries, and selects
 
     super.validate(jdbcTag, config, fragmentConfig, adapter, feedback);
 
@@ -524,10 +513,6 @@ public class TableTag extends AbstractEntityDAOTag {
   }
 
   // Getters
-
-  public String getColumnSeam() {
-    return this.columnSeam;
-  }
 
   public ObjectId getExtendsId() {
     return this.extendsId;

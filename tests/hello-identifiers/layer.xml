@@ -4,7 +4,7 @@
     <jdbc />
   </generators>
 
-  <table name="'Order Type α'" entity="OrderTypeA">
+  <table name="'Order Type α'" entity="OrderTypeA" implements="">
     <column name="'case'" property="orderCase" />
 
   </table>

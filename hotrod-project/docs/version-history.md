@@ -6,6 +6,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 - Core:
     - Adds support for non-alphanumeric ASCII table and column names, including spaces and Unicode letter-like code points, as well as for the use of reserved words, and also for mixed-case identifiers.
+    - The implements attribute was reimplemented for tables and views.
 
 ## 5.1.18:
 
