@@ -268,7 +268,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (this.id != null) {
       for (String idName : this.id.split(",")) {
         if (!idName.isEmpty()) {
-          if (this.idNames.contains(idName)) {
+          if (this.idNames.contains(TypedSQLName.of(idName))) {
             throw new InvalidConfigurationFileException(this,
                 "Duplicate column '" + idName + "' on the 'id' attribute. "
                     + "The comma-separated list of column names should not include the same column more than once.");

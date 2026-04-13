@@ -17,22 +17,26 @@ public class TypedSQLName {
   private String name;
   private boolean quoted;
 
-  public TypedSQLName(final String typedName) {
-    if (typedName == null) {
+  public TypedSQLName(final String typedSQLName) {
+    if (typedSQLName == null) {
       throw new IllegalArgumentException("typedName cannot be null");
     }
     for (SQLQuoteDelimiters d : DELIMITERS) {
-      if (typedName.startsWith(d.getOpening()) //
-          && typedName.endsWith(d.getClosing()) //
-          && typedName.length() > (d.getOpening().length() + d.getClosing().length()) //
+      if (typedSQLName.startsWith(d.getOpening()) //
+          && typedSQLName.endsWith(d.getClosing()) //
+          && typedSQLName.length() > (d.getOpening().length() + d.getClosing().length()) //
       ) {
-        this.name = typedName.substring(d.getOpening().length(), typedName.length() - d.getClosing().length());
+        this.name = typedSQLName.substring(d.getOpening().length(), typedSQLName.length() - d.getClosing().length());
         this.quoted = true;
         return;
       }
     }
-    this.name = typedName;
+    this.name = typedSQLName;
     this.quoted = false;
+  }
+
+  public static TypedSQLName of(String typedSQLName) {
+    return new TypedSQLName(typedSQLName);
   }
 
   public String getName() {

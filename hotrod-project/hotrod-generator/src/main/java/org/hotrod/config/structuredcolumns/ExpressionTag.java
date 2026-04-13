@@ -122,7 +122,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
               + "and continue with letters, digits, and/or underscores.");
     }
     if (ids != null) {
-      this.isId = ids.remove(this.property);
+      this.isId = ids.remove(TypedSQLName.of(this.property));
     }
 
     // class
