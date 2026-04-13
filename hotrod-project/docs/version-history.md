@@ -207,7 +207,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 This is a major release of the HotRod ORM that breaks compatibility with previous releases. Its main goals are to fully remove the need of the MyBatis library and to simplify the configuration files and persistence layers organization.
 
 - Core:
-    - HotRod does not use MyBatis anymore and switched to new fully independent persistence layer instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration. HotRod has been tested from Java 25 back to Java 8, Spring 6.x, 5.x, and 4.x, and with Spring Boot 3.x and 2.x.
+    - HotRod does not use MyBatis anymore and switched to a new fully independent persistence layer instead. This greatly simplifies the use of newer Java versions and streamlines the bootstrap configuration. HotRod has been tested from Java 25 back to Java 8, Spring 6.x, 5.x, and 4.x, and with Spring Boot 3.x and 2.x.
     - Major improvement of the configuration file with the aim of simplifying it.
     - Major improvement in the persistence layer organization with simpler packages clear separation of duties.
     - DATE, TIME, and TIMESTAMP database column types now default to java.time classes instead of java.sql classes.
