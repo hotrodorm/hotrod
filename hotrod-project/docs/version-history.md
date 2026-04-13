@@ -5,8 +5,9 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.1.19 (unreleased):
 
 - Core:
-    - Adds support for non-alphanumeric ASCII table and column names, including spaces and Unicode letter-like code points, as well as for the use of reserved words, and also for mixed-case identifiers.
+    - Adding support for non-alphanumeric ASCII identifiers for table, view, and column names; this includes spaces, Unicode letter-like code points, the use of reserved words, and mixed-case identifiers.
     - The implements attribute was reimplemented for tables and views.
+    - Generation comment modified to exclude the timestamp, and include the "Do not edit" message.
 
 ## 5.1.18:
 

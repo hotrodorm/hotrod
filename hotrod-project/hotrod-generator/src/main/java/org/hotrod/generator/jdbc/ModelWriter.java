@@ -75,8 +75,7 @@ public class ModelWriter {
         w.writeTo(tw);
 
       } catch (IOException e) {
-        throw new FaultException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
-            e);
+        throw new FaultException("Could not generate VO class: could not write to file '" + vo.getName() + "'.", e);
       }
     }
   }
@@ -87,13 +86,8 @@ public class ModelWriter {
 
     w.println("@", Const.SCOPE, "(value = ", Const.CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
 
-    w.print("public class " + this.getClassName() + " extends ", ExternalClass.of(this.abstractVO.getFullClassName()));
-
-    if (this.metadata.getDaoTag().getImplementsClasses() != null) {
-      w.print(" implements " + this.metadata.getDaoTag().getImplementsClasses());
-    }
-
-    w.println(" {");
+    w.println("public class " + this.getClassName() + " extends ", ExternalClass.of(this.abstractVO.getFullClassName()),
+        " {");
     w.println();
 
     w.println("  private static final long serialVersionUID = 1L;");
