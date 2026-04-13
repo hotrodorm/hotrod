@@ -101,6 +101,9 @@ public class OrderTypeADAO implements ApplicationContextAware {
       String col2 = rs.getString("case"); // case
       row.setOrderCase(col2);
 
+      String col3 = rs.getString("AGRU_NOMBRE"); // AGRU_NOMBRE
+      row.setNombre(col3);
+
       return row;
     }
 
@@ -122,6 +125,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
     m.setOrderCase((String) row.get(p + "orderCase" + s));
+    m.setNombre((String) row.get(p + "nombre" + s));
     return m;
   }
 
@@ -131,6 +135,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
 
     private Integer id;
     private String orderCase;
+    private String nombre;
 
     public Integer getId() {
       return this.id;
@@ -140,12 +145,17 @@ public class OrderTypeADAO implements ApplicationContextAware {
       return this.orderCase;
     }
 
+    public String getNombre() {
+      return this.nombre;
+    }
+
   }
 
   public OrderTypeABaseline baseline(OrderTypeA model) {
     OrderTypeABaseline b = new OrderTypeABaseline();
     b.id = model.getId();
     b.orderCase = model.getOrderCase();
+    b.nombre = model.getNombre();
     return b;
   };
 
@@ -155,6 +165,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
     OrderTypeA m = this.applicationContext.getBean(OrderTypeA.class);
     m.setId(layout.getId());
     m.setOrderCase(layout.getOrderCase());
+    m.setNombre(layout.getNombre());
     return m;
   };
 
@@ -166,7 +177,8 @@ public class OrderTypeADAO implements ApplicationContextAware {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  \"case\"")
+      .literaln("  \"case\",")
+      .literaln("  agru_nombre")
       .literaln("FROM \"Order Type α\"")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
@@ -204,11 +216,13 @@ public class OrderTypeADAO implements ApplicationContextAware {
     this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
-      .literaln("  \"case\"")
+      .literaln("  \"case\",")
+      .literaln("  agru_nombre")
       .literaln("FROM \"Order Type α\"")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.orderCase != null").literal("\"case\" = ").parameter("e.orderCase").endif()
+        .if_("e.nombre != null").literal("agru_nombre = ").parameter("e.nombre").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -251,11 +265,13 @@ public class OrderTypeADAO implements ApplicationContextAware {
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
         .literal("\"case\"")
+        .literal("agru_nombre")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .parameterNullable("l.id", Types.INTEGER)
         .parameterNullable("l.orderCase", Types.VARCHAR)
+        .parameterNullable("l.nombre", Types.VARCHAR)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -290,11 +306,13 @@ public class OrderTypeADAO implements ApplicationContextAware {
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
         .if_("e.orderCase != null").literal("\"case\"").endif()
+        .if_("e.nombre != null").literal("agru_nombre").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .if_("e.id != null").parameter("e.id").endif()
         .if_("e.orderCase != null").parameter("e.orderCase").endif()
+        .if_("e.nombre != null").parameter("e.nombre").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -328,7 +346,8 @@ public class OrderTypeADAO implements ApplicationContextAware {
       .literaln("UPDATE \"Order Type α\"")
       .literaln("SET")
       .literal("  id = ").parameterNullable("m.id", Types.INTEGER).literaln(",")
-      .literal("  \"case\" = ").parameterNullable("m.orderCase", Types.VARCHAR).literaln()
+      .literal("  \"case\" = ").parameterNullable("m.orderCase", Types.VARCHAR).literaln(",")
+      .literal("  agru_nombre = ").parameterNullable("m.nombre", Types.VARCHAR).literaln()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
@@ -363,10 +382,12 @@ public class OrderTypeADAO implements ApplicationContextAware {
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
         .if_("v.orderCase != null").literal("\"case\" = ").parameter("v.orderCase").endif()
+        .if_("v.nombre != null").literal("agru_nombre = ").parameter("v.nombre").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.orderCase != null").literal("\"case\" = ").parameter("e.orderCase").endif()
+        .if_("e.nombre != null").literal("agru_nombre = ").parameter("e.nombre").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -398,6 +419,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
     if (values.getOrderCase() != null) setters.add(new Setter(tableOrView.orderCase, sql.val(values.getOrderCase())));
+    if (values.getNombre() != null) setters.add(new Setter(tableOrView.nombre, sql.val(values.getNombre())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -444,6 +466,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.orderCase != null").literal("\"case\" = ").parameter("e.orderCase").endif()
+        .if_("e.nombre != null").literal("agru_nombre = ").parameter("e.nombre").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -480,7 +503,9 @@ public class OrderTypeADAO implements ApplicationContextAware {
     ID("id", true),
     ID$DESC("id", false),
     ORDER_CASE("\"case\"", true),
-    ORDER_CASE$DESC("\"case\"", false);
+    ORDER_CASE$DESC("\"case\"", false),
+    NOMBRE("agru_nombre", true),
+    NOMBRE$DESC("agru_nombre", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -510,6 +535,8 @@ public class OrderTypeADAO implements ApplicationContextAware {
       Name.of("ID", false), "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     static final DirectEntityColumnMetaData ORDER_CASE_META_DATA = new DirectEntityColumnMetaData(
       Name.of("case", true), "orderCase", "CHARACTER VARYING", 200, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
+    static final DirectEntityColumnMetaData NOMBRE_META_DATA = new DirectEntityColumnMetaData(
+      Name.of("AGRU_NOMBRE", false), "nombre", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
 
   }
 
@@ -525,10 +552,11 @@ public class OrderTypeADAO implements ApplicationContextAware {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final CharEntityColumn orderCase = new CharEntityColumn(this, MetaData.ORDER_CASE_META_DATA);
+    public final CharEntityColumn nombre = new CharEntityColumn(this, MetaData.NOMBRE_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.orderCase);
+      return new AllColumns(this.id, this.orderCase, this.nombre);
     }
 
     OrderTypeATable() {
@@ -545,6 +573,7 @@ public class OrderTypeADAO implements ApplicationContextAware {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
       super.columns.add(this.orderCase);
+      super.columns.add(this.nombre);
     }
 
   }

@@ -96,7 +96,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
     if (this.tag != null && this.tag.getProperty() != null) {
       TypedSQLName sqlName = this.tag.getTypedSQLName();
       this.id = sqlName.isQuoted() ? Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getProperty())
-          : Id.fromTypedSQL(sqlName.getName(), adapter);
+          : Id.fromTypedSQLAndJavaMember(c.getName(), adapter, this.tag.getProperty());
     } else {
       try {
         replacedName = nameSolverTag.resolveName(c.getName(), Scope.COLUMN);

@@ -14,6 +14,7 @@ public class OrderTypeALayout implements Serializable {
 
   protected Integer id = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
   protected String orderCase = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected String nombre = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
 
   // getters & setters
 
@@ -33,13 +34,22 @@ public class OrderTypeALayout implements Serializable {
     this.orderCase = orderCase;
   }
 
+  public String getNombre() {
+    return this.nombre;
+  }
+
+  public void setNombre(final String nombre) {
+    this.nombre = nombre;
+  }
+
   // to string
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- orderCase=" + this.orderCase);
+    sb.append("- orderCase=" + this.orderCase + "\n");
+    sb.append("- nombre=" + this.nombre);
     return sb.toString();
   }
 
@@ -49,6 +59,7 @@ public class OrderTypeALayout implements Serializable {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("orderCase", this.orderCase);
+    obj.addProperty("nombre", this.nombre);
     return obj;
   }
 

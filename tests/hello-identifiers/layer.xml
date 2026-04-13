@@ -4,9 +4,9 @@
     <jdbc />
   </generators>
 
-  <table name="'Order Type α'" entity="OrderTypeA" implements="">
-    <column name="'case'" property="orderCase" />
-
+  <table name="'Order Type α'" entity="OrderTypeA">
+    <column name="'case'" java-name="orderCase" />
+    <column name="agru_nombre" property="nombre" />
   </table>
 
 </hotrod>
