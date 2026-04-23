@@ -3,13 +3,10 @@ package org.hotrod.generator.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.hotrod.BuildInformation;
-import org.hotrod.config.Constants;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FaultException;
@@ -25,7 +22,6 @@ import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SelectLayoutWriter {
@@ -46,6 +42,7 @@ public class SelectLayoutWriter {
   private List<VOMember> associationMembers;
   private List<VOMember> collectionMembers;
 
+  private List<String> implementedClasses;
   private String superClassName;
 
   private ClassWriter w;
@@ -53,7 +50,8 @@ public class SelectLayoutWriter {
   // Constructors
 
   // From a solo VO
-  public SelectLayoutWriter(final SelectVOClass abstractSoloVO, final JDBCTag jdbcTag) {
+  public SelectLayoutWriter(final SelectVOClass abstractSoloVO, final JDBCTag jdbcTag,
+      final List<String> implementedClasses) {
     log.fine("init");
     this.jdbcTag = jdbcTag;
 
@@ -66,6 +64,7 @@ public class SelectLayoutWriter {
 
     this.associationMembers = abstractSoloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
+    this.implementedClasses = implementedClasses;
 
 //    this.superClassPackage = null;
     this.superClassName = null;
@@ -135,7 +134,13 @@ public class SelectLayoutWriter {
 
     w.print("public class " + this.getName() + " ");
     if (this.superClassName == null) {
-      w.print("implements ", Serializable.class, " ");
+      w.print("implements ", Serializable.class);
+      if (this.implementedClasses != null) {
+        for (String ic : this.implementedClasses) {
+          w.print(", ", ExternalClass.of(ic));
+        }
+      }
+      w.print(" ");
     } else {
       w.print(" extends ", ExternalClass.of(this.superClassName));
     }

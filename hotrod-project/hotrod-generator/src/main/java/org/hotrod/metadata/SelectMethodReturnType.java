@@ -98,7 +98,7 @@ public class SelectMethodReturnType {
           this.abstractSoloVO = new SelectVOClass(this.fragmentPackage, this.layoutPackage, sm.getAbstractVOClassName(),
               null, null, properties, associations, collections, tag);
           this.soloVO = new SelectVOClass(this.fragmentPackage, this.modelPackage, sm.getVOClassName(), null,
-              sm.getTag().getImplementsClasses(), properties, associations, collections, tag);
+              null, properties, associations, collections, tag);
 
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception

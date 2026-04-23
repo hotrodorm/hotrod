@@ -62,8 +62,7 @@ public class SelectModelWriter {
         w.writeTo(tw);
 
       } catch (IOException e) {
-        throw new FaultException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
-            e);
+        throw new FaultException("Could not generate VO class: could not write to file '" + vo.getName() + "'.", e);
       }
 
     }
@@ -74,10 +73,6 @@ public class SelectModelWriter {
     w.println("@", Const.SCOPE, "(value = ", Const.CONFIGURABLE_BEAN_FACTORY, ".SCOPE_PROTOTYPE)");
     ExternalClass avo = ExternalClass.of(this.abstractVO.getFullClassName());
     w.print("public class " + this.className + " extends ", avo);
-
-    if (this.soloVO != null && this.soloVO.getImplementClasses() != null) {
-      w.print(" implements " + this.soloVO.getImplementClasses());
-    }
 
     w.println(" {");
     w.println();
@@ -94,23 +89,5 @@ public class SelectModelWriter {
   public String getClassName() {
     return className;
   }
-
-  // Info
-
-  // public String getClassName() {
-  // DataSetIdentifier id = this.metadata.getIdentifier();
-  // log.fine("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
-  // String name = this.myBatisTag.getDaos().generateVOName(id);
-  // log.fine("name=" + name);
-  // return name;
-  // }
-
-  // public String getFullClassName() {
-  // return this.classPackage.getFullClassName(this.getClassName());
-  // }
-
-  // public String getJavaClassIdentifier() {
-  // return this.metadata.getIdentifier().getJavaClassIdentifier();
-  // }
 
 }

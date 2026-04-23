@@ -235,7 +235,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 //      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
 
       if (soloVO != null) {
-        SelectLayoutWriter abstractVO = new SelectLayoutWriter(abstractSoloVO, this.jdbcTag);
+        SelectLayoutWriter abstractVO = new SelectLayoutWriter(abstractSoloVO, this.jdbcTag,
+            sm.getImplementedClasses());
         this.abstractSelectVOs.add(abstractVO);
         SelectModelWriter vo = new SelectModelWriter(soloVO, abstractVO, this.jdbcTag);
         this.selectVOs.add(vo);

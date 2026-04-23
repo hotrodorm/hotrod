@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -30,7 +31,6 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -109,6 +109,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   private ResultSetMode mode;
   private String implementsClasses = null;
+
+  private List<String> implementedClasses;
 
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
@@ -291,6 +293,12 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     // implements: no validation necessary
 
+    this.implementedClasses = null;
+    if (!SUtil.isEmpty(this.implementsClasses)) {
+      this.implementedClasses = Arrays.stream(this.implementsClasses.split(",")).map(i -> i.trim())
+          .collect(Collectors.toList());
+    }
+
     // parameters
 
     this.parameters.validate();
@@ -361,10 +369,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     return this.mode;
   }
 
-  public String getImplementsClasses() {
-    return implementsClasses;
-  }
-
   public ParameterDefinitions getParameters() {
     return parameters;
   }
@@ -379,6 +383,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
+  }
+
+  public final List<String> getImplementedClasses() {
+    return implementedClasses;
   }
 
   // Columns

@@ -303,6 +303,9 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.tag.getAbstractVOClassName();
   }
 
+  public List<String> getImplementedClasses() {
+    return this.tag.getImplementedClasses();
+  }
   // Other getters
 
   public String getSelectMethodNamespace() {
