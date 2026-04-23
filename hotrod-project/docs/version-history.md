@@ -2,7 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.19 (unreleased):
+## 5.1.20 (unreleased):
+
+- Nitro:
+    - Fixing implements attribute in Nitro selects.
+
+## 5.1.19:
 
 - Core:
     - Adding support for non-alphanumeric ASCII identifiers for table, view, and column names; this includes spaces, Unicode letter-like code points, the use of reserved words, and mixed-case identifiers.
