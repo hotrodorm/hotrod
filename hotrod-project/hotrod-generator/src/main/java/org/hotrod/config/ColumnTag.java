@@ -44,6 +44,8 @@ public class ColumnTag extends AbstractConfigurationTag {
   private String converter = null;
   private String jdbcType = null;
 
+  private String sGeneratedAlways = null;
+
   private String sequence = null;
   private String catalog = null;
   private String schema = null;
@@ -57,6 +59,8 @@ public class ColumnTag extends AbstractConfigurationTag {
   private boolean isLOB;
   private ValueRange valueRange;
   private ConverterTag converterTag;
+
+  private boolean generatedAlways;
 
   private ObjectId sequenceId = null;
 
@@ -105,6 +109,11 @@ public class ColumnTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "jdbc-type")
   public void setJdbcType(final String jdbcType) {
     this.jdbcType = jdbcType;
+  }
+
+  @XmlAttribute(name = "generated-always")
+  public void setSGeneratedAlways(final String ga) {
+    this.sGeneratedAlways = ga;
   }
 
   @XmlAttribute(name = "sequence")
@@ -287,6 +296,19 @@ public class ColumnTag extends AbstractConfigurationTag {
                 + "> must specify a valid JDBC type " + "as defined in the java class java.sql.Types. "
                 + "Make sure you specify it in all uppercase letters.");
       }
+    }
+
+    // generated-always
+
+    if (this.sGeneratedAlways == null) {
+      this.generatedAlways = false;
+    } else if ("true".equals(this.sGeneratedAlways)) {
+      this.generatedAlways = true;
+    } else if ("false".equals(this.sGeneratedAlways)) {
+      this.generatedAlways = false;
+    } else {
+      throw new InvalidConfigurationFileException(this,
+          "When specified, attribute 'generated-always' cannot be true or false");
     }
 
     // sequence
@@ -485,6 +507,10 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   public String getJdbcType() {
     return jdbcType;
+  }
+
+  public boolean isGeneratedAlways() {
+    return generatedAlways;
   }
 
   public ObjectId getSequenceId() {

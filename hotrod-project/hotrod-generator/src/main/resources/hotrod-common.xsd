@@ -101,6 +101,7 @@
     <xsd:attribute name="type" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />
     <xsd:attribute name="jdbc-type" type="xsd:string" />
+    <xsd:attribute name="generated-always" type="xsd:string" />
     <xsd:attribute name="sequence" type="xsd:string" />
     <xsd:attribute name="catalog" type="xsd:string" />
     <xsd:attribute name="schema" type="xsd:string" />

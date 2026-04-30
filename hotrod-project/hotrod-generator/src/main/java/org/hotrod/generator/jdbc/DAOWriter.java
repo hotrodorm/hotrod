@@ -691,31 +691,37 @@ public class DAOWriter {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         } else {
-          w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-              + SUtil.escapeJavaString(sqlId) + "\").endif()");
+          if (!cm.isGeneratedAlways()) {
+            w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+                + SUtil.escapeJavaString(sqlId) + "\").endif()");
+          }
         }
       } else {
 
-        // Always include column
-        if (!cm.belongsToPK()) {
-          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
-        }
-        if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
-        }
-        if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
-        }
-
         // Never include column
-        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS
+            || cm.isGeneratedAlways()) {
           // nothing to do
-        }
 
-        // Conditionally include column
-        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-              + SUtil.escapeJavaString(sqlId) + "\").endif()");
+        } else {
+
+          // Always include column
+          if (!cm.belongsToPK()) {
+            w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          }
+          if (cm.belongsToPK() && cm.getSequenceId() != null) {
+            w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          }
+          if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
+            w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
+          }
+
+          // Conditionally include column
+          if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+            w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+                + SUtil.escapeJavaString(sqlId) + "\").endif()");
+          }
+
         }
 
       }
@@ -744,46 +750,50 @@ public class DAOWriter {
           w.println(
               "        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
         } else {
-          w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
-              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
+          if (!cm.isGeneratedAlways()) {
+            w.println("        .if_(\"e." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"e."
+                + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
+          }
         }
 
       } else { // insert
 
-        // Always include column
-        if (!cm.belongsToPK()) {
-          if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
-            w.println(
-                "        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
-          } else {
+        // Never include column
+        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS
+            || cm.isGeneratedAlways()) {
+          // nothing to do
+        } else {
+
+          // Always include column
+          if (!cm.belongsToPK()) {
+            if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
+              w.println(
+                  "        .literal(\"" + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
+            } else {
+              w.println("        .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
+                  "." + jdbcType + converterParam + ")");
+            }
+          }
+          if (cm.belongsToPK() && cm.getSequenceId() != null) {
+            if (insertMechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
+              w.println(
+                  "        .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
+            } else {
+              String si = insertMechanics.getSequenceInlineSQL();
+              w.println("        .literal(\"" + SUtil.escapeJavaString(si) + "\")");
+            }
+          }
+          if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
             w.println("        .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
                 "." + jdbcType + converterParam + ")");
           }
-        }
-        if (cm.belongsToPK() && cm.getSequenceId() != null) {
-          if (insertMechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
-            w.println("        .parameterUpdatable(\"l." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")");
-          } else {
-            String si = insertMechanics.getSequenceInlineSQL();
-            w.println("        .literal(\"" + SUtil.escapeJavaString(si) + "\")");
+
+          // Conditionally include column
+          if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
+            w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
+                + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
           }
         }
-        if (cm.belongsToPK() && cm.getSequenceId() == null && cm.getAutogenerationType() == null) {
-          w.println("        .parameterNullable(\"l." + SUtil.escapeJavaString(memId) + "\", ", Types.class,
-              "." + jdbcType + converterParam + ")");
-        }
-
-        // Never include column
-        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_ALWAYS) {
-          // nothing to do
-        }
-
-        // Conditionally include column
-        if (cm.belongsToPK() && cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-          w.println("        .if_(\"l." + SUtil.escapeJavaString(memId) + " != null\").parameter(\"l."
-              + SUtil.escapeJavaString(memId) + "\"" + converterParam + ")" + ".endif()");
-        }
-
       }
 
     }
@@ -1050,23 +1060,25 @@ public class DAOWriter {
       int coln = this.metadata.getColumns().size();
       int n = 1;
       for (ColumnMetadata cm : this.metadata.getColumns()) {
-        String sqlId = cm.getId().getRenderedSQLName();
-        String converterParam = cm.getResolvedConverter() == null ? ""
-            : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
-        if (ol != null && cm.isOLVersionNumberColumn()) {
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
-              + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
-        } else if (ol != null && cm.isOLTimestampColumn()) {
-          w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
-              + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
-              + (n < coln ? ".literaln(\",\")" : ".literaln()"));
-        } else {
-          String memId = cm.getId().getJavaMemberName();
-          String jdbcType = cm.getType().getJDBCShortType();
-          w.println(
-              "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
-                  + SUtil.escapeJavaString(memId) + "\", ",
-              Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+        if (!cm.isGeneratedAlways()) {
+          String sqlId = cm.getId().getRenderedSQLName();
+          String converterParam = cm.getResolvedConverter() == null ? ""
+              : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+          if (ol != null && cm.isOLVersionNumberColumn()) {
+            w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
+                + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+          } else if (ol != null && cm.isOLTimestampColumn()) {
+            w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
+                + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
+                + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+          } else {
+            String memId = cm.getId().getJavaMemberName();
+            String jdbcType = cm.getType().getJDBCShortType();
+            w.println(
+                "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
+                    + SUtil.escapeJavaString(memId) + "\", ",
+                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+          }
         }
         n++;
       }
@@ -1176,10 +1188,12 @@ public class DAOWriter {
     w.println(" = new ", ArrayList.class, "<>();");
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String getter = cm.getId().getJavaGetter();
-      String memId = cm.getId().getJavaMemberName();
-      w.println("    if (values." + getter + "() != null) setters.add(new ", Setter.class,
-          "(tableOrView." + memId + ", sql.val(values." + getter + "())));");
+      if (!cm.isGeneratedAlways()) {
+        String getter = cm.getId().getJavaGetter();
+        String memId = cm.getId().getJavaMemberName();
+        w.println("    if (values." + getter + "() != null) setters.add(new ", Setter.class,
+            "(tableOrView." + memId + ", sql.val(values." + getter + "())));");
+      }
     }
 
     w.println("    return new ", UpdateWherePhase.class,
@@ -1454,7 +1468,7 @@ public class DAOWriter {
         insertExecutor = GeneratedKeysIdentityInlineResultSetInsertExecutor.class;
         sequenceSelect = null;
         metaDataColumnName = null;
-        metaDataCanonicalName = this.getColumnMetaDataId(pkColumn) + ".getCanonicalName()";
+        metaDataCanonicalName = this.getColumnMetaDataId(pkColumn) + ".getName().getName()";
         outputClausePrefix = null;
         break;
       case SEQUENCE_PREFETCH:
@@ -1759,20 +1773,22 @@ public class DAOWriter {
     OptimisticLockingMetadata ol = this.metadata.getOptimisticLocking();
     w.println("      .set()");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String sqlId = cm.getId().getRenderedSQLName();
-      String converterParam = cm.getResolvedConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
-      if (ol != null && cm.isOLVersionNumberColumn()) {
-        w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
-            + SUtil.escapeJavaString(sqlId) + " + 1\").endif()");
-      } else if (ol != null && cm.isOLTimestampColumn()) {
-        w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
-            + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\").endif()");
-      } else {
-        String memId = cm.getId().getJavaMemberName();
-        w.println("        .if_(\"" + ns + "." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
-            + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\""
-            + converterParam + ").endif()");
+      if (!cm.isGeneratedAlways()) {
+        String sqlId = cm.getId().getRenderedSQLName();
+        String converterParam = cm.getResolvedConverter() == null ? ""
+            : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+        if (ol != null && cm.isOLVersionNumberColumn()) {
+          w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
+              + SUtil.escapeJavaString(sqlId) + " + 1\").endif()");
+        } else if (ol != null && cm.isOLTimestampColumn()) {
+          w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
+              + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\").endif()");
+        } else {
+          String memId = cm.getId().getJavaMemberName();
+          w.println("        .if_(\"" + ns + "." + SUtil.escapeJavaString(memId) + " != null\").literal(\""
+              + SUtil.escapeJavaString(sqlId) + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\""
+              + converterParam + ").endif()");
+        }
       }
     }
     w.println("      .endset()");

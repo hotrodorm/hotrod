@@ -52,6 +52,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
   private Integer columnSize;
   private Integer decimalDigits;
   private String columnDefault;
+  private boolean generatedAlways;
 
   private EnumDataSetMetadata enumMetadata;
 
@@ -121,6 +122,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
     this.columnSize = c.getColumnSize();
     this.decimalDigits = c.getDecimalDigits();
     this.columnDefault = c.getColumnDef();
+    this.generatedAlways = this.tag != null && this.tag.isGeneratedAlways();
     this.enumMetadata = null;
 
     this.adapter = adapter;
@@ -155,6 +157,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
     this.columnSize = cm.columnSize;
     this.decimalDigits = cm.decimalDigits;
     this.columnDefault = cm.columnDefault;
+    this.generatedAlways = cm.generatedAlways;
     this.enumMetadata = cm.enumMetadata;
     this.adapter = cm.adapter;
     this.tag = cm.tag;
@@ -164,45 +167,6 @@ public class ColumnMetadata implements DriverColumnMetaData {
     this.isOLTimestampColumn = cm.isOLTimestampColumn;
     this.reusesMemberFromSuperClass = false;
   }
-
-//  // From a <select> tag -- create view strategy
-//
-//  public ColumnMetadata(final ExecutorDAOMetadata dataSet, final JdbcColumn c, final String selectName,
-//      final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isOLVersionNumberColumn,
-//      final boolean isOLTimestampColumn, final boolean belongsToPK, final StaticTypeSolverTag typeSolverTag)
-//      throws UnresolvableDataTypeException, InvalidIdentifierException {
-//    this.dataSet = dataSet;
-//    this.c = c;
-//    this.catalog = null;
-//    this.schema = null;
-//    this.ordinal = c.getOrdinalPosition();
-//    this.columnName = c.getName();
-//    this.tableName = selectName;
-//
-//    this.tag = columnTag;
-//    if (this.tag == null || this.tag.getJavaName() == null) {
-//      this.id = Id.fromCanonicalSQL(c.getName(), adapter);
-//    } else {
-//      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
-//    }
-//
-//    this.belongsToPK = belongsToPK;
-//    this.autogenerationType = c.getAutogenerationType();
-//    this.dataType = c.getDataType();
-//    this.typeName = c.getTypeName();
-//    this.columnSize = c.getColumnSize();
-//    this.decimalDigits = c.getDecimalDigits();
-//    this.columnDefault = c.getColumnDef();
-//    this.enumMetadata = null;
-//
-//    this.adapter = adapter;
-//    this.type = this.resolveJavaType(this, this.tag, this.c, null, typeSolverTag, this.adapter);
-//    this.typeSolverTag = typeSolverTag;
-//
-//    this.isOLVersionNumberColumn = isOLVersionNumberColumn;
-//    this.isOLTimestampColumn = isOLTimestampColumn;
-//    this.reusesMemberFromSuperClass = false;
-//  }
 
   // From a <select> tag -- result set strategy
 
@@ -234,6 +198,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
     this.columnSize = rm.getPrecision(colIndex);
     this.decimalDigits = rm.getScale(colIndex);
     this.columnDefault = null;
+    this.generatedAlways = false;
     this.enumMetadata = null;
 
     this.resultSetType = JDBCTypes.codeToType(this.dataType);
@@ -374,6 +339,10 @@ public class ColumnMetadata implements DriverColumnMetaData {
 
   public String getColumnDefault() {
     return columnDefault;
+  }
+
+  public final boolean isGeneratedAlways() {
+    return generatedAlways;
   }
 
   public boolean isOLVersionNumberColumn() {
