@@ -7,11 +7,12 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - CRUD:
     - New column attribute 'generated-always' that excludes columns during INSERT and UPDATE/SET. PostgreSQL does not allow a column to be included in an INSERT if it's computed by the database using the GENERATED ALWAYS clause.
     - Fixed DAO metadata for tables with generated keys.
+    - Fixed IDENTITY generated keys for tables in non-default schemas.
 
 ## 5.1.20:
 
 - Nitro:
-    - Fixing implements attribute in Nitro selects.
+    - Fixing the 'implements' attribute in Nitro selects.
 
 ## 5.1.19:
 
