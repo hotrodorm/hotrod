@@ -2,7 +2,7 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.21 (unreleased):
+## 5.1.21:
 
 - CRUD:
     - New column attribute 'generated-always' that excludes columns during INSERT and UPDATE/SET. PostgreSQL does not allow a column to be included in an INSERT if it's computed by the database using the GENERATED ALWAYS clause.
