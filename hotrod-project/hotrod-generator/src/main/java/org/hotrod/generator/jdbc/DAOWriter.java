@@ -1056,7 +1056,7 @@ public class DAOWriter {
       w.println(
           "      .literaln(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       w.println("      .literaln(\"SET\")");
-      w.println("      .trim(\"\\n  \", \",\\n  \",\"\\n\")");
+      w.println("      .trim(\"  \", \",\\n  \",\"\\n\")");
 
       int coln = this.metadata.getColumns().size();
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
@@ -1066,15 +1066,15 @@ public class DAOWriter {
           String converterParam = cm.getResolvedConverter() == null ? ""
               : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
           if (ol != null && cm.isOLVersionNumberColumn()) {
-            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId) + " + 1\""
+            w.print(".literal(\"" + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId) + " + 1\""
                 + converterParam + ")");
           } else if (ol != null && cm.isOLTimestampColumn()) {
-            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
+            w.print(".literal(\"" + SUtil.escapeJavaString(sqlId) + " = "
                 + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
           } else {
             String memId = cm.getId().getJavaMemberName();
             String jdbcType = cm.getType().getJDBCShortType();
-            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
+            w.print(".literal(\"" + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
                 + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + converterParam + ")");
           }
           w.println(".end()");
