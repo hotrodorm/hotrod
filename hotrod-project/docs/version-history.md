@@ -2,7 +2,7 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
-## 5.1.22 (unreleased):
+## 5.1.22:
 
 - CRUD:
     - Fixed Update by Primary Key. It always excludes the PK from updates.
