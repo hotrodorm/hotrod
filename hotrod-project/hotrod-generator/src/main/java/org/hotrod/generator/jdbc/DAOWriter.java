@@ -1056,32 +1056,32 @@ public class DAOWriter {
       w.println(
           "      .literaln(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       w.println("      .literaln(\"SET\")");
+      w.println("      .trim(\"\\n  \", \",\\n  \",\"\\n\")");
 
       int coln = this.metadata.getColumns().size();
-      int n = 1;
-      for (ColumnMetadata cm : this.metadata.getColumns()) {
+      for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
         if (!cm.isGeneratedAlways()) {
+          w.print("        .begin()");
           String sqlId = cm.getId().getRenderedSQLName();
           String converterParam = cm.getResolvedConverter() == null ? ""
               : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
           if (ol != null && cm.isOLVersionNumberColumn()) {
-            w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId)
-                + " + 1\"" + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId) + " + 1\""
+                + converterParam + ")");
           } else if (ol != null && cm.isOLTimestampColumn()) {
-            w.println("      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
-                + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")"
-                + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = "
+                + SUtil.escapeJavaString(this.adapter.currentTimestampSQLExpression()) + "\")");
           } else {
             String memId = cm.getId().getJavaMemberName();
             String jdbcType = cm.getType().getJDBCShortType();
-            w.println(
-                "      .literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
-                    + SUtil.escapeJavaString(memId) + "\", ",
-                Types.class, "." + jdbcType + converterParam + ")" + (n < coln ? ".literaln(\",\")" : ".literaln()"));
+            w.print(".literal(\"  " + SUtil.escapeJavaString(sqlId) + " = \").parameterNullable(\"m."
+                + SUtil.escapeJavaString(memId) + "\", ", Types.class, "." + jdbcType + converterParam + ")");
           }
+          w.println(".end()");
         }
-        n++;
       }
+
+      w.println("      .endtrim()");
 
       if (ol == null) {
         fragmentWherePK("m");

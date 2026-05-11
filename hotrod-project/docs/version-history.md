@@ -2,6 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.22 (unreleased):
+
+- CRUD:
+    - Fixed Update by Primary Key. It always excludes the PK from updates.
+    - Update by Primary Key now excludes GENERATED ALWAYS column gracefully.
+
 ## 5.1.21:
 
 - CRUD:
