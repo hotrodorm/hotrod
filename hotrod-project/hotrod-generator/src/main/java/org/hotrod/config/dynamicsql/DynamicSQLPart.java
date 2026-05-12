@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
@@ -24,6 +25,7 @@ import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.livesql.util.OUtil;
 import org.hotrod.metadata.Metadata;
+import org.hotrod.utils.TUtil;
 
 public abstract class DynamicSQLPart extends EnhancedSQLPart {
 
@@ -193,6 +195,10 @@ public abstract class DynamicSQLPart extends EnhancedSQLPart {
     private Set<String> variables = new HashSet<>();
 
     public void addVariable(final String name, AbstractConfigurationTag tag) throws InvalidConfigurationFileException {
+//      log.info(
+//          "+addVariable(" + name + ") -- params=" + this.definitions.keySet().stream().collect(Collectors.joining(","))
+//              + " -- vars=" + this.variables.stream().collect(Collectors.joining(",")));
+//      log.info("=== Stack: " + TUtil.callStack());
       if (this.definitions.containsKey(name)) {
         throw new InvalidConfigurationFileException(tag,
             "A variable with name '" + name + "' cannot shadow an existing parameter definition with the same name");

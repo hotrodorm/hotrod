@@ -171,7 +171,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     this.columns = new ArrayList<ColumnTag>();
     this.parameters = new ParameterDefinitions();
 
+//    log.info("VALIDATING SELECT METHOD");
+
     for (Object obj : this.content) {
+//      log.info(" - element: " + obj.getClass().getName());
       try {
 
         String s = (String) obj; // content text
@@ -319,7 +322,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     boolean sqlInjectionUsed = false;
     for (EnhancedSQLPart p : this.parts) {
-      p.validate(jdbcTag, config, fragmentConfig, this.parameters, adapter);
+//      p.validate(jdbcTag, config, fragmentConfig, this.parameters, adapter);
       if (p.includesSQLInjection()) {
         sqlInjectionUsed = true;
       }

@@ -39,6 +39,11 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
   public abstract void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException;
 
   public boolean includesSQLInjection() {
+    for (EnhancedSQLPart p : this.eparts) {
+      if (p.includesSQLInjection()) {
+        return true;
+      }
+    }
     return false;
   }
 

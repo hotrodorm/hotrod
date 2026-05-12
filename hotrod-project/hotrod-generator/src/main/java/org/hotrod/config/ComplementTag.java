@@ -53,7 +53,7 @@ public class ComplementTag extends EnhancedSQLPart {
 
   // Properties - Parsed
 
-  private List<DynamicSQLPart> parts;
+  protected List<DynamicSQLPart> copy = null;
 
   // Constructor
 
@@ -67,7 +67,8 @@ public class ComplementTag extends EnhancedSQLPart {
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
-    this.parts = new ArrayList<DynamicSQLPart>();
+    super.eparts = new ArrayList<>();
+    this.copy = new ArrayList<>();
     for (Object obj : this.localContent) {
       DynamicSQLPart p = null;
       try {
@@ -82,7 +83,8 @@ public class ComplementTag extends EnhancedSQLPart {
               + "> tag. Invalid inner tag of class " + obj.getClass().getName());
         }
       }
-      this.parts.add(p);
+      super.eparts.add(p);
+      this.copy.add(p);
     }
 
   }
@@ -120,7 +122,7 @@ public class ComplementTag extends EnhancedSQLPart {
   }
 
   public List<DynamicSQLPart> getParts() {
-    return parts;
+    return this.copy;
   }
 
 }
