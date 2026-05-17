@@ -218,7 +218,7 @@ public class ColumnMetadata implements DriverColumnMetaData {
 
     PropertyType typeSolverType = typeSolverTag.resolveStaticType(cm, c, resultSetType);
 
-    if (columnTag != null && (columnTag.getType() != null || columnTag.getConverterTag() != null)) {
+    if (columnTag != null && (columnTag.getParsedType() != null || columnTag.getConverterTag() != null)) {
 
       // Use the type specified in the <column> tag
 
@@ -239,10 +239,10 @@ public class ColumnMetadata implements DriverColumnMetaData {
       }
       ValueRange range = columnTag.getValueRange();
       if (range == null) {
-        range = PropertyType.getDefaultValueRange(columnTag.getType());
+        range = PropertyType.getDefaultValueRange(columnTag.getParsedType().toString());
       }
 
-      String javaType = columnTag.getType() != null ? columnTag.getType()
+      String javaType = columnTag.getParsedType() != null ? columnTag.getParsedType().toString()
           : columnTag.getConverterTag().getDomainClass();
 
       return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED,

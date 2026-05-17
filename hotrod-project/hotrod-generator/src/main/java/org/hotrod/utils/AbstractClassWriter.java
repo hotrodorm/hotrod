@@ -1,7 +1,6 @@
 package org.hotrod.utils;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -12,6 +11,7 @@ import java.util.logging.Logger;
 import org.hotrod.BuildInformation;
 import org.hotrod.config.Constants;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.metadata.TypeParser.Type;
 
 public class AbstractClassWriter {
 
@@ -108,27 +108,75 @@ public class AbstractClassWriter {
   }
 
   protected String registerClass(final ExternalClass pc) {
-    if (pc.getImportName().startsWith("java.lang.") || isPrimitive(pc.getBaseClass())) {
-      // skip registering
-      return pc.getShortCodeName();
+
+    if (pc.type == null) {
+
+      String importName = pc.getImportName();
+      String baseClass = pc.getBaseClass();
+      String shortCodeName = pc.getShortCodeName();
+      String longCodeName = pc.getLongCodeName();
+      return registerImportName(importName, baseClass, shortCodeName, longCodeName);
+
+    } else {
+
+      StringBuilder sb = new StringBuilder();
+      register(pc.type, sb);
+      return sb.toString();
+
     }
 
-    String registeredCodeName = this.importCode.get(pc.getImportName());
+  }
+
+  private void register(Type t, StringBuilder sb) {
+
+    String importName = t.base;
+    String baseClass = t.base;
+    int ld = baseClass.lastIndexOf(".");
+    String shortCodeName = t.base.substring(ld + 1);
+    String longCodeName = t.base;
+    String s = registerImportName(importName, baseClass, shortCodeName, longCodeName);
+    sb.append(s);
+
+    if (!t.generics.isEmpty()) {
+      sb.append("<");
+    }
+    Separator sep = Separator.of(", ");
+    for (Type g : t.generics) {
+      sb.append(sep.render());
+      register(g, sb);
+    }
+    if (!t.generics.isEmpty()) {
+      sb.append(">");
+    }
+
+    for (int i = 0; i < t.arrayDepth; i++) {
+      sb.append("[]");
+    }
+
+  }
+
+  private String registerImportName(String importname, String baseClass, String shortCodeName, String longCodeName) {
+    if (importname.startsWith("java.lang.") || isPrimitive(baseClass)) {
+      // skip registering
+      return shortCodeName;
+    }
+
+    String registeredCodeName = this.importCode.get(importname);
     if (registeredCodeName != null) {
       // already registered
-      return pc.getShortCodeName();
+      return shortCodeName;
     }
 
     // Not registered
 
-    String otherSimpleName = this.simpleImport.get(pc.getBaseClass());
+    String otherSimpleName = this.simpleImport.get(baseClass);
     if (otherSimpleName == null) {
-      this.importCode.put(pc.getImportName(), pc.getBaseClass());
-      this.simpleImport.put(pc.getBaseClass(), pc.getImportName());
-      return pc.getShortCodeName();
+      this.importCode.put(importname, baseClass);
+      this.simpleImport.put(baseClass, importname);
+      return shortCodeName;
     } else {
-      this.importCode.put(pc.getImportName(), pc.getImportName());
-      return pc.getLongCodeName();
+      this.importCode.put(importname, importname);
+      return longCodeName;
     }
   }
 
@@ -153,6 +201,8 @@ public class AbstractClassWriter {
     private String shortCodeName;
     private String longCodeName;
 
+    private Type type;
+
     public static ExternalClass of(String c) {
       return new ExternalClass(c);
     }
@@ -161,8 +211,18 @@ public class AbstractClassWriter {
       return new ExternalClass(c.getCanonicalName());
     }
 
+    public static ExternalClass of(Type t) {
+      return new ExternalClass(t);
+    }
+
+    private ExternalClass(Type t) {
+      this.original = null;
+      this.type = t;
+    }
+
     private ExternalClass(String c) {
       this.original = c;
+      this.type = null;
 
       String gfree;
       int l = c.indexOf("<");

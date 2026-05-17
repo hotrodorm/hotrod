@@ -20,7 +20,7 @@ public class TypesUtil {
     TYPE_SYNONYMS.put("String", "java.lang.String");
   }
 
-  public static String expand(String type) {
+  public static String expaxxxnd(String type) {
     String found = TYPE_SYNONYMS.get(type);
     return found == null ? type : found;
   }

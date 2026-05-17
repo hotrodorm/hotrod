@@ -2094,7 +2094,7 @@ public class DAOWriter {
     w.print("  public int " + method + "(");
     Separator sep = new Separator(", ");
     for (ParameterTag p : q.getParameterDefinitions()) {
-      ExternalClass pc = ExternalClass.of(p.getType());
+      ExternalClass pc = ExternalClass.of(p.getParsedType());
       w.print(sep.render(), pc, " " + p.getName());
     }
     w.println(") {");
@@ -2174,7 +2174,7 @@ public class DAOWriter {
     Separator sep = new Separator(", ");
     for (SelectParameterMetadata sp : s.getParameters()) {
       ParameterTag p = sp.getParameter();
-      ExternalClass pc = ExternalClass.of(p.getType());
+      ExternalClass pc = ExternalClass.of(p.getParsedType());
       w.print(sep.render(), pc, " " + p.getName());
     }
     w.println(") {");

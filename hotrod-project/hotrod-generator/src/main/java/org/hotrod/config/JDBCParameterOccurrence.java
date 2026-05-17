@@ -7,6 +7,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
+import org.hotrod.metadata.TypeParser.Type;
 
 public class JDBCParameterOccurrence implements SQLSegment {
 
@@ -98,8 +99,8 @@ public class JDBCParameterOccurrence implements SQLSegment {
     return definition;
   }
 
-  public String getJavaType() {
-    return this.definition.getType();
+  public Type getJavaType() {
+    return this.definition.getParsedType();
   }
 
   public String getJdbcType() {

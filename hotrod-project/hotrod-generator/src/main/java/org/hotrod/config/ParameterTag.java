@@ -1,8 +1,6 @@
 package org.hotrod.config;
 
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,10 +8,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
-import org.hotrod.utils.JDBCTypes;
+import org.hotrod.metadata.TypeParser;
+import org.hotrod.metadata.TypeParser.InvalidTypeException;
+import org.hotrod.metadata.TypeParser.Type;
 import org.hotrod.utils.JDBCTypes.JDBCType;
 import org.hotrod.utils.SUtil;
-import org.hotrod.utils.TypesUtil;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
@@ -31,6 +30,7 @@ public class ParameterTag extends AbstractConfigurationTag {
   @Deprecated
   private String javaType = null;
   private String type = null;
+  private Type parsedType = null;
 
   private String jdbcTypeName = null;
   private String sampleSQLValue = null;
@@ -118,9 +118,11 @@ public class ParameterTag extends AbstractConfigurationTag {
           throw new InvalidConfigurationFileException(this,
               "Invalid <parameter> tag -- the 'type' attribute is empty. It must specify the class name for the parameter.");
         }
-        if (!this.type.matches(Patterns.VALID_JAVA_TYPE)) {
+        try {
+          this.parsedType = TypeParser.parse(this.type);
+        } catch (InvalidTypeException e) {
           throw new InvalidConfigurationFileException(this, "Invalid <parameter> tag -- "
-              + "the 'type' attribute must be a valid class; it must start with a letter and continue with letters, digits, and/or underscores, but found '"
+              + "the 'type' attribute must be a valid class; it must be a valid class, including generic and array dimensions, but found '"
               + this.type + "'.");
         }
 
@@ -134,16 +136,19 @@ public class ParameterTag extends AbstractConfigurationTag {
           throw new InvalidConfigurationFileException(this,
               "Invalid <parameter> tag -- the 'java-type' attribute is empty. It must specify the class name for the parameter.");
         }
-        if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
+
+        try {
+          this.parsedType = TypeParser.parse(this.javaType);
+        } catch (InvalidTypeException e) {
           throw new InvalidConfigurationFileException(this, "Invalid <parameter> tag -- "
-              + "the 'java-type' attribute must be a valid class; it must start with a letter and continue with letters, digits, and/or underscores, but found '"
+              + "the 'java-type' attribute must be a valid class; it must be a valid class, including generic and array dimensions, but found '"
               + this.javaType + "'.");
         }
+
         this.type = this.javaType;
         this.javaType = null;
 
       }
-      this.type = TypesUtil.expand(this.type);
 
       // jdbc-type
 
@@ -192,8 +197,8 @@ public class ParameterTag extends AbstractConfigurationTag {
     return name;
   }
 
-  public String getType() {
-    return type;
+  public Type getParsedType() {
+    return this.parsedType;
   }
 
   public JDBCType getJDBCType() {
@@ -214,7 +219,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   @Override
   public String toString() {
-    return "ParameterTag [name=" + name + ", type=" + type + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
+    return "ParameterTag [name=" + name + ", type=" + this.parsedType + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
         + ", jdbcType=" + jdbcType + "]";
   }
 

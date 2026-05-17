@@ -15,6 +15,9 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.metadata.Metadata;
+import org.hotrod.metadata.TypeParser;
+import org.hotrod.metadata.TypeParser.InvalidTypeException;
+import org.hotrod.metadata.TypeParser.Type;
 import org.hotrod.utils.JDBCTypes;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.TypesUtil;
@@ -40,6 +43,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   @Deprecated
   private String javaType = null;
   private String type = null;
+  private Type parsedType = null;
 
   private String converter = null;
   private String jdbcType = null;
@@ -230,24 +234,27 @@ public class ColumnTag extends AbstractConfigurationTag {
               "The attribute 'java-type' of the tag <" + super.getTagName() + "> cannot be empty. " + "When specified "
                   + "this attribute must specify the class name to represent the database column.");
         }
-        if (!TypesUtil.isValidClassName(this.javaType)) {
+        try {
+          this.parsedType = TypeParser.parse(this.javaType);
+        } catch (InvalidTypeException e) {
           throw new InvalidConfigurationFileException(this, "The attribute 'java-type' of the tag <"
               + super.getTagName() + "> must specify a valid class name, but found '" + this.javaType + "'.");
         }
-        this.type = TypesUtil.expand(this.javaType);
+
       } else if (this.type != null) {
         if (SUtil.isEmpty(this.type)) {
           throw new InvalidConfigurationFileException(this,
               "The attribute 'type' of the tag <" + super.getTagName() + "> cannot be empty. " + "When specified "
                   + "this attribute must specify the class name to represent the database column.");
         }
-        if (!TypesUtil.isValidClassName(this.type)) {
+        try {
+          this.parsedType = TypeParser.parse(this.type);
+        } catch (InvalidTypeException e) {
           throw new InvalidConfigurationFileException(this, "The attribute 'type' of the tag <" + super.getTagName()
               + "> must specify a valid class name, but found '" + this.type + "'.");
         }
-        this.type = TypesUtil.expand(this.type);
       } else {
-        this.type = null;
+        this.parsedType = null;
       }
 
     } else {
@@ -501,8 +508,8 @@ public class ColumnTag extends AbstractConfigurationTag {
     return this.property;
   }
 
-  public String getType() {
-    return type;
+  public Type getParsedType() {
+    return this.parsedType;
   }
 
   public String getJdbcType() {
@@ -536,7 +543,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   // ToString
 
   public String toString() {
-    return "name=" + name + " property=" + this.property + " type=" + this.type + ", converter=" + this.converter
+    return "name=" + name + " property=" + this.property + " type=" + this.parsedType + ", converter=" + this.converter
         + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue=" + this.sInitialValue
         + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
   }
