@@ -164,8 +164,9 @@ Last but not least, the [DynamicSQL](./dynamicsql/README.md) component is used b
 Explore the following examples to quickly see the functionality in action:
 
 - [Hello CRUD](./guides/hello-crud.md) - Basic CRUD examples
-- [Hello Nitro](./guides/hello-nitro.md) - The different forms of Nitro queries
 - [Hello LiveSQL](./guides/hello-livesql.md) - The basic LiveSQL queries
+- [Hello Nitro](./guides/hello-nitro.md) - The different forms of Nitro queries
+- [Hello DynamicSQL](./guides/hello-dynamicsql.md) - See Dynamic SQL in action
 - [Hello Torcs](./guides/hello-torcs.md) - Single out slow queries
 - [Hello Type Resolution](./guides/hello-type-resolution.md) - See all cases of the full type resolution
 - [Hello Identifiers](./guides/hello-identifiers.md) - Shows how to use non-alphanumeric ASCII table and column names
