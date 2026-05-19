@@ -108,7 +108,7 @@ public class App {
   }
 
   private void example8() {
-    System.out.println("Example 7 - Using <set>: Assemble a dynamic SET clause in an UPDATE query");
+    System.out.println("Example 8 - Using <set>: Assemble a dynamic SET clause in an UPDATE query");
     String newStatus = "A";
     Integer cityId = 27;
     LocalDate hiredOn = LocalDate.of(2026, 9, 13);

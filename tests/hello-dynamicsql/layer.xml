@@ -16,8 +16,7 @@
         <if test="f.lastName != null"> AND last_name = #{f.lastName}</if>
       </if>
     </select>
-<!-- 
- -->
+
     <select method="search2">
       <parameter name="ordering" type="Integer" />
       SELECT *
