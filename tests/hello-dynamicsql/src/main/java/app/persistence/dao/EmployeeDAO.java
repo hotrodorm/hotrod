@@ -59,7 +59,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.Configuration;
+import app.AppConfiguration;
 import app.Search1Filter;
 import app.persistence.layout.EmployeeLayout;
 import app.persistence.model.Employee;
@@ -701,7 +701,7 @@ public class EmployeeDAO implements ApplicationContextAware {
 
   }
 
-  // NITRO QUERY: updateEmployeeStatus
+  // NITRO QUERY: update1
 
   private DynamicModificationQuery query0;
 
@@ -712,11 +712,11 @@ public class EmployeeDAO implements ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      UPDATE employee\n      ")
       .set()
-        .if_("newStatus != null")
-          .literal("status = ")
-          .parameter("newStatus")
+        .if_("active != null")
+          .literal("active = ")
+          .parameter("active")
         .endif()
-        .if_("hired_on != null")
+        .if_("hiredOn != null")
           .literal("hired_on = ")
           .parameter("hiredOn")
         .endif()
@@ -727,9 +727,9 @@ public class EmployeeDAO implements ApplicationContextAware {
       .endModificationQuery();
   }
 
-  public int updateEmployeeStatus(String newStatus, LocalDate hiredOn, Integer cityId) {
+  public int update1(String active, LocalDate hiredOn, Integer cityId) {
     Parameters params = this.dyn.newParameters();
-    params.add("newStatus", newStatus);
+    params.add("active", active);
     params.add("hiredOn", hiredOn);
     params.add("cityId", cityId);
     PreparedModificationQuery preparedQuery = this.query0.prepare(params);
@@ -755,7 +755,7 @@ public class EmployeeDAO implements ApplicationContextAware {
   private void initializeSelect0() {
     this.select0 = dyn
       .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM employee \n      WHERE active = 'Y'\n      ")
+      .literal("\n      SELECT *\n      FROM employee\n      WHERE active = 'Y'\n      ")
       .if_("f.filterActive")
         .literal("\n        ")
         .if_("f.firstName != null")
@@ -1126,10 +1126,10 @@ public class EmployeeDAO implements ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      SELECT *\n      FROM employee\n      ")
       .literal("\n        WHERE active = 'Y'\n        ")
-      .foreach("entry", "filter.entrySet()", "OR", "", "")
+      .foreach("entry", "filter.entrySet()", "AND (", "OR", ")")
         .literal("\n          city_id = ")
         .variable("entry.key")
-        .literal(" AND zone IN\n          ")
+        .literal(" AND title IN\n          ")
         .foreach("title", "entry.value", "(", ", ", ")")
           .literal("\n            ")
           .variable("title")
@@ -1250,9 +1250,9 @@ public class EmployeeDAO implements ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      ")
-      .bind("pattern", "'%' || partialName || '%'")
+      .bind("pattern", "'%' + partialName + '%'")
       .literal("\n      ")
-      .bind("plan", "config.sections[1]['plan']")
+      .bind("plan", "config.plans['basicPlan']")
       .literal("\n      SELECT *\n      FROM employee\n      WHERE last_name LIKE ")
       .variable("pattern")
       .literal("\n      ")
@@ -1265,7 +1265,7 @@ public class EmployeeDAO implements ApplicationContextAware {
         .endwhen()
         .when("plan.title != null")
           .literal("AND title = ")
-          .variable("title")
+          .variable("plan.title")
         .endwhen()
       .endchoose()
       .literal("\n      ")
@@ -1355,7 +1355,7 @@ public class EmployeeDAO implements ApplicationContextAware {
 
   };
 
-  public List<Employee> search5(String partialName, Configuration config) {
+  public List<Employee> search5(String partialName, AppConfiguration config) {
     Parameters params = this.dyn.newParameters();
     params.add("partialName", partialName);
     params.add("config", config);
@@ -1386,7 +1386,7 @@ public class EmployeeDAO implements ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      SELECT id\n      ")
-      .trim(null, ", ", null)
+      .trim(null, null, null)
         .if_("fn")
           .literal(", first_name")
         .endif()
@@ -1511,19 +1511,19 @@ public class EmployeeDAO implements ApplicationContextAware {
       .literal("\n      ")
       .literal("\n      ")
       .literal("\n      ")
-      .literal("\n      SELECT * \n      FROM employee\n      ")
+      .literal("\n      SELECT *\n      FROM employee\n      ")
       .where("OR")
-        .if_("f.first != null")
+        .if_("first != null")
           .literal("first_name = ")
-          .variable("f.first")
+          .parameter("first")
         .endif()
-        .if_("f.last != null")
+        .if_("last != null")
           .literal("last_name = ")
-          .variable("f.last")
+          .parameter("last")
         .endif()
-        .if_("f.hiredDate != null")
-          .literal("hired_on = ")
-          .variable("f.hiredDate")
+        .if_("hiredDate != null")
+          .literal("hired_on > ")
+          .parameter("hiredDate")
         .endif()
       .endwhere()
       .literal("\n    ")
@@ -1609,11 +1609,11 @@ public class EmployeeDAO implements ApplicationContextAware {
 
   };
 
-  public List<Employee> search7(Boolean fn, Boolean ln, Boolean hd) {
+  public List<Employee> search7(String first, String last, LocalDate hiredDate) {
     Parameters params = this.dyn.newParameters();
-    params.add("fn", fn);
-    params.add("ln", ln);
-    params.add("hd", hd);
+    params.add("first", first);
+    params.add("last", last);
+    params.add("hiredDate", hiredDate);
     RowReader6 rr = new RowReader6();
     PreparedSelectQuery<Employee> preparedQuery = this.select6.prepare(params, rr);
     logQuery(preparedQuery);

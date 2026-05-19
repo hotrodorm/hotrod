@@ -1,7 +1,7 @@
 <hotrod>
 
   <generators>
-    <jdbc/>
+    <jdbc />
   </generators>
 
   <table name="employee">
@@ -9,7 +9,7 @@
     <select method="search1">
       <parameter name="f" type="app.Search1Filter" />
       SELECT *
-      FROM employee 
+      FROM employee
       WHERE active = 'Y'
       <if test="f.filterActive">
         <if test="f.firstName != null"> AND first_name = #{f.firstName}</if>
@@ -51,65 +51,65 @@
       FROM employee
       <complement>
         WHERE active = 'Y'
-        <foreach item="entry" collection="filter.entrySet()" open="OR" separator="" close="">
-          city_id = #{entry.key} AND zone IN
+        <foreach item="entry" collection="filter.entrySet()" open="AND (" separator="OR" close=")">
+          city_id = #{entry.key} AND title IN
           <foreach item="title" collection="entry.value" open="(" separator=", " close=")">
             #{title}
           </foreach>
         </foreach>
       </complement>
     </select>
-    
+
     <select method="search5">
       <parameter name="partialName" type="String" />
-      <parameter name="config" type="app.Configuration" />
-      <bind name="pattern" value="'%' || partialName || '%'" />
-      <bind name="plan" value="config.sections[1]['plan']" />
+      <parameter name="config" type="app.AppConfiguration" />
+      <bind name="pattern" value="'%' + partialName + '%'" />
+      <bind name="plan" value="config.plans['basicPlan']" />
       SELECT *
       FROM employee
       WHERE last_name LIKE #{pattern}
       <choose>
         <when test="plan.code == 1">AND city_id = 1</when>
         <when test="plan.vip">AND city_id = 103</when>
-        <when test="plan.title != null">AND title = #{title}</when>
+        <when test="plan.title != null">AND title = #{plan.title}</when>
       </choose>
       <if test="plan.ordered == 'Y'">ORDER BY hired_on DESC</if>
     </select>
-    
+
     <select method="search6">
       <parameter name="fn" type="Boolean" />
       <parameter name="ln" type="Boolean" />
       <parameter name="hd" type="Boolean" />
       SELECT id
-      <trim separator=", ">
+      <trim>
         <if test="fn">, first_name</if>
         <if test="ln">, last_name</if>
         <if test="hd">, hired_on</if>
       </trim>
       FROM employee
     </select>
-    
+
     <select method="search7">
-      <parameter name="fn" type="Boolean" />
-      <parameter name="ln" type="Boolean" />
-      <parameter name="hd" type="Boolean" />
-      SELECT * 
+      <parameter name="first" type="String" />
+      <parameter name="last" type="String" />
+      <parameter name="hiredDate" type="java.time.LocalDate" />
+      SELECT *
       FROM employee
       <where separator="OR">
-        <if test="f.first != null">first_name = #{f.first}</if>
-        <if test="f.last != null">last_name = #{f.last}</if>
-        <if test="f.hiredDate != null">hired_on = #{f.hiredDate}</if>
+        <if test="first != null">first_name = #{first}</if>
+        <if test="last != null">last_name = #{last}</if>
+        <if test="hiredDate != null">hired_on > #{hiredDate}</if>
       </where>
     </select>
-  
-    <query method="updateEmployeeStatus">
-      <parameter name="newStatus" type="String" />
+
+    <query method="update1">
+      <parameter name="active" type="String" />
       <parameter name="hiredOn" type="java.time.LocalDate" />
       <parameter name="cityId" type="Integer" />
       UPDATE employee
       <set>
-        <if test="newStatus != null">status = #{newStatus}</if>
-        <if test="hired_on != null">hired_on = #{hiredOn}</if>
+        <if test="active != null">active = #{active}</if>
+        <if test="hiredOn != null">hired_on = #{hiredOn}</if>
       </set>
       WHERE city_id = #{cityId}
     </query>
