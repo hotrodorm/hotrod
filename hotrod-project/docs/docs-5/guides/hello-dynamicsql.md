@@ -2,7 +2,21 @@
 
 This app shows examples for all DynamicSQL tags that are included in Nitro.
 
-DynamicSQL allows you to run SQL queries with static or iterative sections that are included or excluded depending on the parameters provide at runtime in each execution. 
+DynamicSQL allows you to run SQL queries with static or iterative sections that are included or excluded depending on the parameters provide at runtime in each execution.
+
+For example, the following query can take different forms depending on the parameter values:
+
+```xml
+<select method="searchEmployees">
+  <parameter name="title" type="String" />
+  <parameter name="hiredDate" type="java.time.LocalDate" />
+  SELECT *
+  FROM employee
+  WHERE active = 'A'
+  <if test="title != null">AND emp_title = #{title}</if>
+  <if test="hiredDate != null">AND emp_hired > #{hiredDate}</if>
+</select>
+```
 
 This example includes all [Dynamic SQL](../dynamicsql/README.md) tags. Namely:
 
@@ -595,6 +609,24 @@ mvn spring-boot:run
 The Spring Boot application starts, connects to the database and runs both queries. Let's review the log file step by step:
 
 #### Example 1 - Using <if>: Assembling a dynamic search predicate
+
+The DynamicSQL query:
+
+```xml
+<select method="search1">
+  <parameter name="f" type="app.Search1Filter" />
+  SELECT *
+  FROM employee
+  WHERE active = 'A'
+  <if test="f.filterActive">
+    <if test="f.firstName != null"> AND first_name = #{f.firstName}</if>
+    <if test="f.lastName != null"> AND last_name = #{f.lastName}</if>
+  </if>
+</select>
+```
+
+Was executed as:
+
 ```log
 SQL:
       SELECT *
@@ -610,6 +642,27 @@ JDBC Parameters (1):
 
 #### Example 2 - Using <choose>: Select different ordering at runtime
 
+The DynamicSQL query:
+
+```xml
+<select method="search2">
+  <parameter name="ordering" type="Integer" />
+  SELECT *
+  FROM employee
+  WHERE active = 'A'
+  <complement>
+    <choose>
+      <when test="ordering == 1"> ORDER BY first_name</when>
+      <when test="ordering == 2"> ORDER BY last_name</when>
+      <when test="ordering == 3"> ORDER BY hired_on DESC</when>
+      <otherwise> ORDER BY city_id</otherwise>
+    </choose>
+  </complement>
+</select>
+```
+
+Was executed as:
+
 ```log
 SQL:
       SELECT *
@@ -624,6 +677,24 @@ JDBC Parameters (0):
 ```
 
 #### Example 3 - Simple <foreach>: Iterate over an array
+
+The DynamicSQL query:
+
+```xml
+<select method="search3">
+  <parameter name="ids" type="Integer[]" />
+  SELECT *
+  FROM employee
+  <complement>
+    WHERE id IN
+    <foreach item="id" collection="ids" open="(" separator=", " close=")">
+      #{id}
+    </foreach>
+  </complement>
+</select>
+```
+
+Was executed as:
 
 ```log
 SQL:
@@ -647,6 +718,27 @@ JDBC Parameters (3):
 ```
 
 #### Example 4 - Advanced <foreach>: Assemble complex predicates by nesting <foreach>
+
+The DynamicSQL query:
+
+```xml
+<select method="search4">
+  <parameter name="filter" type="java.util.Map&lt;Integer, String[]>" />
+  SELECT *
+  FROM employee
+  <complement>
+    WHERE active = 'A'
+    <foreach item="entry" collection="filter.entrySet()" open="AND (" separator="OR" close=")">
+      city_id = #{entry.key} AND title IN
+      <foreach item="title" collection="entry.value" open="(" separator=", " close=")">
+        #{title}
+      </foreach>
+    </foreach>
+  </complement>
+</select>
+```
+
+Was executed as:
 
 ```log
 SQL:
@@ -682,6 +774,28 @@ JDBC Parameters (6):
 
 #### Example 5 - Using <bind>: Using variables to simplify expressions and property navigation
 
+The DynamicSQL query:
+
+```xml
+<select method="search5">
+  <parameter name="partialName" type="String" />
+  <parameter name="config" type="app.AppConfiguration" />
+  <bind name="pattern" value="'%' + partialName + '%'" />
+  <bind name="plan" value="config.plans['basicPlan']" />
+  SELECT *
+  FROM employee
+  WHERE last_name LIKE #{pattern}
+  <choose>
+    <when test="plan.code == 1">AND city_id = 1</when>
+    <when test="plan.title != null">AND lower(title) = #{plan.title.toLowerCase()}</when>
+    <when test="plan.vip">AND city_id = 30</when>
+  </choose>
+  <if test="plan.ordered == 'Y'">ORDER BY hired_on DESC</if>
+</select>
+```
+
+Was executed as:
+
 ```log
 SQL:
       SELECT *
@@ -699,6 +813,25 @@ JDBC Parameters (2):
 
 #### Example 6 - Using <trim>: Assemble dynamic lists of segments using separators
 
+The DynamicSQL query:
+
+```xml
+<select method="search6">
+  <parameter name="fn" type="Boolean" />
+  <parameter name="ln" type="Boolean" />
+  <parameter name="hd" type="Boolean" />
+  SELECT id
+  <trim>
+    <if test="fn">, first_name</if>
+    <if test="ln">, last_name</if>
+    <if test="hd">, hired_on</if>
+  </trim>
+  FROM employee
+</select>
+```
+
+Was executed as:
+
 ```log
 SQL:
       SELECT id
@@ -712,6 +845,25 @@ JDBC Parameters (0):
 ```
 
 #### Example 7 - Using <where>: Assemble a dynamic WHERE predicate
+
+The DynamicSQL query:
+
+```xml
+<select method="search7">
+  <parameter name="first" type="String" />
+  <parameter name="last" type="String" />
+  <parameter name="hiredDate" type="java.time.LocalDate" />
+  SELECT *
+  FROM employee
+  <where separator="OR">
+    <if test="first != null">first_name = #{first}</if>
+    <if test="last != null">last_name = #{last}</if>
+    <if test="hiredDate != null">hired_on > #{hiredDate}</if>
+  </where>
+</select>
+```
+
+Was executed as:
 
 ```log
 SQL:
@@ -728,6 +880,24 @@ JDBC Parameters (2):
 ```
 
 #### Example 8 - Using <set>: Assemble a dynamic SET clause in an UPDATE query
+
+The DynamicSQL query:
+
+```xml
+<query method="update1">
+  <parameter name="active" type="String" />
+  <parameter name="hiredOn" type="java.time.LocalDate" />
+  <parameter name="cityId" type="Integer" />
+  UPDATE employee
+  <set>
+    <if test="active != null">active = #{active}</if>
+    <if test="hiredOn != null">hired_on = #{hiredOn}</if>
+  </set>
+  WHERE city_id = #{cityId}
+</query>
+```
+
+Was executed as:
 
 ```log
 SQL:
