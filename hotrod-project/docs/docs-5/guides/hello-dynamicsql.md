@@ -827,7 +827,7 @@ JDBC Parameters (2):
 
 Notice that the parameter name can take the form of a simple identifier such as `pattern` or a more complex such as `plan.title.toLowerCase()`.
 
-When it comes to the execution the parameter name can be further enhanced with the parameter instance id, if the same parameter is added iteratively multiple times in the query; the &lt;foreach> construct produces this variation, as noted below.
+When it comes to the execution the parameter name can be further enhanced with the parameter instance id, if the same parameter is added iteratively multiple times in the query; the &lt;foreach> construct produces this variation, as noted above.
 
 #### Example 6 - Using &lt;trim>: Assemble dynamic lists of segments using separators
 
