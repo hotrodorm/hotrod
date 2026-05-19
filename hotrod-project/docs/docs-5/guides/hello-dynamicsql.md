@@ -1,10 +1,10 @@
-# Hello Nitro
+# Hello Dynamic SQL
 
 This app shows examples for all DynamicSQL tags that are included in Nitro.
 
 DynamicSQL allows you to run SQL queries with static or iterative sections that are included or excluded depending on the runtime parameters in each execution.
 
-You'll need:
+To run this example you'll need:
 
 - Java installed
 - Maven installed
@@ -459,6 +459,102 @@ public class App {
     LocalDate hiredOn = LocalDate.of(2026, 9, 13);
     int count = this.testDAO.update1(newStatus, hiredOn, cityId);
     System.out.println("* Update count=" + count);
+  }
+
+}
+```
+
+Let's add the class `src/main/java/app/AppConfiguration.java` as:
+
+```java
+package app;
+
+import java.util.Map;
+
+public class AppConfiguration {
+
+  private Map<String, Plan> plans;
+
+  public final Map<String, Plan> getPlans() {
+    return plans;
+  }
+
+  public final void setPlans(Map<String, Plan> plans) {
+    this.plans = plans;
+  }
+
+  public static class Plan {
+
+    private Integer code;
+    private String title;
+    private boolean vip;
+    private boolean ordered;
+
+    private Plan(Integer code, String title, boolean vip, boolean ordered) {
+      this.code = code;
+      this.title = title;
+      this.ordered = ordered;
+      this.vip = vip;
+    }
+
+    public static Plan of(Integer code, String title, boolean vip, boolean ordered) {
+      return new Plan(code, title, vip, ordered);
+    }
+
+    public final Integer getCode() {
+      return code;
+    }
+
+    public final String getTitle() {
+      return title;
+    }
+
+    public final boolean isVip() {
+      return vip;
+    }
+
+    public final boolean isOrdered() {
+      return ordered;
+    }
+
+  }
+
+}
+```
+
+Let's also add the class `src/main/java/app/Search1Filter.java` as:
+
+```java
+package app;
+
+public class Search1Filter {
+
+  private boolean filterActive;
+  private String firstName;
+  private String lastName;
+
+  public final boolean isFilterActive() {
+    return filterActive;
+  }
+
+  public final void setFilterActive(boolean filterActive) {
+    this.filterActive = filterActive;
+  }
+
+  public final String getFirstName() {
+    return firstName;
+  }
+
+  public final void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public final String getLastName() {
+    return lastName;
+  }
+
+  public final void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
 }
