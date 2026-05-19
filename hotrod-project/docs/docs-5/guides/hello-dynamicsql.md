@@ -2,7 +2,17 @@
 
 This app shows examples for all DynamicSQL tags that are included in Nitro.
 
-DynamicSQL allows you to run SQL queries with static or iterative sections that are included or excluded depending on the runtime parameters in each execution.
+DynamicSQL allows you to run SQL queries with static or iterative sections that are included or excluded depending on the parameters provide at runtime in each execution. 
+
+This example includes all [Dynamic SQL](../dynamicsql/README.md) tags. Namely:
+
+- &lt;if>
+- &lt;choose>
+- &lt;foreach>
+- &lt;bind>
+- &lt;trim>
+- &lt;where>
+- &lt;set>
 
 To run this example you'll need:
 
