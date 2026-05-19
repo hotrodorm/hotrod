@@ -71,7 +71,7 @@
       <choose>
         <when test="plan.code == 1">AND city_id = 1</when>
         <when test="plan.vip">AND city_id = 103</when>
-        <when test="plan.title != null">AND title = #{plan.title}</when>
+        <when test="plan.title != null">AND title = #{plan.title.toUpperCase()}</when>
       </choose>
       <if test="plan.ordered == 'Y'">ORDER BY hired_on DESC</if>
     </select>
