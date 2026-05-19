@@ -729,6 +729,8 @@ JDBC Parameters (3):
 * Found 2 employees: id=223, id=640
 ```
 
+Notice that some parameters were applied multiple times, according to each iteration. For clarity, each one is suffixed with the instance id.
+
 #### Example 4 - Advanced &lt;foreach>: Assemble complex predicates by nesting &lt;foreach>
 
 The DynamicSQL query:
@@ -822,6 +824,10 @@ JDBC Parameters (2):
 
 * Found 1 employees: id=101
 ```
+
+Notice that the parameter name can take the form of a simple identifier such as `pattern` or a more complex such as `plan.title.toLowerCase()`.
+
+When it comes to the execution the parameter name can be further enhanced with the parameter instance id, if the same parameter is added iteratively multiple times in the query; the &lt;foreach> construct produces this variation, as noted below.
 
 #### Example 6 - Using &lt;trim>: Assemble dynamic lists of segments using separators
 
