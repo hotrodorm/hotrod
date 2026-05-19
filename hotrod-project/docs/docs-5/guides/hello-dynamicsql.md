@@ -606,9 +606,21 @@ Now, let's run the application. Type:
 mvn spring-boot:run
 ```
 
-The Spring Boot application starts, connects to the database and runs both queries. Let's review the log file step by step:
+The Spring Boot application starts, connects to the database and runs both queries. It uses the following data set:
 
-#### Example 1 - Using <if>: Assembling a dynamic search predicate
+| ID   | FIRST_NAME | LAST_NAME | HIRED_ON   | ACTIVE | CITY_ID | TITLE             |
+|:-----|:-----------|:----------|:----------:|:------:|:-------:|:------------------|
+| 101  | Peter      | Smith     | 2026-01-12 | A      | 14      | Medic             |
+| 105  | Marie      | Jonas     | 2021-02-15 | P      | 14      | Virtual Assistant |
+| 223  | Anne       | Smith     | 2021-02-15 | A      | 14      | Secretary         |
+| 518  | Arabella   | Lawson    | 2021-02-15 | A      | 27      | Virtual Assistant |
+| 640  | Lucy       | Barr      | 2021-02-15 | P      | 27      | Clerk             |
+| 1077 | Lucas      | Santon    | 2021-02-15 | P      | 27      | Virtual Assistant |
+| 1241 | Peter      | Arunsen   | 2025-09-17 | A      | 30      | Office Manager    |
+
+Let's review the log file step by step:
+
+#### Example 1 - Using &lt;if>: Assembling a dynamic search predicate
 
 The DynamicSQL query:
 
@@ -637,10 +649,10 @@ SQL:
 JDBC Parameters (1):
   1. f.lastName: Smith (java.lang.String)
 
-* found 2 employees: id=101, id=223
+* Found 2 employees: id=101, id=223
 ```
 
-#### Example 2 - Using <choose>: Select different ordering at runtime
+#### Example 2 - Using &lt;choose>: Select different ordering at runtime
 
 The DynamicSQL query:
 
@@ -673,10 +685,10 @@ SQL:
 JDBC Parameters (0):
   N/A
 
-* found 4 employees: id=1241, id=518, id=101, id=223
+* Found 4 employees: id=1241, id=518, id=101, id=223
 ```
 
-#### Example 3 - Simple <foreach>: Iterate over an array
+#### Example 3 - Simple &lt;foreach>: Iterate over an array
 
 The DynamicSQL query:
 
@@ -714,10 +726,10 @@ JDBC Parameters (3):
   2. id#1: 223 (java.lang.Integer)
   3. id#2: 640 (java.lang.Integer)
 
-* found 2 employees: id=223, id=640
+* Found 2 employees: id=223, id=640
 ```
 
-#### Example 4 - Advanced <foreach>: Assemble complex predicates by nesting <foreach>
+#### Example 4 - Advanced &lt;foreach>: Assemble complex predicates by nesting &lt;foreach>
 
 The DynamicSQL query:
 
@@ -769,10 +781,10 @@ JDBC Parameters (6):
   5. title#2: Medic (java.lang.String)
   6. title#3: Engineer (java.lang.String)
 
-* found 2 employees: id=101, id=518
+* Found 2 employees: id=101, id=518
 ```
 
-#### Example 5 - Using <bind>: Using variables to simplify expressions and property navigation
+#### Example 5 - Using &lt;bind>: Using variables to simplify expressions and property navigation
 
 The DynamicSQL query:
 
@@ -808,10 +820,10 @@ JDBC Parameters (2):
   1. pattern: %mi% (java.lang.String)
   2. plan.title.toLowerCase(): medic (java.lang.String)
 
-* found 1 employees: id=101
+* Found 1 employees: id=101
 ```
 
-#### Example 6 - Using <trim>: Assemble dynamic lists of segments using separators
+#### Example 6 - Using &lt;trim>: Assemble dynamic lists of segments using separators
 
 The DynamicSQL query:
 
@@ -841,10 +853,10 @@ SQL:
 JDBC Parameters (0):
   N/A
 
-* found 7 employees: id=101, id=105, id=223, id=518, id=640, id=1077, id=1241
+* Found 7 employees: id=101, id=105, id=223, id=518, id=640, id=1077, id=1241
 ```
 
-#### Example 7 - Using <where>: Assemble a dynamic WHERE predicate
+#### Example 7 - Using &lt;where>: Assemble a dynamic WHERE predicate
 
 The DynamicSQL query:
 
@@ -876,10 +888,10 @@ JDBC Parameters (2):
   1. first: Peter (java.lang.String)
   2. hiredDate: 2025-06-12 (java.time.LocalDate)
 
-* found 2 employees: id=101, id=1241
+* Found 2 employees: id=101, id=1241
 ```
 
-#### Example 8 - Using <set>: Assemble a dynamic SET clause in an UPDATE query
+#### Example 8 - Using &lt;set>: Assemble a dynamic SET clause in an UPDATE query
 
 The DynamicSQL query:
 
@@ -911,7 +923,7 @@ JDBC Parameters (3):
   2. hiredOn: 2026-09-13 (java.time.LocalDate)
   3. cityId: 27 (java.lang.Integer)
 
-* update count=3
+* Update count=3
 ```
 
 Later on, if the database suffers changes that affect your Nitro queries you can just
