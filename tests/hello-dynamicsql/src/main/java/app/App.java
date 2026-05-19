@@ -11,15 +11,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import app.persistence.dao.TestDAO;
-import app.persistence.model.Value;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.model.Employee;
 
 @SpringBootApplication
 @Configuration
 public class App {
 
   @Autowired
-  private TestDAO testDAO;
+  private EmployeeDAO testDAO;
 
   public static void main(String[] args) {
     SpringApplication.run(App.class, args).close();
@@ -34,9 +34,9 @@ public class App {
 
   private void demoNitro1() {
     List<Integer> codes = Arrays.asList(123, 456, 789);
-    List<Value> rows = this.testDAO.findValues(codes);
-    for (Value v : rows) {
-      System.out.println("* v=" + v.getN());
+    List<Employee> rows = this.testDAO.search1(null);
+    for (Employee e : rows) {
+      System.out.println("* v=" + e.getFirstName());
     }
   }
 

@@ -97,6 +97,7 @@ import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
+import org.hotrod.utils.AbstractClassWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.GenUtils;

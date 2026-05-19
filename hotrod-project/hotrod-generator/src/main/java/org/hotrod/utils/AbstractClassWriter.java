@@ -16,7 +16,7 @@ import org.hotrod.metadata.TypeParser.Type;
 public class AbstractClassWriter {
 
   @SuppressWarnings("unused")
-  private static final Logger log = Logger.getLogger(AbstractClassWriter.class.getName());
+  public static final Logger log = Logger.getLogger(AbstractClassWriter.class.getName());
 
   private String[] headerLines;
   private ClassPackage classPackage;
@@ -129,9 +129,10 @@ public class AbstractClassWriter {
 
   private void register(Type t, StringBuilder sb) {
 
+    int ld = t.base.lastIndexOf(".");
+
     String importName = t.base;
-    String baseClass = t.base;
-    int ld = baseClass.lastIndexOf(".");
+    String baseClass = t.base.substring(ld + 1);
     String shortCodeName = t.base.substring(ld + 1);
     String longCodeName = t.base;
     String s = registerImportName(importName, baseClass, shortCodeName, longCodeName);
