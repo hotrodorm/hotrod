@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -31,89 +32,88 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-//      search1();
-//      search2();
-//      search3();
-//      search4();
-//      search5();
-//      search6();
-//      search7();
-      update1();
+      example1();
+      example2();
+      example3();
+      example4();
+      example5();
+      example6();
+      example7();
+      example8();
     };
   }
 
-  private void search1() {
+  private void example1() {
+    System.out.println("Example 1 - Using <if>: Assembling a dynamic search predicate");
     Search1Filter filter = new Search1Filter();
     filter.setFilterActive(true);
     filter.setLastName("Smith");
     List<Employee> rows = this.testDAO.search1(filter);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void search2() {
+  private void example2() {
+    System.out.println("Example 2 - Using <choose>: Select different ordering at runtime");
     List<Employee> rows = this.testDAO.search2(2);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-//  List<Integer> ids = Arrays.asList(123, 456, 789);
-
-  private void search3() {
-    Integer[] ids = { 123, 456, 789 };
+  private void example3() {
+    System.out.println("Example 3 - Simple <foreach>: Iterate over an array");
+    Integer[] ids = { 170, 223, 640 };
     List<Employee> rows = this.testDAO.search3(ids);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void search4() {
+  private void example4() {
+    System.out.println("Example 4 - Advanced <foreach>: Assemble complex predicates by nesting <foreach>");
     Map<Integer, String[]> filter = new HashMap<>();
-    filter.put(103, new String[] { "abc", "def", "ghi" });
-    filter.put(122, new String[] { "jkl" });
+    filter.put(14, new String[] { "Nurse", "Medic", "Engineer" });
+    filter.put(27, new String[] { "Virtual Assistant" });
     List<Employee> rows = this.testDAO.search4(filter);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void search5() {
+  private void example5() {
+    System.out.println("Example 5 - Using <bind>: Using variables to simplify expressions and property navigation");
+
     String partialName = "mi";
 
     AppConfiguration config = new AppConfiguration();
     Map<String, Plan> plans = new HashMap<>();
-    plans.put("basicPlan", Plan.of(null, false, "Alchemist", true));
+    plans.put("basicPlan", Plan.of(null, "Medic", true, true));
     config.setPlans(plans);
 
     List<Employee> rows = this.testDAO.search5(partialName, config);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void search6() {
+  private void example6() {
+    System.out.println("Example 6 - Using <trim>: Assemble dynamic lists of segments using separators");
     List<Employee> rows = this.testDAO.search6(true, false, true);
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void search7() {
-  List<Employee> rows = this.testDAO.search7("Peter", null, LocalDate.of(2025, 6, 12));
-    for (Employee e : rows) {
-      System.out.println("* v=" + e.getFirstName());
-    }
+  private void example7() {
+    System.out.println("Example 7 - Using <where>: Assemble a dynamic WHERE predicate");
+    List<Employee> rows = this.testDAO.search7("Peter", null, LocalDate.of(2025, 6, 12));
+    System.out.println("* Found " + rows.size() + " employees: "
+        + rows.stream().map(r -> "id=" + r.getId()).collect(Collectors.joining(", ")));
   }
 
-  private void update1() {
-    Integer[] ids = { 123, 456, 789 };
-    String newStatus = "ACT";
+  private void example8() {
+    System.out.println("Example 7 - Using <set>: Assemble a dynamic SET clause in an UPDATE query");
+    String newStatus = "A";
+    Integer cityId = 27;
     LocalDate hiredOn = LocalDate.of(2026, 9, 13);
-    Integer cityId = 56;
     int count = this.testDAO.update1(newStatus, hiredOn, cityId);
-    System.out.println("* count=" + count);
+    System.out.println("* Update count=" + count);
   }
 
 }

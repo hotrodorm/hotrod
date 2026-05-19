@@ -755,7 +755,7 @@ public class EmployeeDAO implements ApplicationContextAware {
   private void initializeSelect0() {
     this.select0 = dyn
       .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM employee\n      WHERE active = 'Y'\n      ")
+      .literal("\n      SELECT *\n      FROM employee\n      WHERE active = 'A'\n      ")
       .if_("f.filterActive")
         .literal("\n        ")
         .if_("f.firstName != null")
@@ -879,7 +879,7 @@ public class EmployeeDAO implements ApplicationContextAware {
   private void initializeSelect1() {
     this.select1 = dyn
       .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM employee\n      WHERE active = 'Y'\n      ")
+      .literal("\n      SELECT *\n      FROM employee\n      WHERE active = 'A'\n      ")
       .literal("\n        ")
       .choose()
         .when("ordering == 1")
@@ -1125,7 +1125,7 @@ public class EmployeeDAO implements ApplicationContextAware {
     this.select3 = dyn
       .literal("\n      ")
       .literal("\n      SELECT *\n      FROM employee\n      ")
-      .literal("\n        WHERE active = 'Y'\n        ")
+      .literal("\n        WHERE active = 'A'\n        ")
       .foreach("entry", "filter.entrySet()", "AND (", "OR", ")")
         .literal("\n          city_id = ")
         .variable("entry.key")
@@ -1260,12 +1260,12 @@ public class EmployeeDAO implements ApplicationContextAware {
         .when("plan.code == 1")
           .literal("AND city_id = 1")
         .endwhen()
-        .when("plan.vip")
-          .literal("AND city_id = 103")
-        .endwhen()
         .when("plan.title != null")
-          .literal("AND title = ")
-          .variable("plan.title.toUpperCase()")
+          .literal("AND lower(title) = ")
+          .variable("plan.title.toLowerCase()")
+        .endwhen()
+        .when("plan.vip")
+          .literal("AND city_id = 30")
         .endwhen()
       .endchoose()
       .literal("\n      ")

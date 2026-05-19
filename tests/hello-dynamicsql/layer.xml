@@ -10,7 +10,7 @@
       <parameter name="f" type="app.Search1Filter" />
       SELECT *
       FROM employee
-      WHERE active = 'Y'
+      WHERE active = 'A'
       <if test="f.filterActive">
         <if test="f.firstName != null"> AND first_name = #{f.firstName}</if>
         <if test="f.lastName != null"> AND last_name = #{f.lastName}</if>
@@ -22,7 +22,7 @@
       <parameter name="ordering" type="Integer" />
       SELECT *
       FROM employee
-      WHERE active = 'Y'
+      WHERE active = 'A'
       <complement>
         <choose>
           <when test="ordering == 1"> ORDER BY first_name</when>
@@ -50,7 +50,7 @@
       SELECT *
       FROM employee
       <complement>
-        WHERE active = 'Y'
+        WHERE active = 'A'
         <foreach item="entry" collection="filter.entrySet()" open="AND (" separator="OR" close=")">
           city_id = #{entry.key} AND title IN
           <foreach item="title" collection="entry.value" open="(" separator=", " close=")">
@@ -70,8 +70,8 @@
       WHERE last_name LIKE #{pattern}
       <choose>
         <when test="plan.code == 1">AND city_id = 1</when>
-        <when test="plan.vip">AND city_id = 103</when>
-        <when test="plan.title != null">AND title = #{plan.title.toUpperCase()}</when>
+        <when test="plan.title != null">AND lower(title) = #{plan.title.toLowerCase()}</when>
+        <when test="plan.vip">AND city_id = 30</when>
       </choose>
       <if test="plan.ordered == 'Y'">ORDER BY hired_on DESC</if>
     </select>

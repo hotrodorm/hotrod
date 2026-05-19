@@ -4,8 +4,10 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.23 (unreleased):
 - Nitro:
+    - Hello DynamicSQL example added.
     - Fixed &lt;foreach> variable shadowing when used inside the &lt;complement> tag.
-    - Nitro parameters can now use non-trivial classes; they can now combine generics and multi-dimensional arrays, including multi-level nesting of generics, such as Map&lt;List&lt;String[][]>,Set&lt;com.app.Widget>>[].
+    - The &lt;foreach> now allows nesting levels.
+    - Nitro parameters can now use non-trivial classes; they can now combine generics and multi-dimensional arrays, including multi-level nesting of generics, such as Map&lt;List&lt;String[][]>,Set&lt;com.app.Widget>>.
 
 ## 5.1.22:
 
