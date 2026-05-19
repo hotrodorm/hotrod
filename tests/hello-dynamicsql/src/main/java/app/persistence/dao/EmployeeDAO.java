@@ -1265,7 +1265,7 @@ public class EmployeeDAO implements ApplicationContextAware {
         .endwhen()
         .when("plan.title != null")
           .literal("AND title = ")
-          .variable("plan.title")
+          .variable("plan.title.toUpperCase()")
         .endwhen()
       .endchoose()
       .literal("\n      ")
