@@ -26,6 +26,7 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.OptimisticLockingTag.OptimisticLockingStrategy;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.SelectMethodTag.ResultSetType;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.database.DatabaseAdapter;
@@ -34,10 +35,12 @@ import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
+import org.hotrod.dynamicsql.MapRowReader;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
@@ -97,7 +100,6 @@ import org.hotrod.metadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
-import org.hotrod.utils.AbstractClassWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.GenUtils;
@@ -240,6 +242,8 @@ public class DAOWriter {
 
     }
 
+    // sequence tags
+
     if (!this.tag.getSequences().isEmpty()) {
       writeSequenceRowReader();
     }
@@ -250,10 +254,14 @@ public class DAOWriter {
       n++;
     }
 
+    // query tags
+
     int i = 0;
     for (QueryMethodTag q : this.tag.getQueries()) {
       writeNitroQuery(q, i++);
     }
+
+    // select tags
 
     i = 0;
     for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
@@ -1905,7 +1913,9 @@ public class DAOWriter {
 
     // Free Nitro Selects
     for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
-      n = writeConverter(n, s.getColumns());
+      if (s.getResultSetType() != ResultSetType.ROW) {
+        n = writeConverter(n, s.getColumns());
+      }
     }
 
   }
@@ -2117,7 +2127,11 @@ public class DAOWriter {
   }
 
   private void writeNitroFreeSelect(SelectMethodMetadata s, int sno) throws ErrorMessageException {
-    this.writeNitroSelectBody(s, sno, s.getColumns());
+    if (s.getResultSetType() == ResultSetType.ROW) {
+      this.writeNitroSelectBody(s, sno, null);
+    } else {
+      this.writeNitroSelectBody(s, sno, s.getColumns());
+    }
   }
 
   private void writeNitroSelectBody(SelectMethodMetadata s, int sno, List<ColumnMetadata> columns)
@@ -2150,17 +2164,29 @@ public class DAOWriter {
 
     // 2. Row Reader
 
-    String rowReaderClass = "RowReader" + sno;
-    String rowReaderObject = "rowReader" + sno;
-    this.writeNitroSelectRowReaderClass(s, rowReaderClass, rowReaderObject, columns);
+    ExternalClass rowReaderClass;
+    if (s.getResultSetType() != ResultSetType.ROW) {
+
+      rowReaderClass = ExternalClass.of("RowReader" + sno);
+      String rowReaderObject = "rowReader" + sno;
+      this.writeNitroSelectRowReaderClass(s, rowReaderClass.getBaseClass(), rowReaderObject, columns);
+
+    } else {
+      rowReaderClass = ExternalClass.of(MapRowReader.class);
+    }
 
     // 3. Method
 
-    SelectMethodReturnType rt = s.getReturnType(this.classPackage);
-    ExternalClass rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+    ExternalClass rc;
+    if (s.getResultSetType() != ResultSetType.ROW) {
+      SelectMethodReturnType rt = s.getReturnType(this.classPackage);
+      rc = ExternalClass.of(rt.getBaseReturnVOFullClassName());
+    } else {
+      rc = ExternalClass.of(Row.class);
+    }
 
     w.println();
-    switch (rt.getMode()) {
+    switch (s.getResultSetMode()) {
     case CURSOR:
       w.print("  public ", Cursor.class, "<", rc, "> " + method + "(");
       break;
@@ -2186,7 +2212,7 @@ public class DAOWriter {
       w.println("    params.add(\"" + p.getName() + "\", " + p.getName() + ");");
     }
 
-    w.println("    " + rowReaderClass + " rr = new " + rowReaderClass + "();");
+    w.println("    ", rowReaderClass, " rr = new ", rowReaderClass, "();");
     w.print("    ", PreparedSelectQuery.class, "<", rc, "> preparedQuery = ");
     w.println("this." + queryName + ".prepare(params, rr);");
 
@@ -2194,7 +2220,7 @@ public class DAOWriter {
 
     writeGetConnection();
 
-    switch (rt.getMode()) {
+    switch (s.getResultSetMode()) {
     case CURSOR:
       w.println("      ", Cursor.class, "<", rc, "> cursor = preparedQuery.executeCursor(conn);");
       w.println("      return cursor;");

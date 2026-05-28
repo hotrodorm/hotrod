@@ -13,6 +13,7 @@ import org.hotrod.config.JDBCTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
+import org.hotrod.config.SelectMethodTag.ResultSetType;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ErrorMessageException;
 import org.hotrod.exceptions.FaultException;
@@ -76,6 +77,9 @@ public class SelectMethodMetadata implements DataSetMetadata {
   private ClassPackage layoutPackage;
   private ClassPackage modelPackage;
 
+  private ResultSetType resultSetType;
+  private ResultSetMode resultSetMode;
+
   private SelectMethodReturnType selectMethodReturnType;
 
   // Constructor
@@ -122,6 +126,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
     this.layoutPackage = this.jdbcTag.getLayoutPackage(this.fragmentPackage);
     this.modelPackage = this.jdbcTag.getModelPackage(this.fragmentPackage);
 
+    this.resultSetType = this.tag.getResultSetType();
+    this.resultSetMode = this.tag.getResultSetMode();
     this.selectMethodReturnType = null;
 
   }
@@ -134,28 +140,31 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   public void gatherMetadataPhase1() throws FaultException, ErrorMessageException {
 
-    if (!this.structuredSelect) {
+    if (this.resultSetType != ResultSetType.ROW) {
 
-      // Flat columns
+      if (!this.structuredSelect) {
 
-      try {
-        this.cr.phase1Flat(getSelectKey(), this.tag, this);
-      } catch (InvalidSQLException e) {
-        throw new ErrorMessageException(this.tag,
-            "Could not retrieve metadata for <select>\n" + "* " + e.getCause().getMessage() + "\n"
-                + "* Is the SQL query below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-                + "\n--- end SQL ---");
-      } catch (InvalidConfigurationFileException e) {
-        throw new ErrorMessageException(e.getTag(), e.getMessage());
+        // Flat columns
+
+        try {
+          this.cr.phase1Flat(getSelectKey(), this.tag, this);
+        } catch (InvalidSQLException e) {
+          throw new ErrorMessageException(this.tag,
+              "Could not retrieve metadata for <select>\n" + "* " + e.getCause().getMessage() + "\n"
+                  + "* Is the SQL query below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+                  + "\n--- end SQL ---");
+        } catch (InvalidConfigurationFileException e) {
+          throw new ErrorMessageException(e.getTag(), e.getMessage());
+        }
+
+      } else {
+
+        // Graph columns
+
+        log.fine("Phase 1 - method=" + this.getMethod());
+        this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.columnsPrefixGenerator, this.cr);
+
       }
-
-    } else {
-
-      // Graph columns
-
-      log.fine("Phase 1 - method=" + this.getMethod());
-      this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.columnsPrefixGenerator, this.cr);
-
     }
 
   }
@@ -168,87 +177,90 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   public void gatherMetadataPhase2(final VORegistry voRegistry) throws FaultException, ErrorMessageException {
 
-    if (!this.structuredSelect) {
+    if (this.resultSetType != ResultSetType.ROW) {
+      if (!this.structuredSelect) {
 
-      // Flat columns
+        // Flat columns
 
-      try {
-        this.nonStructuredColumns = this.cr.phase2Flat(getSelectKey());
-
-      } catch (SQLException e) {
-        throw new FaultException(this.tag,
-            "Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + ">", e);
-      } catch (UnresolvableDataTypeException e) {
-        throw new ErrorMessageException(this.tag,
-            "Could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "'");
-      } catch (InvalidIdentifierException e) {
-        throw new ErrorMessageException(this.tag, "Invalid retrieved column name: " + e.getMessage());
-      }
-
-      List<VOProperty> properties = new ArrayList<>();
-
-      for (ColumnMetadata cm : this.nonStructuredColumns) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false, this.tag);
-        properties
-            .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
-      }
-
-      List<VOMember> associations = new ArrayList<>();
-      List<VOMember> collections = new ArrayList<>();
-
-      if (this.entityMetaData == null) { // does not belong to an entity (table or view)
-
-        SelectVOClass vo = null;
         try {
-          vo = new SelectVOClass(this.fragmentPackage, this.modelPackage, this.tag.getVOClassName(), null, null,
-              properties, associations, collections, this.tag);
-          log.fine("--> Adding VO: " + vo);
-          voRegistry.addVO(vo);
-        } catch (VOAlreadyExistsException e) {
+          this.nonStructuredColumns = this.cr.phase2Flat(getSelectKey());
+
+        } catch (SQLException e) {
+          throw new FaultException(this.tag,
+              "Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + ">", e);
+        } catch (UnresolvableDataTypeException e) {
           throw new ErrorMessageException(this.tag,
-              "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+              "Could not find suitable Java type for column '" + e.getColumnMetadata().getName() + "'");
+        } catch (InvalidIdentifierException e) {
+          throw new ErrorMessageException(this.tag, "Invalid retrieved column name: " + e.getMessage());
+        }
+
+        List<VOProperty> properties = new ArrayList<>();
+
+        for (ColumnMetadata cm : this.nonStructuredColumns) {
+          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false,
+              this.tag);
+          properties
+              .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
+        }
+
+        List<VOMember> associations = new ArrayList<>();
+        List<VOMember> collections = new ArrayList<>();
+
+        if (this.entityMetaData == null) { // does not belong to an entity (table or view)
+
+          SelectVOClass vo = null;
+          try {
+            vo = new SelectVOClass(this.fragmentPackage, this.modelPackage, this.tag.getVOClassName(), null, null,
+                properties, associations, collections, this.tag);
+            log.fine("--> Adding VO: " + vo);
+            voRegistry.addVO(vo);
+          } catch (VOAlreadyExistsException e) {
+            throw new ErrorMessageException(this.tag,
+                "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                    + "'. This VO name is already being used in "
+                    + e.getOtherOne().getTag().getSourceLocation().render() + ".");
+          } catch (StructuredVOAlreadyExistsException e) {
+            throw new ErrorMessageException(this.tag,
+                "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                    + "'. This VO name is already being used in "
+                    + e.getOtherOne().getTag().getSourceLocation().render() + ".");
+          } catch (DuplicatePropertyNameException e) {
+            throw new ErrorMessageException(e.getInitial().getTag(), e.renderMessage());
+          }
+
+        }
+
+      } else {
+
+        // Graph columns
+
+        try {
+          log.fine("Graph columns - Phase 2");
+          this.tag.getStructuredColumns().gatherMetadataPhase2();
+          this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
+          this.structuredColumns.registerVOs(this.fragmentPackage, this.modelPackage, voRegistry);
+
+        } catch (VOAlreadyExistsException e) {
+          throw new ErrorMessageException(e.getTag(),
+              "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                   + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                   + ".");
         } catch (StructuredVOAlreadyExistsException e) {
-          throw new ErrorMessageException(this.tag,
-              "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+          throw new ErrorMessageException(e.getThisTag(),
+              "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
                   + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                   + ".");
         } catch (DuplicatePropertyNameException e) {
-          throw new ErrorMessageException(e.getInitial().getTag(), e.renderMessage());
+          throw new ErrorMessageException(e.getDuplicate().getTag(), e.renderMessage());
+        } catch (InvalidConfigurationFileException e) {
+          throw new ErrorMessageException(e.getTag(), e.getMessage());
         }
 
       }
 
-    } else {
-
-      // Graph columns
-
-      try {
-        log.fine("Graph columns - Phase 2");
-        this.tag.getStructuredColumns().gatherMetadataPhase2();
-        this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
-        this.structuredColumns.registerVOs(this.fragmentPackage, this.modelPackage, voRegistry);
-
-      } catch (VOAlreadyExistsException e) {
-        throw new ErrorMessageException(e.getTag(),
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (StructuredVOAlreadyExistsException e) {
-        throw new ErrorMessageException(e.getThisTag(),
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + modelPackage.getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (DuplicatePropertyNameException e) {
-        throw new ErrorMessageException(e.getDuplicate().getTag(), e.renderMessage());
-      } catch (InvalidConfigurationFileException e) {
-        throw new ErrorMessageException(e.getTag(), e.getMessage());
-      }
-
+      this.selectMethodReturnType = new SelectMethodReturnType(this, this.fragmentPackage, this.tag, this.jdbcTag);
     }
-
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.fragmentPackage, this.tag, this.jdbcTag);
 
   }
 
@@ -391,6 +403,10 @@ public class SelectMethodMetadata implements DataSetMetadata {
   @Override
   public HotRodFragmentConfigTag getFragmentConfig() {
     return this.fragmentConfig;
+  }
+
+  public ResultSetType getResultSetType() {
+    return resultSetType;
   }
 
   public ResultSetMode getResultSetMode() {

@@ -230,8 +230,8 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
       // solo VO
 
-      SelectVOClass soloVO = rt.getSoloVO();
-      SelectVOClass abstractSoloVO = rt.getAbstractSoloVO();
+      SelectVOClass soloVO = rt == null ? null : rt.getSoloVO();
+      SelectVOClass abstractSoloVO = rt == null ? null : rt.getAbstractSoloVO();
 //      log.info("soloVO=" + soloVO + " - abstractSoloVO=" + abstractSoloVO);
 
       if (soloVO != null) {

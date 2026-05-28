@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -71,6 +72,32 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   }
 
+  public static enum ResultSetType {
+
+    DISTINCT("distinct"), //
+    ROW("row");
+
+    private String caption;
+
+    private ResultSetType(final String caption) {
+      this.caption = caption;
+    }
+
+    public String getCaption() {
+      return caption;
+    }
+
+    public static ResultSetType parse(final String s) {
+      for (ResultSetType t : ResultSetType.values()) {
+        if (t.caption.equals(s)) {
+          return t;
+        }
+      }
+      return null;
+    }
+
+  }
+
   // Properties
 
   private boolean belongsToEntity;
@@ -107,6 +134,9 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   private String voClassName;
   private String abstractVoClassName;
 
+  private String sType;
+  private ResultSetType type;
+
   private ResultSetMode mode;
   private String implementsClasses = null;
 
@@ -136,6 +166,11 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   @XmlAttribute(name = "vo")
   public void setVO(final String vo) {
     this.vo = vo;
+  }
+
+  @XmlAttribute(name = "type")
+  public void setType(final String type) {
+    this.sType = type;
   }
 
   @XmlAttribute(name = "mode")
@@ -228,6 +263,32 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       this.aggregatedPart = this.parts.get(0);
     }
 
+    // type
+
+    if (this.belongsToEntity) {
+      if (this.sType == null) {
+        this.type = ResultSetType.DISTINCT;
+      } else {
+        throw new InvalidConfigurationFileException(this, "The 'type' attribute cannot be specified in a <select> "
+            + "tag that belongs to a <table> or <view>, since these always must return rows from the table or view they belong to.");
+      }
+    } else {
+      ListCollector lc = ListCollector.joining("'", "'", "", ", or ");
+      Stream.of(ResultSetType.values());
+      if (this.sType == null) {
+        this.type = ResultSetType.DISTINCT;
+      } else if (SUtil.isEmpty(this.sType)) {
+        throw new InvalidConfigurationFileException(this, "When specified the 'type' attribute cannot be empty. "
+            + "It can have the values: " + Stream.of(ResultSetType.values()).map(t -> t.caption).collect(lc));
+      } else {
+        this.type = ResultSetType.parse(this.sType);
+        if (this.type == null) {
+          throw new InvalidConfigurationFileException(this, "The 'type' attribute can only have the values "
+              + Stream.of(ResultSetType.values()).map(t -> t.caption).collect(lc) + " but found '" + this.sType + "'");
+        }
+      }
+    }
+
     // vo
 
     if (this.belongsToEntity) {
@@ -245,15 +306,23 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     } else {
 
       if (this.vo == null) {
-        if (this.structuredColumns == null) {
-          throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
-              + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
-        }
+        // Nothing to do
+
+//        if (this.structuredColumns == null) {
+//          throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
+//              + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
+//        }
+
       } else {
-        if (this.structuredColumns != null) {
+        if (this.getResultSetType() == ResultSetType.ROW) {
           throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute. "
-              + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+              + "The 'vo' attribute cannot be specified when the select type is '" + ResultSetType.ROW.caption + "'.");
         }
+
+//        if (this.structuredColumns != null) {
+//          throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute. "
+//              + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+//        }
         if (SUtil.isEmpty(this.vo)) {
           throw new InvalidConfigurationFileException(this, "When specified, the 'vo' attribute cannot be empty.");
         }
@@ -366,6 +435,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   public String getAbstractVOClassName() {
     return this.abstractVoClassName;
+  }
+
+  public ResultSetType getResultSetType() {
+    return this.type;
   }
 
   public ResultSetMode getResultSetMode() {
