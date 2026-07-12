@@ -225,13 +225,26 @@ public class H2Dialect extends LiveSQLDialect {
         throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in H2");
       }
 
+//      @Override
+//      public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
+//        if (limit != null) {
+//          if (offset != null) {
+//            w.write("\nLIMIT " + limit + " OFFSET " + offset);
+//          } else {
+//            w.write("\nLIMIT " + limit);
+//          }
+//        } else {
+//          w.write("\nOFFSET " + offset);
+//        }
+//      }
+
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (limit != null) {
           if (offset != null) {
-            w.write("\nLIMIT " + limit + " OFFSET " + offset);
+            w.write("\nOFFSET " + offset + " FETCH NEXT " + limit + " ROWS ONLY");
           } else {
-            w.write("\nLIMIT " + limit);
+            w.write("\nFETCH NEXT " + limit + " ROWS ONLY");
           }
         } else {
           w.write("\nOFFSET " + offset);

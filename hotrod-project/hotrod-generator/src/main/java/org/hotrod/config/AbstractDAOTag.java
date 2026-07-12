@@ -55,7 +55,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   private String implementsClasses = null;
 
-  private List<String> implementsList;
+  private List<String> implementsList = new ArrayList<>();
 
   // Constructor
 

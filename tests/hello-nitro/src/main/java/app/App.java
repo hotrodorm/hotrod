@@ -3,6 +3,7 @@ package app;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hotrod.dynamicsql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -33,11 +34,12 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
-      demoNitro1();
-      demoNitro2();
-      demoNitro3();
-      demoNitro4();
-      demoNitro5();
+//      demoNitro1();
+//      demoNitro2();
+//      demoNitro3();
+//      demoNitro4();
+//      demoNitro5();
+      demoNitro6();
     };
   }
 
@@ -69,6 +71,13 @@ public class App {
     DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
     ReportingTotals totals = this.reportingDAO.getTotals(dr);
     System.out.println("September 2025: " + totals.getCount() + " accounts, $" + totals.getBalance() + " balance.");
+  }
+
+  private void demoNitro6() {
+    List<Row> rows = this.reportingDAO.find2();
+    for (Row r : rows) {
+      System.out.println("r=" + r);
+    }
   }
 
 }

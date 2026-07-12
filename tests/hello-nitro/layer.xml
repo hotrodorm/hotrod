@@ -1,7 +1,7 @@
 <hotrod>
 
   <generators>
-    <jdbc/>
+    <jdbc />
   </generators>
 
   <table name="account">
@@ -20,7 +20,7 @@
       <if test="year != null">
         AND year(created) = '$SQLINJECTION{year.toString()}'
       </if>
-    </select> 
+    </select>
 
     <query method="createProjectSequence" sql-injection-enabled="true">
       <parameter name="suffix" type="String" />
@@ -41,6 +41,11 @@
       SELECT sum(balance) AS balance, count(*) AS count
       FROM account
       WHERE created BETWEEN #{dr.minDate} AND #{dr.maxDate}
+    </select>
+
+    <select method="find2" type="row">
+      SELECT sum(balance) AS balance, count(*) AS count
+      FROM account
     </select>
 
   </dao>

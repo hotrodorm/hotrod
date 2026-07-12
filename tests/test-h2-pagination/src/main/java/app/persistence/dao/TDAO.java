@@ -4,10 +4,8 @@ package app.persistence.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +33,6 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.CharEntityColumn;
-import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
@@ -59,13 +55,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.persistence.layout.AccountLayout;
-import app.persistence.model.Account;
+import app.persistence.layout.TLayout;
+import app.persistence.model.T;
 
 @Component
-public class AccountDAO implements ApplicationContextAware {
+public class TDAO implements ApplicationContextAware {
 
-  private static final Logger log = Logger.getLogger(AccountDAO.class.getName());
+  private static final Logger log = Logger.getLogger(TDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -91,25 +87,15 @@ public class AccountDAO implements ApplicationContextAware {
 
   // ROW READER
 
-  private final RowReader<Account> rowReader = new RowReader<Account>() {
+  private final RowReader<T> rowReader = new RowReader<T>() {
 
     @Override
-    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      Account row = applicationContext.getBean(Account.class);
+    public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      T row = applicationContext.getBean(T.class);
 
       Integer col1 = rs.getInt("ID"); // ID
       if (rs.wasNull()) col1 = null;
       row.setId(col1);
-
-      String col2 = rs.getString("TITLE"); // TITLE
-      row.setTitle(col2);
-
-      LocalDate col3 = rs.getObject("CREATED", LocalDate.class); // CREATED
-      row.setCreated(col3);
-
-      Integer col4 = rs.getInt("BALANCE"); // BALANCE
-      if (rs.wasNull()) col4 = null;
-      row.setBalance(col4);
 
       return row;
     }
@@ -118,69 +104,45 @@ public class AccountDAO implements ApplicationContextAware {
 
   // PARSE ROW
 
-  public Account parseRow(Map<String, Object> row) {
+  public T parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix) {
+  public T parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public Account parseRow(Map<String, Object> row, String prefix, String suffix) {
-    Account m = applicationContext.getBean(Account.class);
+  public T parseRow(Map<String, Object> row, String prefix, String suffix) {
+    T m = applicationContext.getBean(T.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
     m.setId(CastUtil.toInteger((Number) row.get(p + "id" + s)));
-    m.setTitle((String) row.get(p + "title" + s));
-    m.setCreated((LocalDate) row.get(p + "created" + s));
-    m.setBalance(CastUtil.toInteger((Number) row.get(p + "balance" + s)));
     return m;
   }
 
   // BASELINE
 
-  public class AccountBaseline {
+  public class TBaseline {
 
     private Integer id;
-    private String title;
-    private LocalDate created;
-    private Integer balance;
 
     public Integer getId() {
       return this.id;
     }
 
-    public String getTitle() {
-      return this.title;
-    }
-
-    public LocalDate getCreated() {
-      return this.created;
-    }
-
-    public Integer getBalance() {
-      return this.balance;
-    }
-
   }
 
-  public AccountBaseline baseline(Account model) {
-    AccountBaseline b = new AccountBaseline();
+  public TBaseline baseline(T model) {
+    TBaseline b = new TBaseline();
     b.id = model.getId();
-    b.title = model.getTitle();
-    b.created = model.getCreated();
-    b.balance = model.getBalance();
     return b;
   };
 
   // CLONE
 
-  public Account clone(AccountLayout layout) {
-    Account m = this.applicationContext.getBean(Account.class);
+  public T clone(TLayout layout) {
+    T m = this.applicationContext.getBean(T.class);
     m.setId(layout.getId());
-    m.setTitle(layout.getTitle());
-    m.setCreated(layout.getCreated());
-    m.setBalance(layout.getBalance());
     return m;
   };
 
@@ -191,27 +153,24 @@ public class AccountDAO implements ApplicationContextAware {
   private void initializeSelectbyprimarykey() {
     this.selectByPrimaryKey = dyn
       .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  title,")
-      .literaln("  created,")
-      .literaln("  balance")
-      .literaln("FROM account")
+      .literaln("  id")
+      .literaln("FROM t")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
   }
 
-  public Account select(Integer id) {
+  public T select(Integer id) {
     if (id == null) return null;
-    Account filter = new Account();
+    T filter = new T();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
-    PreparedSelectQuery<Account> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    PreparedSelectQuery<T> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<Account> rows = preparedQuery.execute(conn);
+      List<T> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
@@ -231,32 +190,26 @@ public class AccountDAO implements ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  id,")
-      .literaln("  title,")
-      .literaln("  created,")
-      .literaln("  balance")
-      .literaln("FROM account")
+      .literaln("  id")
+      .literaln("FROM t")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.title != null").literal("title = ").parameter("e.title").endif()
-        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
-        .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<Account> select(AccountLayout example, AccountOrderBy... orderBies) {
+  public List<T> select(TLayout example, TOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<Account> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<T> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<Account> rows = preparedQuery.execute(conn);
+      List<T> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -269,8 +222,8 @@ public class AccountDAO implements ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<Account> select(final AccountTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Account>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<T> select(final TTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<T>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -279,29 +232,23 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO account")
+      .literal("INSERT INTO t")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
-        .literal("title")
-        .literal("created")
-        .literal("balance")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .parameterNullable("l.id", Types.INTEGER)
-        .parameterNullable("l.title", Types.VARCHAR)
-        .parameterNullable("l.created", Types.DATE)
-        .parameterNullable("l.balance", Types.INTEGER)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Account insert(AccountLayout layout) {
+  public T insert(TLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    Account model = this.clone(layout);
+    T model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -322,29 +269,23 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO account")
+      .literal("INSERT INTO t")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
-        .if_("e.title != null").literal("title").endif()
-        .if_("e.created != null").literal("created").endif()
-        .if_("e.balance != null").literal("balance").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
         .if_("e.id != null").parameter("e.id").endif()
-        .if_("e.title != null").parameter("e.title").endif()
-        .if_("e.created != null").parameter("e.created").endif()
-        .if_("e.balance != null").parameter("e.balance").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Account insertByExample(AccountLayout example) {
+  public T insertByExample(TLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    Account model = this.clone(example);
+    T model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -365,18 +306,15 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeUpdatebypk() {
     this.updateByPK = dyn
-      .literaln("UPDATE account")
+      .literaln("UPDATE t")
       .literaln("SET")
       .trim("  ", ",\n  ","\n")
-        .begin().literal("title = ").parameterNullable("m.title", Types.VARCHAR).end()
-        .begin().literal("created = ").parameterNullable("m.created", Types.DATE).end()
-        .begin().literal("balance = ").parameterNullable("m.balance", Types.INTEGER).end()
       .endtrim()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
   }
 
-  public int update(Account model) {
+  public int update(T model) {
     if (model.getId() == null) return 0;
     Parameters params = this.dyn.newParameters();
     params.add("m", model);
@@ -402,23 +340,17 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE account")
+      .literal("UPDATE t")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
-        .if_("v.title != null").literal("title = ").parameter("v.title").endif()
-        .if_("v.created != null").literal("created = ").parameter("v.created").endif()
-        .if_("v.balance != null").literal("balance = ").parameter("v.balance").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.title != null").literal("title = ").parameter("e.title").endif()
-        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
-        .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(AccountLayout example, AccountLayout values) {
+  public int update(TLayout example, TLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -440,13 +372,10 @@ public class AccountDAO implements ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(AccountLayout values, AccountTable tableOrView,
+  public UpdateWherePhase update(TLayout values, TTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
     if (values.getId() != null) setters.add(new Setter(tableOrView.id, sql.val(values.getId())));
-    if (values.getTitle() != null) setters.add(new Setter(tableOrView.title, sql.val(values.getTitle())));
-    if (values.getCreated() != null) setters.add(new Setter(tableOrView.created, sql.val(values.getCreated())));
-    if (values.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(values.getBalance())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -456,14 +385,14 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeDeletebypk() {
     this.deleteByPK = dyn
-      .literaln("DELETE FROM account")
+      .literaln("DELETE FROM t")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
   }
 
   public int delete(Integer id) {
     if (id == null) return 0;
-    Account filter = new Account();
+    T filter = new T();
     filter.setId(id);
     Parameters params = this.dyn.newParameters();
     params.add("f", filter);
@@ -489,17 +418,14 @@ public class AccountDAO implements ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM account")
+      .literaln("DELETE FROM t")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
-        .if_("e.title != null").literal("title = ").parameter("e.title").endif()
-        .if_("e.created != null").literal("created = ").parameter("e.created").endif()
-        .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(AccountLayout example) {
+  public int delete(TLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -520,27 +446,21 @@ public class AccountDAO implements ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final AccountTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final TTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum AccountOrderBy implements OrderBy {
+  public enum TOrderBy implements OrderBy {
 
     ID("id", true),
-    ID$DESC("id", false),
-    TITLE("title", true),
-    TITLE$DESC("title", false),
-    CREATED("created", true),
-    CREATED$DESC("created", false),
-    BALANCE("balance", true),
-    BALANCE$DESC("balance", false);
+    ID$DESC("id", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private AccountOrderBy(String sqlColumnName, boolean ascending) {
+    private TOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -562,210 +482,42 @@ public class AccountDAO implements ApplicationContextAware {
   static class MetaData {
 
     static final DirectEntityColumnMetaData ID_META_DATA = new DirectEntityColumnMetaData(
-      Name.of("ID", false), "id", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
-    static final DirectEntityColumnMetaData TITLE_META_DATA = new DirectEntityColumnMetaData(
-      Name.of("TITLE", false), "title", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
-    static final DirectEntityColumnMetaData CREATED_META_DATA = new DirectEntityColumnMetaData(
-      Name.of("CREATED", false), "created", "DATE", 10, 0, TypeHandler.forClass(LocalDate.class, TypeSource.STATIC_DIALECT_RULE, "D16"));
-    static final DirectEntityColumnMetaData BALANCE_META_DATA = new DirectEntityColumnMetaData(
-      Name.of("BALANCE", false), "balance", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
+      Name.of("ID", false), "id", "INTEGER", 10, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
 
   }
 
-  public AccountTable newTable() {
-    return new AccountTable();
+  public TTable newTable() {
+    return new TTable();
   }
 
-  public AccountTable newTable(final String alias) {
-    return new AccountTable(alias);
+  public TTable newTable(final String alias) {
+    return new TTable(alias);
   }
 
-  public static class AccountTable extends Table<Account> {
+  public static class TTable extends Table<T> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
-    public final CharEntityColumn title = new CharEntityColumn(this, MetaData.TITLE_META_DATA);
-    public final DateTimeEntityColumn created = new DateTimeEntityColumn(this, MetaData.CREATED_META_DATA);
-    public final NumericEntityColumn balance = new NumericEntityColumn(this, MetaData.BALANCE_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.title, this.created, this.balance);
+      return new AllColumns(this.id);
     }
 
-    AccountTable() {
-      super(null, null, Name.of("ACCOUNT", false), "Table", null, AccountLayout.class, Account.class);
+    TTable() {
+      super(null, null, Name.of("T", false), "Table", null, TLayout.class, T.class);
       initialize();
     }
 
-    AccountTable(final String alias) {
-      super(null, null, Name.of("ACCOUNT", false), "Table", alias, AccountLayout.class, Account.class);
+    TTable(final String alias) {
+      super(null, null, Name.of("T", false), "Table", alias, TLayout.class, T.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
-      super.columns.add(this.title);
-      super.columns.add(this.created);
-      super.columns.add(this.balance);
     }
 
-  }
-
-  // NITRO QUERY: applyMonthlyCharge
-
-  private DynamicModificationQuery query0;
-
-  private void initializeQuery0() {
-    this.query0 = dyn
-      .literal("\n      ")
-      .literal("\n      UPDATE account SET balance = balance - ")
-      .parameter("amount")
-      .literal("\n    ")
-      .endModificationQuery();
-  }
-
-  public int applyMonthlyCharge(Integer amount) {
-    Parameters params = this.dyn.newParameters();
-    params.add("amount", amount);
-    PreparedModificationQuery preparedQuery = this.query0.prepare(params);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
-  }
-
-  // NITRO QUERY: createProjectSequence
-
-  private DynamicModificationQuery query1;
-
-  private void initializeQuery1() {
-    this.query1 = dyn
-      .literal("\n      ")
-      .literal("\n      CREATE SEQUENCE seq_project_")
-      .parameterInjection("suffix")
-      .literal("\n    ")
-      .endModificationQuery();
-  }
-
-  public int createProjectSequence(String suffix) {
-    Parameters params = this.dyn.newParameters();
-    params.add("suffix", suffix);
-    PreparedModificationQuery preparedQuery = this.query1.prepare(params);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      int count = preparedQuery.execute(conn);
-      return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
-  }
-
-  // NITRO SELECT: findSavingAccounts
-
-  private DynamicSelectQuery select0;
-
-  private void initializeSelect0() {
-    this.select0 = dyn
-      .literal("\n      ")
-      .literal("\n      SELECT *\n      FROM account\n      WHERE title LIKE 'SAV%'\n      ")
-      .if_("year != null")
-        .literal("\n        AND year(created) = '")
-        .parameterInjection("year.toString()")
-        .literal("'\n      ")
-      .endif()
-      .literal("\n    ")
-      .endSelectQuery();
-  }
-
-  public final class RowReader0 implements RowReader<Account> {
-
-    private boolean present1 = false;
-    private boolean present2 = false;
-    private boolean present3 = false;
-    private boolean present4 = false;
-
-    @Override
-    public void discoverColumns(ResultSet rs) throws SQLException {
-      ResultSetMetaData m = rs.getMetaData();
-      present1 = false;
-      present2 = false;
-      present3 = false;
-      present4 = false;
-      int n = m.getColumnCount();
-      for (int i = 1; i <= n; i++) {
-        String l = m.getColumnLabel(i);
-        if ("ID".equals(l)) present1 = true;
-        if ("TITLE".equals(l)) present2 = true;
-        if ("CREATED".equals(l)) present3 = true;
-        if ("BALANCE".equals(l)) present4 = true;
-      }
-    }
-
-    @Override
-    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      Account row = applicationContext.getBean(Account.class);
-
-      if (this.present1) {
-        Integer col1 = rs.getInt("ID"); // ID
-        if (rs.wasNull()) col1 = null;
-        row.setId(col1);
-      }
-
-      if (this.present2) {
-        String col2 = rs.getString("TITLE"); // TITLE
-        row.setTitle(col2);
-      }
-
-      if (this.present3) {
-        LocalDate col3 = rs.getObject("CREATED", LocalDate.class); // CREATED
-        row.setCreated(col3);
-      }
-
-      if (this.present4) {
-        Integer col4 = rs.getInt("BALANCE"); // BALANCE
-        if (rs.wasNull()) col4 = null;
-        row.setBalance(col4);
-      }
-
-      return row;
-    }
-
-  };
-
-  public List<Account> findSavingAccounts(Integer year) {
-    Parameters params = this.dyn.newParameters();
-    params.add("year", year);
-    RowReader0 rr = new RowReader0();
-    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(params, rr);
-    logQuery(preparedQuery);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
-      List<Account> rows = preparedQuery.execute(conn);
-      return rows;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
-      }
-    }
   }
 
   // GETTERS
@@ -789,9 +541,6 @@ public class AccountDAO implements ApplicationContextAware {
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
-    this.initializeQuery0();
-    this.initializeQuery1();
-    this.initializeSelect0();
   }
 
   private void logQuery(PreparedQuery preparedQuery) {

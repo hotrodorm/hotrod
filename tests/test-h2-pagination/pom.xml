@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>examples</groupId>
-  <artifactId>hello-nitro</artifactId>
+  <artifactId>test-h2-pagination</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -11,11 +11,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
+    <hotrod.version>5.1.24-SNAPSHOT</hotrod.version>
+<!-- 
+    <h2.version>2.2.224</h2.version>
+ -->
+    <h2.version>1.4.200</h2.version>
   </properties>
 
   <dependencies>
 
-    <dependency>
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
@@ -30,13 +35,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.24-SNAPSHOT</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.2.224</version>
+      <version>${h2.version}</version>
     </dependency>
 
   </dependencies>
@@ -61,9 +66,8 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.24-SNAPSHOT</version>
+        <version>${hotrod.version}</version>
         <configuration>
-          <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
@@ -74,7 +78,7 @@
           <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.2.224</version>
+            <version>${h2.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -84,4 +88,3 @@
   </build>
 
 </project>
-

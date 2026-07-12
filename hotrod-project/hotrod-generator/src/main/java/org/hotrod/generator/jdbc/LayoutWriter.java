@@ -104,8 +104,10 @@ public class LayoutWriter {
     // Signature
 
     w.print("public class " + this.getClassName() + " implements ", Serializable.class);
-    for (String impl : this.metadata.getDaoTag().getImplementsClasses()) {
-      w.print(", ", ExternalClass.of(impl));
+    if (this.metadata.getDaoTag() != null) {
+      for (String impl : this.metadata.getDaoTag().getImplementsClasses()) {
+        w.print(", ", ExternalClass.of(impl));
+      }
     }
     w.println(" {");
 
