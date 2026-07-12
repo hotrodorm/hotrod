@@ -20,7 +20,8 @@ This tag includes the following attribute:
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | `method` | The Java method that will execute this query | Required |
-| `vo` | The VO class that will be generated to represent result set rows of the query. Allowed only for `<select>` tags inside `<dao>` tags, since `<select>` tags inside `<table>` and `<view>` tags always return VOs of the corresponding entity | Optional [^2] |
+| `vo` | Mutually exclusive withe the `type` attribute. The VO class that will be generated to represent result set rows of the query. Allowed only for `<select>` tags inside `<dao>` tags, since `<select>` tags inside `<table>` and `<view>` tags always return VOs of the corresponding entity. See [Hello Nitro](../../guides/hello-nitro.md) for examples | Optional |
+| `type` | Mutually exclusive withe the `vo` attribute. When specified, its value must be 'row'; in this case the query does not model the rows as Layout/Model classes but as a generic org.hotrod.dynamicsql.Row instead. This is useful for highly dynamic queries. Allowed only for `<select>` tags inside `<dao>` tags, since `<select>` tags inside `<table>` and `<view>` tags always return VOs of the corresponding entity. See [Hello Nitro](../../guides/hello-nitro.md) for examples | Optional |
 | `mode` | The fecthing mode that defines how the query result will be represented in Java. Valid options are: `list`, `cursor`, `single-row` [^1] | `list` |
 | `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
 | `sql-injection-enabled` | Enables SQL Injection in this query. When enabled the SQL Injection can be achieved by adding to the query any expression that evaluates to a String in the form `$SQLINJECTION{expression}`| `false` |
