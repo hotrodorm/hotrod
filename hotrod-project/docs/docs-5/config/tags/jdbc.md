@@ -3,7 +3,9 @@
 This tag configures the details of the generated persistence layer. It defines the folder locations,
 packages, and naming convention for the generated DAOs, Layout, and Model classes.
 
-See [Organizing the Persistence Layer](../../guides/organizing-persistence-layer-folders.md) for examples.
+**Note**: See [Organizing the Persistence Layer](../../guides/organizing-persistence-layer-folders.md) for examples.
+
+**Note**: See [Spring Boot 4 Compatibility](#spring-boot-4-compatibility) below.
 
 ## Sub Tags
 
@@ -28,6 +30,18 @@ This tag includes the following attribute:
 | `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as dataSource and LiveSQL beans) when the application uses multiple data sources. Use a different qualifier for each dataSource. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on how to use it | *none* |
 | `qualifier-beans`  | Valid values are `true` or `false`. Indicates that the additional layer related beans (DataSourceProperties, DataSource, and LiveSQL) should be generated in the layer resources bean. These are typically useful in Spring Boot applications; should be turned off for plain Spring apps running in web containers. Only valid when a qualifier is defined | `true` when the qualifier is present, `false` otherwise |
 | `postconstruct`  | Indicates if the @PostConstruct annotations in the DAO use the `javax.annotation.PostConstruct` (valid up to Spring 5.x and Spring Boot 3.x) or the newer `jakarta.annotation.PostConstruct`. When using Spring Boot 4.x use the jakarta option. The valid values are `javax` and `jakarta` | `javax` |
+
+## Spring Boot 4 Compatibility
+
+As stated abote in the `postconstruct` attribute, Spring Boot 4 does not support the javax.annotation.PostConstruct anymore, in favor of jakarta.annotation.PostConstruct.
+
+When running a Spring Boot 4 application make sure the &lt;jdbc> tag specified this compatibility, as in:
+
+```xml
+  <jdbc postconstruct="jakarta">
+```
+
+Without this setting the HotRod layer will be generated with compatibility for Spring Boot 2.x and 3.x only.
 
 ## Default Configuration
 
