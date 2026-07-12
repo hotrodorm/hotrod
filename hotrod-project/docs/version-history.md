@@ -2,6 +2,12 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.24:
+- Nitro:
+    - Added Dynamic Rows in Nitro SELECTs.
+- LiveSQL:
+    - Fixing LiveSQL dialect for H2 version 1.x and 2.x with Oracle mode.
+
 ## 5.1.23:
 - Nitro:
     - Hello DynamicSQL example added.
