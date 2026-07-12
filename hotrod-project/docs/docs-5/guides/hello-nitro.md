@@ -16,6 +16,7 @@ application.properties
 pom.xml
 layer.xml
 schema.sql
+data_feed.csv
 src/main/java
 ```
 
@@ -58,7 +59,7 @@ Create the `pom.xml` file as:
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>5.1.6</version>
+      <version>5.1.24</version>
     </dependency>
 
     <dependency>
@@ -89,7 +90,7 @@ Create the `pom.xml` file as:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>5.1.6</version>
+        <version>5.1.24</version>
         <configuration>
           <configfile>./layer.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
@@ -154,6 +155,15 @@ insert into account (id, title, created, balance) values
   (110, 'SAV2308', '2025-09-15', 45);
 ```
 
+Create the file 'data_feed.csv' with the following content:
+
+```csv
+Type,Y2023,Y2024,Y2025,Y2026
+WTI,71.8,88.1,65.5,105.4
+Brent,73.4,90.2,68.1,106.7
+OPEC,73.1,89.9,67.5,106.1
+```
+
 ### Define the Nitro Queries
 
 Create the `layer.xml` file with:
@@ -204,6 +214,11 @@ Create the `layer.xml` file with:
       WHERE created BETWEEN #{minDate} AND #{maxDate}
     </select>
 
+    <select method="selectDataFeed" type="row">
+      SELECT *
+      FROM csvread('data_feed.csv')
+    </select>
+
   </dao>
 
 </hotrod>
@@ -219,13 +234,15 @@ These four Nitro queries become available to your application in the correspondi
 - ReportingDAO:
     - `public int deleteOldNegativeAccounts()`
     - `public ReportingTotals getTotals(LocalDate minDate, LocalDate maxDate)`
+    - `public List<Row> selectDataFeed()`
 
 A few notes that (you can skip now, but read them later):
 
 1. The `<query>` Nitro methods return an `int` that represent the number of rows affected by the query.
 2. The `<select>` Nitro methods return SQL rows.
     - The `<select>` Nitro methods that belong to a table or view can only return rows of the type of the corresponding table or view.
-    - The `<select>` Nitro methods that belong to a generic `<dao>` tag are free to return any type of row. As such the `vo` must be specified, to create new Layout and Model classes to represent the result set.
+    - The `<select>` Nitro methods that belong to a generic `<dao>` tag are free to return any type of row. As such, the `vo` is typically specified, to create new Layout and Model classes to represent the result set.
+    - Alternatively, if a Nitro &lt;select> produces a highly dynamic result set, it can use a Row class instead; some databases can return queries where the type and number of columns can vary wildly at runtime by the use of pivot functions, dynamic SQL, and other functions (CSVREAD() function in this example).
 3. The `<select>` Nitro methods can return the result in three forms:
     - When using the default mode (`mode="list"`) the method returns a `List<Model>`.
     - When using `mode="cursor"` they return a `Cursor<Model>`.
@@ -330,6 +347,7 @@ public class App {
       demoNitro3();
       demoNitro4();
       demoNitro5();
+      demoNitro6();
     };
   }
 
@@ -358,9 +376,17 @@ public class App {
   }
 
   private void demoNitro5() {
-    DateRange dr = DateRange.of(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 30));
-    ReportingTotals totals = this.reportingDAO.getTotals(dr);
+    LocalDate minDate = LocalDate.of(2025, 9, 1);
+    LocalDate maxDate = LocalDate.of(2025, 9, 30);
+    ReportingTotals totals = this.reportingDAO.getTotals(minDate, maxDate);
     System.out.println("September 2025: " + totals.getCount() + " accounts, $" + totals.getBalance() + " balance.");
+  }
+
+  private void demoNitro6() {
+    List<Row> feedDataRows = this.reportingDAO.selectDataFeed();
+    for (Row r : feedDataRows) {
+      System.out.println("Feed: " + r);
+    }
   }
 
 }
@@ -398,6 +424,9 @@ Saving account:app.persistence.model.Account@7a687d8d
 Created project sequence.
 Deleted a total 0 old account(s).
 September 2025: 2 accounts, $155 balance.
+Feed: {Y2024=88.1, Y2023=71.8, Y2026=105.4, Y2025=65.5, TYPE=WTI}
+Feed: {Y2024=90.2, Y2023=73.4, Y2026=106.7, Y2025=68.1, TYPE=Brent}
+Feed: {Y2024=89.9, Y2023=73.1, Y2026=106.1, Y2025=67.5, TYPE=OPEC}
 ```
 
 Later on, if the database suffers changes that affect your Nitro queries you can just
