@@ -7,6 +7,8 @@ any of the world-class [supported databases](./config/supported-databases.md).
 
 See [What's New](./whats-new.md) in HotRod 5 and the [Version History](../version-history.md).
 
+See [Note on Spring Boot 4 Compatibility](config/tags/jdbc.md#spring-boot-4-compatibility).
+
 ## LiveSQL
 
 LiveSQL can run SELECT, UPDATE, DELETE, and INSERT queries from the most basic syntax to advanced queries. The syntax can include complex predicates, subqueries, CTEs, arithmetic operators, functions, as well as standard SQL constructs such as ordering limiting, aggregation, window functions, union, for update (locking), etc.
