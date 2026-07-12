@@ -155,7 +155,7 @@ insert into account (id, title, created, balance) values
   (110, 'SAV2308', '2025-09-15', 45);
 ```
 
-Create the file 'data_feed.csv' with the following content:
+Create the file `data_feed.csv` with the following content:
 
 ```csv
 Type,Y2023,Y2024,Y2025,Y2026
@@ -312,6 +312,7 @@ package app;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hotrod.dynamicsql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
