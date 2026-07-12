@@ -6,9 +6,21 @@ As a side effect, this release breaks compatibility with previous releases. Cons
 
 ## What's New in HotRod 5.1
 
-### 1. LiveSQL Tuples
+### 1. Support for Spring Boot 4 and Java 25
+
+Ready for Spring Boot 4.x and Java 25. Legacy support is available back to Spring Boot 2.x and Java 8.
+
+### 2. LiveSQL Tuples
 
 LiveSQL [Tuples](./livesql/syntax/tuples.md) select model objects for the tables and views used in a SELECT query. This can be particularly useful when a query joins multiple tables and view, and the application benefits from retrieving multiple separate objects for each retrieved row.
+
+### 3. Nitro Dynamic Rows
+
+Nitro SELECTs can now produce fully dynamic rows, to account for queries that can wildly vary at runtime. This is similar to the generic LiveSQL queries that return org.hotrod.dynamicsql.Row.
+
+### 4. Enhanced Nitro Parameters
+
+Nitro parameters now accept complex parameter types, including generics, arrays, and any combination of them. The JEXL syntax is able to walk them to retrieve and apply any parts of them as necessary.
 
 
 ## What's New in HotRod 5.0
@@ -53,7 +65,7 @@ Any converted column from a table or view can now be used as part of a predicate
 
 The configuration file supports new defaults that are simpler to use with minimal or even no configuration. This is particularly noticeable in the &lt;jdbc> tag that configures the details of the persistence layer.
 
-### 6. Better Separation of Duties
+### 6. Cleaner Separation of Duties in the Persistence Layer
 
 The persistence layer is now reorganized into separate packages to clearly visualize the separation of duties. The following classes are now located by default in separate packages:
 
@@ -97,7 +109,7 @@ Logging of the queries used by the CRUD methods and other DAOs is now available 
 
 This logging is enabled by the normal logging framework specified at the DAO class or method level.
 
-### 13. Previewing LiveSQL
+### 13. Better Previewing in LiveSQL
 
 LiveSQL preview now shows SQL, expanded parameters details, and data types to read each column.
 
