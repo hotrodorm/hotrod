@@ -1,6 +1,6 @@
 # Torcs
 
-Torcs is a powerful tool designed for detecting low query performance within your application. It streamlines the process of gathering statistical data related to query execution, enabling developers and database administrators to pinpoint slow-running queries and understand their impact on application performance. In short, it enhances the ability to maintain high-performance applications by enabling clearer visibility into database operations.
+Torcs is a powerful tool designed for detecting low query performance within your application. It streamlines the process of gathering statistical data related to query execution, enabling developers to pinpoint slow-running queries in their application and to understand their impact in the overall application performance. In short, it enhances the ability to maintain high-performance applications by enabling clearer visibility into the database queries.
 
 Even though it's a part of HotRod, Torcs can be used separatedly without the HotRod ORM, in any Spring or SpringBoot application.
 
@@ -376,7 +376,7 @@ Each database may produce the execution plans in one or more format variations. 
 
 The application can request a different format by adding the `format` parameter when retrieving the plan, as in `getEstimatedExecutionPlan(QueryExecution execution, int format)`. The following table specifies which formats are available for each database:
 
-| Database | Format #0 | Format #1 | Format #2 | Format #3 |
+| Database | Format #0 (default) | Format #1 | Format #2 | Format #3 |
 | -- | -- | -- | -- | -- |
 | Oracle | TYPICAL | BASIC | ALL | -- |
 | DB2 | TREE (db2-custom-2b) | -- | -- | -- |

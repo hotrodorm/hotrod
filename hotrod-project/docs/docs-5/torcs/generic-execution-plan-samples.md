@@ -54,10 +54,10 @@ Note
 
 ## DB2 Execution Plan
 
-DB2 does not offer any generic format for the execution plan. It saves the plan details into a database structure across  
-several tables. 
+DB2 does not offer a generic format to retrieve the execution plans. Instead, it saves the plan details into a database structure across
+several tables.
 
-This plan was retrieved using "db2-custom-2b" format, using a ad-hoc query to retrieve it:
+To visualize the plan in a simple way, Torcs uses custom logic to retrieve its details and to render it in tree form (using the "db2-custom-2b" format). An example of a DB2 plan using this format is shown below:
 
 ```txt
 RETURN
