@@ -1,0 +1,24 @@
+create table t (p int, a int);
+
+insert into t (p, a) values (1, 100);
+insert into t (p, a) values (1, 102);
+insert into t (p, a) values (3, 303);
+insert into t (p, a) values (3, 306);
+insert into t (p, a) values (3, 309);
+
+select first_value(a) over(partition by p order by a) as fv, 
+  last_value(a) over(partition by p order by a) as lv
+from t;
+
+
+Oracle 11g2    - yes
+DB2 11.1       - yes
+PostgreSQL 8.4 - yes
+SQL Server 2017 - yes
+MySQL      8.0  - yes
+MariaDB  10.2   - yes
+Sybase    - no
+H2        2.x - yes 
+HyperSQL  - no
+Derby     - no 
+

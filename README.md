@@ -180,9 +180,9 @@ The following query has parameters and uses Dynamic SQL to assemble the query dy
   WHERE brand like = '%' || #{brandName} || '%'
   <if test="minYear != null">AND year >= #{minYear}</if>
   <choose>
-    <when test="ordering == 1">ORDER BY price</if>
-    <when test="ordering == 2">ORDER BY price DESC</if>
-    <when test="ordering == 3">ORDER BY avg_reviews DESC</if>
+    <when test="ordering == 1">ORDER BY price</when>
+    <when test="ordering == 2">ORDER BY price DESC</when>
+    <when test="ordering == 3">ORDER BY avg_reviews DESC</when>
     <otherwise>ORDER BY purchase_date</otherwise>
   </choose>
 </select>
