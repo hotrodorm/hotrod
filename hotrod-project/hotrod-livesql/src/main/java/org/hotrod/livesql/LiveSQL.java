@@ -40,19 +40,31 @@ import org.hotrod.livesql.expressions.aggregations.ObjectMax;
 import org.hotrod.livesql.expressions.aggregations.ObjectMin;
 import org.hotrod.livesql.expressions.aggregations.Sum;
 import org.hotrod.livesql.expressions.aggregations.SumDistinct;
+import org.hotrod.livesql.expressions.analytics.BinaryFirstValue;
 import org.hotrod.livesql.expressions.analytics.BinaryLag;
+import org.hotrod.livesql.expressions.analytics.BinaryLastValue;
 import org.hotrod.livesql.expressions.analytics.BinaryLead;
+import org.hotrod.livesql.expressions.analytics.BooleanFirstValue;
 import org.hotrod.livesql.expressions.analytics.BooleanLag;
+import org.hotrod.livesql.expressions.analytics.BooleanLastValue;
 import org.hotrod.livesql.expressions.analytics.BooleanLead;
+import org.hotrod.livesql.expressions.analytics.CharFirstValue;
 import org.hotrod.livesql.expressions.analytics.CharLag;
+import org.hotrod.livesql.expressions.analytics.CharLastValue;
 import org.hotrod.livesql.expressions.analytics.CharLead;
+import org.hotrod.livesql.expressions.analytics.DateTimeFirstValue;
 import org.hotrod.livesql.expressions.analytics.DateTimeLag;
+import org.hotrod.livesql.expressions.analytics.DateTimeLastValue;
 import org.hotrod.livesql.expressions.analytics.DateTimeLead;
 import org.hotrod.livesql.expressions.analytics.DenseRank;
 import org.hotrod.livesql.expressions.analytics.NTile;
+import org.hotrod.livesql.expressions.analytics.NumericFirstValue;
 import org.hotrod.livesql.expressions.analytics.NumericLag;
+import org.hotrod.livesql.expressions.analytics.NumericLastValue;
 import org.hotrod.livesql.expressions.analytics.NumericLead;
+import org.hotrod.livesql.expressions.analytics.ObjectFirstValue;
 import org.hotrod.livesql.expressions.analytics.ObjectLag;
+import org.hotrod.livesql.expressions.analytics.ObjectLastValue;
 import org.hotrod.livesql.expressions.analytics.ObjectLead;
 import org.hotrod.livesql.expressions.analytics.Rank;
 import org.hotrod.livesql.expressions.analytics.RowNumber;
@@ -436,6 +448,58 @@ public class LiveSQL {
   }
 
   // Positional Analytic functions
+
+  // === First Value ===
+
+  public NumericFirstValue firstValue(final NumericExpression expression) {
+    return new NumericFirstValue(expression);
+  }
+
+  public CharFirstValue firstValue(final CharExpression expression) {
+    return new CharFirstValue(expression);
+  }
+
+  public DateTimeFirstValue firstValue(final DateTimeExpression expression) {
+    return new DateTimeFirstValue(expression);
+  }
+
+  public BooleanFirstValue firstValue(final Predicate expression) {
+    return new BooleanFirstValue(expression);
+  }
+
+  public BinaryFirstValue firstValue(final BinaryExpression expression) {
+    return new BinaryFirstValue(expression);
+  }
+
+  public ObjectFirstValue firstValue(final ObjectExpression expression) {
+    return new ObjectFirstValue(expression);
+  }
+
+  // === Last Value ===
+
+  public NumericLastValue lastValue(final NumericExpression expression) {
+    return new NumericLastValue(expression);
+  }
+
+  public CharLastValue lastValue(final CharExpression expression) {
+    return new CharLastValue(expression);
+  }
+
+  public DateTimeLastValue lastValue(final DateTimeExpression expression) {
+    return new DateTimeLastValue(expression);
+  }
+
+  public BooleanLastValue lastValue(final Predicate expression) {
+    return new BooleanLastValue(expression);
+  }
+
+  public BinaryLastValue lastValue(final BinaryExpression expression) {
+    return new BinaryLastValue(expression);
+  }
+
+  public ObjectLastValue lastValue(final ObjectExpression expression) {
+    return new ObjectLastValue(expression);
+  }
 
   // === Lead Number ===
 
