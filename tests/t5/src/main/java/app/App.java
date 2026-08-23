@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.persistence.dao.CostDAO;
+import app.persistence.dao.CostDAO.CostTable;
 import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.model.DATALocal;
@@ -74,6 +76,9 @@ public class App {
   @Autowired
   private DATALocalDAO dataLocalDAO;
 
+  @Autowired
+  private CostDAO costDAO;
+
 //  @Autowired
 //  private K1DAO k1DAO;
 
@@ -124,8 +129,10 @@ public class App {
 //      testTx();
 //      testTxLiveSQL();
 //      testNS();
-      testConverters();
+//      testConverters();
 //      testInsert1();
+
+      testFLValues();
 
 //      testInsertSequence();
 //      testInsertIdentity();
@@ -167,20 +174,20 @@ public class App {
     };
   }
 
-  private void testTx() {
-    try {
-      this.beanOps.insertCategories("A", false);
-    } catch (Exception e) {
-      log.info("aborted A.");
-    }
-    try {
-      this.beanOps.insertCategories("B", false);
-    } catch (Exception e) {
-      log.info("aborted B.");
-    }
-//    this.beanOps.insert(true);
-//    this.beanOps.insert2(true);
-  }
+//  private void testTx() {
+//    try {
+//      this.beanOps.insertCategories("A", false);
+//    } catch (Exception e) {
+//      log.info("aborted A.");
+//    }
+//    try {
+//      this.beanOps.insertCategories("B", false);
+//    } catch (Exception e) {
+//      log.info("aborted B.");
+//    }
+////    this.beanOps.insert(true);
+////    this.beanOps.insert2(true);
+//  }
 
 //  private void testTxLiveSQL() {
 //    try {
@@ -205,6 +212,17 @@ public class App {
 //      System.out.println("### r=" + r);
 //    }
 //  }
+
+  private void testFLValues() {
+    CostTable c = this.costDAO.newTable();
+    List<Row> rows = this.sql.select(c.star(), //
+        sql.firstValue(c.amount).over().partitionBy(c.region).orderBy(c.amount).end().as("firstAmount"), //
+        sql.lastValue(c.amount).over().partitionBy(c.region).orderBy(c.amount).end().as("lastAmount") //
+    ).from(c).execute();
+    for (Row r : rows) {
+      System.out.println("### r=" + r);
+    }
+  }
 
   private void testConverters() {
     {

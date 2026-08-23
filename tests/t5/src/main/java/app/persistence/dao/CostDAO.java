@@ -32,12 +32,10 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
-import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
-import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
-import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
+import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
@@ -47,6 +45,7 @@ import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
 import org.springframework.beans.BeansException;
@@ -56,15 +55,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 
-import app.ActiveEnum;
-import app.IntegerActiveConverter;
-import app.persistence.layout.DATALocalLayout;
-import app.persistence.model.DATALocal;
+import app.persistence.layout.CostLayout;
+import app.persistence.model.Cost;
 
 @Component
-public class DATALocalDAO implements ApplicationContextAware {
+public class CostDAO implements ApplicationContextAware {
 
-  private static final Logger log = Logger.getLogger(DATALocalDAO.class.getName());
+  private static final Logger log = Logger.getLogger(CostDAO.class.getName());
 
   private static final LiveSQLLogging livesql_log = LiveSQLLogging.of(
       () -> log.isLoggable(Level.FINE), msg -> log.fine(msg),
@@ -88,26 +85,21 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   private LiveSQLContext context;
 
-  // CONVERTERS
-
-  @Autowired
-  private IntegerActiveConverter converter0;
-
   // ROW READER
 
-  private final RowReader<DATALocal> rowReader = new RowReader<DATALocal>() {
+  private final RowReader<Cost> rowReader = new RowReader<Cost>() {
 
     @Override
-    public DATALocal readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-      DATALocal row = applicationContext.getBean(DATALocal.class);
+    public Cost readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Cost row = applicationContext.getBean(Cost.class);
 
-      String col1 = rs.getString("NAME"); // NAME
-      row.setNAMELocalToCity(col1);
+      Integer col1 = rs.getInt("REGION"); // REGION
+      if (rs.wasNull()) col1 = null;
+      row.setRegion(col1);
 
-      Integer raw2 = rs.getInt("ACTIVE"); // ACTIVE
-      if (rs.wasNull()) raw2 = null;
-      ActiveEnum col2 = converter0.decode(raw2, conn);
-      row.setActive(col2);
+      Integer col2 = rs.getInt("AMOUNT"); // AMOUNT
+      if (rs.wasNull()) col2 = null;
+      row.setAmount(col2);
 
       return row;
     }
@@ -116,53 +108,53 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   // PARSE ROW
 
-  public DATALocal parseRow(Map<String, Object> row) {
+  public Cost parseRow(Map<String, Object> row) {
     return parseRow(row, null, null);
   }
 
-  public DATALocal parseRow(Map<String, Object> row, String prefix) {
+  public Cost parseRow(Map<String, Object> row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public DATALocal parseRow(Map<String, Object> row, String prefix, String suffix) {
-    DATALocal m = applicationContext.getBean(DATALocal.class);
+  public Cost parseRow(Map<String, Object> row, String prefix, String suffix) {
+    Cost m = applicationContext.getBean(Cost.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
-    m.setNAMELocalToCity((String) row.get(p + "NAMELocalToCity" + s));
-    m.setActive((ActiveEnum) row.get(p + "active" + s));
+    m.setRegion(CastUtil.toInteger((Number) row.get(p + "region" + s)));
+    m.setAmount(CastUtil.toInteger((Number) row.get(p + "amount" + s)));
     return m;
   }
 
   // BASELINE
 
-  public class DATALocalBaseline {
+  public class CostBaseline {
 
-    private String NAMELocalToCity;
-    private ActiveEnum active;
+    private Integer region;
+    private Integer amount;
 
-    public String getNAMELocalToCity() {
-      return this.NAMELocalToCity;
+    public Integer getRegion() {
+      return this.region;
     }
 
-    public ActiveEnum getActive() {
-      return this.active;
+    public Integer getAmount() {
+      return this.amount;
     }
 
   }
 
-  public DATALocalBaseline baseline(DATALocal model) {
-    DATALocalBaseline b = new DATALocalBaseline();
-    b.NAMELocalToCity = model.getNAMELocalToCity();
-    b.active = model.getActive();
+  public CostBaseline baseline(Cost model) {
+    CostBaseline b = new CostBaseline();
+    b.region = model.getRegion();
+    b.amount = model.getAmount();
     return b;
   };
 
   // CLONE
 
-  public DATALocal clone(DATALocalLayout layout) {
-    DATALocal m = this.applicationContext.getBean(DATALocal.class);
-    m.setNAMELocalToCity(layout.getNAMELocalToCity());
-    m.setActive(layout.getActive());
+  public Cost clone(CostLayout layout) {
+    Cost m = this.applicationContext.getBean(Cost.class);
+    m.setRegion(layout.getRegion());
+    m.setAmount(layout.getAmount());
     return m;
   };
 
@@ -175,28 +167,28 @@ public class DATALocalDAO implements ApplicationContextAware {
   private void initializeSelectbyexample() {
     this.selectByExample = dyn
       .literaln("SELECT")
-      .literaln("  name,")
-      .literaln("  active")
-      .literaln("FROM data")
+      .literaln("  region,")
+      .literaln("  amount")
+      .literaln("FROM cost")
       .where("AND")
-        .if_("e.NAMELocalToCity != null").literal("name = ").parameter("e.NAMELocalToCity").endif()
-        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
+        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
   }
 
-  public List<DATALocal> select(DATALocalLayout example, DATALocalOrderBy... orderBies) {
+  public List<Cost> select(CostLayout example, CostOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     String ordering = SQLUtil.render(orderBies);
     params.add("ordering", ordering);
-    PreparedSelectQuery<DATALocal> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
+    PreparedSelectQuery<Cost> preparedQuery = this.selectByExample.prepare(params, this.rowReader);
     logQuery(preparedQuery);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
-      List<DATALocal> rows = preparedQuery.execute(conn);
+      List<Cost> rows = preparedQuery.execute(conn);
       return rows;
     } catch (SQLException e) {
       throw new PersistenceException(e);
@@ -209,8 +201,8 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   // SELECT BY CRITERIA
 
-  public CriteriaWherePhase<DATALocal> select(final DATALocalTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<DATALocal>(this.context, from, predicate, this.rowReader, livesql_log);
+  public CriteriaWherePhase<Cost> select(final CostTable from, final Predicate predicate) {
+    return new CriteriaWherePhase<Cost>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
@@ -219,25 +211,25 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   private void initializeInsert() {
     this.insert = dyn
-      .literal("INSERT INTO data")
+      .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("name")
-        .literal("active")
+        .literal("region")
+        .literal("amount")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.NAMELocalToCity", Types.VARCHAR)
-        .parameterNullable("l.active", Types.INTEGER, this.converter0)
+        .parameterNullable("l.region", Types.INTEGER)
+        .parameterNullable("l.amount", Types.INTEGER)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public DATALocal insert(DATALocalLayout layout) {
+  public Cost insert(CostLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
     PreparedInsertQuery preparedQuery = this.insert.prepare(params);
     logQuery(preparedQuery);
-    DATALocal model = this.clone(layout);
+    Cost model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -258,25 +250,25 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   private void initializeInsertbyexample() {
     this.insertByExample = dyn
-      .literal("INSERT INTO data")
+      .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.NAMELocalToCity != null").literal("name").endif()
-        .if_("e.active != null").literal("active").endif()
+        .if_("e.region != null").literal("region").endif()
+        .if_("e.amount != null").literal("amount").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.NAMELocalToCity != null").parameter("e.NAMELocalToCity").endif()
-        .if_("e.active != null").parameter("e.active", this.converter0).endif()
+        .if_("e.region != null").parameter("e.region").endif()
+        .if_("e.amount != null").parameter("e.amount").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public DATALocal insertByExample(DATALocalLayout example) {
+  public Cost insertByExample(CostLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
     logQuery(preparedQuery);
-    DATALocal model = this.clone(example);
+    Cost model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
@@ -299,19 +291,19 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   private void initializeUpdatebyexample() {
     this.updateByExample = dyn
-      .literal("UPDATE data")
+      .literal("UPDATE cost")
       .set()
-        .if_("v.NAMELocalToCity != null").literal("name = ").parameter("v.NAMELocalToCity").endif()
-        .if_("v.active != null").literal("active = ").parameter("v.active", this.converter0).endif()
+        .if_("v.region != null").literal("region = ").parameter("v.region").endif()
+        .if_("v.amount != null").literal("amount = ").parameter("v.amount").endif()
       .endset()
       .where("AND")
-        .if_("e.NAMELocalToCity != null").literal("name = ").parameter("e.NAMELocalToCity").endif()
-        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
+        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int update(DATALocalLayout example, DATALocalLayout values) {
+  public int update(CostLayout example, CostLayout values) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     params.add("v", values);
@@ -333,11 +325,11 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   // UPDATE BY CRITERIA
 
-  public UpdateWherePhase update(DATALocalLayout values, DATALocalTable tableOrView,
+  public UpdateWherePhase update(CostLayout values, CostTable tableOrView,
       final Predicate predicate) {
     List<Setter> setters = new ArrayList<>();
-    if (values.getNAMELocalToCity() != null) setters.add(new Setter(tableOrView.NAMELocalToCity, sql.val(values.getNAMELocalToCity())));
-    if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
+    if (values.getRegion() != null) setters.add(new Setter(tableOrView.region, sql.val(values.getRegion())));
+    if (values.getAmount() != null) setters.add(new Setter(tableOrView.amount, sql.val(values.getAmount())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -349,15 +341,15 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   private void initializeDeletebyexample() {
     this.deleteByExample = dyn
-      .literaln("DELETE FROM data")
+      .literaln("DELETE FROM cost")
       .where("AND")
-        .if_("e.NAMELocalToCity != null").literal("name = ").parameter("e.NAMELocalToCity").endif()
-        .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
+        .if_("e.region != null").literal("region = ").parameter("e.region").endif()
+        .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
       .endwhere()
       .endModificationQuery();
   }
 
-  public int delete(DATALocalLayout example) {
+  public int delete(CostLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
     PreparedModificationQuery preparedQuery = this.deleteByExample.prepare(params);
@@ -378,23 +370,23 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   // DELETE BY CRITERIA
 
-  public DeleteWherePhase delete(final DATALocalTable from, final Predicate predicate) {
+  public DeleteWherePhase delete(final CostTable from, final Predicate predicate) {
     return new DeleteWherePhase(this.context, from, predicate, livesql_log);
   }
 
   // ORDER BY
 
-  public enum DATALocalOrderBy implements OrderBy {
+  public enum CostOrderBy implements OrderBy {
 
-    NAME_LOCAL_TO_CITY("name", true),
-    NAME_LOCAL_TO_CITY$DESC("name", false),
-    ACTIVE("active", true),
-    ACTIVE$DESC("active", false);
+    REGION("region", true),
+    REGION$DESC("region", false),
+    AMOUNT("amount", true),
+    AMOUNT$DESC("amount", false);
 
     private String sqlColumnName;
     private boolean ascending;
 
-    private DATALocalOrderBy(String sqlColumnName, boolean ascending) {
+    private CostOrderBy(String sqlColumnName, boolean ascending) {
       this.sqlColumnName = sqlColumnName;
       this.ascending = ascending;
     }
@@ -415,45 +407,45 @@ public class DATALocalDAO implements ApplicationContextAware {
 
   static class MetaData {
 
-    static final DirectEntityColumnMetaData NAME_LOCAL_TO_CITY_META_DATA = new DirectEntityColumnMetaData(
-      Name.of("NAME", false), "NAMELocalToCity", "CHARACTER VARYING", 20, 0, TypeHandler.forClass(String.class, TypeSource.STATIC_DIALECT_RULE, "D14"));
-    static final TypeHandler<Integer, ActiveEnum> TH0 = TypeHandler.forConverter(new IntegerActiveConverter(), TypeSource.STATIC_DESIGNATED, null);
-    static final ConvertedEntityColumnMetaData<Integer, ActiveEnum> ACTIVE_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("ACTIVE", false), "active", "INTEGER", 32, 0, TH0, TH0.getConverter());
+    static final DirectEntityColumnMetaData REGION_META_DATA = new DirectEntityColumnMetaData(
+      Name.of("REGION", false), "region", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
+    static final DirectEntityColumnMetaData AMOUNT_META_DATA = new DirectEntityColumnMetaData(
+      Name.of("AMOUNT", false), "amount", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
 
   }
 
-  public DATALocalTable newTable() {
-    return new DATALocalTable();
+  public CostTable newTable() {
+    return new CostTable();
   }
 
-  public DATALocalTable newTable(final String alias) {
-    return new DATALocalTable(alias);
+  public CostTable newTable(final String alias) {
+    return new CostTable(alias);
   }
 
-  public static class DATALocalTable extends Table<DATALocal> {
+  public static class CostTable extends Table<Cost> {
 
-    public final CharEntityColumn NAMELocalToCity = new CharEntityColumn(this, MetaData.NAME_LOCAL_TO_CITY_META_DATA);
-    public final ConvertedEntityColumn<Integer, ActiveEnum> active = new ConvertedEntityColumn<>(this, MetaData.ACTIVE_META_DATA);
+    public final NumericEntityColumn region = new NumericEntityColumn(this, MetaData.REGION_META_DATA);
+    public final NumericEntityColumn amount = new NumericEntityColumn(this, MetaData.AMOUNT_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.NAMELocalToCity, this.active);
+      return new AllColumns(this.region, this.amount);
     }
 
-    DATALocalTable() {
-      super(null, null, Name.of("DATA", false), "Table", null, DATALocalLayout.class, DATALocal.class);
+    CostTable() {
+      super(null, null, Name.of("COST", false), "Table", null, CostLayout.class, Cost.class);
       initialize();
     }
 
-    DATALocalTable(final String alias) {
-      super(null, null, Name.of("DATA", false), "Table", alias, DATALocalLayout.class, DATALocal.class);
+    CostTable(final String alias) {
+      super(null, null, Name.of("COST", false), "Table", alias, CostLayout.class, Cost.class);
       initialize();
     }
 
     private void initialize() {
       super.columns = new ArrayList<>();
-      super.columns.add(this.NAMELocalToCity);
-      super.columns.add(this.active);
+      super.columns.add(this.region);
+      super.columns.add(this.amount);
     }
 
   }

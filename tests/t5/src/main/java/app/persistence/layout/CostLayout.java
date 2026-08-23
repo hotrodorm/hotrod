@@ -6,31 +6,31 @@ import java.io.Serializable;
 
 import org.hotrod.json.JSONObject;
 
-public class K1Layout implements Serializable {
+public class CostLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // Layout Properties (table columns)
 
-  protected Byte id = null; // Type Source: STATIC_DIALECT_RULE, rule #D7
-  protected String name = null; // Type Source: STATIC_DIALECT_RULE, rule #D14
+  protected Integer region = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Integer amount = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
 
   // getters & setters
 
-  public Byte getId() {
-    return this.id;
+  public Integer getRegion() {
+    return this.region;
   }
 
-  public void setId(final Byte id) {
-    this.id = id;
+  public void setRegion(final Integer region) {
+    this.region = region;
   }
 
-  public String getName() {
-    return this.name;
+  public Integer getAmount() {
+    return this.amount;
   }
 
-  public void setName(final String name) {
-    this.name = name;
+  public void setAmount(final Integer amount) {
+    this.amount = amount;
   }
 
   // to string
@@ -38,8 +38,8 @@ public class K1Layout implements Serializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name);
+    sb.append("- region=" + this.region + "\n");
+    sb.append("- amount=" + this.amount);
     return sb.toString();
   }
 
@@ -47,8 +47,8 @@ public class K1Layout implements Serializable {
 
   public JSONObject toJSONObject() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
+    obj.addProperty("region", this.region);
+    obj.addProperty("amount", this.amount);
     return obj;
   }
 

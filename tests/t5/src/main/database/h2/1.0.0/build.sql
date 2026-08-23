@@ -95,3 +95,20 @@ create table person (
 insert into person (id, photo) values 
   (1, file_read('data/car.png'));
   
+-- first_value() & last_value()
+  
+create table cost (
+  region int,
+  amount int
+);
+
+insert into cost (region, amount) values
+  (10, 123),
+  (10, 120),
+  (10, 128),
+  (20, 205),
+  (20, 208),
+  (30, 307);
+
+
+  

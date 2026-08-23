@@ -76,11 +76,19 @@
   <table name="k1" />
   <table name="k2" />
 
-  <table name="data" entity="DATALocal">
+  <table name="cost" />
+
+  <table name="data" entity="DATALocal" >
     <column name="name" property="NAMELocalToCity" />
     <column name="active" converter="active_stored_as_int" />
   </table>
 
+<!-- 
+  <table name="data" entity="DATALocal">
+    <column name="name" property="NAMELocalToCity" />
+    <column name="active" converter="active_stored_as_int" />
+  </table>
+ -->
 <!-- 
 
   <table name="t5" />
