@@ -67,6 +67,8 @@ public class Metadata {
   public void load(final HotRodConfigTag config, final Connection conn, Feedback feedback)
       throws ErrorMessageException, FaultException {
 
+    log.fine("ML1");
+
     this.voRegistry = new VORegistry();
 
     ColumnsRetriever cr = null;
@@ -82,6 +84,7 @@ public class Metadata {
 
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
+        log.fine("* Table " + t.getName());
         try {
 
           boolean isFromCurrentCatalog = t.getCatalog() == null
@@ -118,6 +121,7 @@ public class Metadata {
         } catch (StructuredVOAlreadyExistsException e) {
           throw new ErrorMessageException("Duplicate table with name '" + t.getName() + "'.");
         } catch (InvalidConfigurationFileException e) {
+          log.log(Level.SEVERE, "Invalid configuration file", e);
           throw new ErrorMessageException(e.getTag(), "Could not retrieve database meta data");
         }
       }

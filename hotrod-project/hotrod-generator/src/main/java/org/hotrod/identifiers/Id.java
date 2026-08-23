@@ -148,9 +148,9 @@ public class Id implements Comparable<Id> {
     if (javaClassName == null || javaClassName.isEmpty()) {
       throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
     }
-    if (!javaClassName.matches("[A-Z_][A-Za-z0-9_]*")) {
+    if (!javaClassName.matches("[A-Za-z_][A-Za-z0-9_]*")) {
       throw new InvalidIdentifierException(
-          "'javaClassName' must start with an upper case letter or underscore, and continue with letters, digits, or underscores.");
+          "'javaClassName' must start with a letter or underscore, and continue with letters, digits, or underscores.");
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
@@ -171,9 +171,9 @@ public class Id implements Comparable<Id> {
     if (javaMemberName == null || javaMemberName.isEmpty()) {
       throw new InvalidIdentifierException("cannot be null or empty.");
     }
-    if (!javaMemberName.matches("[a-z_][A-Za-z0-9_]*")) {
+    if (!javaMemberName.matches("[A-Za-z_][A-Za-z0-9_]*")) {
       throw new InvalidIdentifierException(
-          "Must start with a lower case letter or underscore, and continue with letters, digits, or underscores.");
+          "Must start with a letter or underscore, and continue with letters, digits, or underscores.");
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
@@ -201,8 +201,8 @@ public class Id implements Comparable<Id> {
     if (javaClassName == null || javaClassName.isEmpty()) {
       throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
     }
-    if (!javaClassName.matches("[A-Z_].*")) {
-      throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
+    if (!javaClassName.matches("[A-Za-z_].*")) {
+      throw new InvalidIdentifierException("'javaClassName' must start with a letter or an underscore.");
     }
 
     TypedSQLName sqlName = new TypedSQLName(typedName);
@@ -235,8 +235,8 @@ public class Id implements Comparable<Id> {
     if (javaClassName == null || javaClassName.isEmpty()) {
       throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
     }
-    if (!javaClassName.matches("[A-Z_].*")) {
-      throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
+    if (!javaClassName.matches("[A-Za-z_].*")) {
+      throw new InvalidIdentifierException("'javaClassName' must start with a letter or an underscore.");
     }
 
     List<NamePart> nameParts = splitSQL(canonicalSQLName);
@@ -265,8 +265,8 @@ public class Id implements Comparable<Id> {
     if (javaMemberName == null || javaMemberName.isEmpty()) {
       throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
     }
-    if (!javaMemberName.matches("[a-z_].*")) {
-      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
+    if (!javaMemberName.matches("[A-Za-z_].*")) {
+      throw new InvalidIdentifierException("'javaMemberName' must start with a letter or an underscore.");
     }
 
     TypedSQLName sqlName = new TypedSQLName(typedName);

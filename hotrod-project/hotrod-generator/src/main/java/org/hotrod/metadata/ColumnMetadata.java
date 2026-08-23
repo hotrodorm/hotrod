@@ -18,6 +18,7 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.identifiers.TypedSQLName;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
+import org.hotrod.metadata.TypeParser.Type;
 import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.JDBCTypes;
@@ -237,13 +238,14 @@ public class ColumnMetadata implements DriverColumnMetaData {
           throw new UnresolvableDataTypeException(cm);
         }
       }
-      ValueRange range = columnTag.getValueRange();
-      if (range == null) {
-        range = PropertyType.getDefaultValueRange(columnTag.getParsedType().toString());
-      }
 
       String javaType = columnTag.getParsedType() != null ? columnTag.getParsedType().toString()
           : columnTag.getConverterTag().getDomainClass();
+
+      ValueRange range = columnTag.getValueRange();
+      if (range == null) {
+        range = PropertyType.getDefaultValueRange(javaType);
+      }
 
       return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range, TypeSource.STATIC_DESIGNATED,
           cm.getColumnTagConverter(), null);

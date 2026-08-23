@@ -2,6 +2,13 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.25:
+
+- LiveSQL:
+    - FIRST_VALUE() and LAST_VALUE() window functions implemented.
+- Core:
+    - Fixing lower and upper case identifiers for entity and property identifiers.
+
 ## 5.1.24:
 - Nitro:
     - Added Dynamic Rows in Nitro SELECTs.

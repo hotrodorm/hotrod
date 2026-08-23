@@ -27,9 +27,7 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.utils.SUtil;
 import org.hotrod.utils.T;
 import org.hotrod.utils.XUtil;
@@ -194,7 +192,7 @@ public class HotRodContext {
       }
       T.endPhase("Facets");
 
-//      log.info("db object scope.");
+      log.fine("db object scope.");
 
       try {
 
@@ -244,18 +242,10 @@ public class HotRodContext {
           log.fine("gen 5");
 
         }
-//        } else { // 3. Create View Strategy
-//
-//          log.fine("gen 6");
-//          this.db = new JdbcDatabase(loc, tables, views);
-//          removeCurrentCatalogSchema(currentCS);
-//          log.fine("gen 7");
-//
-//        }
 
         T.endPhase("DB Meta data obtained.");
 
-        log.fine("gen 8");
+//        log.fine("gen 8");
         this.config.getFacetTables(); // FIXME
         adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
         log.fine("gen 9");
@@ -319,11 +309,15 @@ public class HotRodContext {
       T.endPhase("DB Meta Data Post-processing");
 
       log.fine("gen 10.5");
+
       this.config.getFacetTables();// FIXME
       log.fine("gen 11");
-//      try {
-      metadata.load(config, conn, feedback);
-      log.fine("gen 12");
+
+      try {
+
+        metadata.load(config, conn, feedback);
+        log.fine("gen 12");
+
 //      } catch (InvalidConfigurationFileException e) {
 //        log.fine("gen 13");
 //        SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
@@ -332,15 +326,22 @@ public class HotRodContext {
 //        } else {
 //          throw new ErrorMessageException("\n" + e.getMessage());
 //        }
-//      } catch (FaultException e) {
-//        log.fine("gen 14");
-//        throw new ErrorMessageException(
-//            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
-//      } catch (RuntimeException e) {
-//        throw new ErrorMessageException(
-//            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
-//      }
+      } catch (FaultException e) {
+        log.info("gen 14a");
+        throw new ErrorMessageException(
+            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+      } catch (RuntimeException e) {
+        log.log(Level.SEVERE, "gen 14b", e);
+        throw new ErrorMessageException(
+            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+      } catch (Throwable e) {
+        log.log(Level.SEVERE, "gen 14c", e);
+        throw new ErrorMessageException(
+            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+      }
+
       log.fine("gen 16");
+
       T.endPhase("Facets Post-processing");
 
 //      for (TableDataSetMetadata t : this.metadata.getTables()) {
