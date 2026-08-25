@@ -70,8 +70,8 @@ oldest due date in descending order:
 PaymentTable p = PaymentDAO.newTable("p");
 
 List<Row> rows = this.sql
-    .select(p.clientName, sql.min(p.dueDate), sql.max(p.dueDate))
-    .from(p) 
+    .select(p.clientName, sql.min(p.dueDate).as("minDate"), sql.max(p.dueDate).as("maxDate"))
+    .from(p)
     .where(p.status.eq("UNPAID"))
     .groupBy(p.clientName)
     .orderBy(sql.min(p.dueDate).desc())
@@ -88,5 +88,35 @@ GROUP BY client_name
 ORDER BY min(due_date) desc
 ```
 
-Note the `.orderBy()` method includes an aggregated expression.
+Note the `.orderBy()` method includes an aggregated expression. In fact, it can include any expression that results in sortable values.
+
+## Using Column Aliases
+
+It's also possible to use column aliases in the ORDER BY clause if the database engine accepts it. For example, the query can also be written as:
+
+```java
+List<Row> rows = this.sql
+    .select(p.clientName, sql.min(p.dueDate).as("minDate"), sql.max(p.dueDate).as("maxDate"))
+    .from(p)
+    .where(p.status.eq("UNPAID"))
+    .groupBy(p.clientName)
+    .orderBy(sql.ordering("minDate").desc()) // sort by the column named 'minDate', descending
+    .execute();
+```
+
+## Using Column Ordinals
+
+It's also possible to use column ordinals in the ORDER BY clause if the database engine accepts it. For example, the query can also be written as:
+
+```java
+List<Row> rows = this.sql
+    .select(p.clientName, sql.min(p.dueDate).as("minDate"), sql.max(p.dueDate).as("maxDate"))
+    .from(p)
+    .where(p.status.eq("UNPAID"))
+    .groupBy(p.clientName)
+    .orderBy(sql.ordering(2).desc()) // sort by the second column, descending
+    .execute();
+```
+
+
 
