@@ -355,5 +355,10 @@ All Nitro queries can have parameters that can be directly applied or injected i
 
 See [Nitro Parameters](./nitro-parameters.md) for details.
 
+## 9. SQL Injection Safety
+
+Nitro is always safe from SQL Injection by default. However, some queries can benefit from injecting SQL segments into it.
+
+If your application needs to use this functionality, it must be explicitly enabled on each specific query.
 
 

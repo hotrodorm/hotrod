@@ -12,6 +12,9 @@ See the [Hello CRUD](../guides/hello-crud.md) example to see all CRUD methods de
 
 The data retrieved by the persistence layer is typically modeled with a separate layout and model classes. See [Database Row Modeling](./database-row-modeling.md) for details.
 
+## SQL Injection Safety
+
+CRUD is always safe from SQL Injection. The CRUD methods always apply JDBC parameters, and never concatenate them.
 
 ## The Entity DAOs
 

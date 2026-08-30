@@ -30,9 +30,9 @@ implements a different subset of data types.
 
 ## Scalars
 
-Scalars are plain values such as a number, a String, a date, etc.
+Scalars are plain values that are used in any expression in a SQL query, such as a number, a String, a date, etc.
 
-By default all scalars are included in LiveSQL statements as JDBC parameters, but can also be included inline as plain literal.
+By default LiveSQL includes all scalars in the JDBC statements as query parameters, but it can also include them as plain literals.
 
 
 ### Boxing Scalars
@@ -67,6 +67,9 @@ cache at the same time.
 Literals are available for some numeric, strings, datetime and boolean values.
 See [Literals](./literals.md).
 
+## SQL Injection Safety
+
+All LiveSQL queries in all forms are safe from SQL Injection. Even when trying to use literal scalars the LiveSQL engine uses rules to ensure SQL Injection safety.
 
 ## Operators
 
