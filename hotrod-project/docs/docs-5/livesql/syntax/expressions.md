@@ -28,11 +28,11 @@ Namely:
 [^2]: The list of types is not meant to be exhaustive but to give a good idea of the represented types. Each database
 implements a different subset of data types.
 
-
 ## Scalars
 
-LiveSQL implements a significant subset of the most common SQL operators. The tables below are classified
-by operator type.
+Scalars are plain values such as a number, a String, a date, etc.
+
+By default all scalars are included in LiveSQL statements as JDBC parameters, but can also be included inline as plain literal.
 
 
 ### Boxing Scalars
@@ -45,7 +45,7 @@ hand, will be processed in the Java application and only the result will be sent
 | -- | -- | -- |
 | 123.45 | Literal numeric value | `sql.val(123.45)` |
 | 'abc' | Literal string value | `sql.val("abc")` |
-| TIMESTAMP '2022-10-15 12:34:56' | Literal Timestamp value | `sql.val(<java.sql.Date>)` |
+| TIMESTAMP '2022-10-15 12:34:56' | Literal datetime value | `sql.val(<java.sql.Date>)`, `sql.val(<java.sql.Timestamp>)`, `sql.val(<java.time.LocalDateTime>)` |
 | true | Literal boolean value | `sql.val(true)` |
 | &lt;binary> | Literal binary value | `sql.val(byte[])` |
 | OBJECT | Literal object value | `sql.val(<object>)` |
@@ -60,7 +60,7 @@ section.
 ### Literal Scalars
 
 Sometimes, however, it could be useful to provide literal values to the engine. In this case,
-for example, a value such as `'ACTIVE'` won't be parameterize with a placeholder but will show
+for example, a value such as `'ACTIVE'` won't be parameterized with a placeholder but will show
 up *as is* in the query. This provides more information to the optimizer, while defeating engine
 cache at the same time.
 

@@ -34,14 +34,6 @@ SELECT * FROM employee WHERE salary + bonus >= 75 AND name LIKE 'A%'
 
 Finally, the `execute()` method runs the query and returns the result set as a list of rows.
 
-## LiveSQL Dialects
-
-When assembling a query, LiveSQL automatically generates the appropriate syntax for the database engine in use, making this process completely transparent to developers. While common clauses are largely standardized, allowing for minimal noticeable differences, more significant variations often emerge in advanced or less commonly used clauses.
-
-During application startup, LiveSQL detects the specific database and version for each data source. It then selects the appropriate LiveSQLDialect for each one, which manages all syntax changes behind the scenes during query execution.
-
-Developers can also specify the LiveSQLDialect in the `application.properties` file. This option is useful for those who wish to disable the auto-detection feature and declare the dialect explicitly. This configuration can be set individually for each data source. For more details, see [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md).
-
 ## LiveSQL Statements
 
 LiveSQL supports the four essential DML SQL statements: SELECT, INSERT, UPDATE, and DELETE.
@@ -109,6 +101,15 @@ When updating database rows, LiveSQL supports Optimistic Locking through various
 Additionally, LiveSQL incorporates Pessimistic Locking, which is implemented using row-level locks. These locks are acquired through the FOR UPDATE clause and its variations across different databases. For further information, refer to [Pessimistic Locking](syntax/pessimistic-locking.md).
 
 In the context of pessimistic locking, it is important to note that locks exist only within the boundaries of a database transaction &mdash; specifically, in methods annotated with the `@Transactional` annotation. These locks are automatically released once the transaction ends; therefore, pessimistic locking cannot span multiple transactions.
+
+## LiveSQL Dialects
+
+When assembling a query, LiveSQL automatically generates the appropriate syntax for the database engine in use, making this process completely transparent to developers. While common clauses are largely standardized, allowing for minimal noticeable differences, more significant variations often emerge in advanced or less commonly used clauses.
+
+During application startup, LiveSQL detects the specific database and version for each data source. It then selects the appropriate LiveSQLDialect for each one, which manages all syntax changes behind the scenes during query execution.
+
+Developers can also specify the LiveSQLDialect in the `application.properties` file. This option is useful for those who wish to disable the auto-detection feature and declare the dialect explicitly. This configuration can be set individually for each data source. For more details, see [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md).
+
 
 
 ## Related Functionality

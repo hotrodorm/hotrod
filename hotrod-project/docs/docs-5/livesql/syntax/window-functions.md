@@ -24,8 +24,9 @@ by adding up the `amount` column according to a subgroup and ordering.
 DepositTable d = DepositDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(d.accountId, d.depositDate, d.amount,
-      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end()
+    .select(
+      d.accountId, d.depositDate, d.amount,
+      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate).end()
         .as("total_deposits_to_date")
     )
     .from(d) 
@@ -52,6 +53,7 @@ These are the traditional [Aggregate Functions](./aggregate-functions.md), now e
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
+| `COUNT(<expression>) OVER(...)` | `sql.count(<expression>).over()...` |
 | `SUM(<expression>) OVER(...)` | `sql.sum(<expression>).over()...` |
 | `MIN(<expression>) OVER(...)` | `sql.min(<expression>).over()...` |
 | `MAX(<expression>) OVER(...)` | `sql.max(<expression>).over()...` |
@@ -81,6 +83,8 @@ logic.
 | -- | -- |
 | `LEAD(<expression>, <offset>, <default>) OVER(...)` | `sql.lead(<expression>, <offset>, <default>).over()...` |
 | `LAG(<expression>, <offset>, <default>) OVER(...)` | `sql.lead(<expression>, <offset>, <default>).over()...` |
+| `FIRST_VALUE(<expression>, <offset>, <default>) OVER(...)` | `sql.firstValue(<expression>, <offset>, <default>).over()...` |
+| `LAST_VALUE(<expression>, <offset>, <default>) OVER(...)` | `sql.lastValue(<expression>, <offset>, <default>).over()...` |
 
 
 ## Window Frames and Window Exclusions

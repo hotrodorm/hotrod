@@ -14,7 +14,7 @@ These functions consolidate rows according to the grouping criteria:
 | Aggregate Function | In LiveSQL |
 | -- | -- |
 | `COUNT(*)` | `sql.count()` |
-| `COUNT(<expression>)` | *not implemented* |
+| `COUNT(<expression>)` | `sql.count(<expression>)` |
 | `SUM(<expression>)` | `sql.sum(<expression>)` |
 | `MIN(<expression>)` | `sql.min(<expression>)` |
 | `MAX(<expression>)` | `sql.max(<expression>)` |
