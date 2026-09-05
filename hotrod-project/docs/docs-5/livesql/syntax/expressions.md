@@ -152,8 +152,8 @@ Depending on the scalar, column, or expression the repertoire of available funct
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
 | a IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
 | a NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
-| (a, b, ...) IN ((b, c), (d, e), ...) | IN (tuples list) | `sql.tuple(<a>, <b>).in(sql.tuple(<b>, <c>), sql.tuple(<d>, <e>), ...)` |
-| (a, b, ...) NOT IN ((b, c), (d, e), ...) | NOT IN (tuples list) | `sql.tuple(<a>, <b>).notIn(sql.tuple(<b>, <c>), sql.tuple(<d>, <e>), ...)` |
+| (a, b) IN ((c, d), (e, f), ...) | IN (tuples list) | `sql.tuple(<a>, <b>).in(sql.tuple(<c>, <d>), sql.tuple(<e>, <f>), ...)` |
+| (a, b) NOT IN ((c, d), (e, f), ...) | NOT IN (tuples list) | `sql.tuple(<a>, <b>).notIn(sql.tuple(<c>, <d>), sql.tuple(<e>, <f>), ...)` |
 | a IN (*subquery*) | IN (*subquery*) | `<a>.in(sql.select()...)` |
 | a NOT IN (*subquery*) | NOT IN (*subquery*) | `<a>.notIn(sql.select()...)` |
 | EXISTS (*subquery*) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
@@ -161,6 +161,18 @@ Depending on the scalar, column, or expression the repertoire of available funct
 | CASE WHEN a THEN b END | CASE | `sql.caseWhen(<a>, <b>).end()` |
 | CASE WHEN a THEN b ELSE e END | CASE | `sql.caseWhen(<a>, <b>).elseValue(e).end()` |
 | CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
+
+### Casting Data Types
+
+| SQL Operator | Description | In LiveSQL |
+| -- | -- | -- |
+| CAST (a AS charType) | Casting as Char | `<a>.castChar(<charType>)` |
+| CAST (a AS numericType) | Casting as Numeric | `<a>.castNumeric(<numericType>)` |
+| CAST (a AS dateTimetype) | Casting as DateTime | `<a>.castDateTime(<dateTimeType>)` |
+| CAST (a AS booleanType) | Casting as Boolean | `<a>.castBoolean(<booleanType>)` |
+| CAST (a AS binaryType) | Casting as Binary | `<a>.castBinary(<binaryType>)` |
+| CAST (a AS objectType) | Casting as Object | `<a>.castObject(<objectType>)` |
+
 
 ### Asymmetric Operators
 
