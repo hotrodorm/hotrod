@@ -6,33 +6,45 @@ It utilizes tables, views, and columns &mdash; modeled by the CRUD module &mdash
 
 ## Example
 
-Let’s consider a database table named EMPLOYEE. We can search this table using a custom predicate, as illustrated below:
+Let’s consider the tables INVOICE and CLIENT. We can join these tables, search using predicates, write custom expressions, and more. For example:
 
 ```java
-@Autowired
-private LiveSQL sql;
+List<Tuple2<Invoice, Client>> rows = sql
+  .select(i.star(), c.star(), i.amount.mult(c.discountPct).as("appliedDiscount"))
+  .tuples()
+  .from(i)
+  .join(c, c.id.eq(i.clientId))
+  .where(c.branchName.upper().like("%SOUTH%").and(i.amount.ge(120)))
+  .orderBy(c.id, i.purchaseDate.desc())
+  .execute();
 
-private void searching() {
-  EmployeeTable e = EmployeeDAO.newTable();
-
-  List<Row> rows = this.sql
-    .select()
-    .from(e)
-    .where(a.salary.plus(a.bonus).ge(75).and(e.name.like("A%")))
-    .execute();
+for (Tuple2<Invoice, Client> r : rows) {
+  Invoice inv = r.getA(); // all columns correctly named, cast, typed, and/or converted here
+  Client cli = r.getB();  // same here
+  System.out.println("Invoice: " + inv);
+  System.out.println("Client: " + cli);
+  System.out.println("Applied Discount: " + r.get("appliedDiscount"));
 }
 ```
 
-In the code, the DAO is used to create an instance of the table that will be used within the FROM query clause. Additional instances of the same or other tables &mdash; and/or views &mdash; can be used to define queries with joins.
-
 The table instance allows you to reference the table's columns (e.g., e.name) and to assemble complex expressions for use in the query. Behind the scenes, LiveSQL will construct the query as follows:
 
-
 ```sql
-SELECT * FROM employee WHERE salary + bonus >= 75 AND name LIKE 'A%'
+SELECT i.*, c.*, i.amount * c.discount_pct AS "appliedDiscount"
+FROM invoice i
+JOIN client c ON c.id = i.client_id
+WHERE upper(c.branch_name) LIKE '%SOUTH%' AND i.amount >= 120
+ORDER BY c.id, i.purchase_date DESC;
 ```
 
-Finally, the `execute()` method runs the query and returns the result set as a list of rows.
+Once the LiveSQL query is fully assembled the `execute()` method runs the query and returns the result set as a list of tuples.
+
+LiveSQL queries don't need to include all these sections in the example above. They can also be as simple as:
+
+```java
+Row row = sql.select(sql.currentDate().as("today")).executeOne();
+System.out.println("Today=" + row.get("today"));
+```
 
 ## LiveSQL Statements
 
