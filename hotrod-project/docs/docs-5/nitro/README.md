@@ -44,11 +44,10 @@ The following list summarizes the main features of the Nitro Queries:
 - Nitro queries are exposed to your application as methods, with or without parameters, in the corresponding DAO classes
 - Nitro defines Update queries using the &lt;query> tag and Select queries using the &lt;select> tag
 - Entity Selects are defined in the &lt;table> and &lt;view> tags and can only return model objects corresponding to the table or view they belong to
-- Free Selects are defined in a &lt;dao> tag and are free to return any type of model objects
-- The return type of Nitro Selects &mdash; entity or free &mdash; is always a pair of Layout &amp; Model classes
+- Free Selects are defined in a &lt;dao> tag and are free to return any type of model objects or the generic Row class
 - Nitro queries can include one or more of the Dynamic SQL tags &lt;if>, &lt;choose>, &lt;foreach>, &lt;bind>, &lt;trim>, &lt;where>, and &lt;set>. They combine query sections dynamically at runtime, by evaluating expressions that use the parameters of each query execution
 - Dynamic SQL tags can be nested in many levels as needed. This includes the iterative tag &lt;foreach> that can be used in tandem with the &lt;bind> tag to produce complex iterative query assembling
-- Nitro queries can accept parameters using the &lt;parameter> tag, and these parameters can be used in any Nitro expression. These expressions are written using the JEXL syntax
+- Nitro queries can accept parameters using the &lt;parameter> tag; these can define complex parameter types including arrays and generics. These parameters can be used in any Nitro expression and can be navigated using the JEXL syntax
 - Nitro expressions can be used by any Dynamic SQL tag when assembling the query
 - Nitro expressions can be *applied* to the query using #{expression} or *injected* to it using $SQLINJECTION{expression}
 - Due to security considerations Nitro injection is disabled by default and must be enabled in each query separately, and only when strictly needed
