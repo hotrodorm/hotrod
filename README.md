@@ -102,13 +102,13 @@ List<Row> rows = sql
 
 ## CRUD &mdash; At a Glance
 
-[CRUD](./hotrod-project/docs/docs-5/crud/README.md) offers a straightforward set of database access methods, allowing you to access rows by primary keys, examples, or predicates. This enables the execution of SELECT, UPDATE, INSERT, and DELETE queries on the tables and views in the database schemas.
+[CRUD](./hotrod-project/docs/docs-5/crud/README.md) offers a straightforward set of database access methods, allowing you to access rows by primary key, by example, and by custom predicates. These access methods are available for the operations of SELECT, UPDATE, INSERT, and DELETE on the tables and views present in the database schemas.
 
 To find an employee by primary key, you can use:
 
 
 ```java
-Employee emp = this.employeeDAO.select(134081);
+Employee emp = this.employeeDAO.select(8013);
 ```
 
 Inserting a payment while retrieving the new primary key from the ID column can be accomplished using the following syntax:
@@ -122,7 +122,7 @@ Payment inserted = this.paymentDAO.insert(p);
 System.out.println("ID: " + inserted.getId()); // generated ID
 ```
 
-CRUD can also utilize custom predicates. For instance, you can find all employees in departments 101 and 120 who were hired after January 15, 2024, and have last names ending with "SMITH" using the following query:
+CRUD can also use custom predicates for searching. For instance, you can find all employees in departments 101 and 120 who were hired after January 15, 2024, and have last names ending with "SMITH" using the following query:
 
 
 ```java
@@ -141,14 +141,19 @@ inv.setStatus("PAID");
 int count = this.invoiceDAO.update(inv);
 ```
 
+Deleting an employee by the table's primary key is also simple:
+
+```java
+int count = this.employeeDAO.delete(1244);
+```
 
 ## Nitro &mdash; At a Glance
 
 [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) excels when an application requires complex, non-trivial queries that surpass the capabilities of LiveSQL and CRUD. That is, when you need to:
 
 - Run any SQL statement beyond SELECT, INSERT, UPDATE, and DELETE
-- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to include or exclude query sections according to the runtime parameters
-- Use native SQL extensions available in the specific database, such as custom functions, full text search, rollups, optimizer hints, regular expression matching, etc
+- Use [Dynamic SQL](./hotrod-project/docs/docs-5/nitro/nitro-dynamicsql.md) to include or exclude query segments according to the runtime parameters
+- Use native SQL extensions available in the specific database, such as custom functions, full text search, optimizer hints, regular expression matching, vector searching, etc.
 - Expose long, complex, and tedious queries as simple methods in your app
 - Use pre-existent and well-tested queries "as is" from your application
 
