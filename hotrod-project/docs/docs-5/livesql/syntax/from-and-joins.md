@@ -100,7 +100,7 @@ Most of the time join predicates are equalities: this leads to a special kind of
 
 ## Join Types
 
-LiveSQL implements most types of join, as shown in the table below. Notably, the SQL-89 comma-separated join is not included:
+LiveSQL implements most types of join, as shown in the table below. Notably, the old SQL-89 comma-separated join is intentionally not implemented:
 
 | Join Type | Variation | in LiveSQL | Typical SQL Syntax |
 | -- | -- | -- | -- |
