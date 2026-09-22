@@ -7,9 +7,9 @@ are supported starting in version 4.1.
 
 A LiveSQL query can join many tables, views, and subqueries in a SELECT query.
 
-If the same table or view is used multiple times in a query, they need to be used as different instances, using `newTable()` or `newView()` respectively.
+If the same table or view is used multiple times in a query, they need to be used as different instances, using `newTable()` or `newView()` respectively. This is typically the case of self-referencing joins.
 
-A subquery can only be used multiple times when defined as a CTE (Common Table Expression).
+A typical subquery can only participate once in a SELECT query. However, if the subquery is defined as a CTE (Common Table Expression), then it can appear multiple times in the same SELECT query.
 
 
 ## Example
