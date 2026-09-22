@@ -2,11 +2,11 @@
 
 HotRod 5 is an open-source Object-Relational Mapping (ORM) suite of products designed for Spring and Spring Boot, focused on rapid development and high-performance persistence in relational databases.
 
-## HotRod Products
+## The Suite
 
 As of version 5 the HotRod Suite includes:
 
-- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Start prototyping your application in minutes with the straightforward persistence layer
+- [CRUD](./hotrod-project/docs/docs-5/crud/README.md) &mdash; Start prototyping your application in minutes with traditional persistence methods
 - [LiveSQL](./hotrod-project/docs/docs-5/livesql/README.md) &mdash; Use flexible SQL querying directly from your code with live syntax validation
 - [Nitro](./hotrod-project/docs/docs-5/nitro/README.md) &mdash; Harness the power of native SQL and dynamic SQL when necessary
 - [Torcs](./hotrod-project/docs/docs-5/torcs/README.md) &mdash; Identify slow queries at runtime and retrieve their execution plans
