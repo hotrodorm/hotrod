@@ -3,7 +3,13 @@
 The `FROM` and `JOIN` clauses specify the tables, views, and subqueries where the data of a SELECT query comes from. Subqueries
 are supported starting in version 4.1.
 
-A LiveSQL query can join multiple tables and views in a SELECT query.
+## Cardinality of Tables, Views, and Subqueries
+
+A LiveSQL query can join many tables, views, and subqueries in a SELECT query.
+
+If the same table or view is used multiple times in a query, they need to be used as different instances, using `newTable()` or `newView()` respectively.
+
+A subquery can only be used multiple times when defined as a CTE (Common Table Expression).
 
 
 ## Example
@@ -119,7 +125,7 @@ LiveSQL implements the most common types of join:
 
 
 Joins support subqueries, table expressions, CTEs (plain and recursive), and lateral joins. Tabular functions are not supported. 
-See [Subqueries](./subqueries.md) for details and examples.
+See [Subqueries](./subqueries.md) for examples on lateral joins.
 
 **Note**: Since the exact SQL Syntax may vary from database to database, LiveSQL adapts it automatically behind the scenes for each specific database.
 
