@@ -103,9 +103,11 @@ LiveSQL implements the most common types of join:
 | INNER JOIN | *theta-join* | `join(t, predicate)` | `JOIN t ON predicate` |
 | INNER JOIN | USING | `join(t, column...)` | `JOIN t USING (column...)` |
 | INNER JOIN | NATURAL | `naturalJoin(t)` | `NATURAL JOIN t` |
+| INNER JOIN | LATERAL | `joinLateral(subquery)` | `JOIN LATERAL (subquery)` |
 | LEFT JOIN | *theta-join* | `leftJoin(t, predicate)` | `LEFT JOIN t ON predicate` |
 | LEFT JOIN | USING | `leftJoin(t, column...)` | `LEFT JOIN t USING (column...)` |
 | LEFT JOIN | NATURAL | `naturalLeftJoin(t)` | `NATURAL LEFT JOIN t` |
+| LEFT JOIN | LATERAL | `leftJoinLateral(subquery)` | `LEFT JOIN LATERAL (subquery)` |
 | RIGHT JOIN | *theta-join* | `rightJoin(t, predicate)` | `RIGHT JOIN t ON predicate` |
 | RIGHT JOIN | USING | `rightJoin(t, column...)` | `RIGHT JOIN t USING (column...)` |
 | RIGHT JOIN | NATURAL | `naturalRightJoin(t)` | `NATURAL RIGHT JOIN t` |
@@ -116,7 +118,7 @@ LiveSQL implements the most common types of join:
 | UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
 
-Joins support subqueries, table expressions, CTEs (plain and recursive), and lateral joins. Tabular functions are not yet supported. 
+Joins support subqueries, table expressions, CTEs (plain and recursive), and lateral joins. Tabular functions are not supported. 
 See [Subqueries](./subqueries.md) for details and examples.
 
 **Note**: Since the exact SQL Syntax may vary from database to database, LiveSQL adapts it automatically behind the scenes for each specific database.
