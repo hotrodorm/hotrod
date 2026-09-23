@@ -88,17 +88,21 @@ be nested in multiple levels as needed.
 
 ## Return a List, a Single Row, or a Cursor
 
-The LiveSQL example above ends with the `.execute()` method that executes
-the query to return a list of rows (or entities in the case of the Select by Criteria).
+The LiveSQL example above ends with the `.execute()` method that executes the query to return a materialized list of rows.
 
-However, a LiveSQL SELECT query can have three ways of returning its result:
+LiveSQL can also return a single row or a stream of rows. Therefore, a generic SELECT can take three forms:
 
 - *List&lt;Row&gt; execute()*
 - *Row executeOne()*
 - *Cursor&lt;Row&gt; executeCursor()*
 
-These methods have a corresponding form for entities. For example, if the `InvoiceDAO` object is 
-used to handle the table INVOICE persistence, these methods are included in it as:
+Tuples SELECT have corresponding methods. For example, a join of the three tables CLIENT, PAYMENT, and BRANCH will return:
+
+- *List&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; execute()*
+- *Tuple3&lt;Client, Payment, Branch&gt; executeOne()*
+- *Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()*
+
+Finally, entity selects implement a simplified version of tuples. For example, selecting from the table INVOICE can be done with the folowing entity selects:
 
 - *List&lt;Invoice&gt; execute()*
 - *Invoice executeOne()*
@@ -118,7 +122,7 @@ not return more than one row.
 
 If the query returns two or more rows, a `TooManyResultsException` exception is thrown.
 
-## Returning a Cursor
+### Returning a Cursor
 
 The `executeCursor()` method avoids materializing the whole result set at once into a `java.util.List` and instead
 uses buffering to read rows one at a time. This strategy can drastically reduce the memory consumption of 
@@ -136,6 +140,7 @@ Using a cursor, the example above takes the form:
 @Autowired
 private LiveSQL sql;
 
+@Transactional
 private void searching() {
   EmployeeTable e = EmployeeDAO.newTable();
 
@@ -152,8 +157,8 @@ private void searching() {
 }
 ```
 
-**Important Note**: Cursors typically can only be accessed inside the database transaction. This means that as soon as the outermost
+**Important Note**: Cursors typically can be only accessed inside a database transaction. This means that as soon as the outermost
 Spring method annotated with `@Transactional` ends, the cursor is automatically closed and cannot be read
-anymore. You need to keep this in mind in case a method returns a `Cursor<Row>`, so it's always returned to
+anymore. You need to keep this in mind in case a method returns a `Cursor<T>`, so it's always returned to
 an enclosing method within the boundaries of the database transaction.
 
