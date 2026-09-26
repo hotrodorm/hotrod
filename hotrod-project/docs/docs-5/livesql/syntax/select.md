@@ -1,10 +1,30 @@
 # The SELECT Statement
 
-SELECT statements retrieve data from a table or view in the database.
+The LiveSQL SELECT statement retrieves data from a table or view in the database.
 
-## A Basic Example
+Its main features include:
 
-The following example retrieves all employees whose name starts with the letter A:
+- Numeric, char, date, time, boolean, and binary literals and combined expressions
+- All traditional SELECT clauses such as FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, OFFSET, LIMIT, etc.
+- Aggregation Operations, including Window Functions
+- Subqueries
+- Set Operators
+- Predefined function and custom functions
+- Common Table Expressions, including recursive ones
+- Assymetric Operators
+- Row Locking
+
+## A Basic SELECT Example
+
+The following example shows three ways of selecting the from a table according to a search criteria: employees whose name starts with the letter A.
+
+They trade simplicity for flexibility and can be a great fit for different use cases.
+
+### 1. General Form
+
+The general form is the most flexible one and can combine multiple tables (or none at all), and can include the full set of LiveSQL clauses described below. All expressions are valid, simple or complex, and their type is resolved at runtime.
+
+The result set is represented by a `Row` object:
 
 ```java
 @Autowired
@@ -21,13 +41,65 @@ private void searching() {
     .execute();
 
   for (Row r : rows) {
-    System.out.println("employee: " + r);
+    System.out.println("Employee ID: " + r.get("id"));
   }
 
 }
 ```
 
-The syntax includes the SELECT clauses with search criteria, joins, etc.
+### 2. Entities
+
+The second form is the simplest one. It's tailored to select rows from a single table or view. It cannot include extra columns and cannot do aggregations.
+
+The result set is represented by the exact entity classes it models, with all data types and conversions resolved according to the persistence layer.
+
+```java
+@Autowired
+private LiveSQL sql;
+
+private void searching() {
+
+  EmployeeTable e = EmployeeDAO.newTable();
+
+  List<Employee> emps = this.sql
+    .select(e, e.name.like("A%"))
+    .execute();
+
+  for (Employee e : emps) {
+    System.out.println("Employee ID: " + e.get("id"));
+  }
+
+}
+```
+
+### 3. Entity Tuples
+
+The third form shines when joining multiple tables or views, since it's particularly good at representing the result of joins as fully separate tuples. This form can also include extra columns; it cannot do aggregations, however.
+
+The result set is represented by a tuple of the entity classes it includes, with all data types and conversions resolved according to the persistence layer.
+
+```java
+@Autowired
+private LiveSQL sql;
+
+private void searching() {
+
+  EmployeeTable e = EmployeeDAO.newTable();
+
+  List<Tuple1<Employee>> tuples = this.sql
+    .select()
+    .tuples()
+    .from(e)
+    .where(e.name.like("A%"))
+    .execute();
+
+  for (Tuple1<Employee> t : tuples) {
+    Employee emp = t.getA(); // The tuples are named A, B, C, etc.
+    System.out.println("Employee ID: " + emp.getId());
+  }
+
+}
+```
 
 ## The SELECT Clauses
 
@@ -58,7 +130,7 @@ EmployeeTable e = this.employeeDAO.newTable();
 List<Tuple2<Employee, Branch>> rows = this.sql
     .select(e.star(), b.star(),
       sql.caseWhen(b.region.eq("main"), "Senior ").elseValue("").end()
-         .convat(b.title).as("title")
+         .concat(b.title).as("title")
     )
     .tuples() // here the magic starts
     .from(e)
@@ -92,21 +164,21 @@ The LiveSQL example above ends with the `.execute()` method that executes the qu
 
 LiveSQL can also return a single row or a stream of rows. Therefore, a generic SELECT can take three forms:
 
-- *List&lt;Row&gt; execute()*
-- *Row executeOne()*
-- *Cursor&lt;Row&gt; executeCursor()*
+- List&lt;Row&gt; execute()
+- Row executeOne()
+- Cursor&lt;Row&gt; executeCursor()
 
 Tuples SELECT have corresponding methods. For example, a join of the three tables CLIENT, PAYMENT, and BRANCH will return:
 
-- *List&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; execute()*
-- *Tuple3&lt;Client, Payment, Branch&gt; executeOne()*
-- *Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()*
+- List&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; execute()
+- Tuple3&lt;Client, Payment, Branch&gt; executeOne()
+- Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()
 
 Finally, entity selects implement a simplified version of tuples. For example, selecting from the table INVOICE can be done with the folowing entity selects:
 
-- *List&lt;Invoice&gt; execute()*
-- *Invoice executeOne()*
-- *Cursor&lt;Invoice&gt; executeCursor()*
+- List&lt;Invoice&gt; execute()
+- Invoice executeOne()
+- Cursor&lt;Invoice&gt; executeCursor()
 
 ### Returning a List
 
