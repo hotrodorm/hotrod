@@ -128,7 +128,7 @@ Different database place nulls before or after other values in a column, and thi
 
 If the database supports it, we can ensure that a query sort nulls last we can use `.nullsLast()` as shown below:
 
-```
+```java
 List<Row> rows = this.sql
     .select()
     .from(p)
@@ -138,7 +138,7 @@ List<Row> rows = this.sql
 
 If the database does not accept NULLS LAST, it's still possible to produce this ordering in a more involved way. For example, to do this in SQL Server &mdash; that does not implement NULLS LAST natively &mdash; you can do:
 
-```
+```java
 List<Row> rows = this.sql
     .select()
     .from(p)
