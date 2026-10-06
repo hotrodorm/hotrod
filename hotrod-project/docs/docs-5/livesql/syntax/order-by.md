@@ -142,7 +142,7 @@ If the database does not accept NULLS LAST, it's still possible to produce this 
 List<Row> rows = this.sql
     .select()
     .from(p)
-    .orderBy(sql.caseWhen(p.dueDate.isNull(), 1).elseValue(0).end, p.dueDate)
+    .orderBy(sql.caseWhen(p.dueDate.isNull(), 1).elseValue(0).end(), p.dueDate)
     .execute();
 ```
 
