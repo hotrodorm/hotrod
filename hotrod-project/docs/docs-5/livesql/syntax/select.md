@@ -47,7 +47,7 @@ private void searching() {
 }
 ```
 
-### 2. Entities
+### 2. Selecting Entities
 
 The second form is the simplest one. It's tailored to select rows from a single table or view. It cannot include extra columns and cannot do aggregations.
 
@@ -72,7 +72,7 @@ private void searching() {
 }
 ```
 
-### 3. Entity Tuples
+### 3. Selecting Entity Tuples
 
 The third form shines when joining multiple tables or views, since it's particularly good at representing the result of joins as fully separate tuples. This form can also include extra columns; it cannot do aggregations, however.
 
@@ -101,27 +101,10 @@ private void searching() {
 }
 ```
 
-## The SELECT Clauses
+Although the example above returns a single tuple, the example shown below includes:
 
-The SELECT statement has several clauses that are described separately:
-
-- [The WITH Clause](./with.md)
-- [The SELECT List](./select-list.md)
-- [The DISTINCT ON Clause](./distinct-on.md)
-- [The FROM and JOIN Clauses](./from-and-joins.md)
-- [Selecting Without A FROM Clause](./selecting-without-a-from-clause.md)
-- [The WHERE Clause](./where.md)
-- [The GROUP BY Clause](./group-by.md)
-- [The HAVING Clause](./having.md)
-- [The ORDER BY Clause](./order-by.md)
-- [The OFFSET Clause](./offset.md)
-- [The LIMIT Clause](./limit.md)
-- [The FOR UPDATE &amp; FOR SHARE Clauses](./pessimistic-locking.md)
-- [The UNION/INTERSECT/EXCEPT [ALL] Clauses](./set-operators.md)
-
-## Selecting Tuples
-
-LiveSQL can also select separate tuples for tables and views included in a SELECT query. For example, the following query retrieves multiple model objects per row, in addition to on-the-fly extra columns:
+- Multiple entitites
+- Extra columns
 
 ```java
 BranchTable b = this.branchDAO.newTable();
@@ -148,7 +131,25 @@ for (Tuple2<Employee, Branch> r : rows) {
 }
 ```
 
-See [Tuples](./tuples.md) for details.
+See [LiveSQL Tuples](./tuples.md) for details.
+
+## The SELECT Clauses
+
+The SELECT statement has several clauses that are described separately:
+
+- [The WITH Clause](./with.md)
+- [The SELECT List](./select-list.md)
+- [The DISTINCT ON Clause](./distinct-on.md)
+- [The FROM and JOIN Clauses](./from-and-joins.md)
+- [Selecting Without A FROM Clause](./selecting-without-a-from-clause.md)
+- [The WHERE Clause](./where.md)
+- [The GROUP BY Clause](./group-by.md)
+- [The HAVING Clause](./having.md)
+- [The ORDER BY Clause](./order-by.md)
+- [The OFFSET Clause](./offset.md)
+- [The LIMIT Clause](./limit.md)
+- [The FOR UPDATE &amp; FOR SHARE Clauses](./pessimistic-locking.md)
+- [The UNION/INTERSECT/EXCEPT [ALL] Clauses](./set-operators.md)
 
 ## Subqueries
 
