@@ -161,29 +161,30 @@ be nested in multiple levels as needed.
 
 ## Return a List, a Single Row, or a Cursor
 
-The LiveSQL example above ends with the `.execute()` method that executes the query to return a materialized list of rows.
+The LiveSQL example above ends with the `.execute()` method that executes the query to return a materialized list of rows. LiveSQL can also return a single row or a stream of rows.
 
-LiveSQL can also return a single row or a stream of rows. Therefore, a generic SELECT can take three forms:
+The general form of a LiveSQL SELECT query can take three forms, accordingly:
 
 - List&lt;Row&gt; execute()
 - Row executeOne()
 - Cursor&lt;Row&gt; executeCursor()
 
-Tuples SELECT have corresponding methods. For example, a join of the three tables CLIENT, PAYMENT, and BRANCH will return:
-
-- List&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; execute()
-- Tuple3&lt;Client, Payment, Branch&gt; executeOne()
-- Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()
-
-Finally, entity selects implement a simplified version of tuples. For example, selecting from the table INVOICE can be done with the folowing entity selects:
+Selecting entities in LiveSQL also offers the three forms. For example, selecting from the table INVOICE can be done as:
 
 - List&lt;Invoice&gt; execute()
 - Invoice executeOne()
 - Cursor&lt;Invoice&gt; executeCursor()
 
+Selecting entity tuples also implements all three forms. For example, a join of the three tables CLIENT, PAYMENT, and BRANCH will return:
+
+- List&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; execute()
+- Tuple3&lt;Client, Payment, Branch&gt; executeOne()
+- Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()
+
+
 ### Returning a List
 
-The main method `execute()` retrieves a fully materialized complete list of rows into the application memory. This is the most common use of SELECT queries
+The main method `.execute()` retrieves a fully materialized complete list of rows into the application memory. This is the most common use of SELECT queries
 when the number of returned rows is small or medium size at the most. Materializing a big list in memory can negatively impact your application. If a query returns
 a massive number of rows, consider returning a *Cursor*, as shown below.
 
