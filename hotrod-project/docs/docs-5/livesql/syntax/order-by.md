@@ -124,9 +124,9 @@ List<Row> rows = this.sql
 
 ## Sorting Nulls
 
-Different database place nulls before or after other values in a column, and this behavior may or may not correspond to the desired results of a query.
+Different databases place nulls before or after other values in a column, and this behavior may or may not correspond to the desired results of your query.
 
-If the database supports it, we can ensure that a query sort nulls last we can use `.nullsLast()` as shown below:
+For example, if the database supports it, we can ensure that a query sort nulls last we can use `.nullsLast()` as shown below:
 
 ```java
 List<Row> rows = this.sql
