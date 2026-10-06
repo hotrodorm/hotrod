@@ -8,7 +8,7 @@ expression is a typical LiveSQL expression that is decorated with extra ordering
 
 ## Ordering Features
 
-The ordering of rows can be specified with virtually any [^1] LiveSQL expression qualified with an 
+The ordering of rows can be specified with virtually any [^1] LiveSQL expression qualified with an
 ordering. Additionally each expression can specify the behavior of nulls. In short these ordering
 expressions include:
 
@@ -16,17 +16,21 @@ expressions include:
 on them. The most common restrictions affect values that do not have inherent ordering such as images, 
 UUIDs, arrays, etc., or values that are too large and impractical for this purpose.
 
-- Ascending or descending ordering (required).
+- Ascending or descending ordering (optional, defaults to ascending).
 - Location of nulls in the ordering domain (optional).
 
-To sort in ascending order qualify the expression with `.asc()`. If a descending order is needed then the 
-expression needs to be qualified with the `.desc()`. This tells LiveSQL that the expression should be
+### Ascending or Descending
+
+By default the expressions sorts in ascending order. If a descending order is needed then the expression needs to be qualified with the `.desc()`. This tells LiveSQL that the expression should be
 sorted in reverse order.
 
-Nulls, on the other hand, are treated in special ways; they can be considered below or above any value in the
-database. Unfortunately, each database implements the sorting of nulls in a different way, and this behavior 
-may not correspond to the requirements of your specific query. In case it doesn't, LiveSQL implements the methods
-`nullsFirst()` and `nullsLast()` to clearly establish this ordering.
+### Nulls
+
+Nulls &mdash; on the other hand &mdash; are treated differently by different databases. Some place them them before all other values, some place them after. Some database offer the ability to change this default sorting order, some of them don't.
+
+LiveSQL includes the methods `.nullsFirst()` and `.nullsLast()` to specify the desired ordering of nulls, but each database may or may not accept or honor this clause.
+
+Nevertheless, sorting nulls in the desired way is always possible. This usually requires the use of expressions to convert of nulls into specific values during sorting or to add extra sorting columns in the query. These solutions certainly work, but can make the query more verbose than intended and may also have performance implications. See [Sorting Nulls](#sorting-nulls) below.
 
 
 ## Example
@@ -38,7 +42,7 @@ PaymentTable p = PaymentDAO.newTable("p");
 
 List<Row> rows = this.sql
     .select()
-    .from(p) 
+    .from(p)
     .where(p.status.eq("UNPAID"))
     .orderBy(p.clientName.asc(), p.dueDate.desc())
     .execute();
@@ -118,5 +122,29 @@ List<Row> rows = this.sql
     .execute();
 ```
 
+## Sorting Nulls
 
+Different database place nulls before or after other values in a column, and this behavior may or may not correspond to the desired results of a query.
+
+If the database supports it, we can ensure that a query sort nulls last we can use `.nullsLast()` as shown below:
+
+```
+List<Row> rows = this.sql
+    .select()
+    .from(p)
+    .orderBy(p.dueDate.nullsLast())
+    .execute();
+```
+
+If the database does not accept NULLS LAST, it's still possible to produce this ordering in a more involved way. For example, to do this in SQL Server &mdash; that does not implement NULLS LAST natively &mdash; you can do:
+
+```
+List<Row> rows = this.sql
+    .select()
+    .from(p)
+    .orderBy(sql.caseWhen(p.dueDate.isNull(), 1).elseValue(0).end, p.dueDate)
+    .execute();
+```
+
+As you can see the ORDER BY clause becomes less simple to write and to debug. However, it does solve the problem. Nulls are effectively sorted last in this case.
 
