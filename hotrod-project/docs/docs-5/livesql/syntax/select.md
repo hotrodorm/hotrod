@@ -25,7 +25,7 @@ They trade simplicity for flexibility and can be a great fit for different use c
 
 The general form of a LiveSQL SELECT returns Row objects and is the most flexible one.
 
-It can combine multiple tables (or none at all) and can include the full set of LiveSQL clauses described below, including aggregations, CTEs (plain or recursive), computed columns, etc.
+It can combine multiple tables (or none at all) and can include the full set of LiveSQL clauses described below, including aggregations, subqueries, set operators UNION/INTERSECT/EXCEPT, CTEs (plain or recursive), computed columns, etc.
 
 ```java
 @Autowired
@@ -50,7 +50,7 @@ private void searching() {
 
 ### 2. Selecting Entities
 
-The second form is the simplest one. It's tailored to select rows from a single table or view. It cannot include extra columns and cannot do aggregations.
+The second form is the simplest one. It's tailored to select rows from a single table or view, and can include filtering, and ordering, limiting, and locking. It cannot include extra columns and cannot do subqueries, aggregations or set operators.
 
 The result set is represented by the exact entity classes it models, with all data types and conversions resolved according to the persistence layer.
 
@@ -75,7 +75,7 @@ private void searching() {
 
 ### 3. Selecting Entity Tuples
 
-The third form shines when joining multiple tables or views since it's particularly good at representing the result of joins as fully separate tuples. This form can also include extra columns; it cannot do aggregations, however.
+The third form shines when joining multiple tables or views since it's particularly good at representing the result of joins as fully separate tuples. It can include extra columns, filtering, ordering, limiting, and locking. It cannot include subqueries, aggregations or set operators.
 
 The result set is represented by a tuple of the entity classes it includes, with all data types and conversions resolved according to the persistence layer.
 
@@ -160,7 +160,7 @@ an upper level query that processes them accordingly; as subqueries SELECT claus
 be nested in multiple levels as needed.
 
 
-## Return a List, a Single Row, or a Cursor
+## Returning a List, a Single Row, or a Cursor
 
 The `.execute()` method returns a materialized list of rows since this is the most common use case. However, all three forms of LiveSQL SELECTs can also return a single row or a stream of rows, as shown below:
 
@@ -183,13 +183,13 @@ Selecting entity tuples also implements all three forms. For example, a join of 
 - Cursor&lt;Tuple3&lt;Client, Payment, Branch&gt;&gt; executeCursor()
 
 
-### Returning a List
+### 1. Returning a List
 
 The main method `.execute()` retrieves a fully materialized complete list of rows into the application memory. This is the most common use of SELECT queries
 when the number of returned rows is small or medium size at the most. Materializing a big list in memory can negatively impact your application. If a query returns
 a massive number of rows, consider returning a *Cursor*, as shown below.
 
-### Returning a Single Row
+### 2. Returning a Single Row
 
 The method `.executeOne()` returns a single row from the database. This means that LiveSQL expects to receive
 zero or one row at the most from the query. It's the developer responsibility to ensure the SELECT query does
@@ -197,7 +197,7 @@ not return more than one row.
 
 If the query returns two or more rows, a `TooManyResultsException` exception is thrown.
 
-### Returning a Cursor
+### 3. Returning a Cursor
 
 The `.executeCursor()` method avoids materializing the whole result set at once into a `java.util.List` and instead
 uses buffering to read rows one at a time. This strategy can drastically reduce the memory consumption of 
