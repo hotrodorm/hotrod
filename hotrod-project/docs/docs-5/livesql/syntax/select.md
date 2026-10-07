@@ -7,11 +7,10 @@ Its main features include:
 - Numeric, char, date, time, boolean, and binary literals and combined expressions
 - All traditional SELECT clauses such as FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, OFFSET, LIMIT, etc.
 - Aggregation Operations, including Window Functions
-- Subqueries
-- Set Operators
-- Predefined function and custom functions
+- Subqueries and Assymetric Operators
+- Set Operators UNION, INTERSECT, and EXCEPT [ALL]
+- Predefined functions and custom functions
 - Common Table Expressions, including recursive ones
-- Assymetric Operators
 - Row Locking
 
 ## A Basic SELECT Example
@@ -22,9 +21,9 @@ They trade simplicity for flexibility and can be a great fit for different use c
 
 ### 1. General Form
 
-The general form is the most flexible one and can combine multiple tables (or none at all), and can include the full set of LiveSQL clauses described below. All expressions are valid, simple or complex, and their type is resolved at runtime.
+The general form of a LiveSQL SELECT returns Row objects and is the most flexible.
 
-The result set is represented by a `Row` object:
+It can combine multiple tables (or none at all) and can include the full set of LiveSQL clauses described below. All expressions are valid, simple or complex, and their type is resolved at runtime.
 
 ```java
 @Autowired
@@ -74,7 +73,7 @@ private void searching() {
 
 ### 3. Selecting Entity Tuples
 
-The third form shines when joining multiple tables or views, since it's particularly good at representing the result of joins as fully separate tuples. This form can also include extra columns; it cannot do aggregations, however.
+The third form shines when joining multiple tables or views since it's particularly good at representing the result of joins as fully separate tuples. This form can also include extra columns; it cannot do aggregations, however.
 
 The result set is represented by a tuple of the entity classes it includes, with all data types and conversions resolved according to the persistence layer.
 
@@ -104,7 +103,7 @@ private void searching() {
 Although the example above returns a single tuple, the example shown below includes:
 
 - Multiple entitites
-- Extra columns
+- Extra computed columns
 
 ```java
 BranchTable b = this.branchDAO.newTable();
@@ -161,9 +160,9 @@ be nested in multiple levels as needed.
 
 ## Return a List, a Single Row, or a Cursor
 
-The LiveSQL example above ends with the `.execute()` method that executes the query to return a materialized list of rows. LiveSQL can also return a single row or a stream of rows.
+The `.execute()` method returns a materialized list of rows since this is the most common use case. However, all three forms of LiveSQL SELECTs can also return a single row or a stream of rows, as shown below:
 
-The general form of a LiveSQL SELECT query can take three forms, accordingly:
+The general form of a LiveSQL SELECT query can take the forms:
 
 - List&lt;Row&gt; execute()
 - Row executeOne()
@@ -190,7 +189,7 @@ a massive number of rows, consider returning a *Cursor*, as shown below.
 
 ### Returning a Single Row
 
-The method `executeOne()` returns a single row from the database. This means that LiveSQL expects to receive
+The method `.executeOne()` returns a single row from the database. This means that LiveSQL expects to receive
 zero or one row at the most from the query. It's the developer responsibility to ensure the SELECT query does
 not return more than one row.
 
@@ -198,7 +197,7 @@ If the query returns two or more rows, a `TooManyResultsException` exception is 
 
 ### Returning a Cursor
 
-The `executeCursor()` method avoids materializing the whole result set at once into a `java.util.List` and instead
+The `.executeCursor()` method avoids materializing the whole result set at once into a `java.util.List` and instead
 uses buffering to read rows one at a time. This strategy can drastically reduce the memory consumption of 
 the application.
 
@@ -231,8 +230,6 @@ private void searching() {
 }
 ```
 
-**Important Note**: Cursors typically can be only accessed inside a database transaction. This means that as soon as the outermost
-Spring method annotated with `@Transactional` ends, the cursor is automatically closed and cannot be read
-anymore. You need to keep this in mind in case a method returns a `Cursor<T>`, so it's always returned to
-an enclosing method within the boundaries of the database transaction.
+**Note**: Depending on the database cursors may be only accessible inside a database transaction (e.g. PostgreSQL). This means that as soon as the outermost Spring method annotated with `@Transactional` ends, the cursor is automatically closed and cannot be read anymore. You need to keep this in mind in case a method returns a `Cursor<T>`, so it's always returned to an enclosing method within the boundaries of the database transaction. Other databases do not impose this restriction.
+
 
