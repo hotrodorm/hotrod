@@ -19,11 +19,13 @@ The following example shows three ways of selecting the from a table according t
 
 They trade simplicity for flexibility and can be a great fit for different use cases.
 
+**Note**: Selecting from tables and views can also be done using CRUD (basic selecting) and Nitro (all bells and whistles). These operations are not described here but in the corresponding sections.
+
 ### 1. General Form
 
-The general form of a LiveSQL SELECT returns Row objects and is the most flexible.
+The general form of a LiveSQL SELECT returns Row objects and is the most flexible one.
 
-It can combine multiple tables (or none at all) and can include the full set of LiveSQL clauses described below. All expressions are valid, simple or complex, and their type is resolved at runtime.
+It can combine multiple tables (or none at all) and can include the full set of LiveSQL clauses described below, including aggregations, CTEs (plain or recursive), computed columns, etc.
 
 ```java
 @Autowired
