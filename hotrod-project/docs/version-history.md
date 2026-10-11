@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.26 (unreleased):
+
+- LiveSQL:
+    - FILTER clause implemented for aggregation functions MIN(), MAX(), SUM([DISTINCT]), AVG([DISTINCT]), COUNT([DISTINCT]), and COUNT(*) including variations with the OVER clause for window functions. Gracefully downgrades for pre-SQL:2003 databases using the CASE solution.
+
 ## 5.1.25:
 
 - LiveSQL:

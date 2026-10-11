@@ -309,7 +309,7 @@ public class App {
         sql.max(t.region).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxOFO") //
 
     ).from(t);
-    System.out.println("Query: " + q.getPreview());
+    System.out.println("Query: " + q.getPreview(true));
     List<Row> rows = q.execute();
     for (Row r : rows) {
       System.out.println("### r=" + r);

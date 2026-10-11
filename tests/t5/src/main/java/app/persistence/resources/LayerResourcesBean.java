@@ -2,6 +2,7 @@
 
 package app.persistence.resources;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,9 @@ public class LayerResourcesBean {
   @Bean
   public LayerConfiguration layerConfig() {
     List<TypeRule> rules = new ArrayList<>();
-    rules.add(TypeRule.of("precision < 20", TypeHandler.forClass(Long.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT1")));
-    rules.add(TypeRule.of("scale > 0", TypeHandler.forClass(Short.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT2")));
+    rules.add(TypeRule.of("scale > 0", TypeHandler.forClass(BigDecimal.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT1")));
+    rules.add(TypeRule.of("precision < 20", TypeHandler.forClass(Long.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT2")));
+    rules.add(TypeRule.of("scale > 0", TypeHandler.forClass(Short.class, TypeSource.RUNTIME_TYPESOLVER_RULE, "RT3")));
     return () -> rules;
   }
 

@@ -19,8 +19,8 @@
   </name-solver>
 
   <runtime-type-solver>
-  <!-- 
     <when test="scale > 0" java-type="java.math.BigDecimal" />
+  <!-- 
   -->
     <when test="precision &lt; 20" java-type="Long" />
     <when test="scale > 0" java-type="Short" />
