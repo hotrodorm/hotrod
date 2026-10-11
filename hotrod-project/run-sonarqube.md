@@ -37,8 +37,8 @@ Open the page http://192.168.56.244:9000 and login with (admin/admin). Change th
 
     cd ~/git/hotrod/hotrod-project
     git pull
-    mvn clean verify sonar:sonar -Dsonar.projectKey=hotrod-5 -Dsonar.projectName='hotrod-5' -Dsonar.host.url=http://192.168.56.244:9000 -Dsonar.token=sqp_04695f8dbd7f759c064ba1e185706249c5964f0b
 
+    mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=hotrod-5 -Dsonar.projectName='hotrod-5' -Dsonar.host.url=http://192.168.56.244:9000 -Dsonar.token=sqp_04695f8dbd7f759c064ba1e185706249c5964f0b
 See the report at:
 
      http://192.168.56.244:9000/dashboard?id=hotrod
