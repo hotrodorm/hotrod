@@ -5,7 +5,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 5.1.26 (unreleased):
 
 - LiveSQL:
-    - FILTER clause implemented for aggregation functions MIN(), MAX(), SUM([DISTINCT]), AVG([DISTINCT]), COUNT([DISTINCT]), and COUNT(*) including variations with the OVER clause for window functions. Gracefully downgrades for pre-SQL:2003 databases using the CASE solution.
+    - FILTER clause implemented for aggregation functions MIN(), MAX(), SUM([DISTINCT]), AVG([DISTINCT]), COUNT([DISTINCT]), and COUNT(*) including variations with the OVER clause for window functions. Gracefully adapts the query for pre-SQL:2003 databases using the CASE solution.
+    - Improved messaging when previewing columns types from the runtime solver.
 
 ## 5.1.25:
 
