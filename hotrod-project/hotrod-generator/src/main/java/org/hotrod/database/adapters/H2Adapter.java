@@ -143,7 +143,7 @@ public class H2Adapter extends DatabaseAdapter {
       return new PropertyType("byte[]", m, false, TypeSource.STATIC_DIALECT_RULE, 22);
 
     case java.sql.Types.OTHER:
-      if ("timestamp with timezone".equalsIgnoreCase(m.getTypeName())) {
+      if ("timestamp with time zone".equalsIgnoreCase(m.getTypeName())) {
         return new PropertyType(java.time.OffsetDateTime.class, m, false, TypeSource.STATIC_DIALECT_RULE, 23);
 
         // If the JDBC driver was 1.4.x (unstable as of Dec 2016) we could use:

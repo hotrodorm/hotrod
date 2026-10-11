@@ -11,6 +11,12 @@ public abstract class BooleanFunction extends BooleanSyntaxExpression {
 
   private FunctionTemplate template;
 
+  protected BooleanFunction(final ComparableExpression... parameters) {
+    super(Expression.PRECEDENCE_FUNCTION);
+    this.template = null;
+    Arrays.asList(parameters).forEach(p -> super.register(p));
+  }
+
   protected BooleanFunction(final String pattern, final ComparableExpression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.template = new FunctionTemplate(pattern, parameters);

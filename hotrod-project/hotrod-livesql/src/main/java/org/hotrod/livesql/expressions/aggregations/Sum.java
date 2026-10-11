@@ -1,19 +1,55 @@
 package org.hotrod.livesql.expressions.aggregations;
 
-import org.hotrod.livesql.expressions.analytics.NumericWindowExpression;
-import org.hotrod.livesql.expressions.analytics.NumericWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
-import org.hotrod.livesql.expressions.numeric.NumericFunction;
 
-public class Sum extends NumericFunction implements WindowableAggregationFunction {
+public class Sum extends NumericAggregationUnfilteredFunction implements WindowableAggregationFunction {
 
   public Sum(final NumericExpression expression) {
-    super("sum(#{})", expression);
+    super("sum", expression);
   }
 
-  public NumericWindowFunctionOverStage over() {
-    return new NumericWindowFunctionOverStage(new NumericWindowExpression(this));
-  }
+  
+/**
+ * 
+Sum.java
+SumDistinct.java
 
+CountValuesDistinct.java
+CountValues.java
+
+Avg.java
+AvgDistinct.java
+
+NumericMax.java
+NumericMin.java
+
+---
+
+CountRows.java
+
+---
+
+CharMax.java
+CharMin.java
+
+DateTimeMax.java
+DateTimeMin.java
+
+BooleanMax.java
+BooleanMin.java
+
+BinaryMax.java
+BinaryMin.java
+
+ObjectMax.java
+ObjectMin.java
+
+---
+
+GroupConcat.java
+GroupConcatDistinct.java
+  
+ */
+  
 }

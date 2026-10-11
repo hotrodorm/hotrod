@@ -6,10 +6,10 @@ import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.bool.BooleanFunction;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class BooleanMin extends BooleanFunction implements WindowableAggregationFunction {
+public class BooleanMin extends BooleanUnfilteredFunction implements WindowableAggregationFunction {
 
   public BooleanMin(final Predicate expression) {
-    super("min(#{})", expression);
+    super("min", expression);
   }
 
   public BooleanWindowFunctionOverStage over() {

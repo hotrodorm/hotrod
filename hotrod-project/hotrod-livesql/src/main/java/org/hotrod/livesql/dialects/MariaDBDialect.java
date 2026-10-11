@@ -7,12 +7,15 @@ import java.sql.SQLException;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingConcurrency;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
 import org.hotrod.livesql.queries.select.InnerJoin;
 import org.hotrod.livesql.queries.select.Join;
@@ -25,10 +28,9 @@ import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.SShield;
-import org.hotrod.livesql.queries.select.FlatSelectObject.LockingConcurrency;
-import org.hotrod.livesql.queries.select.FlatSelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class MariaDBDialect extends LiveSQLDialect {
 
@@ -414,6 +416,19 @@ public class MariaDBDialect extends LiveSQLDialect {
       @Override
       public void currentDateTime(final QueryWriter w) {
         w.write("now()");
+      }
+
+    };
+  }
+
+  @Override
+  public AggregationFuntionFilterRenderer getAggregationFuntionFilterRenderer() {
+    return new AggregationFuntionFilterRenderer() {
+
+      @Override
+      public void renderTo(QueryWriter w, String commonName, ComparableExpression expression, boolean distinct,
+          Predicate filter) {
+        this.renderPreSQL2003(w, commonName, expression, distinct, filter);
       }
 
     };

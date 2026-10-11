@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
@@ -33,6 +34,7 @@ import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class HyperSQLDialect extends LiveSQLDialect {
 
@@ -378,6 +380,19 @@ public class HyperSQLDialect extends LiveSQLDialect {
         w.write("cast(");
         Shield.renderTo(datetime, w);
         w.write(" as time)");
+      }
+
+    };
+  }
+
+  @Override
+  public AggregationFuntionFilterRenderer getAggregationFuntionFilterRenderer() {
+    return new AggregationFuntionFilterRenderer() {
+
+      @Override
+      public void renderTo(QueryWriter w, String commonName, ComparableExpression expression, boolean distinct,
+          Predicate filter) {
+        this.renderPreSQL2003(w, commonName, expression, distinct, filter);
       }
 
     };

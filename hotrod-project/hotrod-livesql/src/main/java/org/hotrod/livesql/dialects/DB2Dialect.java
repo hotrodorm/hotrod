@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.hotrod.livesql.exceptions.InvalidLiteralException;
 import org.hotrod.livesql.exceptions.UnsupportedLiveSQLFeatureException;
+import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharExpression;
@@ -19,6 +20,8 @@ import org.hotrod.livesql.ordering.OHelper;
 import org.hotrod.livesql.ordering.OrderingTerm;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.select.CrossJoin;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingConcurrency;
+import org.hotrod.livesql.queries.select.FlatSelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.FullOuterJoin;
 import org.hotrod.livesql.queries.select.InnerJoin;
 import org.hotrod.livesql.queries.select.Join;
@@ -30,10 +33,9 @@ import org.hotrod.livesql.queries.select.NaturalInnerJoin;
 import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
 import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.livesql.queries.select.RightOuterJoin;
-import org.hotrod.livesql.queries.select.FlatSelectObject.LockingConcurrency;
-import org.hotrod.livesql.queries.select.FlatSelectObject.LockingMode;
 import org.hotrod.livesql.queries.select.UnionJoin;
 import org.hotrod.livesql.queries.typesolver.ResultSetColumnMetadata;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.Separator;
 
 public class DB2Dialect extends LiveSQLDialect {
@@ -437,6 +439,19 @@ public class DB2Dialect extends LiveSQLDialect {
       @Override
       public void currentDateTime(final QueryWriter w) {
         w.write("current timestamp");
+      }
+
+    };
+  }
+
+  @Override
+  public AggregationFuntionFilterRenderer getAggregationFuntionFilterRenderer() {
+    return new AggregationFuntionFilterRenderer() {
+
+      @Override
+      public void renderTo(QueryWriter w, String commonName, ComparableExpression expression, boolean distinct,
+          Predicate filter) {
+        this.renderPreSQL2003(w, commonName, expression, distinct, filter);
       }
 
     };

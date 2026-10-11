@@ -4,12 +4,11 @@ import org.hotrod.livesql.expressions.analytics.ObjectWindowExpression;
 import org.hotrod.livesql.expressions.analytics.ObjectWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.object.ObjectFunction;
 
-public class ObjectMin extends ObjectFunction implements WindowableAggregationFunction {
+public class ObjectMin extends ObjectUnfilteredFunction implements WindowableAggregationFunction {
 
   public ObjectMin(final ObjectExpression expression) {
-    super("min(#{})", expression);
+    super("min", expression);
   }
 
   public ObjectWindowFunctionOverStage over() {

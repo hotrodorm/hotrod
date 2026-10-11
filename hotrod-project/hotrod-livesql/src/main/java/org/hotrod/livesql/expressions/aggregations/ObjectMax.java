@@ -4,12 +4,11 @@ import org.hotrod.livesql.expressions.analytics.ObjectWindowExpression;
 import org.hotrod.livesql.expressions.analytics.ObjectWindowFunctionOverStage;
 import org.hotrod.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.livesql.expressions.object.ObjectExpression;
-import org.hotrod.livesql.expressions.object.ObjectFunction;
 
-public class ObjectMax extends ObjectFunction implements WindowableAggregationFunction {
+public class ObjectMax extends ObjectUnfilteredFunction implements WindowableAggregationFunction {
 
   public ObjectMax(final ObjectExpression expression) {
-    super("max(#{})", expression);
+    super("max", expression);
   }
 
   public ObjectWindowFunctionOverStage over() {

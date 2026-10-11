@@ -10,6 +10,7 @@ import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.SelectFromPhase;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +24,8 @@ import app.persistence.dao.CostDAO;
 import app.persistence.dao.CostDAO.CostTable;
 import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.dao.EmployeeDAO.EmployeeTable;
 import app.persistence.model.DATALocal;
 
 @SpringBootApplication
@@ -79,6 +82,9 @@ public class App {
   @Autowired
   private CostDAO costDAO;
 
+  @Autowired
+  private EmployeeDAO employeeDAO;
+
 //  @Autowired
 //  private K1DAO k1DAO;
 
@@ -132,7 +138,8 @@ public class App {
 //      testConverters();
 //      testInsert1();
 
-      testFLValues();
+//      testFLValues();
+      testFilter();
 
 //      testInsertSequence();
 //      testInsertIdentity();
@@ -219,6 +226,91 @@ public class App {
         sql.firstValue(c.amount).over().partitionBy(c.region).orderBy(c.amount).end().as("firstAmount"), //
         sql.lastValue(c.amount).over().partitionBy(c.region).orderBy(c.amount).end().as("lastAmount") //
     ).from(c).execute();
+    for (Row r : rows) {
+      System.out.println("### r=" + r);
+    }
+  }
+
+  private void testFilter() {
+    EmployeeTable t = this.employeeDAO.newTable();
+    SelectFromPhase<Row> q = this.sql.select(//
+//        sql.min(t.amount).as("minA"), //
+//        sql.min(t.amount).filter(t.amount.gt(100)).as("minAF"), //
+//        sql.max(t.amount).as("maxA"), //
+//        sql.max(t.amount).filter(t.amount.gt(100)).as("maxAF"), //
+//        sql.avg(t.amount).as("avgA"), //
+//        sql.avg(t.amount).filter(t.amount.gt(100)).as("avgAF"), //
+//        sql.avgDistinct(t.amount).as("avgdA"), //
+//        sql.avgDistinct(t.amount).filter(t.amount.gt(100)).as("avgdAF"), //
+//        sql.sum(t.amount).as("sumA"), //
+//        sql.sum(t.amount).filter(t.amount.gt(100)).as("sumAF"), //
+//        sql.sumDistinct(t.amount).as("sumdA"), //
+//        sql.sumDistinct(t.amount).filter(t.amount.gt(100)).as("sumdAF"), //
+//        sql.count(t.amount).as("countA"), //
+//        sql.count(t.amount).filter(t.amount.gt(100)).as("countAF"), //
+//        sql.countDistinct(t.amount).as("countdA"), //
+//        sql.countDistinct(t.amount).filter(t.amount.gt(100)).as("countdAF"), //
+//        sql.count().as("count"), sql.min(t.name).as("minC"), //
+//        sql.min(t.name).filter(t.amount.gt(100)).as("minCF"), //
+//        sql.max(t.name).as("maxC"), //
+//        sql.max(t.name).filter(t.amount.gt(100)).as("maxCF"), //
+//        sql.min(t.hired).as("minD"), //
+//        sql.min(t.hired).filter(t.amount.gt(100)).as("minDF"), //
+//        sql.max(t.hired).as("maxD"), //
+//        sql.max(t.hired).filter(t.amount.gt(100)).as("maxDF"), //
+//        sql.min(t.active).as("minB"), //
+//        sql.min(t.active).filter(t.amount.gt(100)).as("minBF"), //
+//        sql.max(t.active).as("maxB"), //
+//        sql.max(t.active).filter(t.amount.gt(100)).as("maxBF"), //
+//        sql.min(t.photo).as("minI"), //
+//        sql.min(t.photo).filter(t.amount.gt(100)).as("minIF"), //
+//        sql.max(t.photo).as("maxI"), //
+//        sql.max(t.photo).filter(t.amount.gt(100)).as("maxIF"), //
+//        sql.min(t.region).as("minO"), //
+//        sql.min(t.region).filter(t.amount.gt(100)).as("minOF"), //
+//        sql.max(t.region).as("maxO"), //
+//        sql.max(t.region).filter(t.amount.gt(100)).as("maxOF") //
+        //
+        sql.min(t.amount).over().orderBy(t.amount).end().as("minO"), //
+        sql.min(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minFO"), //
+        sql.max(t.amount).over().orderBy(t.amount).end().as("maxO"), //
+        sql.max(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxFO"), //
+        sql.avg(t.amount).over().orderBy(t.amount).end().as("avgO"), //
+        sql.avg(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("avgFO"), //
+        sql.avgDistinct(t.amount).over().orderBy(t.amount).end().as("avgdO"), //
+        sql.avgDistinct(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("avgdFO"), //
+        sql.sum(t.amount).over().orderBy(t.amount).end().as("sumO"), //
+        sql.sum(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("sumFO"), //
+        sql.sumDistinct(t.amount).over().orderBy(t.amount).end().as("sumdO"), //
+        sql.sumDistinct(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("sumdFO"), //
+        sql.count(t.amount).over().orderBy(t.amount).end().as("countO"), //
+        sql.count(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("countFO"), //
+        sql.countDistinct(t.amount).over().orderBy(t.amount).end().as("countdO"), //
+        sql.countDistinct(t.amount).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("countdFO"), //
+        sql.min(t.name).over().orderBy(t.amount).end().as("minCO"), //
+        sql.min(t.name).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minCFO"), //
+        sql.max(t.name).over().orderBy(t.amount).end().as("maxCO"), //
+        sql.max(t.name).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxCFO"), //
+        sql.min(t.hired).over().orderBy(t.amount).end().as("minDO"), //
+        sql.min(t.hired).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minDFO"), //
+        sql.max(t.hired).over().orderBy(t.amount).end().as("maxDO"), //
+        sql.max(t.hired).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxDFO"), //
+        sql.min(t.active).over().orderBy(t.amount).end().as("minBO"), //
+        sql.min(t.active).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minBFO"), //
+        sql.max(t.active).over().orderBy(t.amount).end().as("maxBO"), //
+        sql.max(t.active).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxBFO"), //
+        sql.min(t.photo).over().orderBy(t.amount).end().as("minIO"), //
+        sql.min(t.photo).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minIFO"), //
+        sql.max(t.photo).over().orderBy(t.amount).end().as("maxIO"), //
+        sql.max(t.photo).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxIFO"), //
+        sql.min(t.region).over().orderBy(t.amount).end().as("minOO"), //
+        sql.min(t.region).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("minOFO"), //
+        sql.max(t.region).over().orderBy(t.amount).end().as("maxOO"), //
+        sql.max(t.region).filter(t.amount.gt(100)).over().orderBy(t.amount).end().as("maxOFO") //
+
+    ).from(t);
+    System.out.println("Query: " + q.getPreview());
+    List<Row> rows = q.execute();
     for (Row r : rows) {
       System.out.println("### r=" + r);
     }

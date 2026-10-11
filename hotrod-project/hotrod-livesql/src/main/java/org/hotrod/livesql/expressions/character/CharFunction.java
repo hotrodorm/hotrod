@@ -11,6 +11,12 @@ public abstract class CharFunction extends CharSyntaxExpression {
 
   private FunctionTemplate template;
 
+  protected CharFunction(final ComparableExpression... parameters) {
+    super(Expression.PRECEDENCE_FUNCTION);
+    this.template = null;
+    Arrays.asList(parameters).forEach(p -> super.register(p));
+  }
+
   protected CharFunction(final String pattern, final ComparableExpression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.template = new FunctionTemplate(pattern, parameters);

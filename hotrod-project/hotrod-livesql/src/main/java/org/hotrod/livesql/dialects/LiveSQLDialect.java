@@ -118,6 +118,8 @@ public abstract class LiveSQLDialect {
 
   public abstract FunctionRenderer getFunctionRenderer();
 
+  public abstract AggregationFuntionFilterRenderer getAggregationFuntionFilterRenderer();
+
   public abstract DateTimeLiteralRenderer getDateTimeLiteralRenderer();
 
   public abstract BooleanLiteralRenderer getBooleanLiteralRenderer();

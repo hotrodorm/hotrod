@@ -9,3 +9,5 @@ drop table account;
 drop table branch;
 
 drop sequence seq1;
+
+drop table employee;

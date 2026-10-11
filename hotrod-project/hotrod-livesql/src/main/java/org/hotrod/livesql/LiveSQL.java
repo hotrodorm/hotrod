@@ -27,7 +27,7 @@ import org.hotrod.livesql.expressions.aggregations.BooleanMax;
 import org.hotrod.livesql.expressions.aggregations.BooleanMin;
 import org.hotrod.livesql.expressions.aggregations.CharMax;
 import org.hotrod.livesql.expressions.aggregations.CharMin;
-import org.hotrod.livesql.expressions.aggregations.CountDistinct;
+import org.hotrod.livesql.expressions.aggregations.CountValuesDistinct;
 import org.hotrod.livesql.expressions.aggregations.CountRows;
 import org.hotrod.livesql.expressions.aggregations.CountValues;
 import org.hotrod.livesql.expressions.aggregations.DateTimeMax;
@@ -330,8 +330,8 @@ public class LiveSQL {
     return new CountValues(expression);
   }
 
-  public CountDistinct countDistinct(final ComparableExpression expression) {
-    return new CountDistinct(expression);
+  public CountValuesDistinct countDistinct(final ComparableExpression expression) {
+    return new CountValuesDistinct(expression);
   }
 
   public SumDistinct sumDistinct(final NumericExpression expression) {

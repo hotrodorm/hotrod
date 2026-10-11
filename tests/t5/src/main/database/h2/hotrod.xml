@@ -82,6 +82,11 @@
     <column name="name" property="NAMELocalToCity" />
     <column name="active" converter="active_stored_as_int" />
   </table>
+  
+  <table name="employee" >
+    <column name="region" type="Object" />
+  </table>
+  
 
 <!-- 
   <table name="data" entity="DATALocal">
