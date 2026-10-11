@@ -90,7 +90,7 @@ public class LiveSQLPreparedQuery {
         for (Expression expr : this.queryColumns) {
           String name = Shield.getReferenceName(expr);
           TypeHandler<?, ?> th = Shield.getTypeHandler(expr);
-          String TNA = "Type not available during preview, but only when executing the query -- use logging to display it";
+          String TNA = "Runtime type not available during preview, but only when executing the query -- use logging to display it";
           sb.append(" * " + ordinal + " " + name + ": " //
               + (th == null ? TNA
                   : TShield.render(th) + (th.getRuleNumber() == null ? "" : ", rule #" + th.getRuleNumber()))//
