@@ -42,9 +42,9 @@ import org.hotrod.utils.Separator;
 public class WindowExpression {
 
   public enum FrameUnit {
-    ROWS("rows"), //
-    RANGE("range"), //
-    GROUPS("groups");
+    ROWS("ROWS"), //
+    RANGE("RANGE"), //
+    GROUPS("GROUPS");
 
     private String caption;
 
@@ -59,11 +59,11 @@ public class WindowExpression {
   }
 
   public enum FrameBound {
-    UNBOUNDED_PRECEDING("unbounded preceding"), //
-    OFFSET_PRECEDING("preceding"), //
-    CURRENT_ROW("current row"), //
-    OFFSET_FOLLOWING("following"), //
-    UNBOUNDED_FOLLOWING("unbounded following");
+    UNBOUNDED_PRECEDING("UNBOUNDED PRECEDING"), //
+    OFFSET_PRECEDING("PRECEDING"), //
+    CURRENT_ROW("CURRENT ROW"), //
+    OFFSET_FOLLOWING("FOLLOWING"), //
+    UNBOUNDED_FOLLOWING("UNBOUNDED FOLLOWING");
 
     private String caption;
 
@@ -83,10 +83,10 @@ public class WindowExpression {
   }
 
   public enum FrameExclusion {
-    EXCLUDE_CURRENT_ROW("exclude current row"), //
-    EXCLUDE_GROUP("exclude group"), //
-    EXCLUDE_TIES("exclude ties"), //
-    EXCLUDE_NO_OTHERS("exclude no others");
+    EXCLUDE_CURRENT_ROW("EXCLUDE CURRENT ROW"), //
+    EXCLUDE_GROUP("EXCLUDE GROUP"), //
+    EXCLUDE_TIES("EXCLUDE TIES"), //
+    EXCLUDE_NO_OTHERS("EXCLUDE NO OTHERS");
 
     private String caption;
 
@@ -157,7 +157,7 @@ public class WindowExpression {
 
   protected void renderTo(final QueryWriter w) {
 
-    w.write(" over(");
+    w.write(" OVER (");
 
     boolean hasPartitionBy = this.partitionBy != null && !this.partitionBy.isEmpty();
     boolean hasOrderBy = this.orderBy != null && !this.orderBy.isEmpty();
@@ -165,7 +165,7 @@ public class WindowExpression {
     // partition by
 
     if (hasPartitionBy) {
-      w.write("partition by ");
+      w.write("PARTITION BY ");
       Separator sep = new Separator();
       for (ComparableExpression expr : this.partitionBy) {
         w.write(sep.render());
@@ -179,7 +179,7 @@ public class WindowExpression {
       if (hasPartitionBy) {
         w.write(" ");
       }
-      w.write("order by ");
+      w.write("ORDER BY ");
       Separator sep = new Separator();
       for (OrderingTerm term : this.orderBy) {
         w.write(sep.render());
@@ -194,9 +194,9 @@ public class WindowExpression {
       if (this.frameEnd == null) { // start only
         w.write(this.frameStart.render(this.offsetStart));
       } else { // between
-        w.write("between ");
+        w.write("BETWEEN ");
         w.write(this.frameStart.render(this.offsetStart));
-        w.write(" and ");
+        w.write(" AND ");
         w.write(this.frameEnd.render(this.offsetEnd));
       }
       if (this.frameExclusion != null) {
