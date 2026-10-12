@@ -1,7 +1,7 @@
 <hotrod>
 
   <generators>
-    <jdbc>
+    <jdbc qualifier="accounting">
     <!--
       <discover/>
     -->
@@ -18,13 +18,13 @@
     <name value="(.+)_code" replace="$1_KODE3" scope="column" />
   </name-solver>
 
+  <!-- 
   <runtime-type-solver>
     <when test="scale > 0" java-type="java.math.BigDecimal" />
-  <!-- 
-  -->
     <when test="precision &lt; 20" java-type="Long" />
     <when test="scale > 0" java-type="Short" />
   </runtime-type-solver>
+  -->
 
   <converter name="boolean_stored_as_int" type="java.lang.Boolean" raw-type="java.lang.Integer"
     class="app.IntegerBooleanConverter" />
