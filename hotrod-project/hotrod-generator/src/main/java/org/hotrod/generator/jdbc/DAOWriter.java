@@ -11,7 +11,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -458,22 +457,22 @@ public class DAOWriter {
     w.println("  // PARSE ROW");
     w.println();
     if (hasConverters) {
-      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, ");
+      w.print("  public ", m, " parseRow(", Row.class, " row, ");
       w.println(Connection.class, " conn) {");
       w.println("    return parseRow(row, null, null, conn);");
     } else {
-      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row) {");
+      w.println("  public ", m, " parseRow(", Row.class, " row) {");
       w.println("    return parseRow(row, null, null);");
     }
     w.println("  }");
     w.println();
 
     if (hasConverters) {
-      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, ");
+      w.print("  public ", m, " parseRow(", Row.class, " row, String prefix, ");
       w.println(Connection.class, " conn) {");
       w.println("    return parseRow(row, prefix, null, conn);");
     } else {
-      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix) {");
+      w.println("  public ", m, " parseRow(", Row.class, " row, String prefix) {");
       w.println("    return parseRow(row, prefix, null);");
     }
 
@@ -481,10 +480,10 @@ public class DAOWriter {
     w.println();
 
     if (hasConverters) {
-      w.print("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix, ");
+      w.print("  public ", m, " parseRow(", Row.class, " row, String prefix, String suffix, ");
       w.println(Connection.class, " conn) {");
     } else {
-      w.println("  public ", m, " parseRow(", Map.class, "<String, Object> row, String prefix, String suffix) {");
+      w.println("  public ", m, " parseRow(", Row.class, " row, String prefix, String suffix) {");
     }
     w.println("    ", m, " m = applicationContext.getBean(", m, ".class);");
     w.println("    String p = prefix == null ? \"\": prefix;");
@@ -1088,7 +1087,7 @@ public class DAOWriter {
       w.println("      .literaln(\"SET\")");
       w.println("      .trim(\"  \", \",\\n  \",\"\\n\")");
 
-      int coln = this.metadata.getColumns().size();
+//      int coln = this.metadata.getColumns().size();
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
         if (!cm.isGeneratedAlways()) {
           w.print("        .begin()");
