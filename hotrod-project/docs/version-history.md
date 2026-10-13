@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.27 (unreleased):
+
+- Core:
+    - Seamless compatibility with all versions of Spring Boot. No special configuration needed.
+
 ## 5.1.26:
 
 - LiveSQL:

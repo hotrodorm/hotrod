@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +19,7 @@ import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
+import org.hotrod.dynamicsql.Row;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.dynamicsql.insert.PreparedInsertQuery;
@@ -114,15 +114,15 @@ public class DATALocalDAO {
 
   // PARSE ROW
 
-  public DATALocal parseRow(Map<String, Object> row) {
+  public DATALocal parseRow(Row row) {
     return parseRow(row, null, null);
   }
 
-  public DATALocal parseRow(Map<String, Object> row, String prefix) {
+  public DATALocal parseRow(Row row, String prefix) {
     return parseRow(row, prefix, null);
   }
 
-  public DATALocal parseRow(Map<String, Object> row, String prefix, String suffix) {
+  public DATALocal parseRow(Row row, String prefix, String suffix) {
     DATALocal m = applicationContext.getBean(DATALocal.class);
     String p = prefix == null ? "": prefix;
     String s = suffix == null ? "": suffix;
