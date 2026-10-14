@@ -38,7 +38,7 @@ public class NumericLead extends NumericFunction implements PositionalAnalyticFu
 
   @Override
   protected void renderTo(QueryWriter w) {
-    w.write("lag(");
+    w.write("lead(");
     w.write(this.expression);
     if (this.offset != null) {
       w.write(", ");

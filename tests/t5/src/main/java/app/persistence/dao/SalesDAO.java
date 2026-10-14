@@ -18,7 +18,6 @@ import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.exceptions.PersistenceException;
 import org.hotrod.livesql.util.DAOExecutor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,7 @@ public class SalesDAO {
 
   // CONSTRUCTOR
 
-  public SalesDAO(@Qualifier("dataSource:accounting") DataSource dataSource, ApplicationContext applicationContext) {
+  public SalesDAO(DataSource dataSource, ApplicationContext applicationContext) {
     this.dataSource = dataSource;
     this.applicationContext = applicationContext;
   }

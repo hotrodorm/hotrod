@@ -20,7 +20,7 @@ public class CharLastValue extends CharFunction implements PositionalAnalyticFun
 
   @Override
   protected void renderTo(QueryWriter w) {
-    w.write("first_value(");
+    w.write("last_value(");
     w.write(this.expression);
     w.write(")");
   }

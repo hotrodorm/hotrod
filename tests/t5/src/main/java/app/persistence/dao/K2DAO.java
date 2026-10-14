@@ -51,7 +51,6 @@ import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -78,7 +77,7 @@ public class K2DAO {
 
   // CONSTRUCTOR
 
-  public K2DAO(@Qualifier("dataSource:accounting") LiveSQL sql, @Qualifier("dataSource:accounting") DataSource dataSource, ApplicationContext applicationContext) {
+  public K2DAO(LiveSQL sql, DataSource dataSource, ApplicationContext applicationContext) {
     this.sql = sql;
     this.dataSource = dataSource;
     this.applicationContext = applicationContext;

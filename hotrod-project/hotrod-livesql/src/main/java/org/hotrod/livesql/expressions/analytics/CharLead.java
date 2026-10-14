@@ -38,7 +38,7 @@ public class CharLead extends CharFunction implements PositionalAnalyticFunction
 
   @Override
   protected void renderTo(QueryWriter w) {
-    w.write("lag(");
+    w.write("lead(");
     w.write(this.expression);
     if (this.offset != null) {
       w.write(", ");

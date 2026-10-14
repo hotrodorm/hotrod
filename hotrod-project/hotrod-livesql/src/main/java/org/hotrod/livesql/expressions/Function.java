@@ -2,12 +2,12 @@ package org.hotrod.livesql.expressions;
 
 import java.util.stream.Stream;
 
-import org.hotrod.livesql.expressions.binary.BinaryFunction;
-import org.hotrod.livesql.expressions.bool.BooleanFunction;
+import org.hotrod.livesql.expressions.binary.CustomBinaryFunction;
+import org.hotrod.livesql.expressions.bool.CustomBooleanFunction;
 import org.hotrod.livesql.expressions.character.CustomCharFunction;
-import org.hotrod.livesql.expressions.datetime.DateTimeFunction;
+import org.hotrod.livesql.expressions.datetime.CustomDateTimeFunction;
 import org.hotrod.livesql.expressions.numeric.CustomNumericFunction;
-import org.hotrod.livesql.expressions.object.ObjectFunction;
+import org.hotrod.livesql.expressions.object.CustomObjectFunction;
 
 public class Function {
 
@@ -21,23 +21,23 @@ public class Function {
     };
   }
 
-  public static DateTimeFunction returnsDateTime(final String pattern, final ComparableExpression... parameters) {
-    return new DateTimeFunction(pattern, parameters) {
+  public static CustomDateTimeFunction returnsDateTime(final String pattern, final ComparableExpression... parameters) {
+    return new CustomDateTimeFunction(pattern, parameters) {
     };
   }
 
-  public static BooleanFunction returnsBoolean(final String pattern, final ComparableExpression... parameters) {
-    return new BooleanFunction(pattern, parameters) {
+  public static CustomBooleanFunction returnsBoolean(final String pattern, final ComparableExpression... parameters) {
+    return new CustomBooleanFunction(pattern, parameters) {
     };
   }
 
-  public static BinaryFunction returnsBinary(final String pattern, final ComparableExpression... parameters) {
-    return new BinaryFunction(pattern, parameters) {
+  public static CustomBinaryFunction returnsBinary(final String pattern, final ComparableExpression... parameters) {
+    return new CustomBinaryFunction(pattern, parameters) {
     };
   }
 
-  public static ObjectFunction returnsObject(final String pattern, final ComparableExpression... parameters) {
-    return new ObjectFunction(pattern, parameters) {
+  public static CustomObjectFunction returnsObject(final String pattern, final ComparableExpression... parameters) {
+    return new CustomObjectFunction(pattern, parameters) {
     };
   }
 

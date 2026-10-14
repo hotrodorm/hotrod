@@ -435,12 +435,12 @@ public class LiveSQL {
     return new RowNumber();
   }
 
-  public Rank rank(final ComparableExpression expression) {
-    return new Rank(expression);
+  public Rank rank() {
+    return new Rank();
   }
 
-  public DenseRank denseRank(final ComparableExpression expression) {
-    return new DenseRank(expression);
+  public DenseRank denseRank() {
+    return new DenseRank();
   }
 
   public NTile ntile(final ComparableExpression expression) {
