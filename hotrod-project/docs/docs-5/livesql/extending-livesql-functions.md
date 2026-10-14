@@ -9,10 +9,10 @@ To add new functions, create a `@Component` that include methods for each functi
 @Component
 public class PostgreSQL12Functions {
 
-  public NumberFunction random() {
-    return Function.returnsNumber("random()");
+  public NumericFunction random() {
+    return Function.returnsNumeric("random()");
   }
-  
+
 }
 ```
 
@@ -37,11 +37,11 @@ LiveSQL groups all SQL parameters into six broad types: numbers, strings, date/t
 
 Therefore, you can use any of the six factory methods available in the `Function` class to create a function with the corresponding LiveSQL return type:
 
-- `Function.returnsNumber(String pattern, Expression... parameters)` -- to produce a `NumberFunction`
-- `Function.returnsString(String pattern, Expression... parameters)` -- to produce a `StringFunction`
+- `Function.returnsNumeric(String pattern, Expression... parameters)` -- to produce a `NumericFunction`
+- `Function.returnsChar(String pattern, Expression... parameters)` -- to produce a `CharFunction`
 - `Function.returnsDateTime(String pattern, Expression... parameters)` -- to produce a `DateTimeFunction`
 - `Function.returnsBoolean(String pattern, Expression... parameters)` -- to produce a `BooleanFunction`
-- `Function.returnsByteArray(String pattern, Expression... parameters)` -- to produce a `ByteArrayFunction`
+- `Function.returnsBinary(String pattern, Expression... parameters)` -- to produce a `BinaryFunction`
 - `Function.returnsObject(String pattern, Expression... parameters)` -- to produce a `ObjectFunction`
 
 **Note**: The `CURSOR` data type is not supported, either as an IN/OUT parameter or as a return type. Also, the `INTERVAL` type is not implemented yet, but it may be supported in the future.
@@ -50,11 +50,11 @@ Therefore, you can use any of the six factory methods available in the `Function
 
 The abstract function classes must receive parameters that extend `org.hotrod.runtime.livesql.expressions.Expression`. Typically these are of the types:
 
- - `NumberExpression`
- - `StringExpression`
+ - `NumericExpression`
+ - `CharExpression`
  - `DateTimeExpression`
  - `Predicate` (boolean expression)
- - `ByteArrayExpression`
+ - `BinaryExpression`
  - `ObjectExpression`
  - `Expression` -- to accept any of the above
 
@@ -77,11 +77,11 @@ need to be promoted to `Expression` to be used in a LiveSQL query. You can do th
  - by offering multiple constructors in the custom function definition and then boxing simple parameters as `Expression` using `BoxUtil.box(x)`, as shown in the `sin()` function below:
 
 ```java
-public NumberFunction sin(NumberExpression x) { // already an Expression parameter
-  return Function.returnsNumber("sin(#{})", x);
+public NumericFunction sin(NumericExpression x) { // already an Expression parameter
+  return Function.returnsNumeric("sin(#{})", x);
 }
 
-public NumberFunction sin(Number x) { // accepts any java.lang.Number
+public NumericFunction sin(Number x) { // accepts any java.lang.Number
   return sin(BoxUtil.box(x));
 }
 ```
@@ -134,14 +134,14 @@ A class could be used to provide the function to LiveSQL. For example:
 @Component
 public class MyFunctions {
 
-  public NumberFunction addone(NumberExpression a) {
-    return Function.returnsNumber("addone(#{})", a);
+  public NumericFunction addone(NumericExpression a) {
+    return Function.returnsNumeric("addone(#{})", a);
   }
 
-  public NumberFunction addone(Number a) {
+  public NumericFunction addone(Number a) {
     return addone(BoxUtil.box(a));
   }
-  
+
 }
 ```
 
@@ -178,25 +178,25 @@ while other ones use keywords; most have parentheses, some don't; there are also
   As well as in the previous example, this function does not have any parameters, but needs the parenthesis in its rendering.
 
     ```java
-    public NumberFunction random() {
-      return Function.returnsNumber("random()");
+    public NumericFunction random() {
+      return Function.returnsNumeric("random()");
     }
     ```
 
 - **Example #3:** Function `sin(x)` with a single parameter. 
 
-  Two factory methods are implemented: the first one receives a boxed value (NumberExpression in this case), 
+  Two factory methods are implemented: the first one receives a boxed value (NumberExpression in this case),
   while the second method receives an unboxed `java.lang.Number` (such as `int`, `Integer`, `Double`, etc.).
-  
+
   Notice the second method only deals with the parameter boxing. It boxes it into an Expression by
   using `BoxUtil.box(x)`. Once done it reuses the first method, to avoid defining the pattern again.
- 
+
     ```java
-    public NumberFunction sin(NumberExpression x) {
-      return Function.returnsNumber("sin(#{})", x);
+    public NumericFunction sin(NumericExpression x) {
+      return Function.returnsNumeric("sin(#{})", x);
     }
-    
-    public NumberFunction sin(Number x) {
+
+    public NumericFunction sin(Number x) {
       return sin(BoxUtil.box(x));
     }
     ```
@@ -205,16 +205,16 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
   Six factory methods are included, one per Expression type. Notice the pattern is a vararg `#{?, ?}`. Also notice that it also
   bundles the received parameters using `Function.bundle(a, b)` since the factory can only receive one parameter of type `Expression[]`.
-  
+
   Notice that the factory methods need to accept at least one parameter to clearly distinguish the type of the function:
-  
+
     ```java
-    public NumberFunction coalesce(NumberExpression a, NumberExpression... b) {
-      return Function.returnsNumber("coalesce(#{?, ?})", Function.bundle(a, b));
+    public NumericFunction coalesce(NumericExpression a, NumericExpression... b) {
+      return Function.returnsNumeric("coalesce(#{?, ?})", Function.bundle(a, b));
     }
   
-    public StringFunction coalesce(StringExpression a, StringExpression... b) {
-      return Function.returnsString("coalesce(#{?, ?})", Function.bundle(a, b));
+    public CharFunction coalesce(CharExpression a, CharExpression... b) {
+      return Function.returnsChar("coalesce(#{?, ?})", Function.bundle(a, b));
     }
   
     public DateTimeFunction coalesce(DateTimeExpression a, DateTimeExpression... b) {
@@ -225,8 +225,8 @@ while other ones use keywords; most have parentheses, some don't; there are also
       return Function.returnsBoolean("coalesce(#{?, ?})", Function.bundle(a, b));
     }
   
-    public ByteArrayFunction coalesce(ByteArrayExpression a, ByteArrayExpression... b) {
-      return Function.returnsByteArray("coalesce(#{?, ?})", Function.bundle(a, b));
+    public BinaryFunction coalesce(BinaryExpression a, BinaryExpression... b) {
+      return Function.returnsBinary("coalesce(#{?, ?})", Function.bundle(a, b));
     }
   
     public ObjectFunction coalesce(ObjectExpression a, ObjectExpression... b) {
@@ -242,19 +242,19 @@ while other ones use keywords; most have parentheses, some don't; there are also
   methods box the parameters and then reuse the first method.
 
     ```java
-    public StringFunction left(StringExpression text, NumberExpression n) {
-      return Function.returnsString("left(#{}, #{})", text, n);
+    public CharFunction left(CharExpression text, NumericExpression n) {
+      return Function.returnsChar("left(#{}, #{})", text, n);
     }
   
-    public StringFunction left(String text, NumberExpression n) {
+    public CharFunction left(String text, NumericExpression n) {
       return left(BoxUtil.box(text), n);
     }
   
-    public StringFunction left(StringExpression text, Number n) {
+    public CharFunction left(CharExpression text, Number n) {
       return left(text, BoxUtil.box(n));
     }
   
-    public StringFunction left(String text, Number n) {
+    public CharFunction left(String text, Number n) {
       return left(BoxUtil.box(text), BoxUtil.box(n));
     };
     ```
@@ -265,11 +265,11 @@ while other ones use keywords; most have parentheses, some don't; there are also
   assumes the second will always be boxed:
 
     ```java
-    public StringFunction format(StringExpression text, Expression... args) {
-      return Function.returnsString("format(#{}#{, ?})", Function.bundle(text, args));
+    public CharFunction format(CharExpression text, Expression... args) {
+      return Function.returnsChar("format(#{}#{, ?})", Function.bundle(text, args));
     }
   
-    public StringFunction format(final String text, final Expression... args) {
+    public CharFunction format(final String text, final Expression... args) {
       return format(BoxUtil.box(text), args);
     }
     ```
@@ -280,8 +280,8 @@ while other ones use keywords; most have parentheses, some don't; there are also
   All other seven variations should probably be implemented as in the "left" function above, in order to accept any combination of boxed and unboxed parameters:
 
     ```java
-    public ByteArrayFunction set_byte(byte[] string, Number offset, Number newValue) {
-      return Function.returnsByteArray("set_byte(#{}, #{}, #{})",
+    public BinaryFunction set_byte(byte[] string, Number offset, Number newValue) {
+      return Function.returnsBinary("set_byte(#{}, #{}, #{})",
           Function.bundle(Function.bundle(BoxUtil.box(string), BoxUtil.box(offset)), BoxUtil.box(newValue)));
     }
     ```
