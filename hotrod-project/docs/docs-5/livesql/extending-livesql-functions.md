@@ -29,7 +29,7 @@ And use it:
 sql.select(pg.random()).execute()
 ```
 
-To produce a result such as: `0.796045811049445`    
+To produce a result such as: `0.796045811049445`
 
 # Factory methods
 

@@ -323,55 +323,39 @@ public class App {
     EmployeeTable t = this.employeeDAO.newTable();
     SelectFromPhase<Row> q = this.sql.select( //
 
-//        sql.rowNumber().over().orderBy(t.id).end().as("r0"),
-//
-//        sql.rank(t.amount).over().orderBy(t.id).end().as("r1"), //
-//        sql.denseRank(t.amount).over().orderBy(t.id).end().as("d1"), //
-//        sql.ntile(t.amount).over().orderBy(t.id).end().as("n1"), //
-//        sql.lag(t.amount).over().orderBy(t.id).end().as("l1"), //
-//        sql.lead(t.amount).over().orderBy(t.id).end().as("g1"), //
-//        sql.firstValue(t.amount).over().orderBy(t.id).end().as("f1"), //
-//        sql.lastValue(t.amount).over().orderBy(t.id).end().as("v1"), //
-//
-//        sql.rank(t.name).over().orderBy(t.id).end().as("r2"), //
-//        sql.denseRank(t.name).over().orderBy(t.id).end().as("d2"), //
-//        sql.ntile(t.name).over().orderBy(t.id).end().as("n2"), //
-//        sql.lag(t.name).over().orderBy(t.id).end().as("l2"), //
-//        sql.lead(t.name).over().orderBy(t.id).end().as("g2"), //
-//        sql.firstValue(t.name).over().orderBy(t.id).end().as("f2"), //
-//        sql.lastValue(t.name).over().orderBy(t.id).end().as("v2"), //
-//
-//        sql.rank(t.hired).over().orderBy(t.id).end().as("r3"), //
-//        sql.denseRank(t.hired).over().orderBy(t.id).end().as("d3"), //
-//        sql.ntile(t.hired).over().orderBy(t.id).end().as("n3"), //
-//        sql.lag(t.hired).over().orderBy(t.id).end().as("l3"), //
-//        sql.lead(t.hired).over().orderBy(t.id).end().as("g3"), //
-//        sql.firstValue(t.hired).over().orderBy(t.id).end().as("f3"), //
-//        sql.lastValue(t.hired).over().orderBy(t.id).end().as("v3"), //
-//
-//        sql.rank(t.active).over().orderBy(t.id).end().as("r4"), //
-//        sql.denseRank(t.active).over().orderBy(t.id).end().as("d4"), //
-//        sql.ntile(t.active).over().orderBy(t.id).end().as("n4"), //
-//        sql.lag(t.active).over().orderBy(t.id).end().as("l4"), //
-//        sql.lead(t.active).over().orderBy(t.id).end().as("g4"), //
-//        sql.firstValue(t.active).over().orderBy(t.id).end().as("f4"), //
-//        sql.lastValue(t.active).over().orderBy(t.id).end().as("v4"), //
-//
-//        sql.rank(t.photo).over().orderBy(t.id).end().as("r5"), //
-//        sql.denseRank(t.photo).over().orderBy(t.id).end().as("d5"), //
-//        sql.ntile(t.photo).over().orderBy(t.id).end().as("n5"), //
-//        sql.lag(t.photo).over().orderBy(t.id).end().as("l5"), //
-//        sql.lead(t.photo).over().orderBy(t.id).end().as("g5"), //
-//        sql.firstValue(t.photo).over().orderBy(t.id).end().as("f5"), //
-//        sql.lastValue(t.photo).over().orderBy(t.id).end().as("v5"), //
+        sql.rowNumber().over().orderBy(t.id).end().as("n0"), sql.rank().over().orderBy(t.id).end().as("r0"), //
+        sql.denseRank().over().orderBy(t.id).end().as("d0"), //
+        sql.ntile(t.amount).over().orderBy(t.id).end().as("t0"), //
 
-        sql.rank().over().orderBy(t.id).end().as("r6") //
-//        sql.denseRank(t.region).over().orderBy(t.id).end().as("d6"), //
-//        sql.ntile(t.region).over().orderBy(t.id).end().as("n6"), //
-//        sql.lag(t.region).over().orderBy(t.id).end().as("l6"), //
-//        sql.lead(t.region).over().orderBy(t.id).end().as("g6"), //
-//        sql.firstValue(t.region).over().orderBy(t.id).end().as("f6"), //
-//        sql.lastValue(t.region).over().orderBy(t.id).end().as("v6") //
+        sql.lag(t.amount).over().orderBy(t.id).end().as("l1"), //
+        sql.lead(t.amount).over().orderBy(t.id).end().as("g1"), //
+        sql.firstValue(t.amount).over().orderBy(t.id).end().as("f1"), //
+        sql.lastValue(t.amount).over().orderBy(t.id).end().as("v1"), //
+
+        sql.lag(t.name).over().orderBy(t.id).end().as("l2"), //
+        sql.lead(t.name).over().orderBy(t.id).end().as("g2"), //
+        sql.firstValue(t.name).over().orderBy(t.id).end().as("f2"), //
+        sql.lastValue(t.name).over().orderBy(t.id).end().as("v2"), //
+
+        sql.lag(t.hired).over().orderBy(t.id).end().as("l3"), //
+        sql.lead(t.hired).over().orderBy(t.id).end().as("g3"), //
+        sql.firstValue(t.hired).over().orderBy(t.id).end().as("f3"), //
+        sql.lastValue(t.hired).over().orderBy(t.id).end().as("v3"), //
+
+        sql.lag(t.active).over().orderBy(t.id).end().as("l4"), //
+        sql.lead(t.active).over().orderBy(t.id).end().as("g4"), //
+        sql.firstValue(t.active).over().orderBy(t.id).end().as("f4"), //
+        sql.lastValue(t.active).over().orderBy(t.id).end().as("v4"), //
+
+        sql.lag(t.photo).over().orderBy(t.id).end().as("l5"), //
+        sql.lead(t.photo).over().orderBy(t.id).end().as("g5"), //
+        sql.firstValue(t.photo).over().orderBy(t.id).end().as("f5"), //
+        sql.lastValue(t.photo).over().orderBy(t.id).end().as("v5"), //
+
+        sql.lag(t.region).over().orderBy(t.id).end().as("l6"), //
+        sql.lead(t.region).over().orderBy(t.id).end().as("g6"), //
+        sql.firstValue(t.region).over().orderBy(t.id).end().as("f6"), //
+        sql.lastValue(t.region).over().orderBy(t.id).end().as("v6") //
 
     ).from(t);
     System.out.println("Query: " + q.getPreview(true));

@@ -27,9 +27,9 @@ import org.hotrod.livesql.expressions.aggregations.BooleanMax;
 import org.hotrod.livesql.expressions.aggregations.BooleanMin;
 import org.hotrod.livesql.expressions.aggregations.CharMax;
 import org.hotrod.livesql.expressions.aggregations.CharMin;
-import org.hotrod.livesql.expressions.aggregations.CountValuesDistinct;
 import org.hotrod.livesql.expressions.aggregations.CountRows;
 import org.hotrod.livesql.expressions.aggregations.CountValues;
+import org.hotrod.livesql.expressions.aggregations.CountValuesDistinct;
 import org.hotrod.livesql.expressions.aggregations.DateTimeMax;
 import org.hotrod.livesql.expressions.aggregations.DateTimeMin;
 import org.hotrod.livesql.expressions.aggregations.GroupConcat;
@@ -443,7 +443,7 @@ public class LiveSQL {
     return new DenseRank();
   }
 
-  public NTile ntile(final ComparableExpression expression) {
+  public NTile ntile(final NumericExpression expression) {
     return new NTile(expression);
   }
 
