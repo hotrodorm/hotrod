@@ -1,9 +1,9 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.character.CharFunction;
+import org.hotrod.livesql.expressions.binary.BinaryFunction;
 
-public class BinaryLastValue extends CharFunction implements PositionalAnalyticFunction {
+public class BinaryLastValue extends BinaryFunction implements PositionalAnalyticFunction {
 
   public BinaryLastValue(final BinaryExpression expression) {
     super("last_value(#{})", expression);

@@ -18,7 +18,7 @@ public class GroupConcat extends CharFunction implements WindowableAggregationFu
 
   public GroupConcat(final CharExpression expression, final List<OrderingTerm> ordering,
       final CharExpression separator) {
-    super("<custom-rendering>");
+    super();
     this.ordering = ordering;
     this.expression = expression;
     this.separator = separator;

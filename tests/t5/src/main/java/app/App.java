@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.expressions.Function;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.SelectFromPhase;
@@ -314,6 +315,7 @@ public class App {
     for (Row r : rows) {
       System.out.println("### r=" + r);
     }
+    Function a;
   }
 
   private void testConverters() {

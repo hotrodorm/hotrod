@@ -4,20 +4,20 @@ import java.util.stream.Stream;
 
 import org.hotrod.livesql.expressions.binary.BinaryFunction;
 import org.hotrod.livesql.expressions.bool.BooleanFunction;
-import org.hotrod.livesql.expressions.character.CharFunction;
+import org.hotrod.livesql.expressions.character.CustomCharFunction;
 import org.hotrod.livesql.expressions.datetime.DateTimeFunction;
-import org.hotrod.livesql.expressions.numeric.NumericFunction;
+import org.hotrod.livesql.expressions.numeric.CustomNumericFunction;
 import org.hotrod.livesql.expressions.object.ObjectFunction;
 
 public class Function {
 
-  public static NumericFunction returnsNumeric(final String pattern, final ComparableExpression... parameters) {
-    return new NumericFunction(pattern, parameters) {
+  public static CustomNumericFunction returnsNumeric(final String pattern, final ComparableExpression... parameters) {
+    return new CustomNumericFunction(pattern, parameters) {
     };
   }
 
-  public static CharFunction returnsChar(final String pattern, final ComparableExpression... parameters) {
-    return new CharFunction(pattern, parameters) {
+  public static CustomCharFunction returnsChar(final String pattern, final ComparableExpression... parameters) {
+    return new CustomCharFunction(pattern, parameters) {
     };
   }
 

@@ -1,10 +1,10 @@
 package org.hotrod.livesql.expressions.analytics;
 
 import org.hotrod.livesql.expressions.binary.BinaryExpression;
-import org.hotrod.livesql.expressions.character.CharFunction;
+import org.hotrod.livesql.expressions.binary.BinaryFunction;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 
-public class BinaryLag extends CharFunction implements PositionalAnalyticFunction {
+public class BinaryLag extends BinaryFunction implements PositionalAnalyticFunction {
 
   public BinaryLag(final BinaryExpression expression) {
     super("lag(#{})", expression);

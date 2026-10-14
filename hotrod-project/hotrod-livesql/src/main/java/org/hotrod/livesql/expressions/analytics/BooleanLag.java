@@ -1,10 +1,10 @@
 package org.hotrod.livesql.expressions.analytics;
 
-import org.hotrod.livesql.expressions.character.CharFunction;
+import org.hotrod.livesql.expressions.bool.BooleanFunction;
 import org.hotrod.livesql.expressions.numeric.NumericExpression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class BooleanLag extends CharFunction implements PositionalAnalyticFunction {
+public class BooleanLag extends BooleanFunction implements PositionalAnalyticFunction {
 
   public BooleanLag(final Predicate expression) {
     super("lag(#{})", expression);

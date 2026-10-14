@@ -15,7 +15,7 @@ public class GroupConcatDistinct extends CharFunction implements NonWindowableAg
 
   public GroupConcatDistinct(final CharExpression expression, final List<OrderingTerm> ordering,
       final CharExpression separator) {
-    super("<custom-rendering>");
+    super();
     this.ordering = ordering;
     this.expression = expression;
     this.separator = separator;
