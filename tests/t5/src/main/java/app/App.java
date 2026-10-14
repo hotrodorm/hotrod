@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.expressions.Function;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.SelectFromPhase;
@@ -318,6 +319,7 @@ public class App {
   }
 
   private void testWindowFunctions2() {
+    Function a;
     EmployeeTable t = this.employeeDAO.newTable();
     SelectFromPhase<Row> q = this.sql.select( //
 
