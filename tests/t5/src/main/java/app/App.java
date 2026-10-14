@@ -325,7 +325,7 @@ public class App {
 
         sql.rowNumber().over().orderBy(t.id).end().as("n0"), sql.rank().over().orderBy(t.id).end().as("r0"), //
         sql.denseRank().over().orderBy(t.id).end().as("d0"), //
-        sql.ntile(t.amount).over().orderBy(t.id).end().as("t0"), //
+        sql.ntile(15).over().orderBy(t.id).end().as("t0"), //
 
         sql.lag(t.amount).over().orderBy(t.id).end().as("l1"), //
         sql.lead(t.amount).over().orderBy(t.id).end().as("g1"), //

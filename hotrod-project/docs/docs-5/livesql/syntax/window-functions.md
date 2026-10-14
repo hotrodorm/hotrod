@@ -68,9 +68,9 @@ These functions rank rows according to their values and produce a result in a di
 | Aggregate Function | In LiveSQL |
 | -- | -- |
 | `ROW_NUMBER() OVER(...)` | `sql.rowNumber().over()...` |
-| `RANK(<expression>) OVER(...)` | `sql.rank(<expression>).over()...` |
-| `DENSE_RANK(<expression>) OVER(...)` | `sql.denseRank(<expression>).over()...` |
-| `NTILE(<expression>) OVER(...)` | `sql.ntile(<expression>).over()...` |
+| `RANK() OVER(...)` | `sql.rank().over()...` |
+| `DENSE_RANK() OVER(...)` | `sql.denseRank().over()...` |
+| `NTILE(<number>) OVER(...)`<br/>`NTILE(<numeric-expression>) OVER(...)` | `sql.ntile(<number>).over()...`<br/>`sql.ntile(<numeric-expression>).over()...` |
 
 
 ### Positional Analytical Functions

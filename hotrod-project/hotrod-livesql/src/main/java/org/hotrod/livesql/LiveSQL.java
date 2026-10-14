@@ -447,6 +447,10 @@ public class LiveSQL {
     return new NTile(expression);
   }
 
+  public NTile ntile(final Number tiles) {
+    return new NTile(tiles);
+  }
+
   // Positional Analytic functions
 
   // === First Value ===
