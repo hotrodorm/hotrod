@@ -1,14 +1,11 @@
-# The `<converter>` Tag
+# The &lt;converter> Tag
 
 Sometimes modeling a database column *as is* is not convenient for the application.
 
-It may be something as simple as the database not implementing boolean types natively or that 
+It may be something as simple as the database not implementing boolean types natively or that
 the application needing to model statuses as Java enums rather than plain Strings.
 
-In other cases the reason can be technical rather than conceptual. Sometimes is much faster to read BLOBs or CLOBs as
-`java.io.InputStream`s that could potentially be opened (or not at all to avoid cost when not needed) rather than reading 
-the whole LOBs every time for every single row. In other cases the database or driver may use one way of reading a value but a different way to 
-write it. 
+In other cases the reason can be technical rather than conceptual. Sometimes is much faster to read BLOBs or CLOBs as `java.io.InputStream`s that could potentially be opened (or not at all to avoid cost when not needed) rather than reading the whole LOBs every time for every single row. In other cases the database or driver may use one way of reading a value but a different way to write it.
 
 In cases like the ones above, a converter can resolve the problem. In short, a converter reads a database value and converts
 it on the fly to another type. For example, the `VARCHAR` status column with values `'CRE'`, `'ACC'`, `'REJ'` can be modeled as a Java enum with
@@ -48,7 +45,7 @@ and also to column of Nitro queries.
 
 ## Java Converter Class
 
-The Java converter class is a POJO that implements the `org.hotrod.runtime.converter.TypeConverter<R, A>` interface. This interface is shown below:
+The Java converter class is a POJO that implements the `org.hotrod.converter.TypeConverter<R, A>` interface. This interface is shown below:
 
 ```java
 public interface TypeConverter<R, D> {
@@ -77,9 +74,9 @@ CREATE TABLE patient (
 Now, when reading this database column the converter reads it first as the raw type `java.lang.Short`. Then, it converts into a `java.lang.Boolean`. In this case:
 
 - `DECIMAL(4)`: the database column type.
-- `java.lang.Short`: the raw type for the intermediate value. This value is used briefly during the conversion and
+- `Short`: the raw type for the intermediate value. This value is used briefly during the conversion and
 is not available to the application.
-- `java.lang.Boolean`: the property type in the application. This is the domain value that the application sees.
+- `Boolean`: the property type in the application. This is the domain value that the application sees.
 
 In this example the converter Java class can look like:
 
@@ -124,9 +121,9 @@ This converter can be defined in the configuration file with the `<converter>` t
 
 ```xml
   <converter name="boolean_stored_as_decimal"
-             raw-type="java.lang.Short"
+             raw-type="Short"
              class="com.ctac.converters.ShortBooleanConverter"
-             type="java.lang.Boolean"
+             type="Boolean"
   />
 ```
 
@@ -151,10 +148,10 @@ public class PatientLayout implements Serializable {
 
   // Properties (table columns)
 
-  protected java.lang.Integer id;
-  protected java.lang.String name;
-  protected java.lang.Boolean active;
-  protected java.lang.Boolean recurring;
+  protected Integer id;
+  protected String name;
+  protected Boolean active;
+  protected Boolean recurring;
 
   // Getters & Setters omitted for brevity
 
@@ -200,6 +197,7 @@ public class IntegerArrayConverter implements TypeConverter<java.sql.Array, Inte
 
   @Override
   public Array encode(Integer[] value, Connection conn) throws SQLException {
+    if (value == null) return null;
     return conn.createArrayOf("integer", value);
   }
 
@@ -224,7 +222,7 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's a traditional `java.lang.Integer[]`. For example, the application code could look like:
+Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's a traditional `Integer[]`. For example, the application code could look like:
 
 ```java
   Player p = this.playerDAO.select(101);
