@@ -1,4 +1,4 @@
-# The `<model>` Tag
+# The &lt;model> Tag
 
 This tag configures the generation of Model classes.
 

@@ -1,4 +1,4 @@
-# The `<fragment>` Tag
+# The &lt;fragment> Tag
 
 This tag includes a configuration file fragment in HotRod's configuration.
 

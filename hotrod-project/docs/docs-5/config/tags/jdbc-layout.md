@@ -1,4 +1,4 @@
-# The `<layout>` Tag
+# The &lt;layout> Tag
 
 This tag configures the generation of Layout classes.
 

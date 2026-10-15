@@ -1,4 +1,4 @@
-# The `<discover>` Tag
+# The &lt;discover> Tag
 
 Schema discovery inspects one or more database schemas to include all tables and view of them in the persistence layer. This can come in handy when starting a project with minimal configuration.
 

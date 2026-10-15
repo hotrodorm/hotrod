@@ -1,4 +1,4 @@
-# The `<jdbc>` Tag
+# The &lt;jdbc> Tag
 
 This tag configures the details of the generated persistence layer. It defines the folder locations,
 packages, and naming convention for the generated DAOs, Layout, and Model classes.

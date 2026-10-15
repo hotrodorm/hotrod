@@ -1,4 +1,4 @@
-# The `<name-solver>` Tag
+# The &lt;name-solver> Tag
 
 This tag controls adds rules to tailor the generation of classes and properties in the persistence layer.
 

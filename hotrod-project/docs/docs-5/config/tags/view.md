@@ -1,4 +1,4 @@
-# The `<view>` Tag
+# The &lt;view> Tag
 
 A `<view>` tag tells the HotRod generator to include a view in the code generation. Each `<view>` tag adds one database view
 to the persistence layer.

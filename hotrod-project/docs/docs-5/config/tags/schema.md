@@ -1,4 +1,4 @@
-# The `<schema>` Tag
+# The &lt;schema> Tag
 
 This tag specifies a schema to discover tables and views. See [`<discover>`](./discover.md) and [Schema Discovery](../../guides/schema-discovery.md).
 

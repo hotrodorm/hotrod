@@ -1,4 +1,4 @@
-# The `<table>` Tag
+# The &lt;table> Tag
 
 A `<table>` tag tells the HotRod generator to include a table in the code generation. Each `<table>` tag adds one table
 to the persistence layer.

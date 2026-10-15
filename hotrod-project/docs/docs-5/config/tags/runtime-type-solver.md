@@ -1,4 +1,4 @@
-# The `<runtime-type-solver>` Tag
+# The &lt;runtime-type-solver> Tag
 
 The Runtime Type Solver can apply rules to decide the types of expressions in LiveSQL SELECT queries.
 

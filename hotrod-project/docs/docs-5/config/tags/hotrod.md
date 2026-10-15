@@ -1,4 +1,4 @@
-# The `<hotrod>` Tag
+# The &lt;hotrod> Tag
 
 This tag represents the entry point of the main HotRod configuration file.
 

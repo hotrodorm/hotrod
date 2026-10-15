@@ -1,4 +1,4 @@
-# The `<exclude>` Tag
+# The &lt;exclude> Tag
 
 An `<exclude>` tag can be added to a `<schema>` or `<current-schema>` tag to exclude a table or view from being discovered 
 and added to the configuration. See [`<discover>`](./discover.md) and [Schema Discovery](../../guides/schema-discovery.md).

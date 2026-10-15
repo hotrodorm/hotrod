@@ -1,4 +1,4 @@
-# The `<type-solver>` Tag
+# The &lt;type-solver> Tag
 
 HotRod's configuration can include a rule based static type solver that can decide on the types
 of the columns for tables, views, and Nitro select queries. These data type are used when producing the layout classes of the persistence layer.

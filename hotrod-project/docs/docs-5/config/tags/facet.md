@@ -1,4 +1,4 @@
-# The `<facet>` Tag
+# The &lt;facet> Tag
 
 A facet encloses a subset of the elements of the configuration file. The purpose of this differentiation
 is to execute partial persistence layer generation, in order to refresh parts of the persistence layer only.

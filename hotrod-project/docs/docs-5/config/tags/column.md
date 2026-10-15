@@ -1,5 +1,5 @@
 
-# The `<column>` Tag
+# The &lt;column> Tag
 
 This tag can be used to override the default name and/or type of a property related to a database column, 
 or to specify a type converter for it.

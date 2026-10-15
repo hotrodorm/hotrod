@@ -1,4 +1,4 @@
-# The `<layer-resources>` Tag
+# The &lt;layer-resources> Tag
 
 This tag configures the generation of the layer resources class that holds the layer properties.
 

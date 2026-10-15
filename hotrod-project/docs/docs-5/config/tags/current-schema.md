@@ -1,4 +1,4 @@
-# The `<current-schema>` Tag
+# The &lt;current-schema> Tag
 
 This tag specifies that the current schema should be included for discover tables and views. See [`<discover>`](./discover.md) and [Schema Discovery](../../guides/schema-discovery.md).
 

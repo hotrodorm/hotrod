@@ -1,4 +1,4 @@
-# The `<hotrod-fragment>` Tag
+# The &lt;hotrod-fragment> Tag
 
 This is the root tag of a configuration file fragment.
 

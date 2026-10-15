@@ -1,4 +1,4 @@
-# The `<dao>` Tag
+# The &lt;dao> Tag
 
 This tag configures the generation of DAO classes.
 

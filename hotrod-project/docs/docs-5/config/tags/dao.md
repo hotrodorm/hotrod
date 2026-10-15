@@ -1,4 +1,4 @@
-# The `<dao>` Tag
+# The &lt;dao> Tag
 
 A `<dao>` tag adds one DAO class to the persistence layer. This DAO class is meant to include methods according to the
 inner `<sequence>`, `<query>`, and `<select>` tags.
