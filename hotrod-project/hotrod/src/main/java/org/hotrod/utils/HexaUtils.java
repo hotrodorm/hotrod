@@ -43,19 +43,20 @@ public class HexaUtils {
     if (hexa == null) {
       return null;
     }
+    if ((hexa.length() & 1) != 0) {
+      throw new IllegalArgumentException("Hexadecimal input must have an even length.");
+    }
     byte[] bytes = new byte[hexa.length() / 2];
     for (int i = 0; i + 1 < hexa.length(); i = i + 2) {
 
       int hi = DIGITS.indexOf(hexa.charAt(i));
       if (hi == -1) {
-        throw new IllegalArgumentException(
-            "Character '" + DIGITS.indexOf(hexa.charAt(i)) + "' is not an hexa character.");
+        throw new IllegalArgumentException("Character '" + hexa.charAt(i) + "' is not an hexa character.");
       }
 
       int lo = DIGITS.indexOf(hexa.charAt(i + 1));
       if (lo == -1) {
-        throw new IllegalArgumentException(
-            "Character '" + DIGITS.indexOf(hexa.charAt(i + 1)) + "' is not an hexa character.");
+        throw new IllegalArgumentException("Character '" + hexa.charAt(i + 1) + "' is not an hexa character.");
       }
 
       bytes[i / 2] = (byte) (hi * 16 + lo);

@@ -58,16 +58,31 @@ public class JSONArray implements JSONValue {
 
   public static class JSONArrayCollector implements Collector<JSONObject, List<JSONObject>, JSONArray> {
 
-    private List<JSONObject> elements = new ArrayList<>();
-
     @Override
     public Supplier<List<JSONObject>> supplier() {
-      return new Supplier<List<JSONObject>>() {
-        @Override
-        public List<JSONObject> get() {
-          return elements;
-        }
+      return ArrayList::new;
+    }
+
+    @Override
+    public BinaryOperator<List<JSONObject>> combiner() {
+      return (left, right) -> {
+        left.addAll(right);
+        return left;
       };
+    }
+
+    @Override
+    public Function<List<JSONObject>, JSONArray> finisher() {
+      return values -> {
+        JSONArray result = new JSONArray();
+        values.forEach(result::add);
+        return result;
+      };
+    }
+
+    @Override
+    public Set<Characteristics> characteristics() {
+      return new HashSet<Characteristics>();
     }
 
     @Override
@@ -78,32 +93,6 @@ public class JSONArray implements JSONValue {
           t.add(u);
         }
       };
-    }
-
-    @Override
-    public BinaryOperator<List<JSONObject>> combiner() {
-      // No need to combine, since this collector is not concurrent
-      return null;
-    }
-
-    @Override
-    public Function<List<JSONObject>, JSONArray> finisher() {
-      return new Function<List<JSONObject>, JSONArray>() {
-        @Override
-        public JSONArray apply(final List<JSONObject> t) {
-          JSONArray a = new JSONArray();
-          for (JSONObject e : elements) {
-            a.add(e);
-          }
-          return a;
-        }
-      };
-
-    }
-
-    @Override
-    public Set<Characteristics> characteristics() {
-      return new HashSet<Characteristics>();
     }
 
   }

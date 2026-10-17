@@ -60,6 +60,9 @@ public class SUtil {
     if (txt == null) {
       return null;
     }
+    if (txt.isEmpty()) {
+      return txt;
+    }
     return txt.substring(0, 1).toUpperCase() + txt.substring(1);
   }
 
@@ -226,6 +229,9 @@ public class SUtil {
   }
 
   public static int countMatches(final String txt, final String searchText) {
+    if (searchText == null || searchText.isEmpty()) {
+      return 0;
+    }
     int pos = 0;
     int count = 0;
     while (pos <= txt.length() && ((pos = txt.indexOf(searchText, pos)) != -1)) {
@@ -258,6 +264,9 @@ public class SUtil {
   }
 
   public static List<String> slice(final String txt, final int width) {
+    if (width <= 0) {
+      throw new IllegalArgumentException("Width must be greater than zero");
+    }
     List<String> slices = new ArrayList<String>();
     int len = txt.length();
     for (int i = 0; i < len; i += width) {
