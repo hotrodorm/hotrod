@@ -1,5 +1,6 @@
 package org.hotrod.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,15 +26,17 @@ public class AUtil {
     return r;
   }
 
+  @SuppressWarnings("unchecked")
   @SafeVarargs
   public static <T> T[] concat(final T[]... arrays) {
+    if (arrays.length == 0) {
+      return (T[]) new Object[0];
+    }
     List<T> l = new ArrayList<T>();
     for (T[] a : arrays) {
       l.addAll(Arrays.asList(a));
     }
-    @SuppressWarnings("unchecked")
-    T[] r = (T[]) l.toArray();
-    return r;
+    return l.toArray(Arrays.copyOf(arrays[0], l.size()));
   }
 
 }
