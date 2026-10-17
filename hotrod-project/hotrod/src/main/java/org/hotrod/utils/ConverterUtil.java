@@ -27,7 +27,7 @@ public abstract class ConverterUtil {
     } catch (IllegalAccessException | IllegalArgumentException e) {
       throw new PersistenceException("Could not invoke converter's encode() method", e);
     } catch (InvocationTargetException e) {
-      throw new PersistenceException("Converter's encode() method threw an exception", e);
+      throw new PersistenceException("Converter's encode() method threw an exception", e.getCause());
     }
 
     return raw;

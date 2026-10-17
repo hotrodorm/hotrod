@@ -4,11 +4,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -205,8 +206,9 @@ public class SUtil {
       try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f), readerEncoding))) {
         return loadReaderIntoString(r);
       }
-    } else {
-      try (BufferedReader r = new BufferedReader(new FileReader(f))) {
+    } else { // Use UTF-8 as default encoding
+      try (BufferedReader r = new BufferedReader(
+          new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {
         return loadReaderIntoString(r);
       }
     }
@@ -223,7 +225,7 @@ public class SUtil {
   }
 
   public static void saveStringToFile(final String txt, final File f) throws IOException {
-    try (Writer w = new BufferedWriter(new FileWriter(f))) {
+    try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
       w.write(txt);
     }
   }

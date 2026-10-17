@@ -3,6 +3,7 @@ package org.hotrod.json;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -30,6 +31,46 @@ public class JsonValueTest {
     assertEquals("true", new JSONBoolean(true).render());
     assertEquals("false", new JSONBoolean(false).render());
     assertEquals("null", new JSONNullValue().render());
+  }
+
+  @Test
+  public void numbersRenderSupportedTypesAndNull() {
+    assertEquals("42", new JSONNumber(42).render());
+    assertEquals("9999999999", new JSONNumber(9999999999L).render());
+    assertEquals("3.14", new JSONNumber(3.14f).render());
+    assertEquals("-5.5", new JSONNumber(-5.5).render());
+    assertEquals("123.456", new JSONNumber(new BigDecimal("123.456")).render());
+    assertEquals("null", new JSONNumber(null).render());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectDoubleNaN() {
+    new JSONNumber(Double.NaN).render();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectDoublePositiveInfinity() {
+    new JSONNumber(Double.POSITIVE_INFINITY).render();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectDoubleNegativeInfinity() {
+    new JSONNumber(Double.NEGATIVE_INFINITY).render();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectFloatNaN() {
+    new JSONNumber(Float.NaN).render();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectFloatPositiveInfinity() {
+    new JSONNumber(Float.POSITIVE_INFINITY).render();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numbersRejectFloatNegativeInfinity() {
+    new JSONNumber(Float.NEGATIVE_INFINITY).render();
   }
 
   @Test

@@ -7,7 +7,7 @@ public class ClobGetter implements ResultSetGetter {
 
   @Override
   public Object get(ResultSet rs, int ordinal) throws SQLException {
-    Object v = rs.getBlob(ordinal);
+    Object v = rs.getClob(ordinal);
     return rs.wasNull() ? null : v;
   }
 

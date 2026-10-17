@@ -10,7 +10,20 @@ public class JSONNumber implements JSONValue {
 
   @Override
   public String render() {
-    return this.value == null ? "null" : "" + this.value;
+    if (this.isValidJSON()) {
+      return this.value == null ? "null" : "" + this.value;
+    }
+    throw new IllegalArgumentException("JSON does not support NaN or Infinity values.");
   }
 
+  private boolean isValidJSON() {
+    if (value instanceof Double) {
+      Double d = (Double) value;
+      return !d.isNaN() && !d.isInfinite();
+    } else if (value instanceof Float) {
+      Float f = (Float) value;
+      return !f.isNaN() && !f.isInfinite();
+    }
+    return true; // Other number types are valid
+  }
 }
