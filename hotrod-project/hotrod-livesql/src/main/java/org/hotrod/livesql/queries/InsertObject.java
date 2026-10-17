@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumnMetaData;
@@ -76,7 +77,7 @@ public class InsertObject {
         return count;
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }

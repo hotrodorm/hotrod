@@ -65,7 +65,7 @@ public class CTE extends Subquery {
 //    if (this.columns != null && this.columns.length > 0) {
 //      List<ResultSetColumn> cols = super.getSelect().listColumns();
 //      if (this.columns.length != cols.size()) {
-//        throw new RuntimeException("The number of columns (" + cols.size() + ") in the CTE '" + super.getName()
+//        throw new LiveSQLException("The number of columns (" + cols.size() + ") in the CTE '" + super.getName()
 //            + "' differs from the number of declared column names for it (" + this.columns.length + ").");
 //      }
 //      List<ResultSetColumn> fcols = new ArrayList<>();

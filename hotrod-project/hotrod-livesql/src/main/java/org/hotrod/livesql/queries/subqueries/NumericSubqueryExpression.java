@@ -2,6 +2,7 @@ package org.hotrod.livesql.queries.subqueries;
 
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.numeric.NumericSyntaxExpression;
@@ -21,7 +22,8 @@ public class NumericSubqueryExpression extends NumericSyntaxExpression implement
 
   // Constructor
 
-  public NumericSubqueryExpression(final Subquery subquery, final String referencedColumnName, final Expression column) {
+  public NumericSubqueryExpression(final Subquery subquery, final String referencedColumnName,
+      final Expression column) {
     super(Expression.PRECEDENCE_COLUMN);
     this.subquery = subquery;
     this.referencedColumnName = referencedColumnName;
@@ -51,7 +53,7 @@ public class NumericSubqueryExpression extends NumericSyntaxExpression implement
       this.column = this.subquery.findColumnByName(colName);
 //      log.info("%% column " + this.subquery.getName() + "." + colName + "=" + this.column);
       if (this.column == null) {
-        throw new RuntimeException(
+        throw new LiveSQLException(
             "Could not find column '" + colName + "' in subquery '" + this.subquery.getName() + "'");
       }
     }

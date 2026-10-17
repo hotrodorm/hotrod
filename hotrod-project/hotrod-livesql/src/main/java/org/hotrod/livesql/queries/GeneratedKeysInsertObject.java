@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
@@ -76,7 +77,7 @@ public class GeneratedKeysInsertObject<T> {
         return key;
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }
@@ -100,7 +101,7 @@ public class GeneratedKeysInsertObject<T> {
         return r;
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }

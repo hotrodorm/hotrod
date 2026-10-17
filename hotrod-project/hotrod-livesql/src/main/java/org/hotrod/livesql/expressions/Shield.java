@@ -3,16 +3,18 @@ package org.hotrod.livesql.expressions;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.analytics.WindowableFunction;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.util.ToString;
 
 public abstract class Shield {
 
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Shield.class.getName());
 
   @SuppressWarnings("unchecked")
@@ -34,11 +36,11 @@ public abstract class Shield {
   }
 
   public static void renderTo(final WindowableFunction function, final QueryWriter w) {
-    try {
-      Expression expr = (Expression) function;
-      expr.renderTo(w);
-    } catch (ClassCastException e) {
-      throw new RuntimeException("Could not render function " + function.getClass().getName());
+    if (function instanceof Expression) {
+      Shield.renderTo((Expression) function, w);
+      return;
+    } else {
+      throw new LiveSQLException("Could not render function " + function.getClass().getName());
     }
   }
 

@@ -169,7 +169,7 @@ public abstract class SelectObject<T> {
 
     } catch (SQLException e) {
       log.log(Level.SEVERE, e.getMessage());
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }
@@ -216,7 +216,7 @@ public abstract class SelectObject<T> {
 
     } catch (SQLException e) {
       log.log(Level.SEVERE, e.getMessage());
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }

@@ -1,5 +1,7 @@
 package org.hotrod.livesql.queries.select.tuples.gen;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
+
 public class TupleClassFactory {
 
   public static Class<?> getTuplesClass(int modelInstancesCount) {
@@ -57,7 +59,7 @@ public class TupleClassFactory {
     case 26:
       return Tuple26.class;
     default:
-      throw new RuntimeException("Cannot find class for tuples: invalid instance count of " + modelInstancesCount);
+      throw new LiveSQLException("Cannot find class for tuples: invalid instance count of " + modelInstancesCount);
     }
   }
 

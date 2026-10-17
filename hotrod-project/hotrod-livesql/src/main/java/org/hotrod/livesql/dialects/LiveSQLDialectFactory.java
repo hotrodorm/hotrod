@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.utils.SUtil;
 
 public class LiveSQLDialectFactory {
@@ -54,7 +55,7 @@ public class LiveSQLDialectFactory {
 
       } else {
 
-        throw new RuntimeException(
+        throw new LiveSQLException(
             "Either the dataSource of the liveSQLDialectName must be provided, but both were null.");
 
       }
@@ -106,7 +107,7 @@ public class LiveSQLDialectFactory {
         for (DesignatedLiveSQLDialect d : DesignatedLiveSQLDialect.values()) {
           sb.append(" - " + d.name() + "\n");
         }
-        throw new RuntimeException("[" + LiveSQLDialectFactory.class.getSimpleName()
+        throw new LiveSQLException("[" + LiveSQLDialectFactory.class.getSimpleName()
             + "] Could not resolve the SQL dialect. Invalid property 'livesqldialectname' with value '"
             + liveSQLDialectName + "'. Valid values are:\n" + sb.toString());
       }

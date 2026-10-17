@@ -99,7 +99,7 @@ public class Gen {
       IntStream.rangeClosed(1, MAX_SIZE)
           .forEach(x -> write(w, "    case " + x + ":\n" + "      return Tuple" + x + ".class;\n"));
       w.write("    default:\n"
-          + "      throw new RuntimeException(\"Cannot find class for tuples: invalid instance count of \" + modelInstancesCount);\n"
+          + "      throw new LiveSQLException(\"Cannot find class for tuples: invalid instance count of \" + modelInstancesCount);\n"
           + "    }\n" + "  }\n" + "\n" + "}\n");
     }
   }

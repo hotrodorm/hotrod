@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 
@@ -140,7 +141,7 @@ public class RowCursor<T> implements Cursor<T> {
           return true;
         }
       } catch (SQLException e) {
-        throw new RuntimeException("Could not move to the next row of the result set", e);
+        throw new LiveSQLException("Could not move to the next row of the result set", e);
       }
     }
 
@@ -161,7 +162,7 @@ public class RowCursor<T> implements Cursor<T> {
         this.cachedHasNext = null;
         return row;
       } catch (SQLException e) {
-        throw new RuntimeException("Could not read the result set row", e);
+        throw new LiveSQLException("Could not read the result set row", e);
       }
     }
   }

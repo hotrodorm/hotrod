@@ -2,6 +2,7 @@ package org.hotrod.livesql.queries.subqueries;
 
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.character.CharSyntaxExpression;
@@ -43,7 +44,7 @@ public class SubqueryNullColumn extends CharSyntaxExpression implements Subquery
   protected Expression getEmergingExpression() {
     this.column = this.subquery.findColumnByName(this.referencedColumnName);
     if (this.column == null) {
-      throw new RuntimeException(
+      throw new LiveSQLException(
           "Could not find column '" + this.referencedColumnName + "' in subquery '" + this.subquery.getName() + "'");
     }
     return this;

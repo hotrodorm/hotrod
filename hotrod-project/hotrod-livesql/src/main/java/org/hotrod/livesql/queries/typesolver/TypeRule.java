@@ -18,7 +18,7 @@ public class TypeRule {
   private String test;
 
   private TypeHandler<?, ?> typeHandler; // If test succeeds and there's no error message, this is the outcome
-  private String errorMessage; // If test succeeds and there's an error message, a RuntimeException is thrown
+  private String errorMessage; // If test succeeds and there's an error message, a LiveSQLException is thrown
                                // with this message
 
   private DynamicExpressionFactory factory;

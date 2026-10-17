@@ -1,6 +1,6 @@
 package org.hotrod.livesql.exceptions;
 
-public class InvalidLiveSQLStatementException extends RuntimeException {
+public class InvalidLiveSQLStatementException extends LiveSQLException {
 
   private static final long serialVersionUID = 1L;
 

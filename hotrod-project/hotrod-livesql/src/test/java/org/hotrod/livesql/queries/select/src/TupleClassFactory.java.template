@@ -11,7 +11,7 @@ public class TupleClassFactory {
     case 3:
       return Tuple3.class;
     default:
-      throw new RuntimeException("Cannot find class for tuples: invalid instance count of " + modelInstancesCount);
+      throw new LiveSQLException("Cannot find class for tuples: invalid instance count of " + modelInstancesCount);
     }
   }
 

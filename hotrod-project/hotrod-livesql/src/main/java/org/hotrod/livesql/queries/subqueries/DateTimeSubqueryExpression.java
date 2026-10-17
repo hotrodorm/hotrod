@@ -2,6 +2,7 @@ package org.hotrod.livesql.queries.subqueries;
 
 import java.util.logging.Logger;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.expressions.datetime.DateTimeSyntaxExpression;
@@ -52,7 +53,7 @@ public class DateTimeSubqueryExpression extends DateTimeSyntaxExpression impleme
       this.column = this.subquery.findColumnByName(colName);
 //      log.info("%% column " + this.subquery.getName() + "." + colName + "=" + this.column);
       if (this.column == null) {
-        throw new RuntimeException(
+        throw new LiveSQLException(
             "Could not find column '" + colName + "' in subquery '" + this.subquery.getName() + "'");
       }
     }

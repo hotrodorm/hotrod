@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.RowReader;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.EntityColumn;
@@ -178,7 +179,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
 //          }
           field = layout.getDeclaredField(property);
         } catch (NoSuchFieldException | SecurityException e) {
-          throw new RuntimeException("Could not find field '" + property + "' in model class '" + layout.getName()
+          throw new LiveSQLException("Could not find field '" + property + "' in model class '" + layout.getName()
               + "': " + e.getClass().getName());
         }
         field.setAccessible(true);

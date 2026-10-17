@@ -3,6 +3,7 @@ package org.hotrod.livesql.expressions.bool.converter;
 import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
 import org.hotrod.livesql.queries.QueryWriter;
@@ -23,7 +24,7 @@ public class ConvertedNotIn<R, D> extends BooleanSyntaxExpression {
     this.c = c;
     this.converter = converter;
     if (d.length == 0) {
-      throw new RuntimeException("The NOT IN operator must use a non-empty list of values, but none was provided.");
+      throw new LiveSQLException("The NOT IN operator must use a non-empty list of values, but none was provided.");
     }
     this.d = d;
   }

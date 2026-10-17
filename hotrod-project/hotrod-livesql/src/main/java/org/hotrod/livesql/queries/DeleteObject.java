@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Shield;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.util.LoggingUtil;
@@ -60,7 +61,7 @@ public class DeleteObject {
         return count;
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }

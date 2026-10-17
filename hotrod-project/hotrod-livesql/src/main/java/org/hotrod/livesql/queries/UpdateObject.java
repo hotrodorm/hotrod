@@ -76,7 +76,7 @@ public class UpdateObject {
         return count;
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new LiveSQLException("Could not execute LiveSQL query", e);
     } finally {
       context.releaseConnection(conn);
     }
