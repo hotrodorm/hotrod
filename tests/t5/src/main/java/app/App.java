@@ -11,6 +11,7 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Function;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
+import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.SelectFromPhase;
 import org.hotrod.livesql.queries.select.tuples.gen.Tuple1;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,8 +142,8 @@ public class App {
 
 //      testFLValues();
 //      testFilter();
-      testWindowFunctions2();
-
+//      testWindowFunctions2();
+      testLiveSQLCursor();
 //      testInsertSequence();
 //      testInsertIdentity();
 
@@ -363,6 +364,20 @@ public class App {
     for (Row r : rows) {
       System.out.println("### r=" + r);
     }
+  }
+
+  private void testLiveSQLCursor() {
+    EmployeeTable t = this.employeeDAO.newTable();
+    Select<Row> q = this.sql.select().from(t);
+    System.out.println("Query: " + q.getPreview(true));
+    try (var cursor = q.executeCursor(LIVESQL_LOG)) {
+      for (Row r : cursor) {
+        System.out.println("### r=" + r);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
   }
 
   private void testConverters() {

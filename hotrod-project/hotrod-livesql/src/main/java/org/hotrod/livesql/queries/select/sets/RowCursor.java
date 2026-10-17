@@ -19,6 +19,7 @@ public class RowCursor<T> implements Cursor<T> {
 
   private static final Logger log = Logger.getLogger(RowCursor.class.getName());
 
+  private LiveSQLContext context;
   private Connection conn;
   private PreparedStatement ps;
   private ResultSet rs;
@@ -27,8 +28,10 @@ public class RowCursor<T> implements Cursor<T> {
   public RowCursor(final LiveSQLContext context, final LiveSQLPreparedQuery q, final LiveSQLLogging loggingAdapter,
       final RowReader<T> rowReader, final Integer fetchSize) throws SQLException {
 
+    this.context = context;
     this.conn = null;
     this.ps = null;
+    this.rs = null;
 
     try {
 
@@ -60,17 +63,16 @@ public class RowCursor<T> implements Cursor<T> {
       }
 
     } catch (SQLException e) {
+      // close resources if there is an exception during initialization
       this.close();
       throw e;
-    } finally {
-      context.releaseConnection(this.conn);
     }
 
   }
 
   @Override
   public Iterator<T> iterator() {
-    return new CursorIterator<>(this.conn, this.rs, this.rowReader);
+    return new CursorIterator<>(this);
   }
 
   @Override
@@ -79,6 +81,7 @@ public class RowCursor<T> implements Cursor<T> {
       try {
         if (this.rs != null) {
           this.rs.close();
+          this.rs = null;
         }
       } catch (SQLException e) {
         log.log(Level.SEVERE, "Could not close the database result set", e);
@@ -87,63 +90,80 @@ public class RowCursor<T> implements Cursor<T> {
       try {
         if (this.ps != null) {
           this.ps.close();
+          this.ps = null;
         }
       } catch (SQLException e) {
         log.log(Level.SEVERE, "Could not close the database prepared statement", e);
       } finally {
         try {
           if (this.conn != null) {
-            this.conn.close();
+            this.context.releaseConnection(this.conn);
+            this.conn = null;
           }
-        } catch (SQLException e) {
-          log.log(Level.SEVERE, "Could not close the database connection", e);
+        } catch (Exception e) {
+          log.log(Level.SEVERE, "Could not release the database connection", e);
         }
       }
     }
   }
 
-  public static class CursorIterator<T> implements Iterator<T> {
+  private static class CursorIterator<T> implements Iterator<T> {
 
-    private Connection conn;
-    private ResultSet rs;
-    private RowReader<T> rowReader;
+    private final RowCursor<T> parent;
     private boolean endReached;
+    private boolean cachedFetched;
+    private Boolean cachedHasNext; // null => not fetched
 
-    public CursorIterator(Connection conn, ResultSet rs, RowReader<T> rowReader) {
-      this.conn = conn;
-      this.rs = rs;
-      this.rowReader = rowReader;
+    public CursorIterator(RowCursor<T> parent) {
+      this.parent = parent;
       this.endReached = false;
+      this.cachedFetched = false;
+      this.cachedHasNext = null;
     }
 
-    @Override
-    public boolean hasNext() {
+    private boolean fetchNextIfNeeded() {
+      if (this.cachedHasNext != null) {
+        return this.cachedHasNext;
+      }
       if (this.endReached) {
-        throw new NoSuchElementException("There are no more rows in the result set");
+        this.cachedHasNext = Boolean.FALSE;
+        return false;
       }
       try {
-        boolean next = this.rs.next();
+        boolean next = this.parent.rs.next();
         if (!next) {
           this.endReached = true;
+          this.cachedHasNext = Boolean.FALSE;
+          return false;
+        } else {
+          this.cachedHasNext = Boolean.TRUE;
+          return true;
         }
-        return next;
       } catch (SQLException e) {
         throw new RuntimeException("Could not move to the next row of the result set", e);
       }
     }
 
     @Override
+    public boolean hasNext() {
+      return fetchNextIfNeeded();
+    }
+
+    @Override
     public T next() {
-      if (this.endReached) {
+      if (!fetchNextIfNeeded()) {
         throw new NoSuchElementException("There are no more rows in the result set");
       }
       try {
-        return this.rowReader.readRowFrom(this.rs, this.conn);
+        // We already advanced rs in fetchNextIfNeeded(); read the current row
+        T row = this.parent.rowReader.readRowFrom(this.parent.rs, this.parent.conn);
+        // clear cachedHasNext so subsequent hasNext() will advance further
+        this.cachedHasNext = null;
+        return row;
       } catch (SQLException e) {
         throw new RuntimeException("Could not read the result set row", e);
       }
     }
-
   }
 
 }

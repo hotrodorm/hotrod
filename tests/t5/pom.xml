@@ -9,14 +9,13 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.release>25</maven.compiler.release>
 
 <!-- 
     <springboot.version>2.3.4.RELEASE</springboot.version>
     <springboot.version>4.0.4</springboot.version>
 -->
-    <springboot.version>2.3.4.RELEASE</springboot.version>
+    <springboot.version>4.0.4</springboot.version>
     <debbie.version>1.3.3</debbie.version>
     <hotrod.version>5.1.27-SNAPSHOT</hotrod.version>
   </properties>
@@ -108,7 +107,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/${subfolder}/</argument>
@@ -302,7 +301,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/${subfolder}/</argument>
@@ -411,7 +410,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/db2/</argument>
@@ -592,7 +591,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/${subfolder}/</argument>
@@ -767,7 +766,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/${subfolder}/</argument>
@@ -859,7 +858,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=${configbasedir}/</argument>
@@ -1035,7 +1034,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/mysql/</argument>
@@ -1210,7 +1209,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/mariadb/</argument>
@@ -1386,7 +1385,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=src/main/database/sybasease/</argument>
@@ -1478,7 +1477,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=${configbasedir}/</argument>
@@ -1599,7 +1598,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=${configbasedir}/</argument>
@@ -1692,7 +1691,7 @@
           <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.3.4.RELEASE</version>
+            <version>${springboot.version}</version>
             <configuration>
               <arguments>
                 <argument>--spring.config.location=${configbasedir}/</argument>
