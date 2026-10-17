@@ -40,7 +40,7 @@ public class DiagnosticAndArchiveTest {
     assertTrue(archive.isFile());
     try (ZipFile zip = new ZipFile(archive)) {
       assertTrue(zip.getEntry("root.txt") != null);
-      assertTrue(zip.getEntry("nested/child.txt") != null || zip.getEntry("nested\\child.txt") != null);
+      assertTrue(zip.getEntry("nested/child.txt") != null);
       assertFalse(zip.getEntry(source.getName() + "/root.txt") != null);
     }
   }
