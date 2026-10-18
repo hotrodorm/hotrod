@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.sql.DataSource;
+
 import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public class PreparedSelectQuery<R> extends PreparedQuery {
@@ -66,12 +68,12 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     }
   }
 
-  public Cursor<R> executeCursor(Connection conn) throws SQLException {
-    return new DynamicCursor<>(conn, this, this.rr, null);
+  public Cursor<R> executeCursor(DataSource dataSource) throws SQLException {
+    return new DynamicCursor<>(dataSource, this, this.rr, null);
   }
 
-  public Cursor<R> executeCursor(Connection conn, Integer fetchSize) throws SQLException {
-    return new DynamicCursor<>(conn, this, this.rr, fetchSize);
+  public Cursor<R> executeCursor(DataSource dataSource, Integer fetchSize) throws SQLException {
+    return new DynamicCursor<>(dataSource, this, this.rr, fetchSize);
   }
 
 }

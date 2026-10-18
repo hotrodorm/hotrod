@@ -12,6 +12,8 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.sql.DataSource;
+
 public class DynamicCursor<R> implements Cursor<R> {
 
   private static final Logger log = Logger.getLogger(DynamicCursor.class.getName());
@@ -21,12 +23,13 @@ public class DynamicCursor<R> implements Cursor<R> {
   private ResultSet rs;
   private RowReader<R> rowReader;
 
-  public DynamicCursor(Connection conn, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
+  public DynamicCursor(DataSource dataSource, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
       throws SQLException {
 
-    this.conn = conn;
+    this.conn = null;
 
     try {
+      this.conn = dataSource.getConnection();
 
       this.ps = q.prepareStatement(conn);
       if (fetchSize != null) {
