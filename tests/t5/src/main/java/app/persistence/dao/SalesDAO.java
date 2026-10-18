@@ -88,7 +88,7 @@ public class SalesDAO {
     private boolean present2 = false;
 
     @Override
-    public void discoverDynamicColumns(ResultSet rs) throws SQLException {
+    public void discoverColumns(ResultSet rs) throws SQLException {
       ResultSetMetaData m = rs.getMetaData();
       present1 = false;
       present2 = false;

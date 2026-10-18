@@ -42,7 +42,7 @@ public class DynamicCursor<R> implements Cursor<R> {
       } else {
         this.rowReader = rowReader;
       }
-      this.rowReader.discoverDynamicColumns(this.rs);
+      this.rowReader.discoverColumns(this.rs);
 
     } catch (SQLException e) {
       this.close();
@@ -147,7 +147,7 @@ public class DynamicCursor<R> implements Cursor<R> {
     private List<String> columns = null;
 
     @Override
-    public void discoverDynamicColumns(ResultSet rs) throws SQLException {
+    public void discoverColumns(ResultSet rs) throws SQLException {
       ResultSetMetaData rm = rs.getMetaData();
       int columnCount = rm.getColumnCount();
       this.columns = new ArrayList<>();

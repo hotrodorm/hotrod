@@ -74,8 +74,8 @@ public class GetterTest {
 
     for (GetterCase testCase : cases) {
       Object actual = testCase.getter.get(resultSet(testCase.method, testCase.value, false), 3);
-      System.out.println("* testCase: actual: " + actual + " (null:" + (actual == null ? "yes" : "no") + ") expected: "
-          + testCase.value + " (null:" + (testCase.value == null ? "yes" : "no") + ")");
+//      System.out.println("* testCase: actual: " + actual + " (null:" + (actual == null ? "yes" : "no") + ") expected: "
+//          + testCase.value + " (null:" + (testCase.value == null ? "yes" : "no") + ")");
       assertValueEquals(testCase.value, actual);
       assertNull(testCase.getter.get(resultSet(testCase.method, defaultValueFor(testCase.value), true), 3));
     }

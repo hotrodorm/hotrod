@@ -292,7 +292,7 @@ public class TestExamples {
       RowReader<MyEmployee> rr = new RowReader<MyEmployee>() {
 
         @Override
-        public void discoverDynamicColumns(ResultSet rs) throws SQLException {
+        public void discoverColumns(ResultSet rs) throws SQLException {
           // Nothing to do here. The columns are already known.
         }
 
