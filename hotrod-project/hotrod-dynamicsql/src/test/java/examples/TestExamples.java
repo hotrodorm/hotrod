@@ -290,6 +290,13 @@ public class TestExamples {
       Parameters params = dyn.newParameters();
 
       RowReader<MyEmployee> rr = new RowReader<MyEmployee>() {
+
+        @Override
+        public void initialize(ResultSet rs, Connection conn) throws SQLException {
+          // TODO Auto-generated method stub
+
+        }
+
         @Override
         public MyEmployee readRowFrom(ResultSet rs, Connection conn) throws SQLException {
           String fn = rs.getString(1);
@@ -299,6 +306,7 @@ public class TestExamples {
             gs = null;
           return new MyEmployee(fn, ho, gs);
         }
+
       };
 
       PreparedSelectQuery<MyEmployee> p = q.prepare(params, rr);

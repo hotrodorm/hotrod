@@ -12,10 +12,17 @@ public class MapRowReader implements RowReader<Row> {
   private List<String> columns = null;
 
   @Override
-  public Row readRowFrom(ResultSet rs, Connection conn) throws SQLException {
-    if (this.columns == null) {
-      this.initialize(rs.getMetaData());
+  public void initialize(ResultSet rs, Connection conn) throws SQLException {
+    ResultSetMetaData rm = rs.getMetaData();
+    int columnCount = rm.getColumnCount();
+    this.columns = new ArrayList<>();
+    for (int i = 1; i <= columnCount; i++) {
+      columns.add(rm.getColumnName(i));
     }
+  }
+
+  @Override
+  public Row readRowFrom(ResultSet rs, Connection conn) throws SQLException {
     Row row = new Row();
     int i = 1;
     for (String column : this.columns) {
@@ -24,14 +31,6 @@ public class MapRowReader implements RowReader<Row> {
       i++;
     }
     return row;
-  }
-
-  private void initialize(ResultSetMetaData rm) throws SQLException {
-    int columnCount = rm.getColumnCount();
-    this.columns = new ArrayList<>();
-    for (int i = 1; i <= columnCount; i++) {
-      columns.add(rm.getColumnName(i));
-    }
   }
 
 }

@@ -99,7 +99,7 @@ public class ForEachSegment extends ControlSegment {
       return false;
     }
     if (obj.getClass().isArray()) {
-      array = (Object[]) obj;
+      array = getArrayOfObjects(obj);
       coll = null;
     } else if (Collection.class.isAssignableFrom(obj.getClass())) {
       array = null;
@@ -137,6 +137,71 @@ public class ForEachSegment extends ControlSegment {
 
     return true;
 
+  }
+
+  private Object[] getArrayOfObjects(Object obj) {
+    if (obj instanceof Object[]) {
+      return (Object[]) obj;
+    } else if (obj instanceof int[]) {
+      int[] arr = (int[]) obj;
+      Integer[] boxed = new Integer[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof long[]) {
+      long[] arr = (long[]) obj;
+      Long[] boxed = new Long[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof double[]) {
+      double[] arr = (double[]) obj;
+      Double[] boxed = new Double[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof float[]) {
+      float[] arr = (float[]) obj;
+      Float[] boxed = new Float[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof boolean[]) {
+      boolean[] arr = (boolean[]) obj;
+      Boolean[] boxed = new Boolean[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof char[]) {
+      char[] arr = (char[]) obj;
+      Character[] boxed = new Character[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof byte[]) {
+      byte[] arr = (byte[]) obj;
+      Byte[] boxed = new Byte[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    } else if (obj instanceof short[]) {
+      short[] arr = (short[]) obj;
+      Short[] boxed = new Short[arr.length];
+      for (int i = 0; i < arr.length; i++) {
+        boxed[i] = arr[i];
+      }
+      return boxed;
+    }
+    throw new IllegalArgumentException(
+        "The 'collection' property of a Dynamic SQL FOREACH must evaluate to a java.util.Collection class or an array, but it evaluated to:"
+            + obj.getClass().getName());
   }
 
 }

@@ -6,9 +6,7 @@ import java.sql.SQLException;
 
 public interface RowReader<T> {
 
-  default void discoverColumns(ResultSet rs) throws SQLException {
-    // nothing to do; all columns selected by default
-  }
+  void initialize(ResultSet rs, Connection conn) throws SQLException;
 
   T readRowFrom(ResultSet rs, Connection conn) throws SQLException;
 

@@ -23,11 +23,13 @@ public class FlatRowReader<T> implements RowReader<T> {
 
   private static final Logger log = Logger.getLogger(FlatRowReader.class.getName());
 
+  private ResultSet rs;
   private List<Expression> queryColumns;
 
   public FlatRowReader(final LiveSQLContext context, final LiveSQLPreparedQuery q, final ResultSet rs)
       throws SQLException {
     log.fine("init");
+    this.rs = rs;
     this.queryColumns = q.getQueryColumns();
     ResultSetMetaData rm = rs.getMetaData();
     int ordinal = 1;
@@ -51,6 +53,12 @@ public class FlatRowReader<T> implements RowReader<T> {
       ordinal++;
     }
 //    context.logExecution(q);
+  }
+
+  @Override
+  public void initialize(ResultSet rs, Connection conn) throws SQLException {
+    // Nothing to do here. The constructor already did the initialization.
+
   }
 
   @SuppressWarnings("unchecked")

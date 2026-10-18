@@ -46,6 +46,11 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<>(sc, new RowReader<A>() {
 
       @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
+
+      @Override
       public A readRowFrom(ResultSet rs, Connection conn) throws SQLException {
         return rs.getObject(1, a);
       }
@@ -60,6 +65,11 @@ public class DynamicSelectQuery extends DynamicQuery {
       s.prepare(sc, context, 0);
     }
     return new PreparedSelectQuery<>(sc, new RowReader<DTuple2<A, B>>() {
+
+      @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
 
       @Override
       public DTuple2<A, B> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -81,6 +91,11 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<>(sc, new RowReader<DTuple3<A, B, C>>() {
 
       @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
+
+      @Override
       public DTuple3<A, B, C> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
         DTuple3<A, B, C> tuple = new DTuple3<>();
         tuple.setA(rs.getObject(1, a));
@@ -99,6 +114,11 @@ public class DynamicSelectQuery extends DynamicQuery {
       s.prepare(sc, context, 0);
     }
     return new PreparedSelectQuery<>(sc, new RowReader<DTuple4<A, B, C, D>>() {
+
+      @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
 
       @Override
       public DTuple4<A, B, C, D> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
@@ -122,6 +142,11 @@ public class DynamicSelectQuery extends DynamicQuery {
     return new PreparedSelectQuery<>(sc, new RowReader<DTuple5<A, B, C, D, E>>() {
 
       @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
+
+      @Override
       public DTuple5<A, B, C, D, E> readRowFrom(ResultSet rs, Connection conn) throws SQLException {
         DTuple5<A, B, C, D, E> tuple = new DTuple5<>();
         tuple.setA(rs.getObject(1, a));
@@ -142,6 +167,11 @@ public class DynamicSelectQuery extends DynamicQuery {
       s.prepare(sc, context, 0);
     }
     return new PreparedSelectQuery<>(sc, new RowReader<DTuple6<A, B, C, D, E, F>>() {
+
+      @Override
+      public void initialize(ResultSet rs, Connection conn) throws SQLException {
+        // nothing to do
+      }
 
       @Override
       public DTuple6<A, B, C, D, E, F> readRowFrom(ResultSet rs, Connection conn) throws SQLException {

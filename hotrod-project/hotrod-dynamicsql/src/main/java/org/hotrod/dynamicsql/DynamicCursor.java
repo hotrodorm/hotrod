@@ -24,6 +24,8 @@ public class DynamicCursor<R> implements Cursor<R> {
   public DynamicCursor(Connection conn, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
       throws SQLException {
 
+    this.conn = conn;
+
     try {
 
       this.ps = q.prepareStatement(conn);
@@ -36,11 +38,11 @@ public class DynamicCursor<R> implements Cursor<R> {
       this.rs = this.ps.executeQuery();
 
       if (rowReader == null) {
-        this.rowReader = new DynRowReader(rs.getMetaData());
+        this.rowReader = new DynRowReader();
       } else {
         this.rowReader = rowReader;
       }
-      this.rowReader.discoverColumns(this.rs);
+      this.rowReader.initialize(this.rs, conn);
 
     } catch (SQLException e) {
       this.close();
@@ -88,12 +90,17 @@ public class DynamicCursor<R> implements Cursor<R> {
     private Connection conn;
     private ResultSet rs;
     private RowReader<T> rowReader;
+
+    private boolean nextAttempted;
+    private boolean hasNext;
     private boolean endReached;
 
     public CursorIterator(Connection conn, ResultSet rs, RowReader<T> rowReader) {
       this.conn = conn;
       this.rs = rs;
       this.rowReader = rowReader;
+      this.nextAttempted = false;
+      this.hasNext = false;
       this.endReached = false;
     }
 
@@ -103,23 +110,31 @@ public class DynamicCursor<R> implements Cursor<R> {
         throw new NoSuchElementException("There are no more rows in the result set");
       }
       try {
-        boolean next = this.rs.next();
-        if (!next) {
-          this.endReached = true;
-        }
-        return next;
+        nextIfNotAttempted();
+        return this.hasNext;
       } catch (SQLException e) {
         throw new RuntimeException("Could not advance to the next row of the result set", e);
       }
     }
 
+    private void nextIfNotAttempted() throws SQLException {
+      if (!this.nextAttempted) {
+        this.hasNext = this.rs.next();
+        this.endReached = !this.hasNext;
+        this.nextAttempted = true;
+      }
+    }
+
     @Override
     public T next() {
-      if (this.endReached) {
-        throw new NoSuchElementException("There are no more rows in the result set");
-      }
       try {
-        return this.rowReader.readRowFrom(this.rs, this.conn);
+        nextIfNotAttempted();
+        if (this.endReached) {
+          throw new NoSuchElementException("There are no more rows in the result set");
+        }
+        T row = this.rowReader.readRowFrom(this.rs, this.conn);
+        this.nextAttempted = false;
+        return row;
       } catch (SQLException e) {
         throw new RuntimeException("Could not read the result set row", e);
       }
@@ -131,17 +146,14 @@ public class DynamicCursor<R> implements Cursor<R> {
 
     private List<String> columns = null;
 
-    public DynRowReader(ResultSetMetaData rm) throws SQLException {
+    @Override
+    public void initialize(ResultSet rs, Connection conn) throws SQLException {
+      ResultSetMetaData rm = rs.getMetaData();
       int columnCount = rm.getColumnCount();
       this.columns = new ArrayList<>();
       for (int i = 1; i <= columnCount; i++) {
         columns.add(rm.getColumnName(i));
       }
-    }
-
-    @Override
-    public void discoverColumns(ResultSet rs) throws SQLException {
-      // nothing to do; all columns designated
     }
 
     @SuppressWarnings("unchecked")

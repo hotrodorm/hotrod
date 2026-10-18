@@ -41,7 +41,7 @@ public class Row implements Map<String, Object> {
 
   @Override
   public Object remove(Object key) {
-    return this.remove(key);
+    return this.properties.remove(key);
   }
 
   @Override
