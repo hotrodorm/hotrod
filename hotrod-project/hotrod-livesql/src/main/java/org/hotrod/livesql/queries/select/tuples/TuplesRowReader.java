@@ -193,12 +193,6 @@ public class TuplesRowReader<T> implements RowReader<T> {
 
   }
 
-  @Override
-  public void initialize(ResultSet rs, Connection conn) throws SQLException {
-    // TODO Auto-generated method stub
-
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   public T readRowFrom(ResultSet rs, Connection conn) throws SQLException {

@@ -26,7 +26,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     try (PreparedStatement ps = prepareStatement(conn)) {
       applyParameters(ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
-        this.rr.initialize(rs, conn);
+        this.rr.discoverDynamicColumns(rs);
         List<R> rows = new ArrayList<>();
         while (rs.next()) {
           R r = this.rr.readRowFrom(rs, conn);
@@ -41,7 +41,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     try (PreparedStatement ps = prepareStatement(conn)) {
       applyParameters(ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
-        this.rr.initialize(rs, conn);
+        this.rr.discoverDynamicColumns(rs);
         if (rs.next()) {
           R r = this.rr.readRowFrom(rs, conn);
           if (rs.next()) {

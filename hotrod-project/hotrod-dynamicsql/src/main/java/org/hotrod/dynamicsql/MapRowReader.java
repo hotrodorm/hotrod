@@ -12,7 +12,7 @@ public class MapRowReader implements RowReader<Row> {
   private List<String> columns = null;
 
   @Override
-  public void initialize(ResultSet rs, Connection conn) throws SQLException {
+  public void discoverDynamicColumns(ResultSet rs) throws SQLException {
     ResultSetMetaData rm = rs.getMetaData();
     int columnCount = rm.getColumnCount();
     this.columns = new ArrayList<>();

@@ -6,7 +6,11 @@ import java.sql.SQLException;
 
 public interface RowReader<T> {
 
-  void initialize(ResultSet rs, Connection conn) throws SQLException;
+  // Optional method to discover columns in a dynamic ResultSet before reading
+  // rows.
+  default void discoverDynamicColumns(ResultSet rs) throws SQLException {
+    // Default implementation does nothing. Subclasses can override if needed.
+  }
 
   T readRowFrom(ResultSet rs, Connection conn) throws SQLException;
 

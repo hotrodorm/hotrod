@@ -292,9 +292,8 @@ public class TestExamples {
       RowReader<MyEmployee> rr = new RowReader<MyEmployee>() {
 
         @Override
-        public void initialize(ResultSet rs, Connection conn) throws SQLException {
-          // TODO Auto-generated method stub
-
+        public void discoverDynamicColumns(ResultSet rs) throws SQLException {
+          // Nothing to do here. The columns are already known.
         }
 
         @Override

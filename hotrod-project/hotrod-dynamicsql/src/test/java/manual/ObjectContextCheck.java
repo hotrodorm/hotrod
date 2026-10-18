@@ -7,7 +7,7 @@ import org.apache.commons.jexl3.ObjectContext;
 import org.hotrod.dynamicsql.jexl.JEXLDynamicExpression;
 import org.hotrod.dynamicsql.jexl.JEXLObjectParameterContext;
 
-public class ObjectContextTest {
+public class ObjectContextCheck {
 
   public static void main(String[] args) {
 

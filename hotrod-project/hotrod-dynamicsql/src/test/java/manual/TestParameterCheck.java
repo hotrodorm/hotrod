@@ -1,6 +1,6 @@
 package manual;
 
-public class TestParameterTesting {
+public class TestParameterCheck {
 
 ////  @Test
 //  public void test1() throws DynamicExpressionException, SQLException {

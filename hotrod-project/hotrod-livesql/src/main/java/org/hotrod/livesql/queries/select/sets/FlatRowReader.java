@@ -36,29 +36,17 @@ public class FlatRowReader<T> implements RowReader<T> {
     for (Expression expr : this.queryColumns) {
       TypeHandler<Object, Object> cth = Shield.getTypeHandler(expr);
       String name = Shield.getReferenceName(expr);
-//      log.info("cth=" + cth);
       if (cth == null) {
         ResultSetColumnMetadata cm = ResultSetColumnMetadata.of(rm, ordinal);
-//        log.info("cm=" + cm);
         try {
           TypeHandler<?, ?> th = context.getTypeSolver().resolveRuntimeType(cm);
-//          log.info("#" + ordinal + " th=" + th);
           Shield.setTypeHandler(expr, th);
         } catch (CouldNotResolveResultSetDataTypeException e) {
-          throw new LiveSQLException("Could not determine the type for the column '" + name + "' in the query. "
-//              + "The ResultSetMetaData properties available for this test expression are:\n" + cm.toString()
-              , e);
+          throw new LiveSQLException("Could not determine the type for the column '" + name + "' in the query. ", e);
         }
       }
       ordinal++;
     }
-//    context.logExecution(q);
-  }
-
-  @Override
-  public void initialize(ResultSet rs, Connection conn) throws SQLException {
-    // Nothing to do here. The constructor already did the initialization.
-
   }
 
   @SuppressWarnings("unchecked")
@@ -75,16 +63,5 @@ public class FlatRowReader<T> implements RowReader<T> {
     }
     return (T) r;
   }
-
-//  private void logQueryColumns() {
-//    int n;
-//    n = 1;
-//    for (Expression qc : this.queryColumns) {
-//      int i = n++;
-//      String alias = Shield.getReferenceName(qc);
-//      TypeHandler<?, ?> th = Shield.getTypeHandler(qc);
-//      log.info("### column #" + i + " " + alias + ": " + th);
-//    }
-//  }
 
 }
