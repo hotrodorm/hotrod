@@ -1,8 +1,8 @@
 package org.hotrod.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 
@@ -13,7 +13,7 @@ import org.hotrod.typesolver.DriverColumnMetaData;
 import org.hotrod.typesolver.TypeSolverConst;
 import org.hotrod.typesolver.UnresolvableDataTypeException;
 import org.hotrod.utils.ConverterUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CoreContractTest {
 

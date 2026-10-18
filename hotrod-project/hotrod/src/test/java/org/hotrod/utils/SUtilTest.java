@@ -1,24 +1,25 @@
 package org.hotrod.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class SUtilTest {
 
-  @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
+  @TempDir
+  Path temporaryFolder;
 
   @Test
   public void stringPredicatesAndSelection() {
@@ -92,19 +93,19 @@ public class SUtilTest {
     assertEquals(Collections.emptyList(), SUtil.slice("", 3));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void sliceRejectsZeroWidth() {
-    SUtil.slice("abc", 0);
+    assertThrows(IllegalArgumentException.class, () -> SUtil.slice("abc", 0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void sliceRejectsNegativeWidth() {
-    SUtil.slice("abc", -1);
+    assertThrows(IllegalArgumentException.class, () -> SUtil.slice("abc", -1));
   }
 
   @Test
   public void fileRoundTripPreservesLines() throws IOException {
-    File file = temporaryFolder.newFile("sutil.txt");
+    File file = temporaryFolder.resolve("sutil.txt").toFile();
     SUtil.saveStringToFile("one\ntwo", file);
     assertEquals("one\ntwo\n", SUtil.loadFileAsString(file));
     assertEquals("one\ntwo\n", SUtil.loadFileAsString(file, "UTF-8"));

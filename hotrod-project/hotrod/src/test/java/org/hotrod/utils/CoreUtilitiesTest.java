@@ -1,16 +1,17 @@
 package org.hotrod.utils;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
 
 import org.hotrod.interfaces.OrderBy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CoreUtilitiesTest {
 
@@ -24,9 +25,9 @@ public class CoreUtilitiesTest {
     assertNull(HexaUtils.toByteArray(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void hexadecimalConversionRejectsInvalidCharacters() {
-    HexaUtils.toByteArray("0g");
+    assertThrows(IllegalArgumentException.class, () -> HexaUtils.toByteArray("0g"));
   }
 
   @Test

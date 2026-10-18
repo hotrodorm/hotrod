@@ -1,12 +1,13 @@
 package org.hotrod.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JsonValueTest {
 
@@ -43,34 +44,34 @@ public class JsonValueTest {
     assertEquals("null", new JSONNumber(null).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectDoubleNaN() {
-    new JSONNumber(Double.NaN).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Double.NaN).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectDoublePositiveInfinity() {
-    new JSONNumber(Double.POSITIVE_INFINITY).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Double.POSITIVE_INFINITY).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectDoubleNegativeInfinity() {
-    new JSONNumber(Double.NEGATIVE_INFINITY).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Double.NEGATIVE_INFINITY).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectFloatNaN() {
-    new JSONNumber(Float.NaN).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Float.NaN).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectFloatPositiveInfinity() {
-    new JSONNumber(Float.POSITIVE_INFINITY).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Float.POSITIVE_INFINITY).render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numbersRejectFloatNegativeInfinity() {
-    new JSONNumber(Float.NEGATIVE_INFINITY).render();
+    assertThrows(IllegalArgumentException.class, () -> new JSONNumber(Float.NEGATIVE_INFINITY).render());
   }
 
   @Test
@@ -83,11 +84,13 @@ public class JsonValueTest {
     assertEquals("{ \"name\": \"Ada\", \"age\": 36, \"active\": true, \"missing\": null }", object.render());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void objectRejectsDuplicateProperties() {
-    JSONObject object = new JSONObject();
-    object.addProperty("name", "first");
-    object.addProperty("name", "second");
+    assertThrows(IllegalArgumentException.class, () -> {
+      JSONObject object = new JSONObject();
+      object.addProperty("name", "first");
+      object.addProperty("name", "second");
+    });
   }
 
   @Test
