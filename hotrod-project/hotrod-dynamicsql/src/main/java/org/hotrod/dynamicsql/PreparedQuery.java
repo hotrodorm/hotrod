@@ -65,11 +65,7 @@ public abstract class PreparedQuery {
   private void formatSQL() {
     if (this.formattedSQL == null) {
       String[] lines = this.sql.split("\n");
-      if (lines != null) {
-        this.formattedSQL = Arrays.stream(lines).filter(l -> !l.trim().isEmpty()).collect(Collectors.joining("\n"));
-      } else {
-        this.formattedSQL = "";
-      }
+      this.formattedSQL = Arrays.stream(lines).filter(l -> !l.trim().isEmpty()).collect(Collectors.joining("\n"));
     }
   }
 
