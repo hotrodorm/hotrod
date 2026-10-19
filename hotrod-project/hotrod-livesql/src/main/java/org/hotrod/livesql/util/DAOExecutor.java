@@ -1,7 +1,6 @@
 package org.hotrod.livesql.util;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +8,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.DynamicModificationQuery;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
@@ -38,7 +38,7 @@ public abstract class DAOExecutor {
       if (rows.size() == 1)
         return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
-    } catch (SQLException e) {
+    } catch (DynamicSQLException e) {
       throw new PersistenceException(e);
     } finally {
       if (conn != null) {
@@ -60,7 +60,7 @@ public abstract class DAOExecutor {
       conn = DataSourceUtils.getConnection(dataSource);
       List<M> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (SQLException e) {
+    } catch (DynamicSQLException e) {
       throw new PersistenceException(e);
     } finally {
       if (conn != null) {
@@ -69,7 +69,8 @@ public abstract class DAOExecutor {
     }
   }
 
-  public static int updateDelete(DynamicModificationQuery update, Parameters params, Logger log, DataSource dataSource) {
+  public static int updateDelete(DynamicModificationQuery update, Parameters params, Logger log,
+      DataSource dataSource) {
     PreparedModificationQuery preparedQuery = update.prepare(params);
     logQuery(preparedQuery, log);
     Connection conn = null;
@@ -77,7 +78,7 @@ public abstract class DAOExecutor {
       conn = DataSourceUtils.getConnection(dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
+    } catch (DynamicSQLException e) {
       throw new PersistenceException(e);
     } finally {
       if (conn != null) {

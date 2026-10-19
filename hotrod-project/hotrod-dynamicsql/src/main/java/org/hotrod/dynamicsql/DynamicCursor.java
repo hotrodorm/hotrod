@@ -110,13 +110,13 @@ public class DynamicCursor<R> implements Cursor<R> {
     @Override
     public boolean hasNext() {
       if (this.endReached) {
-        throw new NoSuchElementException("There are no more rows in the result set");
+        return false;
       }
       try {
         nextIfNotAttempted();
         return this.hasNext;
       } catch (SQLException e) {
-        throw new RuntimeException("Could not advance to the next row of the result set", e);
+        throw new DynamicSQLException("Could not advance to the next row of the result set", e);
       }
     }
 
@@ -139,7 +139,7 @@ public class DynamicCursor<R> implements Cursor<R> {
         this.nextAttempted = false;
         return row;
       } catch (SQLException e) {
-        throw new RuntimeException("Could not read the result set row", e);
+        throw new DynamicSQLException("Could not read the result set row", e);
       }
     }
 

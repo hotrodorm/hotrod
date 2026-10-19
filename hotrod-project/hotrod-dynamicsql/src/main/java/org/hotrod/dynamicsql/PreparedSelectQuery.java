@@ -24,36 +24,44 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
     this.rr = rr;
   }
 
-  public List<R> execute(Connection conn) throws SQLException {
-    try (PreparedStatement ps = prepareStatement(conn)) {
-      applyParameters(ps, conn);
-      try (ResultSet rs = ps.executeQuery()) {
-        this.rr.discoverColumns(rs);
-        List<R> rows = new ArrayList<>();
-        while (rs.next()) {
-          R r = this.rr.readRowFrom(rs, conn);
-          rows.add(r);
+  public List<R> execute(Connection conn) throws DynamicSQLException {
+    try {
+      try (PreparedStatement ps = prepareStatement(conn)) {
+        applyParameters(ps, conn);
+        try (ResultSet rs = ps.executeQuery()) {
+          this.rr.discoverColumns(rs);
+          List<R> rows = new ArrayList<>();
+          while (rs.next()) {
+            R r = this.rr.readRowFrom(rs, conn);
+            rows.add(r);
+          }
+          return rows;
         }
-        return rows;
       }
+    } catch (SQLException e) {
+      throw new DynamicSQLException("Error executing SQL SELECT query: " + super.sql, e);
     }
   }
 
-  public R executeOne(Connection conn) throws SQLException {
-    try (PreparedStatement ps = prepareStatement(conn)) {
-      applyParameters(ps, conn);
-      try (ResultSet rs = ps.executeQuery()) {
-        this.rr.discoverColumns(rs);
-        if (rs.next()) {
-          R r = this.rr.readRowFrom(rs, conn);
+  public R executeOne(Connection conn) throws DynamicSQLException {
+    try {
+      try (PreparedStatement ps = prepareStatement(conn)) {
+        applyParameters(ps, conn);
+        try (ResultSet rs = ps.executeQuery()) {
+          this.rr.discoverColumns(rs);
           if (rs.next()) {
-            throw new RuntimeException(".executeOne() expects a single row at the most, "
-                + "but this SELECT query produced more than one row");
+            R r = this.rr.readRowFrom(rs, conn);
+            if (rs.next()) {
+              throw new RuntimeException(".executeOne() expects a single row at the most, "
+                  + "but this SELECT query produced more than one row");
+            }
+            return r;
           }
-          return r;
+          return null;
         }
-        return null;
       }
+    } catch (SQLException e) {
+      throw new DynamicSQLException("Error executing SQL SELECT query: " + super.sql, e);
     }
   }
 

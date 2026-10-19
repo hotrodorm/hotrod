@@ -33,6 +33,7 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.MapRowReader;
 import org.hotrod.dynamicsql.Parameters;
@@ -915,8 +916,8 @@ public class DAOWriter {
       String setter = pkcm.getId().getJavaSetter();
       w.println("      model." + setter + "(" + pkCast + ");");
     }
-    w.println("    } catch (", SQLException.class, " e) {");
-    w.println("      throw new ", PersistenceException.class, "(e);");
+    w.println("    } catch (", DynamicSQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e.getCause());");
     this.writeReleaseConnection();
     w.println("    return model;");
     w.println("  }");
@@ -1888,8 +1889,8 @@ public class DAOWriter {
       w.println("      }");
     }
     w.println("      return count;");
-    w.println("    } catch (", SQLException.class, " e) {");
-    w.println("      throw new ", PersistenceException.class, "(e);");
+    w.println("    } catch (", DynamicSQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e.getCause());");
     this.writeReleaseConnection();
   }
 
@@ -1905,8 +1906,8 @@ public class DAOWriter {
     } else {
       w.println("      return rows;");
     }
-    w.println("    } catch (", SQLException.class, " e) {");
-    w.println("      throw new ", PersistenceException.class, "(e);");
+    w.println("    } catch (", DynamicSQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e.getCause());");
     this.writeReleaseConnection();
   }
 
@@ -2070,8 +2071,8 @@ public class DAOWriter {
     writeGetConnection();
     w.println("      long value = preparedQuery.executeOne(conn);");
     w.println("      return value;");
-    w.println("    } catch (", SQLException.class, " e) {");
-    w.println("      throw new ", PersistenceException.class, "(e);");
+    w.println("    } catch (", DynamicSQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e.getCause());");
     this.writeReleaseConnection();
     w.println("  }");
 
@@ -2231,8 +2232,8 @@ public class DAOWriter {
       break;
     }
 
-    w.println("    } catch (", SQLException.class, " e) {");
-    w.println("      throw new ", PersistenceException.class, "(e);");
+    w.println("    } catch (", DynamicSQLException.class, " e) {");
+    w.println("      throw new ", PersistenceException.class, "(e.getCause());");
     this.writeReleaseConnection();
 
     w.println("  }");

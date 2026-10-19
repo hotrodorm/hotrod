@@ -117,21 +117,30 @@ public class ForEachSegment extends ControlSegment {
 
     Collection<?> elements = array != null ? Arrays.asList(array) : coll;
 
+    if (elements.isEmpty()) {
+      return false;
+    }
+
     this.open.prepare(sc, context, loopNestingLevel);
 
     boolean firstElement = true;
-    for (Object o : elements) {
-      if (firstElement) {
-        firstElement = false;
-      } else {
-        this.separator.prepare(sc, context, loopNestingLevel + 1);
+    try {
+      for (Object o : elements) {
+        if (firstElement) {
+          firstElement = false;
+        } else {
+          this.separator.prepare(sc, context, loopNestingLevel + 1);
+        }
+        DShield.bind(context, this.item, o);
+        for (QuerySegment w : this.segments) {
+          w.prepare(sc, context, loopNestingLevel + 1);
+        }
       }
-      DShield.bind(context, this.item, o);
-      for (QuerySegment w : this.segments) {
-        w.prepare(sc, context, loopNestingLevel + 1);
+    } finally {
+      if (DShield.hasParameter(context, this.item)) {
+        DShield.unbind(context, this.item);
       }
     }
-    DShield.unbind(context, this.item);
 
     this.close.prepare(sc, context, loopNestingLevel);
 

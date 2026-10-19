@@ -16,13 +16,17 @@ public class PreparedModificationQuery extends PreparedQuery {
     super(sc.getSQL(), sc.getParameters());
   }
 
-  public int execute(Connection conn) throws SQLException, DynamicExpressionException {
-    try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
-      int ordinal = 1;
-      for (ParameterOccurrence p : super.parameters) {
-        p.applyTo(ps, ordinal++, conn);
+  public int execute(Connection conn) throws DynamicSQLException {
+    try {
+      try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
+        int ordinal = 1;
+        for (ParameterOccurrence p : super.parameters) {
+          p.applyTo(ps, ordinal++, conn);
+        }
+        return ps.executeUpdate();
       }
-      return ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new DynamicSQLException("Error executing SQL modification query: " + super.sql, e);
     }
   }
 

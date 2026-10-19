@@ -16,7 +16,7 @@ public abstract class PreparedQuery {
 
   protected PreparedQuery(String sql, List<ParameterOccurrence> parameters) {
     if (sql == null) {
-      throw new RuntimeException("Invalid empty SQL query");
+      throw new DynamicSQLException("Invalid empty SQL query");
     }
     this.sql = sql;
     this.parameters = parameters;

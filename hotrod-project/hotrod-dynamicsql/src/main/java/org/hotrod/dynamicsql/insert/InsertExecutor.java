@@ -5,14 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public abstract class InsertExecutor {
 
   public abstract Long execute(Connection conn, String sql, List<ParameterOccurrence> parameters,
       String sequencePreFetchSQL, String primaryKeyParameterName, String[] generatedKeysNames)
-      throws SQLException, DynamicExpressionException;
+      throws DynamicSQLException;
 
   protected void applyParameters(List<ParameterOccurrence> parameters, PreparedStatement ps, Connection conn)
       throws SQLException {

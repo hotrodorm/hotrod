@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
@@ -158,8 +159,8 @@ public class K1DAO {
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
       throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -193,8 +194,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       List<K1> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -234,8 +235,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -270,8 +271,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       Long pk = preparedQuery.execute(conn);
       model.setId((pk == null) ? null : Byte.valueOf(pk.byteValue()));
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -302,8 +303,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -336,8 +337,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -375,8 +376,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -404,8 +405,8 @@ public class K1DAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);

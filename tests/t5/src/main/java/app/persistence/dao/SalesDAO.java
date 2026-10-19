@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedSelectQuery;
@@ -67,8 +68,8 @@ public class SalesDAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       long value = preparedQuery.executeOne(conn);
       return value;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -130,8 +131,8 @@ public class SalesDAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       List<MyAccount> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);

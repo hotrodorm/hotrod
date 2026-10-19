@@ -1,10 +1,9 @@
 package org.hotrod.dynamicsql.insert;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.hotrod.dynamicsql.DynamicExpressionException;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.PreparedQuery;
 import org.hotrod.dynamicsql.SimpleStaticSegmentConsumer;
 
@@ -27,7 +26,7 @@ public class PreparedInsertQuery extends PreparedQuery {
     this.generatedKeysNames = generatedKeysNames;
   }
 
-  public Long execute(Connection conn) throws SQLException, DynamicExpressionException {
+  public Long execute(Connection conn) throws DynamicSQLException {
     return this.primaryKeyRetrievalMode.getInsertExecutor().execute(conn, this.sql, this.parameters,
         this.sequencePreFetchSQL, this.primaryKeyParameterName, this.generatedKeysNames);
   }

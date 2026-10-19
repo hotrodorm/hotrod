@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.RowReader;
@@ -215,8 +216,8 @@ public class Employee2DAO {
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
       preparedQuery.execute(conn);
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -247,8 +248,8 @@ public class Employee2DAO {
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
       preparedQuery.execute(conn);
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -510,14 +511,10 @@ public class Employee2DAO {
 //  private void initializeContext() {
 //    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
 //    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
-////    this.initializeSelectbyprimarykey();
-////    this.initializeSelectbyexample();
-////    this.initializeInsert();
-////    this.initializeInsertbyexample();
-////    this.initializeUpdatebypk();
-////    this.initializeUpdatebyexample();
-////    this.initializeDeletebypk();
-////    this.initializeDeletebyexample();
+  //// this.initializeSelectbyprimarykey(); / this.initializeSelectbyexample(); /
+  /// this.initializeInsert(); / this.initializeInsertbyexample(); /
+  /// this.initializeUpdatebypk(); / this.initializeUpdatebyexample(); /
+  /// this.initializeDeletebypk(); / this.initializeDeletebyexample();
 //  }
 
 //  private void logQuery(PreparedQuery preparedQuery) {

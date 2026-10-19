@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
+import org.hotrod.dynamicsql.DynamicSQLException;
 import org.hotrod.dynamicsql.DynamicSelectQuery;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.dynamicsql.PreparedModificationQuery;
@@ -167,8 +168,8 @@ public class DATALocalDAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       List<DATALocal> rows = preparedQuery.execute(conn);
       return rows;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -207,8 +208,8 @@ public class DATALocalDAO {
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
       preparedQuery.execute(conn);
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -242,8 +243,8 @@ public class DATALocalDAO {
     try {
       conn = DataSourceUtils.getConnection(this.dataSource);
       preparedQuery.execute(conn);
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -279,8 +280,8 @@ public class DATALocalDAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
@@ -320,8 +321,8 @@ public class DATALocalDAO {
       conn = DataSourceUtils.getConnection(this.dataSource);
       int count = preparedQuery.execute(conn);
       return count;
-    } catch (SQLException e) {
-      throw new PersistenceException(e);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
         DataSourceUtils.releaseConnection(conn, this.dataSource);
