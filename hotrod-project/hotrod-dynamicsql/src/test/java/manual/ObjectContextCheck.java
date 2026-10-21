@@ -2,12 +2,13 @@ package manual;
 
 import java.time.LocalDate;
 
-import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.ObjectContext;
-import org.hotrod.dynamicsql.jexl.JEXLDynamicExpression;
-import org.hotrod.dynamicsql.jexl.JEXLObjectParameterContext;
+import org.hotrod.dynamicsql.DynamicExpression;
+import org.hotrod.dynamicsql.Parameters;
+import org.hotrod.dynamicsql.jexl.JEXLDynamicExpressionFactory;
 
 public class ObjectContextCheck {
+
+  private static final String[] ALLOWED_PACKAGES = new String[] {};
 
   public static void main(String[] args) {
 
@@ -18,14 +19,12 @@ public class ObjectContextCheck {
 
     // Evaluate
 
-    JexlExpression ex = JEXLDynamicExpression.getJEXLEngine().createExpression(myExpr);
+    JEXLDynamicExpressionFactory factory = new JEXLDynamicExpressionFactory(ALLOWED_PACKAGES);
 
-    @SuppressWarnings("unused")
-    ObjectContext<MyWidget> ctx = new ObjectContext<>(JEXLDynamicExpression.getJEXLEngine(), w);
-    JEXLObjectParameterContext ctx2 = JEXLObjectParameterContext
-        .of(new ObjectContext<>(JEXLDynamicExpression.getJEXLEngine(), w));
+    DynamicExpression ex = factory.expression(myExpr);
 
-    Object v = ex.evaluate(ctx2);
+    Parameters ctx = factory.newObjectContext(w);
+    Object v = ex.evaluate(ctx);
 
     System.out.println("v=" + v);
 

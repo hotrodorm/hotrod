@@ -9,14 +9,18 @@ import org.hotrod.dynamicsql.parameters.ParameterOccurrence;
 
 public class PreparedModificationQuery extends PreparedQuery {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(PreparedModificationQuery.class.getName());
 
   public PreparedModificationQuery(SimpleStaticSegmentConsumer sc) {
     super(sc.getSQL(), sc.getParameters());
   }
 
+  public int getParameterCount() {
+    return super.parameters.size();
+  }
+
   public int execute(Connection conn) throws DynamicSQLException {
+    log.fine("executing");
     try {
       try (PreparedStatement ps = conn.prepareStatement(super.sql)) {
         int ordinal = 1;

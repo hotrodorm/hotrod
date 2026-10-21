@@ -13,9 +13,9 @@ public class DynamicSQL {
 
   private DynamicExpressionFactory factory = null;
 
-  public DynamicSQL() {
+  public DynamicSQL(String[] allowedPackages) {
     log.fine("init");
-    this.factory = DynamicExpressionFactoryConfig.getFactory();
+    this.factory = DynamicExpressionFactoryConfig.getFactory(allowedPackages);
   }
 
   public DynamicSQL(DynamicExpressionFactory factory) {

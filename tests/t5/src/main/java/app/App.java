@@ -27,6 +27,7 @@ import app.persistence.dao.CostDAO.CostTable;
 import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.model.DATALocal;
+import app.persistence.model.Employee;
 import app.test.Employee2DAO;
 import app.test.Employee2DAO.EmployeeTable;
 
@@ -143,8 +144,9 @@ public class App {
 //      testFLValues();
 //      testFilter();
 //      testWindowFunctions2();
-      testLiveSQLCursor();
-//      testInsertSequence();
+//      testLiveSQLCursor();
+      testJEXL();
+      //      testInsertSequence();
 //      testInsertIdentity();
 
 //      testBlob();
@@ -377,7 +379,15 @@ public class App {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
 
+  private void testJEXL() {
+    EmployeeTable t = this.employeeDAO.newTable();
+    Employee example = new Employee();
+    example.setName("Anne");   
+    for (Employee emp: this.employeeDAO.select(example)) {
+        System.out.println("### emp=" + emp);
+    }
   }
 
   private void testConverters() {

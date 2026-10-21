@@ -20,9 +20,11 @@ import org.junit.jupiter.api.Test;
 
 class DynamicSQLAssemblyTest {
 
+  private static final String[] ALLOWED_PACKAGES = new String[] { };
+  
   @Test
   void assemblesParameterAndIncludesItsValueInPreview() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee WHERE id = ").parameter("id").endSelectQuery();
 
     Parameters params = dyn.newParameters();
@@ -37,7 +39,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void includesConditionalSqlOnlyWhenExpressionIsTrue() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee").if_("filterByDepartment")
         .literal(" WHERE dept_no = ").parameter("department").endif().endSelectQuery();
 
@@ -52,7 +54,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void chooseSelectsMatchingBranchAndSupportsOtherwise() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee").choose().when("ordering == 1")
         .literal(" ORDER BY first_name").endwhen().when("ordering == 2").literal(" ORDER BY last_name").endwhen()
         .otherwise().literal(" ORDER BY salary").endotherwise().endchoose().endSelectQuery();
@@ -73,7 +75,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void expandsForeachValuesIntoPlaceholders() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee WHERE id IN ").foreach("id", "ids", "(", ", ", ")")
         .parameter("id").endforeach().endSelectQuery();
 
@@ -88,7 +90,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void expandsNestedForeachValues() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM item WHERE (group_id, item_id) IN ")
         .foreach("group", "groups", "(", ", ", ")").foreach("item", "group", "[", ", ", "]").parameter("item")
         .endforeach().endforeach().endSelectQuery();
@@ -104,7 +106,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void injectsConfiguredIdentifierTextIntoSql() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM ").parameterInjection("table").literal(" ORDER BY ")
         .parameterInjection("ordering").endSelectQuery();
 
@@ -117,7 +119,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void parameterInjectionAddsTextWithoutCreatingJdbcParameters() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM ").parameterInjection("table").endSelectQuery();
 
     Parameters params = dyn.newParameters();
@@ -134,7 +136,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void trimsOptionalFragmentsAndAddsSeparatorsOnlyBetweenIncludedFragments() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT ").trim("", ", ", "").if_("includeFirstName").literal("first_name")
         .endif().if_("includeLastName").literal("last_name").endif().endtrim().literal(" FROM employee")
         .endSelectQuery();
@@ -150,7 +152,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void whereFormatsOnlyActivePredicates() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee ").where("OR").if_("includeFirstName")
         .literal("first_name = ").parameter("firstName").endif().if_("includeDepartment").literal("dept_no = ")
         .parameter("department").endif().endwhere().endSelectQuery();
@@ -169,7 +171,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void setFormatsConditionalAssignments() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicModificationQuery query = dyn.literal("UPDATE employee").set().if_("updateFirstName")
         .literal("first_name = ").parameter("firstName").endif().if_("updateLastName").literal("last_name = ")
         .parameter("lastName").endif().endset().literal(" WHERE id = ").parameter("id").endModificationQuery();
@@ -187,7 +189,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void bindEvaluatesAnExpressionForVariableUse() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.bind("pattern", "'%' + part + '%'")
         .literal("SELECT * FROM employee WHERE last_name LIKE ").variable("pattern").endSelectQuery();
 
@@ -202,7 +204,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void parameterNullableAddsPlaceholderAndJdbcTypeToPreview() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee WHERE last_name = ")
         .parameterNullable("lastName", Types.VARCHAR)
         .endSelectQuery();
@@ -218,7 +220,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void variableEvaluatesTheReferencedParameterAsJdbcValue() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee WHERE last_name = ")
         .variable("lastName")
         .endSelectQuery();
@@ -234,7 +236,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void beginGroupsNestedSegmentsWithoutChangingTheirSql() throws DynamicExpressionException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT * FROM employee WHERE ")
         .begin()
         .literal("id = ")
@@ -254,7 +256,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void executesSelectOneAndMapsTheSingleRow() throws DynamicExpressionException, SQLException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT id FROM employee WHERE id = ").parameter("id").endSelectQuery();
 
     Parameters params = dyn.newParameters();
@@ -268,7 +270,7 @@ class DynamicSQLAssemblyTest {
 
   @Test
   void executesSelectCursorAndReadsRowsInQueryOrder() throws DynamicExpressionException, IOException, SQLException {
-    DynamicSQL dyn = new DynamicSQL();
+    DynamicSQL dyn = new DynamicSQL(ALLOWED_PACKAGES);
     DynamicSelectQuery query = dyn.literal("SELECT id FROM employee WHERE active = 'Y' ORDER BY id").endSelectQuery();
 
     DataSource dataSource = getDataSource();
