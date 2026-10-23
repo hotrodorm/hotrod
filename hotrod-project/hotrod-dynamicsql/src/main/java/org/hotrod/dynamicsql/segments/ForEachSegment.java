@@ -117,10 +117,6 @@ public class ForEachSegment extends ControlSegment {
 
     Collection<?> elements = array != null ? Arrays.asList(array) : coll;
 
-    if (elements.isEmpty()) {
-      return false;
-    }
-
     this.open.prepare(sc, context, loopNestingLevel);
 
     boolean firstElement = true;

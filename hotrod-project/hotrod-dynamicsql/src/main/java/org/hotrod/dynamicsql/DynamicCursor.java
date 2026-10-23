@@ -22,6 +22,7 @@ public class DynamicCursor<R> implements Cursor<R> {
   private PreparedStatement ps;
   private ResultSet rs;
   private RowReader<R> rowReader;
+  private CursorIterator<R> iterator;
 
   public DynamicCursor(DataSource dataSource, PreparedSelectQuery<R> q, RowReader<R> rowReader, final Integer fetchSize)
       throws SQLException {
@@ -55,8 +56,11 @@ public class DynamicCursor<R> implements Cursor<R> {
   }
 
   @Override
-  public Iterator<R> iterator() {
-    return new CursorIterator<>(this.conn, this.rs, this.rowReader);
+  public synchronized Iterator<R> iterator() {
+    if (this.iterator == null) {
+      this.iterator = new CursorIterator<>(this.conn, this.rs, this.rowReader);
+    }
+    return this.iterator();
   }
 
   @Override

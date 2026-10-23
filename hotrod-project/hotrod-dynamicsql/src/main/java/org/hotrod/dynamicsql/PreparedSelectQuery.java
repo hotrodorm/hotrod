@@ -52,7 +52,7 @@ public class PreparedSelectQuery<R> extends PreparedQuery {
           if (rs.next()) {
             R r = this.rr.readRowFrom(rs, conn);
             if (rs.next()) {
-              throw new RuntimeException(".executeOne() expects a single row at the most, "
+              throw new DynamicSQLException(".executeOne() expects a single row at the most, "
                   + "but this SELECT query produced more than one row");
             }
             return r;

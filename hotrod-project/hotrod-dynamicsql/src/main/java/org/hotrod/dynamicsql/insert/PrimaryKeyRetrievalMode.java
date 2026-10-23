@@ -25,16 +25,17 @@ public enum PrimaryKeyRetrievalMode {
 // + SQL Server only implements IDENTITY ALWAYS; the BY DEFAULT variation is not supported and will crash if a PK value is provided
 // ^ Sybase ASE: Explicit PK value for an IDENTITY column was not implemented (Use: "SET IDENTITY_INSERT <table> ON" before explicit PK INSERT) 
 
-  NO_RETRIEVAL(new PreparedInsertNoRetrievalExecutor(), false), // Implemented
+  NO_RETRIEVAL(new PreparedInsertNoRetrievalExecutor(), false), //
 
-  IDENTITY_INLINE_STANDARD_RESULTSET(null, true), //
-  IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetExecutor(), true), // Implemented
-  IDENTITY_POSTFETCH(null, true), //
+//  IDENTITY_INLINE_STANDARD_RESULTSET(null, true), // Not implemented
+  IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetExecutor(), true), //
+//  IDENTITY_POSTFETCH(null, true), // Not implemented
 
   SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor(), true), // Implemented
-  SEQUENCE_INLINE_DATA_RESULTSET(new PreparedInsertSequenceInlineDataResultsetExecutor(), true), // Implemented
-  SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor(), true), // Implemented
-  SEQUENCE_POSTFETCH(null, true);
+  SEQUENCE_INLINE_DATA_RESULTSET(new PreparedInsertSequenceInlineDataResultsetExecutor(), true), //
+  SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor(), true) //
+//  SEQUENCE_POSTFETCH(null, true) // Not implemented
+  ;
 
   private InsertExecutor insertExecutor;
   private boolean generatesKeys;

@@ -151,6 +151,7 @@ public class DynamicSelectQuery extends DynamicQuery {
         tuple.setC(rs.getObject(3, c));
         tuple.setD(rs.getObject(4, d));
         tuple.setE(rs.getObject(5, e));
+        tuple.setF(rs.getObject(6, f));
         return tuple;
       }
 
