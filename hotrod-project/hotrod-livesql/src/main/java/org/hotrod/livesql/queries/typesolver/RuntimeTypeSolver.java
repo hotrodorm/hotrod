@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries.typesolver;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.dynamicsql.DynamicExpressionFactory;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.RuntimeType;
 import org.hotrod.livesql.queries.typesolver.TypeRule.CouldNotResolveResultSetDataTypeException;
@@ -13,10 +14,14 @@ public class RuntimeTypeSolver {
 
   private List<TypeRule> runtimeTypeSolverRules;
   private LiveSQLDialect dialect;
+  private DynamicExpressionFactory factory;
 
-  public RuntimeTypeSolver(final List<TypeRule> runtimeTypeSolverRules, final LiveSQLDialect dialect) {
+  public RuntimeTypeSolver(final List<TypeRule> runtimeTypeSolverRules, final LiveSQLDialect dialect,
+      DynamicExpressionFactory factory) {
+    log.fine("init");
     this.runtimeTypeSolverRules = runtimeTypeSolverRules;
     this.dialect = dialect;
+    this.factory = factory;
   }
 
   public TypeHandler<?, ?> resolveRuntimeType(final ResultSetColumnMetadata cm)
@@ -26,7 +31,7 @@ public class RuntimeTypeSolver {
 
     if (this.runtimeTypeSolverRules != null) {
       for (TypeRule r : this.runtimeTypeSolverRules) {
-        if (r.applies(cm)) {
+        if (r.applies(cm, this.factory)) {
           return r.getTypeHandler();
         }
       }

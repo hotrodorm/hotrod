@@ -16,7 +16,23 @@ public class LayerResourcesBean {
   @Bean
   public LayerConfiguration layerConfig() {
     List<TypeRule> rules = new ArrayList<>();
-    return () -> rules;
+    String[] allowedPackages = {
+      "app.persistence.layout",
+      "app.persistence.model"
+    };
+    return new LayerConfiguration() {
+
+      @Override
+      public List<TypeRule> getRuntimeTypeSolverRules() {
+        return rules;
+      }
+
+      @Override
+      public String[] getAllowedPackages() {
+        return allowedPackages;
+      }
+
+    };
   }
 
 }

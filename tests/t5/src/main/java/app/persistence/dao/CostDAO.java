@@ -30,7 +30,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
@@ -41,13 +40,13 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -65,21 +64,20 @@ public class CostDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  private DynamicSQL dyn = new DynamicSQL();
-
-  private DataSource dataSource;
+  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
+  private DynamicSQL dyn;
 
   // CONSTRUCTOR
 
-  public CostDAO(LiveSQL sql, DataSource dataSource, ApplicationContext applicationContext) {
+  public CostDAO(LiveSQL sql, ApplicationContext applicationContext) {
     this.sql = sql;
-    this.dataSource = dataSource;
+    this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
-    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
+    this.dyn = this.context.getDynamicSQL();
+    initializeQueries();
   }
 
   // ROW READER
@@ -135,7 +133,10 @@ public class CostDAO {
 
   // SELECT BY EXAMPLE
 
-  private final DynamicSelectQuery selectByExample = dyn
+  private DynamicSelectQuery selectByExample;
+
+  private void initializeSelectbyexample() {
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  region,")
       .literaln("  amount")
@@ -146,6 +147,7 @@ public class CostDAO {
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
+  }
 
   public List<Cost> select(CostLayout example, CostOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
@@ -156,14 +158,14 @@ public class CostDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<Cost> rows = preparedQuery.execute(conn);
       return rows;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -176,7 +178,10 @@ public class CostDAO {
 
   // INSERT
 
-  private final DynamicInsertQuery insert = dyn
+  private DynamicInsertQuery insert;
+
+  private void initializeInsert() {
+    this.insert = dyn
       .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("region")
@@ -188,6 +193,7 @@ public class CostDAO {
         .parameterNullable("l.amount", Types.INTEGER)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public Cost insert(CostLayout layout) {
     Parameters params = this.dyn.newParameters();
@@ -197,13 +203,13 @@ public class CostDAO {
     Cost model = this.clone(layout);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -211,7 +217,10 @@ public class CostDAO {
 
   // INSERT BY EXAMPLE
 
-  private final DynamicInsertQuery insertByExample = dyn
+  private DynamicInsertQuery insertByExample;
+
+  private void initializeInsertbyexample() {
+    this.insertByExample = dyn
       .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.region != null").literal("region").endif()
@@ -223,6 +232,7 @@ public class CostDAO {
         .if_("e.amount != null").parameter("e.amount").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public Cost insertByExample(CostLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -232,13 +242,13 @@ public class CostDAO {
     Cost model = this.clone(example);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -248,7 +258,10 @@ public class CostDAO {
 
   // UPDATE BY EXAMPLE
 
-  private final DynamicModificationQuery updateByExample = dyn
+  private DynamicModificationQuery updateByExample;
+
+  private void initializeUpdatebyexample() {
+    this.updateByExample = dyn
       .literal("UPDATE cost")
       .set()
         .if_("v.region != null").literal("region = ").parameter("v.region").endif()
@@ -259,6 +272,7 @@ public class CostDAO {
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int update(CostLayout example, CostLayout values) {
     Parameters params = this.dyn.newParameters();
@@ -268,14 +282,14 @@ public class CostDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -294,13 +308,17 @@ public class CostDAO {
 
   // DELETE BY EXAMPLE
 
-  private final DynamicModificationQuery deleteByExample = dyn
+  private DynamicModificationQuery deleteByExample;
+
+  private void initializeDeletebyexample() {
+    this.deleteByExample = dyn
       .literaln("DELETE FROM cost")
       .where("AND")
         .if_("e.region != null").literal("region = ").parameter("e.region").endif()
         .if_("e.amount != null").literal("amount = ").parameter("e.amount").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int delete(CostLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -309,14 +327,14 @@ public class CostDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -406,7 +424,15 @@ public class CostDAO {
   // GETTERS
 
   public DataSource getDataSource() {
-    return this.dataSource;
+    return this.context.getDataSource();
+  }
+
+  private void initializeQueries() {
+    this.initializeSelectbyexample();
+    this.initializeInsert();
+    this.initializeInsertbyexample();
+    this.initializeUpdatebyexample();
+    this.initializeDeletebyexample();
   }
 
 }

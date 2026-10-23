@@ -26,10 +26,10 @@ import app.persistence.dao.CostDAO;
 import app.persistence.dao.CostDAO.CostTable;
 import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
+import app.persistence.dao.EmployeeDAO;
+import app.persistence.dao.EmployeeDAO.EmployeeTable;
 import app.persistence.model.DATALocal;
 import app.persistence.model.Employee;
-import app.test.Employee2DAO;
-import app.test.Employee2DAO.EmployeeTable;
 
 @SpringBootApplication
 @Configuration
@@ -86,7 +86,7 @@ public class App {
   private CostDAO costDAO;
 
   @Autowired
-  private Employee2DAO employeeDAO;
+  private EmployeeDAO employeeDAO;
 
 //  @Autowired
 //  private K1DAO k1DAO;

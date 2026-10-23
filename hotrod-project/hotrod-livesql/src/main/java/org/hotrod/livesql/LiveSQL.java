@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hotrod.dynamicsql.Row;
+import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
@@ -161,9 +162,9 @@ public class LiveSQL {
   private LiveSQLContext context = null;
   private DataSource dataSource;
   private LiveSQLDialect liveSQLDialect;
+  private DynamicSQL dynamicSQL;
 
   private RuntimeTypeSolver typeSolver;
-  @SuppressWarnings("unused")
   private String qualifier = null;
 
   // Constructor
@@ -175,9 +176,11 @@ public class LiveSQL {
     this.liveSQLDialect = liveSQLDialect;
     this.dataSource = dataSource;
     this.qualifier = qualifier;
-    this.typeSolver = new RuntimeTypeSolver(layerConfiguration.getRuntimeTypeSolverRules(), this.liveSQLDialect);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver);
-
+    this.dynamicSQL = new DynamicSQL(layerConfiguration.getAllowedPackages());
+    this.typeSolver = new RuntimeTypeSolver(layerConfiguration.getRuntimeTypeSolverRules(), this.liveSQLDialect,
+        this.dynamicSQL.getExpressionFactory());
+    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, this.typeSolver, this.dynamicSQL,
+        this.qualifier);
   }
 
   // Shielded methods
@@ -186,8 +189,8 @@ public class LiveSQL {
     return dataSource;
   }
 
-  LiveSQLDialect getLiveSQLDialect() {
-    return liveSQLDialect;
+  LiveSQLContext getLiveSQLContext() {
+    return this.context;
   }
 
   // Select

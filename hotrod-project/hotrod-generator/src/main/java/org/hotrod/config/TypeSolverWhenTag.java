@@ -74,9 +74,11 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   // Behavior
 
+  private static final String[] ALLOWED_PACKAGES = new String[] {};
+
   public void validate(final HotRodConfigTag config) throws InvalidConfigurationFileException {
 
-    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
+    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory(ALLOWED_PACKAGES);
 
     // test
 

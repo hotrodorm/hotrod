@@ -27,6 +27,10 @@ public class DynamicSQL {
     return this.factory.newParameterContext();
   }
 
+  public DynamicExpressionFactory getExpressionFactory() {
+    return this.factory;
+  }
+
   public Sequence literal(String text) {
     Sequence s = new Sequence(this.factory);
     return s.literal(text);

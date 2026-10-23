@@ -7,4 +7,7 @@ import org.hotrod.livesql.queries.typesolver.TypeRule;
 public interface LayerConfiguration {
 
   List<TypeRule> getRuntimeTypeSolverRules();
+
+  String[] getAllowedPackages();
+
 }

@@ -30,7 +30,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -43,7 +42,6 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.DAOExecutor;
@@ -69,21 +67,20 @@ public class DATALocalDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  private DynamicSQL dyn = new DynamicSQL();
-
-  private DataSource dataSource;
+  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
+  private DynamicSQL dyn;
 
   // CONSTRUCTOR
 
-  public DATALocalDAO(LiveSQL sql, DataSource dataSource, ApplicationContext applicationContext) {
+  public DATALocalDAO(LiveSQL sql, ApplicationContext applicationContext) {
     this.sql = sql;
-    this.dataSource = dataSource;
+    this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
-    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
+    this.dyn = this.context.getDynamicSQL();
+    initializeQueries();
   }
 
   // CONVERTERS
@@ -144,7 +141,10 @@ public class DATALocalDAO {
 
   // SELECT BY EXAMPLE
 
-  private final DynamicSelectQuery selectByExample = dyn
+  private DynamicSelectQuery selectByExample;
+
+  private void initializeSelectbyexample() {
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  name,")
       .literaln("  active")
@@ -155,6 +155,7 @@ public class DATALocalDAO {
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
+  }
 
   public List<DATALocal> select(DATALocalLayout example, DATALocalOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
@@ -165,14 +166,14 @@ public class DATALocalDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<DATALocal> rows = preparedQuery.execute(conn);
       return rows;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -185,7 +186,10 @@ public class DATALocalDAO {
 
   // INSERT
 
-  private final DynamicInsertQuery insert = dyn
+  private DynamicInsertQuery insert;
+
+  private void initializeInsert() {
+    this.insert = dyn
       .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("name")
@@ -197,6 +201,7 @@ public class DATALocalDAO {
         .parameterNullable("l.active", Types.INTEGER, this.converter0)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public DATALocal insert(DATALocalLayout layout) {
     Parameters params = this.dyn.newParameters();
@@ -206,13 +211,13 @@ public class DATALocalDAO {
     DATALocal model = this.clone(layout);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -220,7 +225,10 @@ public class DATALocalDAO {
 
   // INSERT BY EXAMPLE
 
-  private final DynamicInsertQuery insertByExample = dyn
+  private DynamicInsertQuery insertByExample;
+
+  private void initializeInsertbyexample() {
+    this.insertByExample = dyn
       .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.NAMELocalToCity != null").literal("name").endif()
@@ -232,6 +240,7 @@ public class DATALocalDAO {
         .if_("e.active != null").parameter("e.active", this.converter0).endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public DATALocal insertByExample(DATALocalLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -241,13 +250,13 @@ public class DATALocalDAO {
     DATALocal model = this.clone(example);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -257,7 +266,10 @@ public class DATALocalDAO {
 
   // UPDATE BY EXAMPLE
 
-  private final DynamicModificationQuery updateByExample = dyn
+  private DynamicModificationQuery updateByExample;
+
+  private void initializeUpdatebyexample() {
+    this.updateByExample = dyn
       .literal("UPDATE data")
       .set()
         .if_("v.NAMELocalToCity != null").literal("name = ").parameter("v.NAMELocalToCity").endif()
@@ -268,6 +280,7 @@ public class DATALocalDAO {
         .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int update(DATALocalLayout example, DATALocalLayout values) {
     Parameters params = this.dyn.newParameters();
@@ -277,14 +290,14 @@ public class DATALocalDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -303,13 +316,17 @@ public class DATALocalDAO {
 
   // DELETE BY EXAMPLE
 
-  private final DynamicModificationQuery deleteByExample = dyn
+  private DynamicModificationQuery deleteByExample;
+
+  private void initializeDeletebyexample() {
+    this.deleteByExample = dyn
       .literaln("DELETE FROM data")
       .where("AND")
         .if_("e.NAMELocalToCity != null").literal("name = ").parameter("e.NAMELocalToCity").endif()
         .if_("e.active != null").literal("active = ").parameter("e.active", this.converter0).endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int delete(DATALocalLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -318,14 +335,14 @@ public class DATALocalDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -415,7 +432,15 @@ public class DATALocalDAO {
   // GETTERS
 
   public DataSource getDataSource() {
-    return this.dataSource;
+    return this.context.getDataSource();
+  }
+
+  private void initializeQueries() {
+    this.initializeSelectbyexample();
+    this.initializeInsert();
+    this.initializeInsertbyexample();
+    this.initializeUpdatebyexample();
+    this.initializeDeletebyexample();
   }
 
 }

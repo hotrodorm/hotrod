@@ -18,7 +18,11 @@ import org.hotrod.dynamicsql.PreparedSelectQuery;
 import org.hotrod.dynamicsql.RowReader;
 import org.hotrod.dynamicsql.assembler.DynamicSQL;
 import org.hotrod.exceptions.PersistenceException;
+import org.hotrod.livesql.LShield;
+import org.hotrod.livesql.LiveSQL;
+import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.util.DAOExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -30,16 +34,20 @@ public class SalesDAO {
 
   private static final Logger log = Logger.getLogger(SalesDAO.class.getName());
 
-  private DynamicSQL dyn = new DynamicSQL();
-
-  private DataSource dataSource;
+  @Autowired
+  private LiveSQL sql;
+  private LiveSQLContext context;
   private ApplicationContext applicationContext;
+  private DynamicSQL dyn;
 
   // CONSTRUCTOR
 
-  public SalesDAO(DataSource dataSource, ApplicationContext applicationContext) {
-    this.dataSource = dataSource;
+  public SalesDAO(LiveSQL sql, ApplicationContext applicationContext) {
+    this.sql = sql;
+    this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
+    this.dyn = this.context.getDynamicSQL();
+    initializeQueries();
   }
 
   // SEQUENCE ROW READER
@@ -57,7 +65,11 @@ public class SalesDAO {
 
   // SELECT SEQUENCE
 
-  private final DynamicSelectQuery selectSequence0 = dyn.literaln("SELECT NEXT VALUE FOR hired_seq").endSelectQuery();
+  private DynamicSelectQuery selectSequence0;
+
+  private void initializeSelectSequence0() {
+    this.selectSequence0 = dyn.literaln("SELECT NEXT VALUE FOR hired_seq").endSelectQuery();
+  }
 
   public long getHiredNextValue() {
     Parameters params = this.dyn.newParameters();
@@ -65,23 +77,27 @@ public class SalesDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       long value = preparedQuery.executeOne(conn);
       return value;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
 
   // NITRO SELECT: find1
 
-  private final DynamicSelectQuery select0 = dyn
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = dyn
       .literal("\n      select * from k1\n    ")
       .endSelectQuery();
+  }
 
   public final class RowReader0 implements RowReader<MyAccount> {
 
@@ -128,14 +144,14 @@ public class SalesDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<MyAccount> rows = preparedQuery.execute(conn);
       return rows;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -143,7 +159,12 @@ public class SalesDAO {
   // GETTERS
 
   public DataSource getDataSource() {
-    return this.dataSource;
+    return this.context.getDataSource();
+  }
+
+  private void initializeQueries() {
+    this.initializeSelectSequence0();
+    this.initializeSelect0();
   }
 
 }

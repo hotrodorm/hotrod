@@ -25,6 +25,7 @@ import org.hotrod.livesql.queries.typesolver.TypeRule;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.typesolver.TypeSolverConst;
 import org.hotrod.utils.AbstractClassWriter.ExternalClass;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.SUtil;
 
@@ -151,7 +152,28 @@ public class LayerResourcesBeanWriter {
 
       n++;
     }
-    w.println("    return () -> rules;");
+
+    ClassPackage layoutPackage = this.jdbcTag.getLayout().getPackage(null);
+    ClassPackage modelPackage = this.jdbcTag.getModel().getPackage(null);
+
+    w.println("    String[] allowedPackages = {");
+    w.println("      \"" + layoutPackage.getPackage() + "\",");
+    w.println("      \"" + modelPackage.getPackage() + "\"");
+    w.println("    };");
+    w.println("    return new LayerConfiguration() {");
+    w.println();
+    w.println("      @Override");
+    w.println("      public List<TypeRule> getRuntimeTypeSolverRules() {");
+    w.println("        return rules;");
+    w.println("      }");
+    w.println();
+    w.println("      @Override");
+    w.println("      public String[] getAllowedPackages() {");
+    w.println("        return allowedPackages;");
+    w.println("      }");
+    w.println();
+    w.println("    };");
+
     w.println("  }");
   }
 

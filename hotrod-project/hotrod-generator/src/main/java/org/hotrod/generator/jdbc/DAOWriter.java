@@ -59,7 +59,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -85,7 +84,6 @@ import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetE
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequencePreFetchInsertExecutor;
 import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
@@ -138,7 +136,7 @@ public class DAOWriter {
 
   private ClassWriter w;
 
-//  private List<String> initializersInPostConstruct = new ArrayList<>();
+  private List<String> initializersInPostConstruct = new ArrayList<>();
 
   // Constructors
 
@@ -305,36 +303,16 @@ public class DAOWriter {
 
     // Spring properties
 
-    w.println("  private ", DynamicSQL.class, " dyn = new ", DynamicSQL.class, "();");
-    w.println();
-
-//    w.println("  @", Const.AUTOWIRED);
-//    if (this.layerResources.getDataSourceQualifier() != null) {
-//      w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getDataSourceQualifier() + "\")");
-//    }
-    w.println("  private ", DataSource.class, " dataSource;");
-
-    if (!this.isExecutor()) {
-//      w.println("  @", Const.AUTOWIRED);
-//      if (this.layerResources.getLiveSQLQualifier() != null) {
-//        w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getLiveSQLQualifier() + "\")");
-//      }
-      w.println("  private ", LiveSQL.class, " sql;");
+    w.println("  @", Const.AUTOWIRED);
+    if (this.layerResources.getLiveSQLQualifier() != null) {
+      w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getLiveSQLQualifier() + "\")");
     }
+    w.println("  private ", LiveSQL.class, " sql;");
 
-//    w.println("  @", Override.class);
-//    w.println("  public void setApplicationContext(final ", Const.APPLICATION_CONTEXT, " applicationContext) throws ",
-//        Const.BEANS_EXCEPTION, " {");
-//    w.println("    this.applicationContext = applicationContext;");
-//    w.println("  }");
-
-    if (!this.isExecutor()) {
-//      w.println();
-//      w.println("  @", SuppressWarnings.class, "(\"unused\")");
-      w.println("  private ", LiveSQLContext.class, " context;");
-    }
+    w.println("  private ", LiveSQLContext.class, " context;");
 
     w.println("  private ", Const.APPLICATION_CONTEXT, " applicationContext;");
+    w.println("  private ", DynamicSQL.class, " dyn;");
     w.println();
 
     // Constructor
@@ -343,29 +321,17 @@ public class DAOWriter {
     w.println();
     w.print("  public " + this.getClassName() + "(");
 
-    if (!this.isExecutor()) {
-      if (this.layerResources.getDataSourceQualifier() != null) {
-        w.print("@", Const.QUALIFIER, "(\"" + this.layerResources.getDataSourceQualifier() + "\") ");
-      }
-      w.print("LiveSQL sql, ");
-    }
-
     if (this.layerResources.getDataSourceQualifier() != null) {
       w.print("@", Const.QUALIFIER, "(\"" + this.layerResources.getDataSourceQualifier() + "\") ");
     }
-    w.print("DataSource dataSource, ");
+    w.print(LiveSQL.class, " sql, ");
 
     w.println(Const.APPLICATION_CONTEXT, " applicationContext) {");
-    if (!this.isExecutor()) {
-      w.println("    this.sql = sql;");
-    }
-    w.println("    this.dataSource = dataSource;");
+    w.println("    this.sql = sql;");
+    w.println("    this.context = ", LShield.class, ".getLiveSQLContext(this.sql);");
     w.println("    this.applicationContext = applicationContext;");
-    if (!this.isExecutor()) {
-      w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
-      w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
-          RuntimeTypeSolver.class, "(null, liveSQLDialect));");
-    }
+    w.println("    this.dyn = this.context.getDynamicSQL();");
+    w.println("    initializeQueries();");
     w.println("  }");
 
   }
@@ -375,7 +341,7 @@ public class DAOWriter {
     w.println("  // GETTERS");
     w.println();
     w.println("  public ", DataSource.class, " getDataSource() {");
-    w.println("    return this.dataSource;");
+    w.println("    return this.context.getDataSource();");
     w.println("  }");
   }
 
@@ -409,6 +375,14 @@ public class DAOWriter {
 //    w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
 //    w.println("    }");
 //    w.println("  }");
+
+    w.println();
+    w.println("  private void initializeQueries() {");
+    for (String ini : this.initializersInPostConstruct) {
+      w.println("    this." + ini + "();");
+    }
+    w.println("  }");
+
   }
 
   private void writeClassFooter() throws IOException {
@@ -611,11 +585,14 @@ public class DAOWriter {
       // Query
 
       String queryName = byExample ? "selectByExample" : "selectByPrimaryKey";
-//      String initializerName = "initialize" + SUtil.capitalize(queryName);
-//      this.initializersInPostConstruct.add(initializerName);
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
 
       w.println();
-      w.println("  private final ", DynamicSelectQuery.class, " " + queryName + " = dyn");
+      w.println("  private ", DynamicSelectQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = dyn");
 
       w.println("      .literaln(\"SELECT\")");
       int coln = this.metadata.getColumns().size();
@@ -634,6 +611,7 @@ public class DAOWriter {
         fragmentWherePK("f");
       }
       w.println("      .endSelectQuery();");
+      w.println("  }");
       w.println();
 
       // Method
@@ -708,11 +686,14 @@ public class DAOWriter {
     // DynamicSQL Query
 
     String queryName = byExample ? "insertByExample" : "insert";
-//    String initializerName = "initialize" + SUtil.capitalize(queryName);
-//    this.initializersInPostConstruct.add(initializerName);
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicInsertQuery.class, " " + queryName + " = dyn");
+    w.println("  private ", DynamicInsertQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = dyn");
 
     w.println("      .literal(\"INSERT INTO ", SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()),
         "\")");
@@ -855,6 +836,7 @@ public class DAOWriter {
     }
 
     w.println(");");
+    w.println("  }");
 
     // Method
 
@@ -928,14 +910,14 @@ public class DAOWriter {
     ExternalClass du = ExternalClass.of("org.springframework.jdbc.datasource.DataSourceUtils");
     w.println("    ", Connection.class, " conn = null;");
     w.println("    try {");
-    w.println("      conn = ", du, ".getConnection(this.dataSource);");
+    w.println("      conn = ", du, ".getConnection(this.context.getDataSource());");
   }
 
   private void writeReleaseConnection() {
     ExternalClass du = ExternalClass.of("org.springframework.jdbc.datasource.DataSourceUtils");
     w.println("    } finally {");
     w.println("      if (conn != null) {");
-    w.println("        ", du, ".releaseConnection(conn, this.dataSource);");
+    w.println("        ", du, ".releaseConnection(conn, this.context.getDataSource());");
     w.println("      }");
     w.println("    }");
   }
@@ -1078,11 +1060,15 @@ public class DAOWriter {
       // DynamicSQL Query
 
       String queryName = "updateByPK" + (ol == null ? "" : "WithOptimisticLocking");
-//      String initializerName = "initialize" + SUtil.capitalize(queryName);
-//      this.initializersInPostConstruct.add(initializerName);
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
 
       w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = dyn");
+      w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = dyn");
+
       w.println(
           "      .literaln(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
       w.println("      .literaln(\"SET\")");
@@ -1128,6 +1114,7 @@ public class DAOWriter {
       }
 
       w.println("    .endModificationQuery();");
+      w.println("  }");
 
       // Method
 
@@ -1169,15 +1156,20 @@ public class DAOWriter {
     // Query
 
     String queryName = "updateByExample";
-//    String initializerName = "initialize" + SUtil.capitalize(queryName);
-//    this.initializersInPostConstruct.add(initializerName);
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = dyn");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = dyn");
+
     w.println("      .literal(\"UPDATE " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
     fragmentSet("v");
     fragmentWhereExample("e");
     w.println("      .endModificationQuery();");
+    w.println("  }");
 
     // Method
 
@@ -1243,11 +1235,17 @@ public class DAOWriter {
       // Query
 
       String queryName = "deleteByPK" + (ol == null ? "" : "WithOptimisticLocking");
-//      String initializerName = "initialize" + SUtil.capitalize(queryName);
-//      this.initializersInPostConstruct.add(initializerName);
+      String initializerName = "initialize" + SUtil.capitalize(queryName);
+      this.initializersInPostConstruct.add(initializerName);
+
+      this.initializersInPostConstruct.add(initializerName);
 
       w.println();
-      w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = dyn");
+      w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+      w.println();
+      w.println("  private void " + initializerName + "() {");
+      w.println("    this." + queryName + " = dyn");
+
       w.println("      .literaln(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName())
           + "\")");
 
@@ -1266,6 +1264,7 @@ public class DAOWriter {
       }
 
       w.println("      .endModificationQuery();");
+      w.println("  }");
 
       // Method
 
@@ -1323,15 +1322,20 @@ public class DAOWriter {
     // Query
 
     String queryName = "deleteByExample";
-//    String initializerName = "initialize" + SUtil.capitalize(queryName);
-//    this.initializersInPostConstruct.add(initializerName);
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = dyn");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = dyn");
+
     w.println(
         "      .literaln(\"DELETE FROM " + SUtil.escapeJavaString(this.metadata.getId().getRenderedSQLName()) + "\")");
     fragmentWhereExample("e");
     w.println("      .endModificationQuery();");
+    w.println("  }");
 
     // Method
 
@@ -2054,15 +2058,20 @@ public class DAOWriter {
           "Could not generate method for <sequence> tag. Sequences are not supported in this database edition or version.");
     }
 
-//    String initializerMethod = "initializeSelectSequence" + n;
-//    this.initializersInPostConstruct.add(initializerMethod);
+    String initializerMethod = "initializeSelectSequence" + n;
+    this.initializersInPostConstruct.add(initializerMethod);
 
     w.println();
     w.println("  // SELECT SEQUENCE");
     w.println();
-    w.println("  private final ", DynamicSelectQuery.class,
-        " selectSequence" + n + " = dyn.literaln(\"" + sql + "\").endSelectQuery();");
+
+    w.println("  private ", DynamicSelectQuery.class, " selectSequence" + n + ";");
     w.println();
+    w.println("  private void " + initializerMethod + "() {");
+    w.println("    this.selectSequence" + n + " = dyn.literaln(\"" + sql + "\").endSelectQuery();");
+    w.println("  }");
+    w.println();
+
     w.println("  public long " + tag.getMethod() + "() {");
     w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
     w.println("    ", PreparedSelectQuery.class,
@@ -2088,17 +2097,21 @@ public class DAOWriter {
 
     // 1. Query Definition
 
-//    String initializerName = "initialize" + SUtil.capitalize(queryName);
-//    this.initializersInPostConstruct.add(initializerName);
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicModificationQuery.class, " " + queryName + " = dyn");
+    w.println("  private ", DynamicModificationQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = dyn");
 
     List<DynamicSQLPart> parts = q.getDynamicSQLParts();
     NitroRenderer r = new NitroRenderer();
     r.render(parts, w);
 
     w.println("      .endModificationQuery();");
+    w.println("  }");
 
     // 2. Method
 
@@ -2146,11 +2159,14 @@ public class DAOWriter {
 
     // 1. Query Definition
 
-//    String initializerName = "initialize" + SUtil.capitalize(queryName);
-//    this.initializersInPostConstruct.add(initializerName);
+    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    this.initializersInPostConstruct.add(initializerName);
 
     w.println();
-    w.println("  private final ", DynamicSelectQuery.class, " " + queryName + " = dyn");
+    w.println("  private ", DynamicSelectQuery.class, " " + queryName + ";");
+    w.println();
+    w.println("  private void " + initializerName + "() {");
+    w.println("    this." + queryName + " = dyn");
 
     List<EnhancedSQLPart> parts = s.getParts();
 
@@ -2158,6 +2174,7 @@ public class DAOWriter {
     r.renderSelect(parts, w);
 
     w.println("      .endSelectQuery();");
+    w.println("  }");
 
     // 2. Row Reader
 

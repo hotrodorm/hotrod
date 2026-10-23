@@ -59,10 +59,12 @@ public class RuntimeTypeSolverTag extends AbstractConfigurationTag {
 
   }
 
+  private static final String[] ALLOWED_PACKAGES = new String[] {};
+
   public PropertyType resolveStaticType(final ColumnMetadata cm, final JdbcColumn c, final JDBCType resultSetType)
       throws UnresolvableDataTypeException {
 
-    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory();
+    DynamicExpressionFactory factory = DynamicExpressionFactoryConfig.getFactory(ALLOWED_PACKAGES);
 
     RetrievedColumn rc = new RetrievedColumn(cm, c);
     this.retrievedColumns.add(rc);

@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
 import org.hotrod.dynamicsql.DynamicExpressionFactory;
-import org.hotrod.dynamicsql.DynamicExpressionFactoryConfig;
 import org.hotrod.dynamicsql.Parameters;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.utils.SUtil;
@@ -24,28 +23,30 @@ public class TypeRule {
   private DynamicExpressionFactory factory;
   private DynamicExpression testExpression;
 
-  private TypeRule(final String test, final TypeHandler<?, ?> typeHandler, final String errorMessage) {
+  private TypeRule(final String test, final TypeHandler<?, ?> typeHandler, final String errorMessage,
+      DynamicExpressionFactory factory) {
     this.test = test;
     this.typeHandler = typeHandler;
     this.errorMessage = errorMessage;
 
-    this.factory = DynamicExpressionFactoryConfig.getFactory();
+    this.factory = factory;
     if (SUtil.isEmpty(this.test)) {
       throw new LiveSQLException("Invalid <type-solver> expression. Must be a non-empty JEXL expression");
     }
-    this.testExpression = this.factory.expression(this.test);
+    this.testExpression = factory.expression(this.test);
   }
 
-  public static TypeRule of(final String test, final TypeHandler<?, ?> typeHandler) {
-    return new TypeRule(test, typeHandler, null);
+  public static TypeRule of(final String test, final TypeHandler<?, ?> typeHandler, DynamicExpressionFactory factory) {
+    return new TypeRule(test, typeHandler, null, factory);
   }
 
-  public static TypeRule of(final String test, final String errorMessage) {
-    return new TypeRule(test, null, errorMessage);
+  public static TypeRule of(final String test, final String errorMessage, DynamicExpressionFactory factory) {
+    return new TypeRule(test, null, errorMessage, factory);
   }
 
-  public boolean applies(final ResultSetColumnMetadata cm) throws CouldNotResolveResultSetDataTypeException {
-    Parameters context = this.factory.newObjectContext(cm);
+  public boolean applies(final ResultSetColumnMetadata cm, DynamicExpressionFactory factory)
+      throws CouldNotResolveResultSetDataTypeException {
+    Parameters context = factory.newObjectContext(cm);
     Object v = null;
     try {
       v = this.testExpression.evaluate(context);

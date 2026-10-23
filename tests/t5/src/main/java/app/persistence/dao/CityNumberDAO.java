@@ -30,7 +30,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
@@ -41,13 +40,13 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -65,21 +64,20 @@ public class CityNumberDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  private DynamicSQL dyn = new DynamicSQL();
-
-  private DataSource dataSource;
+  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
+  private DynamicSQL dyn;
 
   // CONSTRUCTOR
 
-  public CityNumberDAO(LiveSQL sql, DataSource dataSource, ApplicationContext applicationContext) {
+  public CityNumberDAO(LiveSQL sql, ApplicationContext applicationContext) {
     this.sql = sql;
-    this.dataSource = dataSource;
+    this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
-    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
+    this.dyn = this.context.getDynamicSQL();
+    initializeQueries();
   }
 
   // ROW READER
@@ -127,7 +125,10 @@ public class CityNumberDAO {
 
   // SELECT BY EXAMPLE
 
-  private final DynamicSelectQuery selectByExample = dyn
+  private DynamicSelectQuery selectByExample;
+
+  private void initializeSelectbyexample() {
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id")
       .literaln("FROM city_code")
@@ -136,6 +137,7 @@ public class CityNumberDAO {
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
+  }
 
   public List<CityNumber> select(CityNumberLayout example, CityNumberOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
@@ -146,14 +148,14 @@ public class CityNumberDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<CityNumber> rows = preparedQuery.execute(conn);
       return rows;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -166,7 +168,10 @@ public class CityNumberDAO {
 
   // INSERT
 
-  private final DynamicInsertQuery insert = dyn
+  private DynamicInsertQuery insert;
+
+  private void initializeInsert() {
+    this.insert = dyn
       .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
@@ -176,6 +181,7 @@ public class CityNumberDAO {
         .parameterNullable("l.id", Types.BIGINT)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public CityNumber insert(CityNumberLayout layout) {
     Parameters params = this.dyn.newParameters();
@@ -185,13 +191,13 @@ public class CityNumberDAO {
     CityNumber model = this.clone(layout);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -199,7 +205,10 @@ public class CityNumberDAO {
 
   // INSERT BY EXAMPLE
 
-  private final DynamicInsertQuery insertByExample = dyn
+  private DynamicInsertQuery insertByExample;
+
+  private void initializeInsertbyexample() {
+    this.insertByExample = dyn
       .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
@@ -209,6 +218,7 @@ public class CityNumberDAO {
         .if_("e.id != null").parameter("e.id").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public CityNumber insertByExample(CityNumberLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -218,13 +228,13 @@ public class CityNumberDAO {
     CityNumber model = this.clone(example);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -234,7 +244,10 @@ public class CityNumberDAO {
 
   // UPDATE BY EXAMPLE
 
-  private final DynamicModificationQuery updateByExample = dyn
+  private DynamicModificationQuery updateByExample;
+
+  private void initializeUpdatebyexample() {
+    this.updateByExample = dyn
       .literal("UPDATE city_code")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
@@ -243,6 +256,7 @@ public class CityNumberDAO {
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int update(CityNumberLayout example, CityNumberLayout values) {
     Parameters params = this.dyn.newParameters();
@@ -252,14 +266,14 @@ public class CityNumberDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -277,12 +291,16 @@ public class CityNumberDAO {
 
   // DELETE BY EXAMPLE
 
-  private final DynamicModificationQuery deleteByExample = dyn
+  private DynamicModificationQuery deleteByExample;
+
+  private void initializeDeletebyexample() {
+    this.deleteByExample = dyn
       .literaln("DELETE FROM city_code")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int delete(CityNumberLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -291,14 +309,14 @@ public class CityNumberDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -382,7 +400,15 @@ public class CityNumberDAO {
   // GETTERS
 
   public DataSource getDataSource() {
-    return this.dataSource;
+    return this.context.getDataSource();
+  }
+
+  private void initializeQueries() {
+    this.initializeSelectbyexample();
+    this.initializeInsert();
+    this.initializeInsertbyexample();
+    this.initializeUpdatebyexample();
+    this.initializeDeletebyexample();
   }
 
 }

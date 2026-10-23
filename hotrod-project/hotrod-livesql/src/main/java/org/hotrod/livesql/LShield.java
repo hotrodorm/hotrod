@@ -3,6 +3,7 @@ package org.hotrod.livesql;
 import javax.sql.DataSource;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
+import org.hotrod.livesql.queries.LiveSQLContext;
 
 public class LShield {
 
@@ -15,8 +16,8 @@ public class LShield {
     return liveSQL.getDataSource();
   }
 
-  public static LiveSQLDialect getLiveSQLDialect(LiveSQL liveSQL) {
-    return liveSQL.getLiveSQLDialect();
+  public static LiveSQLContext getLiveSQLContext(LiveSQL liveSQL) {
+    return liveSQL.getLiveSQLContext();
   }
 
 }

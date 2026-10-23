@@ -31,7 +31,6 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
-import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.metadata.AllColumns;
 import org.hotrod.livesql.metadata.BinaryEntityColumn;
 import org.hotrod.livesql.metadata.BooleanEntityColumn;
@@ -47,13 +46,13 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.livesql.queries.typesolver.RuntimeTypeSolver;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -71,21 +70,20 @@ public class EmployeeDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  private DynamicSQL dyn = new DynamicSQL();
-
-  private DataSource dataSource;
+  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
+  private DynamicSQL dyn;
 
   // CONSTRUCTOR
 
-  public EmployeeDAO(LiveSQL sql, DataSource dataSource, ApplicationContext applicationContext) {
+  public EmployeeDAO(LiveSQL sql, ApplicationContext applicationContext) {
     this.sql = sql;
-    this.dataSource = dataSource;
+    this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
-    LiveSQLDialect liveSQLDialect = LShield.getLiveSQLDialect(this.sql);
-    this.context = new LiveSQLContext(liveSQLDialect, this.dataSource, new RuntimeTypeSolver(null, liveSQLDialect));
+    this.dyn = this.context.getDynamicSQL();
+    initializeQueries();
   }
 
   // ROW READER
@@ -165,7 +163,10 @@ public class EmployeeDAO {
 
   // SELECT BY PRIMARY KEY
 
-  private final DynamicSelectQuery selectByPrimaryKey = dyn
+  private DynamicSelectQuery selectByPrimaryKey;
+
+  private void initializeSelectbyprimarykey() {
+    this.selectByPrimaryKey = dyn
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  amount,")
@@ -177,6 +178,7 @@ public class EmployeeDAO {
       .literaln("FROM employee")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
+  }
 
   public Employee select(Integer id) {
     if (id == null) return null;
@@ -188,7 +190,7 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<Employee> rows = preparedQuery.execute(conn);
       if (rows.size() == 0) return null;
       if (rows.size() == 1) return rows.get(0);
@@ -197,14 +199,17 @@ public class EmployeeDAO {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
 
   // SELECT BY EXAMPLE
 
-  private final DynamicSelectQuery selectByExample = dyn
+  private DynamicSelectQuery selectByExample;
+
+  private void initializeSelectbyexample() {
+    this.selectByExample = dyn
       .literaln("SELECT")
       .literaln("  id,")
       .literaln("  amount,")
@@ -225,6 +230,7 @@ public class EmployeeDAO {
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
+  }
 
   public List<Employee> select(EmployeeLayout example, EmployeeOrderBy... orderBies) {
     Parameters params = this.dyn.newParameters();
@@ -235,14 +241,14 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       List<Employee> rows = preparedQuery.execute(conn);
       return rows;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -255,7 +261,10 @@ public class EmployeeDAO {
 
   // INSERT
 
-  private final DynamicInsertQuery insert = dyn
+  private DynamicInsertQuery insert;
+
+  private void initializeInsert() {
+    this.insert = dyn
       .literal("INSERT INTO employee")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
@@ -277,6 +286,7 @@ public class EmployeeDAO {
         .parameterNullable("l.region", Types.OTHER)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public Employee insert(EmployeeLayout layout) {
     Parameters params = this.dyn.newParameters();
@@ -286,13 +296,13 @@ public class EmployeeDAO {
     Employee model = this.clone(layout);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -300,7 +310,10 @@ public class EmployeeDAO {
 
   // INSERT BY EXAMPLE
 
-  private final DynamicInsertQuery insertByExample = dyn
+  private DynamicInsertQuery insertByExample;
+
+  private void initializeInsertbyexample() {
+    this.insertByExample = dyn
       .literal("INSERT INTO employee")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
@@ -322,6 +335,7 @@ public class EmployeeDAO {
         .if_("e.region != null").parameter("e.region").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
 
   public Employee insertByExample(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -331,13 +345,13 @@ public class EmployeeDAO {
     Employee model = this.clone(example);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       preparedQuery.execute(conn);
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
     return model;
@@ -345,7 +359,10 @@ public class EmployeeDAO {
 
   // UPDATE BY PRIMARY KEY
 
-  private final DynamicModificationQuery updateByPK = dyn
+  private DynamicModificationQuery updateByPK;
+
+  private void initializeUpdatebypk() {
+    this.updateByPK = dyn
       .literaln("UPDATE employee")
       .literaln("SET")
       .trim("  ", ",\n  ","\n")
@@ -358,6 +375,7 @@ public class EmployeeDAO {
       .endtrim()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
+  }
 
   public int update(Employee model) {
     if (model.getId() == null) return 0;
@@ -367,21 +385,24 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
 
   // UPDATE BY EXAMPLE
 
-  private final DynamicModificationQuery updateByExample = dyn
+  private DynamicModificationQuery updateByExample;
+
+  private void initializeUpdatebyexample() {
+    this.updateByExample = dyn
       .literal("UPDATE employee")
       .set()
         .if_("v.id != null").literal("id = ").parameter("v.id").endif()
@@ -402,6 +423,7 @@ public class EmployeeDAO {
         .if_("e.region != null").literal("region = ").parameter("e.region").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int update(EmployeeLayout example, EmployeeLayout values) {
     Parameters params = this.dyn.newParameters();
@@ -411,14 +433,14 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -440,10 +462,14 @@ public class EmployeeDAO {
 
   // DELETE BY PRIMARY KEY
 
-  private final DynamicModificationQuery deleteByPK = dyn
+  private DynamicModificationQuery deleteByPK;
+
+  private void initializeDeletebypk() {
+    this.deleteByPK = dyn
       .literaln("DELETE FROM employee")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endModificationQuery();
+  }
 
   public int delete(Integer id) {
     if (id == null) return 0;
@@ -455,21 +481,24 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
 
   // DELETE BY EXAMPLE
 
-  private final DynamicModificationQuery deleteByExample = dyn
+  private DynamicModificationQuery deleteByExample;
+
+  private void initializeDeletebyexample() {
+    this.deleteByExample = dyn
       .literaln("DELETE FROM employee")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
@@ -481,6 +510,7 @@ public class EmployeeDAO {
         .if_("e.region != null").literal("region = ").parameter("e.region").endif()
       .endwhere()
       .endModificationQuery();
+  }
 
   public int delete(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
@@ -489,14 +519,14 @@ public class EmployeeDAO {
     DAOExecutor.logQuery(preparedQuery, log);
     Connection conn = null;
     try {
-      conn = DataSourceUtils.getConnection(this.dataSource);
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
       int count = preparedQuery.execute(conn);
       return count;
     } catch (DynamicSQLException e) {
       throw new PersistenceException(e.getCause());
     } finally {
       if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.dataSource);
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
       }
     }
   }
@@ -616,7 +646,19 @@ public class EmployeeDAO {
   // GETTERS
 
   public DataSource getDataSource() {
-    return this.dataSource;
+    return this.context.getDataSource();
+  }
+
+  private void initializeQueries() {
+    this.initializeSelectbyprimarykey();
+    this.initializeSelectbyexample();
+    this.initializeInsert();
+    this.initializeInsertbyexample();
+    this.initializeUpdatebypk();
+    this.initializeUpdatebyexample();
+    this.initializeDeletebypk();
+    this.initializeDeletebypk();
+    this.initializeDeletebyexample();
   }
 
 }
