@@ -27,14 +27,11 @@ public enum PrimaryKeyRetrievalMode {
 
   NO_RETRIEVAL(new PreparedInsertNoRetrievalExecutor(), false), //
 
-//  IDENTITY_INLINE_STANDARD_RESULTSET(null, true), // Not implemented
   IDENTITY_INLINE_KEYS_RESULTSET(new PreparedInsertIdentityInlineKeyResultSetExecutor(), true), //
-//  IDENTITY_POSTFETCH(null, true), // Not implemented
 
-  SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor(), true), // Implemented
+  SEQUENCE_PREFETCH(new PreparedInsertSequencePreFetchExecutor(), true), //
   SEQUENCE_INLINE_DATA_RESULTSET(new PreparedInsertSequenceInlineDataResultsetExecutor(), true), //
   SEQUENCE_INLINE_KEYS_RESULTSET(new PreparedInsertSequenceInlineKeysResultsetExecutor(), true) //
-//  SEQUENCE_POSTFETCH(null, true) // Not implemented
   ;
 
   private InsertExecutor insertExecutor;

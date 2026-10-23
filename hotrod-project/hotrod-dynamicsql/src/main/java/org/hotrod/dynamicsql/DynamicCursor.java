@@ -57,10 +57,11 @@ public class DynamicCursor<R> implements Cursor<R> {
 
   @Override
   public synchronized Iterator<R> iterator() {
-    if (this.iterator == null) {
-      this.iterator = new CursorIterator<>(this.conn, this.rs, this.rowReader);
+    if (this.iterator != null) {
+      throw new IllegalStateException("The cursor iterator has already been obtained and can only be iterated once.");
     }
-    return this.iterator();
+    this.iterator = new CursorIterator<>(this.conn, this.rs, this.rowReader);
+    return this.iterator;
   }
 
   @Override

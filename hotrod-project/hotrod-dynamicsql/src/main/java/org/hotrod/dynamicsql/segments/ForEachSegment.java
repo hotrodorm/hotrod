@@ -96,9 +96,9 @@ public class ForEachSegment extends ControlSegment {
 
     Object obj = this.collectionExpression.evaluate(context);
     if (obj == null) {
-      return false;
-    }
-    if (obj.getClass().isArray()) {
+      array = null;
+      coll = new ArrayList<>();
+    } else if (obj.getClass().isArray()) {
       array = getArrayOfObjects(obj);
       coll = null;
     } else if (Collection.class.isAssignableFrom(obj.getClass())) {
