@@ -549,7 +549,7 @@ public class DAOWriter {
       w.println("    b." + mem + " = model." + cm.getId().getJavaGetter() + "();");
     }
     w.println("    return b;");
-    w.println("  };");
+    w.println("  }");
   }
 
   private void writeClone() {
@@ -567,7 +567,7 @@ public class DAOWriter {
       w.println("    m." + cm.getId().getJavaSetter() + "(layout." + cm.getId().getJavaGetter() + "());");
     }
     w.println("    return m;");
-    w.println("  };");
+    w.println("  }");
   }
 
   private void writeSelect(boolean byExample) {

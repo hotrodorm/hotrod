@@ -142,7 +142,7 @@ public class LocalHouseDAO {
     m.setZipKode2(layout.getZipKode2());
     m.setName(layout.getName());
     return m;
-  };
+  }
 
   // SELECT BY PRIMARY KEY
 

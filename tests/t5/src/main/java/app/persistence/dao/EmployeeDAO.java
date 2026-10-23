@@ -159,7 +159,7 @@ public class EmployeeDAO {
     m.setPhoto(layout.getPhoto());
     m.setRegion(layout.getRegion());
     return m;
-  };
+  }
 
   // SELECT BY PRIMARY KEY
 

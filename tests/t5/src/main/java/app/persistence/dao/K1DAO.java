@@ -130,7 +130,7 @@ public class K1DAO {
     m.setId(layout.getId());
     m.setName(layout.getName());
     return m;
-  };
+  }
 
   // SELECT BY PRIMARY KEY
 

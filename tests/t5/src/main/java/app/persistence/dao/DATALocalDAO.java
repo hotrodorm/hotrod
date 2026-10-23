@@ -135,7 +135,7 @@ public class DATALocalDAO {
     m.setNAMELocalToCity(layout.getNAMELocalToCity());
     m.setActive(layout.getActive());
     return m;
-  };
+  }
 
   // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 

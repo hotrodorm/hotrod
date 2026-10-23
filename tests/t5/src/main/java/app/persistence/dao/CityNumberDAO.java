@@ -121,7 +121,7 @@ public class CityNumberDAO {
     CityNumber m = this.applicationContext.getBean(CityNumber.class);
     m.setId(layout.getId());
     return m;
-  };
+  }
 
   // SELECT BY EXAMPLE
 

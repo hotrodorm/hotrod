@@ -127,7 +127,7 @@ public class CostDAO {
     m.setRegion(layout.getRegion());
     m.setAmount(layout.getAmount());
     return m;
-  };
+  }
 
   // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
 
