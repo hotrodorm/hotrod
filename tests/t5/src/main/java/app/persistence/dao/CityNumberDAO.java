@@ -163,7 +163,7 @@ public class CityNumberDAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<CityNumber> select(final CityNumberView from, final Predicate predicate) {
-    return new CriteriaWherePhase<CityNumber>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT

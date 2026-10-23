@@ -669,8 +669,8 @@ public class DAOWriter {
     w.println();
     w.print("  public ", CriteriaWherePhase.class, "<", em, "> ");
     w.println("select(final ", ec, " from, final ", Predicate.class, " predicate) {");
-    w.println("    return new ", CriteriaWherePhase.class, "<", em,
-        ">(this.context, from, predicate, this.rowReader, livesql_log);");
+    w.println("    return new ", CriteriaWherePhase.class,
+        "<>(this.context, from, predicate, this.rowReader, livesql_log);");
     w.println("  }");
   }
 

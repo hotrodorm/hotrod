@@ -181,7 +181,7 @@ public class DATALocalDAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<DATALocal> select(final DATALocalTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<DATALocal>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT

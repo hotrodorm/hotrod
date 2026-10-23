@@ -256,7 +256,7 @@ public class EmployeeDAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Employee> select(final EmployeeTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Employee>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT

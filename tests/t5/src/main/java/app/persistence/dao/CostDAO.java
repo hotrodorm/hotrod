@@ -173,7 +173,7 @@ public class CostDAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<Cost> select(final CostTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<Cost>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT

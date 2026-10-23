@@ -212,7 +212,7 @@ public class K2DAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<K2> select(final K2Table from, final Predicate predicate) {
-    return new CriteriaWherePhase<K2>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT

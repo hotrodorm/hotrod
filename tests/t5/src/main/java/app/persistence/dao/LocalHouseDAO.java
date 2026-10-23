@@ -233,7 +233,7 @@ public class LocalHouseDAO {
   // SELECT BY CRITERIA
 
   public CriteriaWherePhase<LocalHouse> select(final LocalHouseTable from, final Predicate predicate) {
-    return new CriteriaWherePhase<LocalHouse>(this.context, from, predicate, this.rowReader, livesql_log);
+    return new CriteriaWherePhase<>(this.context, from, predicate, this.rowReader, livesql_log);
   }
 
   // INSERT
