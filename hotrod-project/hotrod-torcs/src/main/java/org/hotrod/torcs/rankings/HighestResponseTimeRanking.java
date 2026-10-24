@@ -151,7 +151,7 @@ public class HighestResponseTimeRanking extends Ranking {
   }
 
   @Override
-  public List<RankingEntry> getEntries() {
+  public synchronized List<RankingEntry> getEntries() {
     return this.sorted.stream().map(e -> e.cloneEntry()).collect(Collectors.toList());
   }
 

@@ -123,7 +123,7 @@ This is the starting point to manage the module, its observers, and to retrieve 
 
 ## Example
 
-To get the Top 10 slowest queries &mdash; ranked by maximum response time &mdash; the application can do:
+To get the Top 30 slowest queries &mdash; ranked by maximum response time &mdash; the application can do:
 
 ```java
   for (RankingEntry re : this.torcs.getDefaultRanking().getEntries()) {
@@ -166,7 +166,7 @@ In the example above, the section `[ds0]` indicates that both queries were execu
 
 ## Query Execution Observers
 
-Torcs uses observers to gather query execution statistics. By default there's only one observer registered and active that starts automatically with Torcs: the `HighestResponseTimeRanking`. This observer ranks the top 10 (default size) slowest queries in the application instance, and provide the details of them.
+Torcs uses observers to gather query execution statistics. By default there's only one observer registered and active that starts automatically with Torcs: the `HighestResponseTimeRanking`. This observer ranks the top 30 (default size) slowest queries in the application instance, and provide the details of them.
 
 The application can register more observers for other uses, and can also enable or disable them
 programatically, including the default observer.
@@ -246,7 +246,6 @@ Each ranking entry correspond to a summary of all recorded execution of a querya
 | long getAverageTime() | The average execution time for the successful executions |
 | long getTotalElapsedTime() | The total elapsed time. This is the sum of all elapsed times of all recorded execution. The TET value can be considered the *load* a query put in the database, and can be important to determine which queries deserve to be optimized
 | toString() | Provides a summary of the ranking entry |
-| double getTimeStandardDeviation() | The standard deviation of the execution time |
 | QueryExecution getSlowestExecution() | The slowest recorded execution |
 | QueryExecution getFastestExecution() | The fastest recorded execution |
 | QueryExecution getFirstExecution() | The first recorded execution |

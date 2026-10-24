@@ -60,7 +60,7 @@ public class HighestImpactRanking extends Ranking {
   @Override
   public synchronized void apply(final QueryExecution execution) {
 
-    System.out.println("execution=" + execution + " - execution.dsr=" + execution.dsr);
+//    System.out.println("execution=" + execution + " - execution.dsr=" + execution.dsr);
 
     RankingEntry entry = this.cacheByDSSQL.get(this.getCacheId(execution));
 
@@ -145,7 +145,7 @@ public class HighestImpactRanking extends Ranking {
   }
 
   @Override
-  public List<RankingEntry> getEntries() {
+  public synchronized List<RankingEntry> getEntries() {
     return this.sorted.stream().map(e -> e.cloneEntry()).collect(Collectors.toList());
   }
 

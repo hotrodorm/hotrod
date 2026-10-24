@@ -94,6 +94,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
   public void clearParameters() throws SQLException {
     this.preparedWrapped.clearParameters();
     this.indexSetters.clear();
+    this.nameSetters.clear();
   }
 
   @Override
@@ -105,7 +106,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), t);
@@ -122,7 +123,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), t);
@@ -139,7 +140,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), t);
@@ -156,7 +157,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(super.dataSourceReference, sql, indexSetters, nameSetters, (int) (end - start), t);

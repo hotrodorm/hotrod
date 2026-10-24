@@ -34,7 +34,7 @@ public class PlanRetrieverFactory {
         return new DB2PlanRetriever();
       } else if (uName.startsWith("POSTGRESQL")) {
         return new PostgreSQLPlanRetriever();
-      } else if (name.startsWith("Microsoft SQL Server")) {
+      } else if (uName.startsWith("Microsoft SQL Server")) {
         return new SQLServerPlanRetriever();
       } else if (uName.startsWith("APACHE DERBY")) {
         return new ApacheDerbyPlanRetriever();

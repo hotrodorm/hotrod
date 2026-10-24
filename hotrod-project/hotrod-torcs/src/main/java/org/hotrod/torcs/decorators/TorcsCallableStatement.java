@@ -435,13 +435,13 @@ public class TorcsCallableStatement extends TorcsPreparedStatement implements Ca
   @Override
   public void setBinaryStream(String parameterName, InputStream x, int length) throws SQLException {
     this.callableWrapped.setBinaryStream(parameterName, x, length);
-    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
+    this.registerSetter(new NameBinaryStreamSetter(parameterName, x, length));
   }
 
   @Override
   public void setBinaryStream(String parameterName, InputStream x, long length) throws SQLException {
     this.callableWrapped.setBinaryStream(parameterName, x, length);
-    this.registerSetter(new NameAsciiStreamSetter(parameterName, x, length));
+    this.registerSetter(new NameBinaryStreamSetter(parameterName, x, length));
   }
 
   @Override

@@ -14,7 +14,6 @@ public class RankingEntry {
   long minTime = 0;
   long maxTime = 0;
   long sumElapsed = 0;
-  long sumElapsedSQ = 0;
 
   int executions = 0;
   int errors = 0;
@@ -45,7 +44,6 @@ public class RankingEntry {
     this.minTime = re.minTime;
     this.maxTime = re.maxTime;
     this.sumElapsed = re.sumElapsed;
-    this.sumElapsedSQ = re.sumElapsedSQ;
 
     this.executions = re.executions;
     this.errors = re.errors;
@@ -56,6 +54,9 @@ public class RankingEntry {
     this.lastExceptionTimestamp = re.lastExceptionTimestamp;
 
     this.slowestExecution = re.slowestExecution;
+    this.fastestExecution = re.fastestExecution;
+    this.firstExecution = re.firstExecution;
+    this.lastException = re.lastException;
 
   }
 
@@ -85,7 +86,6 @@ public class RankingEntry {
       this.lastException = execution.exception;
     }
     this.sumElapsed += elapsedTime;
-    this.sumElapsedSQ += elapsedTime * elapsedTime;
   }
 
   // Cloning
@@ -152,27 +152,12 @@ public class RankingEntry {
   public String toString() {
     String fe = this.firstExecutionAt == 0 ? "N/A" : new Date(this.firstExecutionAt).toString();
     String le = this.lastExecutionAt == 0 ? "N/A" : new Date(this.lastExecutionAt).toString();
-    return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime()
-        + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " [" + this.minTime + "-" + this.maxTime
-        + " ms], impact " + this.sumElapsed + " ms, executed: " + fe + " - " + le
+    return this.executions + " executions" + ", " + this.errors + " errors" + ", avg " + getAverageTime() + " ms ["
+        + this.minTime + "-" + this.maxTime + " ms], impact " + this.sumElapsed + " ms, executed: " + fe + " - " + le
         + (this.lastException == null ? ", last exception: N/A"
             : ", last exception at " + new Date(this.lastExceptionTimestamp) + ": "
                 + this.lastException.getClass().getName())
         + " -- " + (this.dsr.getId() >= 0 ? "[ds" + this.dsr.getId() + "] " : "") + this.compactSQL;
-  }
-
-  /**
-   * See Welford's online algorithm:
-   * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
-   * 
-   * @return the standard deviation
-   */
-  public double getTimeStandardDeviation() {
-    return this.executions < 2 ? 0
-        : Math.sqrt( //
-            (this.sumElapsedSQ - 1.0 * this.sumElapsed * this.sumElapsed / this.executions) //
-                / //
-                (this.executions - 0));
   }
 
   // Executions

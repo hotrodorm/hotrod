@@ -100,7 +100,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -117,7 +117,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -134,7 +134,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -151,7 +151,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -171,7 +171,7 @@ public class TorcsStatement implements Statement {
               + " batch SQL statements. First one below:\n" + coalesce(this.firstBatchSQL, ""),
           null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(
@@ -194,7 +194,7 @@ public class TorcsStatement implements Statement {
               + " batch SQL statements. First one below:\n" + coalesce(this.firstBatchSQL, ""),
           null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(
@@ -218,7 +218,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -235,7 +235,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -252,7 +252,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -269,7 +269,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -286,7 +286,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -303,7 +303,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -320,7 +320,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -337,7 +337,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);
@@ -354,7 +354,7 @@ public class TorcsStatement implements Statement {
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), null);
       return r;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       log.fine("executed failed");
       long end = System.currentTimeMillis();
       this.torcs.record(this.dataSourceReference, sql, null, null, (int) (end - start), t);

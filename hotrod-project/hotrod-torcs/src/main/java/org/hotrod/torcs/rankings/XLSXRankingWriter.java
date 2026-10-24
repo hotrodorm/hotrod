@@ -143,7 +143,7 @@ public class XLSXRankingWriter {
           col = addCell(r, col, dataRightStyle, df.format(re.getMinTime()));
           col = addCell(r, col, dataRightStyle, df.format(re.getMaxTime()));
           col = addCell(r, col, dataRightStyle, df.format(re.getAverageTime()));
-          col = addCell(r, col, dataRightStyle, df.format(re.getTimeStandardDeviation()));
+          col = addCell(r, col, dataRightStyle, "N/A");
           col = addCell(r, col, dataRightStyle, df.format(re.getImpact()));
           col = addCell(r, col, dataRightStyle, df.format(re.getExecutions()));
           col = addCell(r, col, dataRightStyle, df.format(re.getErrors()));

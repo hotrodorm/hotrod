@@ -1,8 +1,8 @@
 package org.hotrod.torcs;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -45,15 +45,16 @@ public class DataSourceReference {
 
   // Instantiation
 
-  private static Map<Integer, DataSourceReference> dataSourcesByHash = new HashMap<>();
+  private static List<DataSourceReference> dataSources = new ArrayList<>();
   private static int nextReferenceId = 0;
 
   public boolean multipleDataSources() {
-    return this.dataSourcesByHash.size() > 1;
+    return dataSources.size() > 1;
   }
 
-  public static DataSourceReference of(final DataSource dataSource) {
-    DataSourceReference r = dataSourcesByHash.get(System.identityHashCode(dataSource));
+  public static synchronized DataSourceReference of(final DataSource dataSource) {
+    DataSourceReference r = dataSources.stream().filter(ds -> ds.getDataSource() == dataSource).findFirst()
+        .orElse(null);
     if (r == null) {
       r = addDataSourceReference(dataSource);
     }
@@ -62,7 +63,7 @@ public class DataSourceReference {
 
   private static synchronized DataSourceReference addDataSourceReference(final DataSource dataSource) {
     DataSourceReference r = new DataSourceReference(nextReferenceId++, dataSource);
-    dataSourcesByHash.put(System.identityHashCode(dataSource), r);
+    dataSources.add(r);
     return r;
   }
 

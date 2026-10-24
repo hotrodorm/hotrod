@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PreDestroy;
+
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
 import org.hotrod.torcs.plan.LOBParameterNotAllowedException;
 import org.hotrod.torcs.plan.ParameterAlreadyConsumedException;
@@ -60,7 +62,7 @@ public class Torcs {
 
   }
 
-  public void register(final QueryExecutionObserver observer) {
+  public synchronized void register(final QueryExecutionObserver observer) {
     this.observers.add(observer);
   }
 
@@ -87,7 +89,7 @@ public class Torcs {
       public void run() {
         try {
           reset();
-        } catch (Throwable e) {
+        } catch (Exception e) {
           log.log(Level.SEVERE, "Could not reset Torcs observers", e);
         }
       }
@@ -116,12 +118,14 @@ public class Torcs {
 
   public void reset() {
     log.info("Resetting observers.");
-    for (QueryExecutionObserver o : this.observers) {
-      try {
-        o.reset();
-      } catch (Throwable e) {
-        log.log(Level.SEVERE, "Could not reset observer '" + o.getTitle() + "'", e);
-        log.info("Continue with the reset operation...");
+    synchronized (this) {
+      for (QueryExecutionObserver o : this.observers) {
+        try {
+          o.reset();
+        } catch (Exception e) {
+          log.log(Level.SEVERE, "Could not reset observer '" + o.getTitle() + "'", e);
+          log.info("Continue with the reset operation...");
+        }
       }
     }
   }
@@ -134,9 +138,11 @@ public class Torcs {
       final Map<String, NameSetter> nameSetters, final int responseTime, final Throwable t) {
     if (this.active) {
       QueryExecution qe = new QueryExecution(dsr, sql, indexSetters, nameSetters, responseTime, t);
-      for (QueryExecutionObserver o : this.observers) {
-        if (o.isActive()) {
-          o.apply(qe);
+      synchronized (this) {
+        for (QueryExecutionObserver o : this.observers) {
+          if (o.isActive()) {
+            o.apply(qe);
+          }
         }
       }
     }
@@ -187,6 +193,11 @@ public class Torcs {
     String n = className.startsWith("Name") ? className.substring("Name".length()) : className;
     n = n.endsWith("Setter") ? n.substring(0, n.length() - "Setter".length()) : n;
     return "set" + n;
+  }
+
+  @PreDestroy
+  public void shutdown() {
+    this.scheduleService.shutdown();
   }
 
 }
