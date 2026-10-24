@@ -1,0 +1,11 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+    <daos vo-suffix="" abstract-vo-prefix="Abstract"/>
+    </mybatis-spring>
+  </generators>
+
+  <table name="product" />
+
+</hotrod>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.product">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    created,
+    updated,
+    xcode,
+    local_code,
+    global_code
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.created,
+    ${alias}.updated,
+    ${alias}.xcode,
+    ${alias}.local_code,
+    ${alias}.global_code
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.Product">
+    <id property="id" column="id" />
+    <result property="created" column="created" />
+    <result property="updated" column="updated" />
+    <result property="xcode" column="xcode" />
+    <result property="localCode" column="local_code" />
+    <result property="globalCode" column="global_code" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.product
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.product
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.created != null">
+        and created = #{p.created,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.updated != null">
+        and updated = #{p.updated,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.xcode != null">
+        and xcode = #{p.xcode,jdbcType=VARCHAR}
+      </if>
+      <if test="p.localCode != null">
+        and local_code = #{p.localCode,jdbcType=INTEGER}
+      </if>
+      <if test="p.globalCode != null">
+        and global_code = #{p.globalCode,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="localCode,globalCode" keyColumn="local_code,global_code">
+    insert into public.product (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="created != null">, created</if>
+        <if test="updated != null">, updated</if>
+        <if test="xcode != null">, xcode</if>
+        <if test="localCode != null">, local_code</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="created != null">, #{created,jdbcType=TIMESTAMP}</if>
+        <if test="updated != null">, #{updated,jdbcType=TIMESTAMP}</if>
+        <if test="xcode != null">, #{xcode,jdbcType=VARCHAR}</if>
+        <if test="localCode != null">, #{localCode,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update public.product set
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      xcode = #{xcode,jdbcType=VARCHAR},
+      local_code = #{localCode,jdbcType=INTEGER},
+      global_code = #{globalCode,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from public.product
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.product
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.created != null">created = #{values.created,jdbcType=TIMESTAMP},</if>
+      <if test="values.updated != null">updated = #{values.updated,jdbcType=TIMESTAMP},</if>
+      <if test="values.xcode != null">xcode = #{values.xcode,jdbcType=VARCHAR},</if>
+      <if test="values.localCode != null">local_code = #{values.localCode,jdbcType=INTEGER},</if>
+      <if test="values.globalCode != null">global_code = #{values.globalCode,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.created != null">
+        and created = #{filter.created,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.updated != null">
+        and updated = #{filter.updated,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.xcode != null">
+        and xcode = #{filter.xcode,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.localCode != null">
+        and local_code = #{filter.localCode,jdbcType=INTEGER}
+      </if>
+      <if test="filter.globalCode != null">
+        and global_code = #{filter.globalCode,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.product
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="created != null">
+        and created = #{created,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updated != null">
+        and updated = #{updated,jdbcType=TIMESTAMP}
+      </if>
+      <if test="xcode != null">
+        and xcode = #{xcode,jdbcType=VARCHAR}
+      </if>
+      <if test="localCode != null">
+        and local_code = #{localCode,jdbcType=INTEGER}
+      </if>
+      <if test="globalCode != null">
+        and global_code = #{globalCode,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

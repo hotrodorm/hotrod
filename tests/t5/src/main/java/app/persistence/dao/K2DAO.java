@@ -217,10 +217,24 @@ public class K2DAO {
 
   // INSERT
 
-  private DynamicInsertQuery insert;
+    public K2 insert(K2Layout layout) {
+      return this.insert(layout, false);
+    }
 
-  private void initializeInsert() {
-    this.insert = dyn
+    public K2 insert(K2Layout layout, boolean includeNulls) {
+      if (includeNulls) {
+        return insertWithNulls(layout);
+      } else {
+        return insertByExample(layout);
+      }
+    }
+
+  // INSERT WITH NULLS
+
+  private DynamicInsertQuery insertWithNulls;
+
+  private void initializeInsertwithnulls() {
+    this.insertWithNulls = dyn
       .literal("INSERT INTO k2")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("name")
@@ -232,10 +246,10 @@ public class K2DAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public K2 insert(K2Layout layout) {
+  public K2 insertWithNulls(K2Layout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     K2 model = this.clone(layout);
     Connection conn = null;
@@ -536,7 +550,7 @@ public class K2DAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsert();
+    this.initializeInsertwithnulls();
     this.initializeInsertbyexample();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();

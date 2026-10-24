@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>examples</groupId>
+  <artifactId>insert5</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>25</maven.compiler.release>
+  </properties>
+
+  <dependencies>
+
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+        <version>4.0.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+        <version>4.0.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>5.1.27-SNAPSHOT</version>
+    </dependency>
+
+    <dependency> <!-- The JDBC driver to connect to the database; can be provided at runtime -->
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.3.3</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>4.0.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+      <version>5.1.27-SNAPSHOT</version>
+        <configuration>
+          <configfile>layer.xml</configfile>
+          <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+          <jdbcurl>jdbc:postgresql://192.168.56.200:5416/data</jdbcurl>
+          <jdbcusername>user1</jdbcusername>
+          <jdbcpassword>pass1</jdbcpassword>
+          <jdbcschema>public</jdbcschema>
+        </configuration>
+        <dependencies>
+          <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.3.3</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>

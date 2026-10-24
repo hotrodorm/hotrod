@@ -168,10 +168,24 @@ public class CityNumberDAO {
 
   // INSERT
 
-  private DynamicInsertQuery insert;
+    public CityNumber insert(CityNumberLayout layout) {
+      return this.insert(layout, false);
+    }
 
-  private void initializeInsert() {
-    this.insert = dyn
+    public CityNumber insert(CityNumberLayout layout, boolean includeNulls) {
+      if (includeNulls) {
+        return insertWithNulls(layout);
+      } else {
+        return insertByExample(layout);
+      }
+    }
+
+  // INSERT WITH NULLS
+
+  private DynamicInsertQuery insertWithNulls;
+
+  private void initializeInsertwithnulls() {
+    this.insertWithNulls = dyn
       .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
@@ -183,10 +197,10 @@ public class CityNumberDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public CityNumber insert(CityNumberLayout layout) {
+  public CityNumber insertWithNulls(CityNumberLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     CityNumber model = this.clone(layout);
     Connection conn = null;
@@ -405,7 +419,7 @@ public class CityNumberDAO {
 
   private void initializeQueries() {
     this.initializeSelectbyexample();
-    this.initializeInsert();
+    this.initializeInsertwithnulls();
     this.initializeInsertbyexample();
     this.initializeUpdatebyexample();
     this.initializeDeletebyexample();

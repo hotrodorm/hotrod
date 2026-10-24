@@ -186,10 +186,24 @@ public class DATALocalDAO {
 
   // INSERT
 
-  private DynamicInsertQuery insert;
+    public DATALocal insert(DATALocalLayout layout) {
+      return this.insert(layout, false);
+    }
 
-  private void initializeInsert() {
-    this.insert = dyn
+    public DATALocal insert(DATALocalLayout layout, boolean includeNulls) {
+      if (includeNulls) {
+        return insertWithNulls(layout);
+      } else {
+        return insertByExample(layout);
+      }
+    }
+
+  // INSERT WITH NULLS
+
+  private DynamicInsertQuery insertWithNulls;
+
+  private void initializeInsertwithnulls() {
+    this.insertWithNulls = dyn
       .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("name")
@@ -203,10 +217,10 @@ public class DATALocalDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public DATALocal insert(DATALocalLayout layout) {
+  public DATALocal insertWithNulls(DATALocalLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     DATALocal model = this.clone(layout);
     Connection conn = null;
@@ -437,7 +451,7 @@ public class DATALocalDAO {
 
   private void initializeQueries() {
     this.initializeSelectbyexample();
-    this.initializeInsert();
+    this.initializeInsertwithnulls();
     this.initializeInsertbyexample();
     this.initializeUpdatebyexample();
     this.initializeDeletebyexample();

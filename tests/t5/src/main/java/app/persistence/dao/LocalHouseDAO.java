@@ -238,10 +238,24 @@ public class LocalHouseDAO {
 
   // INSERT
 
-  private DynamicInsertQuery insert;
+    public LocalHouse insert(LocalHouseLayout layout) {
+      return this.insert(layout, false);
+    }
 
-  private void initializeInsert() {
-    this.insert = dyn
+    public LocalHouse insert(LocalHouseLayout layout, boolean includeNulls) {
+      if (includeNulls) {
+        return insertWithNulls(layout);
+      } else {
+        return insertByExample(layout);
+      }
+    }
+
+  // INSERT WITH NULLS
+
+  private DynamicInsertQuery insertWithNulls;
+
+  private void initializeInsertwithnulls() {
+    this.insertWithNulls = dyn
       .literal("INSERT INTO \"Local_House\"")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
@@ -261,10 +275,10 @@ public class LocalHouseDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public LocalHouse insert(LocalHouseLayout layout) {
+  public LocalHouse insertWithNulls(LocalHouseLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     LocalHouse model = this.clone(layout);
     Connection conn = null;
@@ -599,7 +613,7 @@ public class LocalHouseDAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsert();
+    this.initializeInsertwithnulls();
     this.initializeInsertbyexample();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();

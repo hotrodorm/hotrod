@@ -218,7 +218,8 @@ public class DAOWriter {
       writeSelect(true); // by example
       writeSelectByCriteria();
 
-      writeInsert(false); // INSERT standard
+      writeInsertCaller(); // INSERT caller
+      writeInsert(false); // INSERT with nulls
       writeInsert(true); // INSERT by example
 
       writeUpdateByPK(ol != null);
@@ -674,10 +675,29 @@ public class DAOWriter {
     w.println("  }");
   }
 
+  private void writeInsertCaller() throws ErrorMessageException {
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
+    w.println();
+    w.println("  // INSERT");
+    w.println();
+    w.println("    public ", em, " insert(", el, " layout) {");
+    w.println("      return this.insert(layout, false);");
+    w.println("    }");
+    w.println();
+    w.println("    public ", em, " insert(", el, " layout, boolean includeNulls) {");
+    w.println("      if (includeNulls) {");
+    w.println("        return insertWithNulls(layout);");
+    w.println("      } else {");
+    w.println("        return insertByExample(layout);");
+    w.println("      }");
+    w.println("    }");
+  }
+
   private void writeInsert(boolean byExample) throws ErrorMessageException {
 
     w.println();
-    w.println("  // " + (byExample ? "INSERT BY EXAMPLE" : "INSERT"));
+    w.println("  // " + (byExample ? "INSERT BY EXAMPLE" : "INSERT WITH NULLS"));
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -685,7 +705,7 @@ public class DAOWriter {
 
     // DynamicSQL Query
 
-    String queryName = byExample ? "insertByExample" : "insert";
+    String queryName = byExample ? "insertByExample" : "insertWithNulls";
     String initializerName = "initialize" + SUtil.capitalize(queryName);
     this.initializersInPostConstruct.add(initializerName);
 
@@ -840,7 +860,7 @@ public class DAOWriter {
 
     // Method
 
-    String methodName = byExample ? "insertByExample" : "insert";
+    String methodName = byExample ? "insertByExample" : "insertWithNulls";
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());

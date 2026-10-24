@@ -261,10 +261,24 @@ public class EmployeeDAO {
 
   // INSERT
 
-  private DynamicInsertQuery insert;
+    public Employee insert(EmployeeLayout layout) {
+      return this.insert(layout, false);
+    }
 
-  private void initializeInsert() {
-    this.insert = dyn
+    public Employee insert(EmployeeLayout layout, boolean includeNulls) {
+      if (includeNulls) {
+        return insertWithNulls(layout);
+      } else {
+        return insertByExample(layout);
+      }
+    }
+
+  // INSERT WITH NULLS
+
+  private DynamicInsertQuery insertWithNulls;
+
+  private void initializeInsertwithnulls() {
+    this.insertWithNulls = dyn
       .literal("INSERT INTO employee")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .literal("id")
@@ -288,10 +302,10 @@ public class EmployeeDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Employee insert(EmployeeLayout layout) {
+  public Employee insertWithNulls(EmployeeLayout layout) {
     Parameters params = this.dyn.newParameters();
     params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insert.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     Employee model = this.clone(layout);
     Connection conn = null;
@@ -652,7 +666,7 @@ public class EmployeeDAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsert();
+    this.initializeInsertwithnulls();
     this.initializeInsertbyexample();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
