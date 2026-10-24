@@ -56,7 +56,7 @@ public class RankingEntry {
     this.slowestExecution = re.slowestExecution;
     this.fastestExecution = re.fastestExecution;
     this.firstExecution = re.firstExecution;
-    this.lastException = re.lastException;
+    this.lastExecution = re.lastExecution;
 
   }
 

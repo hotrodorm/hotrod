@@ -22,7 +22,7 @@ public class PlanRetrieverFactory {
       } else if (uName.startsWith("H2")) {
         return new H2PlanRetriever();
       } else if (uName.startsWith("MYSQL")) {
-        String productVersion = dm.getDatabaseProductVersion().toLowerCase();
+        String productVersion = toLowerCase(dm.getDatabaseProductVersion());
         if (productVersion != null && productVersion.contains("mariadb")) {
           return new MariaDBPlanRetriever();
         } else {
@@ -34,7 +34,7 @@ public class PlanRetrieverFactory {
         return new DB2PlanRetriever();
       } else if (uName.startsWith("POSTGRESQL")) {
         return new PostgreSQLPlanRetriever();
-      } else if (uName.startsWith("Microsoft SQL Server")) {
+      } else if (uName.startsWith("Microsoft SQL Server".toUpperCase())) {
         return new SQLServerPlanRetriever();
       } else if (uName.startsWith("APACHE DERBY")) {
         return new ApacheDerbyPlanRetriever();
@@ -44,6 +44,14 @@ public class PlanRetrieverFactory {
               + "." + dm.getDatabaseMinorVersion() + " (" + dm.getDatabaseProductVersion() + ").");
     }
 
+  }
+
+  private static String toLowerCase(final String s) {
+    if (s == null) {
+      return null;
+    } else {
+      return s.toLowerCase();
+    }
   }
 
   public static class UnsupportedTorcsDatabaseException extends Exception {
