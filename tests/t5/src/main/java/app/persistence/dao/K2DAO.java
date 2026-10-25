@@ -217,41 +217,49 @@ public class K2DAO {
 
   // INSERT
 
-    public K2 insert(K2Layout layout) {
-      return this.insert(layout, false);
+  public K2 insert(K2Layout layout) {
+    return insertExcludingNulls(layout);
+  }
+
+  public K2 insert(K2Layout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
+  }
 
-    public K2 insert(K2Layout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
+  // INSERT BY EXAMPLE
 
-  // INSERT WITH NULLS
+  public K2 insertByExample(K2Layout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private DynamicInsertQuery insertWithNulls;
+  // INSERT EXCLUDING NULLS
 
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO k2")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("name")
+        .if_("e.id != null").literal("id").endif()
+        .if_("e.name != null").literal("name").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.name", Types.VARCHAR)
+        .if_("e.id != null").parameter("e.id").endif()
+        .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public K2 insertWithNulls(K2Layout layout) {
+  private K2 insertExcludingNulls(K2Layout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
+    params.add("e", example);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    K2 model = this.clone(layout);
+    K2 model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -267,31 +275,29 @@ public class K2DAO {
     return model;
   }
 
-  // INSERT BY EXAMPLE
+  // INSERT INCLUDING NULLS
 
-  private DynamicInsertQuery insertByExample;
+  private DynamicInsertQuery insertIncludingNulls;
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
       .literal("INSERT INTO k2")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.id != null").literal("id").endif()
-        .if_("e.name != null").literal("name").endif()
+        .literal("name")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.id != null").parameter("e.id").endif()
-        .if_("e.name != null").parameter("e.name").endif()
+        .parameterNullable("l.name", Types.VARCHAR)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public K2 insertByExample(K2Layout example) {
+  private K2 insertIncludingNulls(K2Layout layout) {
     Parameters params = this.dyn.newParameters();
-    params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    K2 model = this.clone(example);
+    K2 model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -550,8 +556,8 @@ public class K2DAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();

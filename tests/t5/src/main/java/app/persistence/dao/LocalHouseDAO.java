@@ -238,69 +238,30 @@ public class LocalHouseDAO {
 
   // INSERT
 
-    public LocalHouse insert(LocalHouseLayout layout) {
-      return this.insert(layout, false);
-    }
-
-    public LocalHouse insert(LocalHouseLayout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
-
-  // INSERT WITH NULLS
-
-  private DynamicInsertQuery insertWithNulls;
-
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
-      .literal("INSERT INTO \"Local_House\"")
-      .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("id")
-        .literal("zip_code")
-        .literal("\"zip_code\"")
-        .literal("\"Zip_Code\"")
-        .literal("name")
-      .endtrim()
-      .literal("VALUES")
-      .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.id", Types.BIGINT)
-        .parameterNullable("l.zipCode", Types.VARCHAR)
-        .parameterNullable("l.zipKode3", Types.VARCHAR)
-        .parameterNullable("l.zipKode2", Types.VARCHAR)
-        .parameterNullable("l.name", Types.VARCHAR)
-      .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  public LocalHouse insert(LocalHouseLayout layout) {
+    return insertExcludingNulls(layout);
   }
 
-  public LocalHouse insertWithNulls(LocalHouseLayout layout) {
-    Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
-    DAOExecutor.logQuery(preparedQuery, log);
-    LocalHouse model = this.clone(layout);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.context.getDataSource());
-      preparedQuery.execute(conn);
-    } catch (DynamicSQLException e) {
-      throw new PersistenceException(e.getCause());
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
-      }
+  public LocalHouse insert(LocalHouseLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
-    return model;
   }
 
   // INSERT BY EXAMPLE
 
-  private DynamicInsertQuery insertByExample;
+  public LocalHouse insertByExample(LocalHouseLayout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  // INSERT EXCLUDING NULLS
+
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO \"Local_House\"")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
@@ -320,12 +281,57 @@ public class LocalHouseDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public LocalHouse insertByExample(LocalHouseLayout example) {
+  private LocalHouse insertExcludingNulls(LocalHouseLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     LocalHouse model = this.clone(example);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      preparedQuery.execute(conn);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+    return model;
+  }
+
+  // INSERT INCLUDING NULLS
+
+  private DynamicInsertQuery insertIncludingNulls;
+
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
+      .literal("INSERT INTO \"Local_House\"")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+        .literal("id")
+        .literal("zip_code")
+        .literal("\"zip_code\"")
+        .literal("\"Zip_Code\"")
+        .literal("name")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+        .parameterNullable("l.id", Types.BIGINT)
+        .parameterNullable("l.zipCode", Types.VARCHAR)
+        .parameterNullable("l.zipKode3", Types.VARCHAR)
+        .parameterNullable("l.zipKode2", Types.VARCHAR)
+        .parameterNullable("l.name", Types.VARCHAR)
+      .endtrim()
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
+
+  private LocalHouse insertIncludingNulls(LocalHouseLayout layout) {
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
+    DAOExecutor.logQuery(preparedQuery, log);
+    LocalHouse model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -613,8 +619,8 @@ public class LocalHouseDAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();

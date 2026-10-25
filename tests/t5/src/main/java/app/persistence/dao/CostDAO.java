@@ -178,43 +178,49 @@ public class CostDAO {
 
   // INSERT
 
-    public Cost insert(CostLayout layout) {
-      return this.insert(layout, false);
+  public Cost insert(CostLayout layout) {
+    return insertExcludingNulls(layout);
+  }
+
+  public Cost insert(CostLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
+  }
 
-    public Cost insert(CostLayout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
+  // INSERT BY EXAMPLE
 
-  // INSERT WITH NULLS
+  public Cost insertByExample(CostLayout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private DynamicInsertQuery insertWithNulls;
+  // INSERT EXCLUDING NULLS
 
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("region")
-        .literal("amount")
+        .if_("e.region != null").literal("region").endif()
+        .if_("e.amount != null").literal("amount").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.region", Types.INTEGER)
-        .parameterNullable("l.amount", Types.INTEGER)
+        .if_("e.region != null").parameter("e.region").endif()
+        .if_("e.amount != null").parameter("e.amount").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Cost insertWithNulls(CostLayout layout) {
+  private Cost insertExcludingNulls(CostLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
+    params.add("e", example);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    Cost model = this.clone(layout);
+    Cost model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -229,31 +235,31 @@ public class CostDAO {
     return model;
   }
 
-  // INSERT BY EXAMPLE
+  // INSERT INCLUDING NULLS
 
-  private DynamicInsertQuery insertByExample;
+  private DynamicInsertQuery insertIncludingNulls;
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
       .literal("INSERT INTO cost")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.region != null").literal("region").endif()
-        .if_("e.amount != null").literal("amount").endif()
+        .literal("region")
+        .literal("amount")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.region != null").parameter("e.region").endif()
-        .if_("e.amount != null").parameter("e.amount").endif()
+        .parameterNullable("l.region", Types.INTEGER)
+        .parameterNullable("l.amount", Types.INTEGER)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Cost insertByExample(CostLayout example) {
+  private Cost insertIncludingNulls(CostLayout layout) {
     Parameters params = this.dyn.newParameters();
-    params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    Cost model = this.clone(example);
+    Cost model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -443,8 +449,8 @@ public class CostDAO {
 
   private void initializeQueries() {
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebyexample();
     this.initializeDeletebyexample();
   }

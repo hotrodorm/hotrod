@@ -217,43 +217,49 @@ public class K1DAO {
 
   // INSERT
 
-    public K1 insert(K1Layout layout) {
-      return this.insert(layout, false);
+  public K1 insert(K1Layout layout) {
+    return insertExcludingNulls(layout);
+  }
+
+  public K1 insert(K1Layout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
+  }
 
-    public K1 insert(K1Layout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
+  // INSERT BY EXAMPLE
 
-  // INSERT WITH NULLS
+  public K1 insertByExample(K1Layout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private DynamicInsertQuery insertWithNulls;
+  // INSERT EXCLUDING NULLS
 
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO k1")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("l.id != null").literal("id").endif()
-        .literal("name")
+        .if_("e.id != null").literal("id").endif()
+        .if_("e.name != null").literal("name").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("l.id != null").parameter("l.id").endif()
-        .parameterNullable("l.name", Types.VARCHAR)
+        .if_("e.id != null").parameter("e.id").endif()
+        .if_("e.name != null").parameter("e.name").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public K1 insertWithNulls(K1Layout layout) {
+  private K1 insertExcludingNulls(K1Layout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
+    params.add("e", example);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    K1 model = this.clone(layout);
+    K1 model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -269,31 +275,31 @@ public class K1DAO {
     return model;
   }
 
-  // INSERT BY EXAMPLE
+  // INSERT INCLUDING NULLS
 
-  private DynamicInsertQuery insertByExample;
+  private DynamicInsertQuery insertIncludingNulls;
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
       .literal("INSERT INTO k1")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.id != null").literal("id").endif()
-        .if_("e.name != null").literal("name").endif()
+        .if_("l.id != null").literal("id").endif()
+        .literal("name")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.id != null").parameter("e.id").endif()
-        .if_("e.name != null").parameter("e.name").endif()
+        .if_("l.id != null").parameter("l.id").endif()
+        .parameterNullable("l.name", Types.VARCHAR)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.IDENTITY_INLINE_KEYS_RESULTSET);
   }
 
-  public K1 insertByExample(K1Layout example) {
+  private K1 insertIncludingNulls(K1Layout layout) {
     Parameters params = this.dyn.newParameters();
-    params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    K1 model = this.clone(example);
+    K1 model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -552,8 +558,8 @@ public class K1DAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();

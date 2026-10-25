@@ -186,43 +186,49 @@ public class DATALocalDAO {
 
   // INSERT
 
-    public DATALocal insert(DATALocalLayout layout) {
-      return this.insert(layout, false);
+  public DATALocal insert(DATALocalLayout layout) {
+    return insertExcludingNulls(layout);
+  }
+
+  public DATALocal insert(DATALocalLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
+  }
 
-    public DATALocal insert(DATALocalLayout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
+  // INSERT BY EXAMPLE
 
-  // INSERT WITH NULLS
+  public DATALocal insertByExample(DATALocalLayout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private DynamicInsertQuery insertWithNulls;
+  // INSERT EXCLUDING NULLS
 
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("name")
-        .literal("active")
+        .if_("e.NAMELocalToCity != null").literal("name").endif()
+        .if_("e.active != null").literal("active").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.NAMELocalToCity", Types.VARCHAR)
-        .parameterNullable("l.active", Types.INTEGER, this.converter0)
+        .if_("e.NAMELocalToCity != null").parameter("e.NAMELocalToCity").endif()
+        .if_("e.active != null").parameter("e.active", this.converter0).endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public DATALocal insertWithNulls(DATALocalLayout layout) {
+  private DATALocal insertExcludingNulls(DATALocalLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
+    params.add("e", example);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    DATALocal model = this.clone(layout);
+    DATALocal model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -237,31 +243,31 @@ public class DATALocalDAO {
     return model;
   }
 
-  // INSERT BY EXAMPLE
+  // INSERT INCLUDING NULLS
 
-  private DynamicInsertQuery insertByExample;
+  private DynamicInsertQuery insertIncludingNulls;
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
       .literal("INSERT INTO data")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.NAMELocalToCity != null").literal("name").endif()
-        .if_("e.active != null").literal("active").endif()
+        .literal("name")
+        .literal("active")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.NAMELocalToCity != null").parameter("e.NAMELocalToCity").endif()
-        .if_("e.active != null").parameter("e.active", this.converter0).endif()
+        .parameterNullable("l.NAMELocalToCity", Types.VARCHAR)
+        .parameterNullable("l.active", Types.INTEGER, this.converter0)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public DATALocal insertByExample(DATALocalLayout example) {
+  private DATALocal insertIncludingNulls(DATALocalLayout layout) {
     Parameters params = this.dyn.newParameters();
-    params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    DATALocal model = this.clone(example);
+    DATALocal model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -451,8 +457,8 @@ public class DATALocalDAO {
 
   private void initializeQueries() {
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebyexample();
     this.initializeDeletebyexample();
   }

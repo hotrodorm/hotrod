@@ -168,41 +168,47 @@ public class CityNumberDAO {
 
   // INSERT
 
-    public CityNumber insert(CityNumberLayout layout) {
-      return this.insert(layout, false);
+  public CityNumber insert(CityNumberLayout layout) {
+    return insertExcludingNulls(layout);
+  }
+
+  public CityNumber insert(CityNumberLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
+  }
 
-    public CityNumber insert(CityNumberLayout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
+  // INSERT BY EXAMPLE
 
-  // INSERT WITH NULLS
+  public CityNumber insertByExample(CityNumberLayout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private DynamicInsertQuery insertWithNulls;
+  // INSERT EXCLUDING NULLS
 
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("id")
+        .if_("e.id != null").literal("id").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.id", Types.BIGINT)
+        .if_("e.id != null").parameter("e.id").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public CityNumber insertWithNulls(CityNumberLayout layout) {
+  private CityNumber insertExcludingNulls(CityNumberLayout example) {
     Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
+    params.add("e", example);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    CityNumber model = this.clone(layout);
+    CityNumber model = this.clone(example);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -217,29 +223,29 @@ public class CityNumberDAO {
     return model;
   }
 
-  // INSERT BY EXAMPLE
+  // INSERT INCLUDING NULLS
 
-  private DynamicInsertQuery insertByExample;
+  private DynamicInsertQuery insertIncludingNulls;
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
       .literal("INSERT INTO city_code")
       .trim(" (\n  ", ",\n  ", "\n) ")
-        .if_("e.id != null").literal("id").endif()
+        .literal("id")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
-        .if_("e.id != null").parameter("e.id").endif()
+        .parameterNullable("l.id", Types.BIGINT)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public CityNumber insertByExample(CityNumberLayout example) {
+  private CityNumber insertIncludingNulls(CityNumberLayout layout) {
     Parameters params = this.dyn.newParameters();
-    params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
-    CityNumber model = this.clone(example);
+    CityNumber model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -419,8 +425,8 @@ public class CityNumberDAO {
 
   private void initializeQueries() {
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebyexample();
     this.initializeDeletebyexample();
   }

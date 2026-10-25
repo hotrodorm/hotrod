@@ -261,73 +261,30 @@ public class EmployeeDAO {
 
   // INSERT
 
-    public Employee insert(EmployeeLayout layout) {
-      return this.insert(layout, false);
-    }
-
-    public Employee insert(EmployeeLayout layout, boolean includeNulls) {
-      if (includeNulls) {
-        return insertWithNulls(layout);
-      } else {
-        return insertByExample(layout);
-      }
-    }
-
-  // INSERT WITH NULLS
-
-  private DynamicInsertQuery insertWithNulls;
-
-  private void initializeInsertwithnulls() {
-    this.insertWithNulls = dyn
-      .literal("INSERT INTO employee")
-      .trim(" (\n  ", ",\n  ", "\n) ")
-        .literal("id")
-        .literal("amount")
-        .literal("name")
-        .literal("hired")
-        .literal("active")
-        .literal("photo")
-        .literal("region")
-      .endtrim()
-      .literal("VALUES")
-      .trim(" (\n  ", ",\n  ", "\n)")
-        .parameterNullable("l.id", Types.INTEGER)
-        .parameterNullable("l.amount", Types.INTEGER)
-        .parameterNullable("l.name", Types.VARCHAR)
-        .parameterNullable("l.hired", Types.DATE)
-        .parameterNullable("l.active", Types.BOOLEAN)
-        .parameterNullable("l.photo", Types.BLOB)
-        .parameterNullable("l.region", Types.OTHER)
-      .endtrim()
-      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  public Employee insert(EmployeeLayout layout) {
+    return insertExcludingNulls(layout);
   }
 
-  public Employee insertWithNulls(EmployeeLayout layout) {
-    Parameters params = this.dyn.newParameters();
-    params.add("l", layout);
-    PreparedInsertQuery preparedQuery = this.insertWithNulls.prepare(params);
-    DAOExecutor.logQuery(preparedQuery, log);
-    Employee model = this.clone(layout);
-    Connection conn = null;
-    try {
-      conn = DataSourceUtils.getConnection(this.context.getDataSource());
-      preparedQuery.execute(conn);
-    } catch (DynamicSQLException e) {
-      throw new PersistenceException(e.getCause());
-    } finally {
-      if (conn != null) {
-        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
-      }
+  public Employee insert(EmployeeLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
     }
-    return model;
   }
 
   // INSERT BY EXAMPLE
 
-  private DynamicInsertQuery insertByExample;
+  public Employee insertByExample(EmployeeLayout layout) {
+    return insertExcludingNulls(layout);
+  }
 
-  private void initializeInsertbyexample() {
-    this.insertByExample = dyn
+  // INSERT EXCLUDING NULLS
+
+  private DynamicInsertQuery insertExcludingNulls;
+
+  private void initializeInsertExcludingNulls() {
+    this.insertExcludingNulls = dyn
       .literal("INSERT INTO employee")
       .trim(" (\n  ", ",\n  ", "\n) ")
         .if_("e.id != null").literal("id").endif()
@@ -351,12 +308,61 @@ public class EmployeeDAO {
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
 
-  public Employee insertByExample(EmployeeLayout example) {
+  private Employee insertExcludingNulls(EmployeeLayout example) {
     Parameters params = this.dyn.newParameters();
     params.add("e", example);
-    PreparedInsertQuery preparedQuery = this.insertByExample.prepare(params);
+    PreparedInsertQuery preparedQuery = this.insertExcludingNulls.prepare(params);
     DAOExecutor.logQuery(preparedQuery, log);
     Employee model = this.clone(example);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      preparedQuery.execute(conn);
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+    return model;
+  }
+
+  // INSERT INCLUDING NULLS
+
+  private DynamicInsertQuery insertIncludingNulls;
+
+  private void initializeInsertIncludingNulls() {
+    this.insertIncludingNulls = dyn
+      .literal("INSERT INTO employee")
+      .trim(" (\n  ", ",\n  ", "\n) ")
+        .literal("id")
+        .literal("amount")
+        .literal("name")
+        .literal("hired")
+        .literal("active")
+        .literal("photo")
+        .literal("region")
+      .endtrim()
+      .literal("VALUES")
+      .trim(" (\n  ", ",\n  ", "\n)")
+        .parameterNullable("l.id", Types.INTEGER)
+        .parameterNullable("l.amount", Types.INTEGER)
+        .parameterNullable("l.name", Types.VARCHAR)
+        .parameterNullable("l.hired", Types.DATE)
+        .parameterNullable("l.active", Types.BOOLEAN)
+        .parameterNullable("l.photo", Types.BLOB)
+        .parameterNullable("l.region", Types.OTHER)
+      .endtrim()
+      .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
+  }
+
+  private Employee insertIncludingNulls(EmployeeLayout layout) {
+    Parameters params = this.dyn.newParameters();
+    params.add("l", layout);
+    PreparedInsertQuery preparedQuery = this.insertIncludingNulls.prepare(params);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Employee model = this.clone(layout);
     Connection conn = null;
     try {
       conn = DataSourceUtils.getConnection(this.context.getDataSource());
@@ -666,8 +672,8 @@ public class EmployeeDAO {
   private void initializeQueries() {
     this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
-    this.initializeInsertwithnulls();
-    this.initializeInsertbyexample();
+    this.initializeInsertExcludingNulls();
+    this.initializeInsertIncludingNulls();
     this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
     this.initializeDeletebypk();

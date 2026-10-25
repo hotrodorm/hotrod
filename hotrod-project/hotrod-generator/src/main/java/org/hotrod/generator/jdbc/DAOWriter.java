@@ -675,29 +675,41 @@ public class DAOWriter {
     w.println("  }");
   }
 
+  private static final String INSERT_METHOD_NAME = "insert";
+  private static final String INSERT_BY_EXAMPLE_METHOD_NAME = "insertByExample";
+
+  private static final String INSERT_INCLUDING_NULLS_METHOD_NAME = "insertIncludingNulls";
+  private static final String INSERT_EXCLUDING_NULLS_METHOD_NAME = "insertExcludingNulls";
+
   private void writeInsertCaller() throws ErrorMessageException {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
     w.println("  // INSERT");
     w.println();
-    w.println("    public ", em, " insert(", el, " layout) {");
-    w.println("      return this.insert(layout, false);");
-    w.println("    }");
+    w.println("  public ", em, " " + INSERT_METHOD_NAME + "(", el, " layout) {");
+    w.println("    return " + INSERT_EXCLUDING_NULLS_METHOD_NAME + "(layout);");
+    w.println("  }");
     w.println();
-    w.println("    public ", em, " insert(", el, " layout, boolean includeNulls) {");
-    w.println("      if (includeNulls) {");
-    w.println("        return insertWithNulls(layout);");
-    w.println("      } else {");
-    w.println("        return insertByExample(layout);");
-    w.println("      }");
+    w.println("  public ", em, " insert(", el, " layout, boolean includeNulls) {");
+    w.println("    if (includeNulls) {");
+    w.println("      return " + INSERT_INCLUDING_NULLS_METHOD_NAME + "(layout);");
+    w.println("    } else {");
+    w.println("      return " + INSERT_EXCLUDING_NULLS_METHOD_NAME + "(layout);");
     w.println("    }");
+    w.println("  }");
+    w.println();
+    w.println("  // INSERT BY EXAMPLE");
+    w.println();
+    w.println("  public ", em, " " + INSERT_BY_EXAMPLE_METHOD_NAME + "(", el, " layout) {");
+    w.println("    return " + INSERT_EXCLUDING_NULLS_METHOD_NAME + "(layout);");
+    w.println("  }");
   }
 
-  private void writeInsert(boolean byExample) throws ErrorMessageException {
+  private void writeInsert(boolean includeNulls) throws ErrorMessageException {
 
     w.println();
-    w.println("  // " + (byExample ? "INSERT BY EXAMPLE" : "INSERT WITH NULLS"));
+    w.println("  // " + (includeNulls ? "INSERT INCLUDING NULLS" : "INSERT EXCLUDING NULLS"));
 
     KeyMetadata pk = this.metadata.getPK();
 
@@ -705,8 +717,8 @@ public class DAOWriter {
 
     // DynamicSQL Query
 
-    String queryName = byExample ? "insertByExample" : "insertWithNulls";
-    String initializerName = "initialize" + SUtil.capitalize(queryName);
+    String queryName = includeNulls ? INSERT_INCLUDING_NULLS_METHOD_NAME : INSERT_EXCLUDING_NULLS_METHOD_NAME;
+    String initializerName = "initialize" + SUtil.upperFirst(queryName);
     this.initializersInPostConstruct.add(initializerName);
 
     w.println();
@@ -722,7 +734,7 @@ public class DAOWriter {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
 
-      if (byExample) {
+      if (!includeNulls) {
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println("        .literal(\"" + SUtil.escapeJavaString(sqlId) + "\")");
         } else {
@@ -779,7 +791,7 @@ public class DAOWriter {
       String converterParam = cm.getResolvedConverter() == null ? ""
           : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
 
-      if (byExample) { // by example
+      if (!includeNulls) { // by example
 
         if (ol != null && ol.getStrategy() == OptimisticLockingStrategy.TIMESTAMP && cm.isOLTimestampColumn()) {
           w.println(
@@ -836,7 +848,7 @@ public class DAOWriter {
 
     // end insert query
 
-    String prefix = byExample ? "e" : "l";
+    String prefix = !includeNulls ? "e" : "l";
     if (insertMechanics.getMode() == PrimaryKeyRetrievalMode.SEQUENCE_PREFETCH) {
       w.print("      .endInsertQuery(", PrimaryKeyRetrievalMode.class,
           "." + insertMechanics.getMode() + ", \"" + SUtil.escapeJavaString(insertMechanics.getSequencePreFetchSQL())
@@ -860,13 +872,13 @@ public class DAOWriter {
 
     // Method
 
-    String methodName = byExample ? "insertByExample" : "insertWithNulls";
+    String methodName = includeNulls ? INSERT_INCLUDING_NULLS_METHOD_NAME : INSERT_EXCLUDING_NULLS_METHOD_NAME;
 
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
-    w.print("  public ", em, " " + methodName + "(", el);
-    if (byExample) {
+    w.print("  private ", em, " " + methodName + "(", el);
+    if (!includeNulls) {
       w.print(" example");
     } else {
       w.print(" layout");
@@ -874,7 +886,7 @@ public class DAOWriter {
     w.println(") {");
 
     w.println("    ", Parameters.class, " params = this.dyn.newParameters();");
-    if (byExample) {
+    if (!includeNulls) {
       w.println("    params.add(\"e\", example);");
     } else {
       w.println("    params.add(\"l\", layout);");
@@ -901,7 +913,7 @@ public class DAOWriter {
 
     fragmentLogging();
 
-    if (byExample) {
+    if (!includeNulls) {
       w.println("    ", em, " model = this.clone(example);");
     } else {
       w.println("    ", em, " model = this.clone(layout);");
