@@ -405,7 +405,7 @@ public class TorcsPreparedStatement extends TorcsStatement implements PreparedSt
 
   @Override
   public void setObject(int parameterIndex, Object x, SQLType targetSqlType, int scaleOrLength) throws SQLException {
-    this.preparedWrapped.setObject(parameterIndex, x, targetSqlType);
+    this.preparedWrapped.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
     this.registerSetter(new ObjectSetter(parameterIndex, x, targetSqlType, scaleOrLength));
   }
 

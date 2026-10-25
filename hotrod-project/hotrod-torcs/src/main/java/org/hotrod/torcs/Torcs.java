@@ -85,6 +85,7 @@ public class Torcs {
 
   private void scheduleReset() {
     this.scheduleService.shutdownNow();
+    this.scheduleService = Executors.newScheduledThreadPool(1);
     this.scheduleService.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {

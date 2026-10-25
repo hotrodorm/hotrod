@@ -3,6 +3,7 @@ package org.hotrod.torcs.plan;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import javax.sql.DataSource;
 
@@ -50,7 +51,7 @@ public class PlanRetrieverFactory {
     if (s == null) {
       return null;
     } else {
-      return s.toLowerCase();
+      return s.toLowerCase(Locale.ROOT);
     }
   }
 
