@@ -29,8 +29,8 @@ This tag includes the following attribute:
 | `package`  | Specifies the base package for all generated classes | `app.persistence` |
 | `qualifier` | Specifies the Spring qualifier to use in the persistence layer, to reference beans (such as dataSource and LiveSQL beans) when the application uses multiple data sources. Use a different qualifier for each dataSource. Don't specify it if the application has a single persistence layer. See [Using Multiple DataSources](../../guides/using-multiple-datasources.md) for examples on how to use it | *none* |
 | `qualifier-beans`  | Valid values are `true` or `false`. Indicates that the additional layer related beans (DataSourceProperties, DataSource, and LiveSQL) should be generated in the layer resources bean. These are typically useful in Spring Boot applications; should be turned off for plain Spring apps running in web containers. Only valid when a qualifier is defined | `true` when the qualifier is present, `false` otherwise |
-| `postconstruct`  | **Note**: Available only between version 5.1.16 and 5.1.26. See compatibility note below.<br/><br/> Indicates if the @PostConstruct annotations in the DAO use the `javax.annotation.PostConstruct` (valid up to Spring 5.x and Spring Boot 3.x) or the newer `jakarta.annotation.PostConstruct`. When using Spring Boot 4.x use the jakarta option. The valid values are `javax` and `jakarta` | `javax` |
-| `insert-type` | Selects the insert implementation used by generated DAOs. The valid values are `standard` and `legacy` | `legacy` |
+| `postconstruct`  | **Deprecated**. Available only between version 5.1.16 and 5.1.26. See compatibility note below. Indicates if the @PostConstruct annotations in the DAO use the `javax.annotation.PostConstruct` (valid up to Spring 5.x and Spring Boot 3.x) or the newer `jakarta.annotation.PostConstruct`. When using Spring Boot 4.x use the jakarta option. The valid values are `javax` and `jakarta` | `javax` |
+| `insert-type` | Available since version 5.1.27. Selects the CRUD INSERT implementation. The valid types are `legacy` and `standard`. In the Legacy type the CRUD .insert() method excludes null columns, unless explicitly allowed by setting `includeNulls` to true. In Standard type the CRUD .insert() method always includes null columns; the method .insertByExample() excludes them. | `legacy` |
 
 ## Spring Boot 2.x, 3.x, and 4.x Compatibility
 
@@ -38,7 +38,7 @@ HotRod 5 has a patched history when it comes to compatibility with Spring boot 4
 
 ### Up to Version 5.1.15
 
-Due to a defect in the DAO layer HotRod includes compatibilty with Spring Boot 2.x and 3.x only. Does not work with Spring Boot 4.x.
+Due to a defect in the initial 5.x versions, the DAO layer provides compatibilty with Spring Boot 2.x and 3.x only. Does not work with Spring Boot 4.x.
 
 ### Between Version 5.1.16 and 5.1.26
 
@@ -52,7 +52,7 @@ Without this setting the HotRod layer will be generated with compatibility for S
 
 ### From Version 5.1.27 Onwards
 
-Seamless compatibility with all versions of Spring Boot. No special configuration needed.
+A fully compatible solution was achieved, so there's seamless compatibility with all versions of Spring Boot. No extra configuration needed.
 
 ## Default Configuration
 
