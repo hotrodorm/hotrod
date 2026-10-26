@@ -187,15 +187,7 @@ public class DATALocalDAO {
   // INSERT
 
   public DATALocal insert(DATALocalLayout layout) {
-    return insertExcludingNulls(layout);
-  }
-
-  public DATALocal insert(DATALocalLayout layout, boolean includeNulls) {
-    if (includeNulls) {
-      return insertIncludingNulls(layout);
-    } else {
-      return insertExcludingNulls(layout);
-    }
+    return insertIncludingNulls(layout);
   }
 
   // INSERT BY EXAMPLE

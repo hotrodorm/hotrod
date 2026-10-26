@@ -1,7 +1,7 @@
 <hotrod>
 
   <generators>
-    <jdbc>
+    <jdbc insert-type="standard">
     <!--
       <discover/>
     -->

@@ -218,15 +218,7 @@ public class K2DAO {
   // INSERT
 
   public K2 insert(K2Layout layout) {
-    return insertExcludingNulls(layout);
-  }
-
-  public K2 insert(K2Layout layout, boolean includeNulls) {
-    if (includeNulls) {
-      return insertIncludingNulls(layout);
-    } else {
-      return insertExcludingNulls(layout);
-    }
+    return insertIncludingNulls(layout);
   }
 
   // INSERT BY EXAMPLE

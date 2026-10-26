@@ -262,15 +262,7 @@ public class EmployeeDAO {
   // INSERT
 
   public Employee insert(EmployeeLayout layout) {
-    return insertExcludingNulls(layout);
-  }
-
-  public Employee insert(EmployeeLayout layout, boolean includeNulls) {
-    if (includeNulls) {
-      return insertIncludingNulls(layout);
-    } else {
-      return insertExcludingNulls(layout);
-    }
+    return insertIncludingNulls(layout);
   }
 
   // INSERT BY EXAMPLE

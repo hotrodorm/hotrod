@@ -36,6 +36,9 @@ public class JDBCTag extends AbstractGeneratorTag {
 
   public static final String GENERATOR_NAME = "jdbc";
 
+  public static final String INSERT_TYPE_STANDARD = "standard";
+  public static final String INSERT_TYPE_LEGACY = "legacy";
+
   private static final String DEFAULT_BASE_DIR = "src/main/java";
   private static final String DEFAULT_LAYER_PACKAGE = "app.persistence";
 
@@ -47,12 +50,12 @@ public class JDBCTag extends AbstractGeneratorTag {
   private String sPackage = null;
   private String qualifier = null;
   private String sQualifierBeans = null;
-  private String sPostConstruct = null;
+  private String sInsertType = null;
 
   private File baseDir;
   private ClassPackage layerPackage;
   private boolean generateQualifierBeans;
-  private boolean useJakartaPostConstruct;
+  private boolean insertTypeStandard;
 
   private DiscoverTag discover = null;
   private JDBCLayerResourcesTag layerResources = null;
@@ -111,9 +114,9 @@ public class JDBCTag extends AbstractGeneratorTag {
     this.sQualifierBeans = sQualifierBeans;
   }
 
-  @XmlAttribute(name = "postconstruct")
-  public void setSPostConstruct(final String sPostConstruct) {
-    this.sPostConstruct = sPostConstruct;
+  @XmlAttribute(name = "insert-type")
+  public void setSInsertType(final String sInsertType) {
+    this.sInsertType = sInsertType;
   }
 
   @XmlElement(name = "discover")
@@ -244,18 +247,17 @@ public class JDBCTag extends AbstractGeneratorTag {
       this.generateQualifierBeans = this.qualifier != null;
     }
 
-    // postconstruct
+    // insert-type
 
-    if (this.sPostConstruct == null) {
-      this.useJakartaPostConstruct = false;
-    } else if ("javax".equals(this.sPostConstruct)) {
-      this.useJakartaPostConstruct = false;
-    } else if ("jakarta".equals(this.sPostConstruct)) {
-      this.useJakartaPostConstruct = true;
+    if (this.sInsertType == null) {
+      this.insertTypeStandard = false;
+    } else if (INSERT_TYPE_STANDARD.equals(this.sInsertType)) {
+      this.insertTypeStandard = true;
+    } else if (INSERT_TYPE_LEGACY.equals(this.sInsertType)) {
+      this.insertTypeStandard = false;
     } else {
-      throw new InvalidConfigurationFileException(this,
-          "Invalid 'postconstruct' attribute: the valid values are 'javax' or 'jakarta' but found '"
-              + this.sPostConstruct + "'.");
+      throw new InvalidConfigurationFileException(this, "Invalid 'insert-type' attribute: the valid values are '"
+          + INSERT_TYPE_STANDARD + "' or '" + INSERT_TYPE_LEGACY + "' but found '" + this.sInsertType + "'.");
     }
 
     // discovery
@@ -318,8 +320,8 @@ public class JDBCTag extends AbstractGeneratorTag {
     return generateQualifierBeans;
   }
 
-  public boolean useJakartaPostConstruct() {
-    return useJakartaPostConstruct;
+  public boolean isInsertTypeStandard() {
+    return insertTypeStandard;
   }
 
   public File getBaseDir() {

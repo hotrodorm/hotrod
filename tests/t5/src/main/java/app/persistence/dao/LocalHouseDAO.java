@@ -239,15 +239,7 @@ public class LocalHouseDAO {
   // INSERT
 
   public LocalHouse insert(LocalHouseLayout layout) {
-    return insertExcludingNulls(layout);
-  }
-
-  public LocalHouse insert(LocalHouseLayout layout, boolean includeNulls) {
-    if (includeNulls) {
-      return insertIncludingNulls(layout);
-    } else {
-      return insertExcludingNulls(layout);
-    }
+    return insertIncludingNulls(layout);
   }
 
   // INSERT BY EXAMPLE

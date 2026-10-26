@@ -218,7 +218,7 @@ public class DAOWriter {
       writeSelect(true); // by example
       writeSelectByCriteria();
 
-      writeInsertCaller(); // INSERT caller
+      writeInsertCallers(); // INSERT caller
       writeInsert(false); // INSERT with nulls
       writeInsert(true); // INSERT by example
 
@@ -681,7 +681,15 @@ public class DAOWriter {
   private static final String INSERT_INCLUDING_NULLS_METHOD_NAME = "insertIncludingNulls";
   private static final String INSERT_EXCLUDING_NULLS_METHOD_NAME = "insertExcludingNulls";
 
-  private void writeInsertCaller() throws ErrorMessageException {
+  private void writeInsertCallers() throws ErrorMessageException {
+    if (this.jdbcTag.isInsertTypeStandard()) {
+      writeInsertStandard();
+    } else {
+      writeInsertLegacy();
+    }
+  }
+
+  private void writeInsertLegacy() {
     ExternalClass em = ExternalClass.of(this.model.getFullClassName());
     ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
     w.println();
@@ -697,6 +705,23 @@ public class DAOWriter {
     w.println("    } else {");
     w.println("      return " + INSERT_EXCLUDING_NULLS_METHOD_NAME + "(layout);");
     w.println("    }");
+    w.println("  }");
+    w.println();
+    w.println("  // INSERT BY EXAMPLE");
+    w.println();
+    w.println("  public ", em, " " + INSERT_BY_EXAMPLE_METHOD_NAME + "(", el, " layout) {");
+    w.println("    return " + INSERT_EXCLUDING_NULLS_METHOD_NAME + "(layout);");
+    w.println("  }");
+  }
+
+  private void writeInsertStandard() {
+    ExternalClass em = ExternalClass.of(this.model.getFullClassName());
+    ExternalClass el = ExternalClass.of(this.layout.getFullClassName());
+    w.println();
+    w.println("  // INSERT");
+    w.println();
+    w.println("  public ", em, " " + INSERT_METHOD_NAME + "(", el, " layout) {");
+    w.println("    return " + INSERT_INCLUDING_NULLS_METHOD_NAME + "(layout);");
     w.println("  }");
     w.println();
     w.println("  // INSERT BY EXAMPLE");
