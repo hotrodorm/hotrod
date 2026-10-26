@@ -9,6 +9,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Function;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.Select;
@@ -22,6 +23,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import app.AccountTypeConverter.AccountType;
+import app.persistence.dao.AccountDAO;
+import app.persistence.dao.AccountDAO.AccountTable;
 import app.persistence.dao.CostDAO;
 import app.persistence.dao.CostDAO.CostTable;
 import app.persistence.dao.DATALocalDAO;
@@ -46,8 +50,8 @@ public class App {
 //    JULCustomFormatter.initialize(Level.FINER);
   }
 
-//  @Autowired
-//  private AccountDAO accountDAO;
+  @Autowired
+  private AccountDAO accountDAO;
 
 //  @Autowired
 //  private CoinDAO coinDAO;
@@ -388,6 +392,15 @@ public class App {
     for (Employee emp: this.employeeDAO.select(example)) {
         System.out.println("### emp=" + emp);
     }
+  }
+
+  private void testLiveSQLUpdateWithConverters() {
+    AccountTable t = this.accountDAO.newTable();
+    ConvertedEntityColumn<String, AccountType> ty = t.type;
+//    int count = this.sql.update(t)
+//.set(ty, sql.TRUE)        
+//        .set(t.type, AccountType.PEN1)
+//        .where(t.id.eq(123)).execute(LIVESQL_LOG);
   }
 
   private void testConverters() {

@@ -87,6 +87,9 @@
     <column name="region" type="Object" />
   </table>
   
+  <table name="account">
+    <column name="type" converter="account_type_stored_as_char" />
+  </table>
 
 <!-- 
   <table name="data" entity="DATALocal">
@@ -124,11 +127,6 @@
     <column name="type" converter="coin_type_stored_as_char" />
   </table>
 
-  <table name="account">
-    <column name="balance" type="Double" />
-    <column name="active" converter="boolean_stored_as_int" />
-    <column name="type" converter="account_type_stored_as_char" />
-  </table>
 
   <table name="employee">
     <column name="name" property="fullName" />
