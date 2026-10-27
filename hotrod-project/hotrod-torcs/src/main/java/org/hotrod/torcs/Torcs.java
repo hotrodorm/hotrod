@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PreDestroy;
-
 import org.hotrod.torcs.plan.CouldNotRetrievePlanException;
 import org.hotrod.torcs.plan.LOBParameterNotAllowedException;
 import org.hotrod.torcs.plan.ParameterAlreadyConsumedException;
@@ -197,7 +195,6 @@ public class Torcs {
     return "set" + n;
   }
 
-  @PreDestroy
   public void shutdown() {
     this.scheduleService.shutdown();
   }
