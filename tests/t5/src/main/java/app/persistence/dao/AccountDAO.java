@@ -505,7 +505,7 @@ public class AccountDAO {
 
     public AccountUpdateSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
-      ConvertedValue convertedValue = new ConvertedValue(value, converter);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.update, column, convertedValue);
       return new AccountUpdateSetPhase(this.context, this.update);
     }
@@ -520,8 +520,8 @@ public class AccountDAO {
 
     public AccountUpdateSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
-      ConvertedValue convertedValue = new ConvertedValue(value, converter);
-      SShield.addSetter(super.update, column, convertedValue);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.update, column, convertedValue);
       return new AccountUpdateSetPhase(this.context, this.update);
     }
 

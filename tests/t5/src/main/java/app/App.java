@@ -402,8 +402,10 @@ public class App {
     
     int count = this.sql.update(t) //
         .set(t.type, AccountType.PEN1) //
-        .where(t.balance.ge(150)) //
+//        .set(t.type,  AccountType.SAV3) //
+        .where(t.balance.ge(150).and(t.type.eq(AccountType.CHK2))) //
         .execute(LIVESQL_LOG);
+
     
     System.out.println("### LiveSQL Update with converters - count="+count);
     }

@@ -1,5 +1,6 @@
 package org.hotrod.livesql.expressions.bool.converter;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.hotrod.livesql.expressions.EquatableExpression;
@@ -10,6 +11,7 @@ import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.TableOrView;
+import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
@@ -23,10 +25,9 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
   public ConvertedEntityColumn(final TableOrView<?, ?> objectInstance,
       final ConvertedEntityColumnMetaData<R, D> metaData) {
     super(Expression.PRECEDENCE_COLUMN);
+    log.fine("init");
     this.objectInstance = objectInstance;
     this.metaData = metaData;
-//    log.info("* col=" + this.metaData.getCanonicalName() + " th.converter="
-//        + this.metaData.getTypeHandler().getConverter() + " - converter=" + this.metaData.getConverter());
   }
 
   @Override
@@ -37,29 +38,35 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
   // Operators
 
   public BooleanSyntaxExpression eq(final D d) {
-    return new ConvertedEqual<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue cv = ConvertedValue.of(d, this.metaData.getConverterToObject());
+    return new ConvertedEqual<R, D>(this, cv);
   }
 
   public BooleanSyntaxExpression ne(final D d) {
-    return new ConvertedNotEqual<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue cv = ConvertedValue.of(d, this.metaData.getConverterToObject());
+    return new ConvertedNotEqual<R, D>(this, cv);
   }
 
   @SuppressWarnings("unchecked")
   public BooleanSyntaxExpression in(final D... d) {
-    return new ConvertedIn<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject())).toArray(ConvertedValue[]::new);
+    return new ConvertedIn<R, D>(this, vs);
   }
 
   @SuppressWarnings("unchecked")
   public BooleanSyntaxExpression notIn(final D... d) {
-    return new ConvertedNotIn<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject())).toArray(ConvertedValue[]::new);
+    return new ConvertedNotIn<R, D>(this, vs);
   }
 
   public SortableExpression coalesce(final D d) {
-    return new ConvertedCoalesce<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue cv = ConvertedValue.of(d, this.metaData.getConverterToObject());
+    return new ConvertedCoalesce<R, D>(this, cv);
   }
 
   public SortableExpression nullIf(final D d) {
-    return new ConvertedNullIf<R, D>(this, this.metaData.getConverter(), d);
+    ConvertedValue cv = ConvertedValue.of(d, this.metaData.getConverterToObject());
+    return new ConvertedNullIf<R, D>(this, cv);
   }
 
   // Rendering

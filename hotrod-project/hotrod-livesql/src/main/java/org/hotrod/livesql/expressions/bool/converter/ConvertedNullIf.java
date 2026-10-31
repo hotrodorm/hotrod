@@ -2,41 +2,32 @@ package org.hotrod.livesql.expressions.bool.converter;
 
 import java.util.logging.Logger;
 
-import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.SortableExpression;
+import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class ConvertedNullIf<R, D> extends SortableExpression {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ConvertedNullIf.class.getName());
 
   private ConvertedEntityColumn<R, D> c;
-  private TypeConverter<R, D> converter;
-  private D d;
+  private ConvertedValue v;
 
-  public ConvertedNullIf(final ConvertedEntityColumn<R, D> c, final TypeConverter<R, D> converter, final D d) {
+  public ConvertedNullIf(final ConvertedEntityColumn<R, D> c, final ConvertedValue v) {
     super(Expression.PRECEDENCE_FUNCTION);
+    log.fine("init");
     this.c = c;
-    this.converter = converter;
-    this.d = d;
+    this.v = v;
   }
 
   @Override
   protected void renderTo(QueryWriter w) {
-
     w.write("nullif(");
     this.c.renderTo(w);
     w.write(", ");
-
-    R raw = this.converter.encode(this.d, null);
-    RenderedParameter rp = w.registerParameter(raw);
-    w.write(rp.getPlaceholder());
-
+    this.v.renderTo(w);
     w.write(")");
-
   }
 
 }

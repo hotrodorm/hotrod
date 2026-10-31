@@ -2,12 +2,12 @@ package org.hotrod.livesql.expressions.bool.converter;
 
 import java.util.logging.Logger;
 
-import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.bool.BooleanSyntaxExpression;
+import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
+import org.hotrod.utils.Separator;
 
 public class ConvertedIn<R, D> extends BooleanSyntaxExpression {
 
@@ -15,18 +15,15 @@ public class ConvertedIn<R, D> extends BooleanSyntaxExpression {
   private static final Logger log = Logger.getLogger(ConvertedIn.class.getName());
 
   private ConvertedEntityColumn<R, D> c;
-  private TypeConverter<R, D> converter;
-  private D[] d;
+  private ConvertedValue[] vs;
 
-  @SuppressWarnings("unchecked")
-  public ConvertedIn(final ConvertedEntityColumn<R, D> c, final TypeConverter<R, D> converter, final D... d) {
+  public ConvertedIn(final ConvertedEntityColumn<R, D> c, final ConvertedValue[] vs) {
     super(Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
     this.c = c;
-    this.converter = converter;
-    if (d.length == 0) {
+    if (vs.length == 0) {
       throw new LiveSQLException("The IN operator must use a non-empty list of values, but none was provided.");
     }
-    this.d = d;
+    this.vs = vs;
   }
 
   @Override
@@ -40,21 +37,15 @@ public class ConvertedIn<R, D> extends BooleanSyntaxExpression {
 
     w.write(" IN (");
 
-    // 3. The encoded value
+    // 3. The converted values
 
-    boolean first = true;
-    for (D v : this.d) {
-      R raw = this.converter.encode(v, null);
-      if (first) {
-        first = false;
-      } else {
-        w.write(", ");
-      }
-      RenderedParameter rp = w.registerParameter(raw);
-      w.write(rp.getPlaceholder());
+    Separator sep = new Separator(", ");
+    for (ConvertedValue v : this.vs) {
+      w.write(sep.render());
+      v.renderTo(w);
     }
 
-    // 3. Operator close
+    // 4. Operator close
 
     w.write(")");
 

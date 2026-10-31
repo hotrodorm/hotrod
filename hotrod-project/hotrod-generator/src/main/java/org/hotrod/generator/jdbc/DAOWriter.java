@@ -1754,23 +1754,7 @@ public class DAOWriter {
     w.println("      super(context, tableOrView);");
     w.println("    }");
 
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getResolvedConverter() != null) { // Converted Column
-        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
-
-        w.println();
-        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
-        w.println(domainClass, "> column, final ", domainClass, " value) {");
-        w.print("      ", TypeConverter.class, "<?, Object> converter = (");
-        w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
-        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
-            "(value, converter);");
-        w.println("      ", SShield.class, ".addSetter(this.update, column, convertedValue);");
-        w.println("      return new ", us, "(this.context, this.update);");
-        w.println("    }");
-
-      }
-    }
+    writeConvertedSetterMetadata(us);
 
     w.println();
     w.println("  }");
@@ -1783,6 +1767,32 @@ public class DAOWriter {
     w.println("      super(context, update);");
     w.println("    }");
 
+    writeConvertedSetterMetadata(us);
+
+//    for (ColumnMetadata cm : this.metadata.getColumns()) {
+//      if (cm.getResolvedConverter() != null) { // Converted Column
+//        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+//
+//        w.println();
+//        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
+//        w.println(domainClass, "> column, final ", domainClass, " value) {");
+//        w.print("      ", TypeConverter.class, "<?, Object> converter = (");
+//        w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
+//        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
+//            "(value, converter);");
+//        w.println("      ", SShield.class, ".addSetter(super.update, column, convertedValue);");
+//        w.println("      return new ", us, "(this.context, this.update);");
+//        w.println("    }");
+//
+//      }
+//    }
+
+    w.println();
+    w.println("  }");
+
+  }
+
+  private void writeConvertedSetterMetadata(ExternalClass us) {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getResolvedConverter() != null) { // Converted Column
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
@@ -1792,18 +1802,13 @@ public class DAOWriter {
         w.println(domainClass, "> column, final ", domainClass, " value) {");
         w.print("      ", TypeConverter.class, "<?, Object> converter = (");
         w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
-        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
-            "(value, converter);");
-        w.println("      ", SShield.class, ".addSetter(super.update, column, convertedValue);");
+        w.println("      ", ConvertedValue.class, " convertedValue = ", ConvertedValue.class, ".of(value, converter);");
+        w.println("      ", SShield.class, ".addSetter(this.update, column, convertedValue);");
         w.println("      return new ", us, "(this.context, this.update);");
         w.println("    }");
 
       }
     }
-
-    w.println();
-    w.println("  }");
-
   }
 
   private String getColumnMetaDataId(ColumnMetadata cm) {

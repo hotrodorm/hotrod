@@ -68,4 +68,10 @@ public class ConvertedEntityColumnMetaData<R, D> extends EntityColumnMetaData {
     return converter;
   }
 
+  public final TypeConverter<R, Object> getConverterToObject() {
+    @SuppressWarnings("unchecked")
+    TypeConverter<R, Object> c = (TypeConverter<R, Object>) converter;
+    return c;
+  }
+
 }
