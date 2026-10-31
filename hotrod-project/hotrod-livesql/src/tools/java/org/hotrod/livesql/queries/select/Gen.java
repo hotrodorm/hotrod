@@ -13,7 +13,7 @@ import org.hotrod.utils.SUtil;
 
 public class Gen {
 
-  private static String SRC_DIR = "src/test/java/org/hotrod/livesql/queries/select/src";
+  private static String SRC_DIR = "src/tools/java/org/hotrod/livesql/queries/select/src";
   private static String DEST_DIR = "src/main/java/org/hotrod/livesql/queries/select/tuples/gen";
   private static int MAX_SIZE = 26;
 
