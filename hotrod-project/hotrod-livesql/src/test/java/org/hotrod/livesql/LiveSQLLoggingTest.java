@@ -25,4 +25,22 @@ class LiveSQLLoggingTest {
     assertEquals("basic SQL", basicMessage.get());
     assertEquals("full SQL", fullMessage.get());
   }
+
+  @Test
+  void treatsMissingHandlersAsDisabledAndIgnoresTheirMessages() {
+    LiveSQLLogging logging = LiveSQLLogging.of(null, null, null, null);
+
+    assertFalse(logging.basicEnabled());
+    assertFalse(logging.fullEnabled());
+    logging.basicLog("basic SQL");
+    logging.fullLog("full SQL");
+  }
+
+  @Test
+  void noLoggingInstanceRemainsDisabled() {
+    assertFalse(LiveSQLLogging.NO_LOGGING.basicEnabled());
+    assertFalse(LiveSQLLogging.NO_LOGGING.fullEnabled());
+    LiveSQLLogging.NO_LOGGING.basicLog("basic SQL");
+    LiveSQLLogging.NO_LOGGING.fullLog("full SQL");
+  }
 }
