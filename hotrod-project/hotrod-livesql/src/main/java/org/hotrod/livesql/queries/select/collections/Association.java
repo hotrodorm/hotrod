@@ -7,7 +7,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 
 public abstract class Association extends CollectionsOperator {
 
-  public Association(String property, TableOrView<?> tableOrView, List<LiveSQLExpression> liveSQLExpressions) {
+  public Association(String property, TableOrView<?, ?> tableOrView, List<LiveSQLExpression> liveSQLExpressions) {
     super(property, tableOrView, liveSQLExpressions);
   }
 

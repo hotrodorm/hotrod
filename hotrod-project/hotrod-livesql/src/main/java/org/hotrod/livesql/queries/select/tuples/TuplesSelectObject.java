@@ -22,11 +22,11 @@ import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.ctes.CTE;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.Join;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.BaseSelectObject;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata.TuplesJoin;
@@ -109,10 +109,10 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   @Override
   public TuplesRowReader<T> getRowReader() {
-    List<TableOrView<?>> allTables = new ArrayList<>();
+    List<TableOrView<?, ?>> allTables = new ArrayList<>();
 
     try {
-      TableOrView<?> tv = (TableOrView<?>) this.from;
+      TableOrView<?, ?> tv = (TableOrView<?, ?>) this.from;
       allTables.add(tv);
     } catch (ClassCastException e) {
       // Ignore other table expressions
@@ -122,7 +122,7 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       if (tj.includeInResultSet()) {
         TableExpression te = SShield.getTableExpression(tj.getJoin());
         try {
-          TableOrView<?> tv = (TableOrView<?>) te;
+          TableOrView<?, ?> tv = (TableOrView<?, ?>) te;
           allTables.add(tv);
         } catch (ClassCastException e) {
           // Ignore other table expressions

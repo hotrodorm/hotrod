@@ -54,7 +54,7 @@ public class GeneratedKeysSequenceInlineDataResultSetExecutor<T> extends Generat
   @Override
   public T executeOne(LiveSQLPreparedQuery query, Connection conn) throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(query.getSQL())) {
-      super.applyParameters(query, ps);
+      super.applyParameters(query, ps, conn);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return super.keyReader.read(rs, 1);
@@ -68,7 +68,7 @@ public class GeneratedKeysSequenceInlineDataResultSetExecutor<T> extends Generat
   public InsertResult<T> executeList(LiveSQLPreparedQuery query, Connection conn)
       throws SQLException, DynamicExpressionException {
     try (PreparedStatement ps = conn.prepareStatement(query.getSQL())) {
-      super.applyParameters(query, ps);
+      super.applyParameters(query, ps, conn);
       List<T> keys = new ArrayList<>();
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {

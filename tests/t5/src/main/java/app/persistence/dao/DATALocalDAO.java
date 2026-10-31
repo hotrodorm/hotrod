@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.dynamicsql.DynamicInsertQuery;
 import org.hotrod.dynamicsql.DynamicModificationQuery;
 import org.hotrod.dynamicsql.DynamicSQLException;
@@ -30,6 +31,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.expressions.bool.converter.CShield;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -37,9 +39,14 @@ import org.hotrod.livesql.metadata.CharEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
+import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.SShield;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -413,7 +420,7 @@ public class DATALocalDAO {
     return new DATALocalTable(alias);
   }
 
-  public static class DATALocalTable extends Table<DATALocal> {
+  public static class DATALocalTable extends Table<DATALocal, DATALocalUpdateTablePhase> {
 
     public final CharEntityColumn NAMELocalToCity = new CharEntityColumn(this, MetaData.NAME_LOCAL_TO_CITY_META_DATA);
     public final ConvertedEntityColumn<Integer, ActiveEnum> active = new ConvertedEntityColumn<>(this, MetaData.ACTIVE_META_DATA);
@@ -433,10 +440,44 @@ public class DATALocalDAO {
       initialize();
     }
 
+    protected DATALocalUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
+      return new DATALocalUpdateTablePhase(context, this);
+    }
+
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.NAMELocalToCity);
       super.columns.add(this.active);
+    }
+
+  }
+
+  public static class DATALocalUpdateTablePhase extends UpdateTablePhase {
+
+    public DATALocalUpdateTablePhase(final LiveSQLContext context, final DATALocalTable tableOrView) {
+      super(context, tableOrView);
+    }
+
+    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = new ConvertedValue(value, converter);
+      SShield.addSetter(this.update, column, convertedValue);
+      return new DATALocalUpdateSetPhase(this.context, this.update);
+    }
+
+  }
+
+  public static class DATALocalUpdateSetPhase extends UpdateSetPhase {
+
+    public DATALocalUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
+      super(context, update);
+    }
+
+    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = new ConvertedValue(value, converter);
+      SShield.addSetter(super.update, column, convertedValue);
+      return new DATALocalUpdateSetPhase(this.context, this.update);
     }
 
   }

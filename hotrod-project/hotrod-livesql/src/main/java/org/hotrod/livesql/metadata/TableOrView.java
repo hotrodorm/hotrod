@@ -7,14 +7,16 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.UpdateTablePhase;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.TableExpression;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 
-public abstract class TableOrView<M> extends TableExpression {
+public abstract class TableOrView<M, U extends UpdateTablePhase> extends TableExpression {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TableOrView.class.getName());
@@ -76,6 +78,13 @@ public abstract class TableOrView<M> extends TableExpression {
       this.designatedAlias = ag.next();
     }
     tableReferences.register(this.alias, this);
+  }
+
+  // Update
+
+  @SuppressWarnings("unchecked")
+  protected U getUpdatePhase(LiveSQLContext context) {
+    return (U) new UpdateTablePhase(context, this);
   }
 
   // Rendering

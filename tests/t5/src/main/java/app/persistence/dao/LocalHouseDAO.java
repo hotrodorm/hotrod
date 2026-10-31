@@ -38,7 +38,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -568,7 +571,7 @@ public class LocalHouseDAO {
     return new LocalHouseTable(alias);
   }
 
-  public static class LocalHouseTable extends Table<LocalHouse> {
+  public static class LocalHouseTable extends Table<LocalHouse, LocalHouseUpdateTablePhase> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final CharEntityColumn zipCode = new CharEntityColumn(this, MetaData.ZIP_CODE_META_DATA);
@@ -591,6 +594,10 @@ public class LocalHouseDAO {
       initialize();
     }
 
+    protected LocalHouseUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
+      return new LocalHouseUpdateTablePhase(context, this);
+    }
+
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
@@ -598,6 +605,22 @@ public class LocalHouseDAO {
       super.columns.add(this.zipKode3);
       super.columns.add(this.zipKode2);
       super.columns.add(this.name);
+    }
+
+  }
+
+  public static class LocalHouseUpdateTablePhase extends UpdateTablePhase {
+
+    public LocalHouseUpdateTablePhase(final LiveSQLContext context, final LocalHouseTable tableOrView) {
+      super(context, tableOrView);
+    }
+
+  }
+
+  public static class LocalHouseUpdateSetPhase extends UpdateSetPhase {
+
+    public LocalHouseUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
+      super(context, update);
     }
 
   }

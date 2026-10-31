@@ -15,7 +15,7 @@ public class GeneratedKeysInsertIntoPhase<T> {
 
   // Constructor
 
-  public GeneratedKeysInsertIntoPhase(final LiveSQLContext context, final TableWithGeneratedKey<?, T> into) {
+  public GeneratedKeysInsertIntoPhase(final LiveSQLContext context, final TableWithGeneratedKey<?, ?, T> into) {
     this.context = context;
     this.insert = new GeneratedKeysInsertObject<T>(into.getExecutor());
     this.insert.setInto(into);

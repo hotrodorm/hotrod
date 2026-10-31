@@ -1,17 +1,14 @@
 package org.hotrod.getters;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
-import java.sql.Blob;
-import java.sql.Clob;
 import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 
@@ -52,9 +49,9 @@ public class GetterTest {
 
   @Test
   public void everyGetterReadsItsJdbcValueAndHonorsNullState() throws Exception {
-    Object blob = interfaceValue(Blob.class);
-    Object clob = interfaceValue(Clob.class);
-    Object sqlxml = interfaceValue(SQLXML.class);
+//    Object blob = interfaceValue(Blob.class);
+//    Object clob = interfaceValue(Clob.class);
+//    Object sqlxml = interfaceValue(SQLXML.class);
     GetterCase[] cases = { new GetterCase(new BigDecimalGetter(), "getBigDecimal", new BigDecimal("12.34")),
 //        new GetterCase(new BlobGetter(), "getBlob", blob),
         new GetterCase(new ByteGetter(), "getByte", Byte.valueOf((byte) 7)),
@@ -162,10 +159,10 @@ public class GetterTest {
     }
   }
 
-  private static Object interfaceValue(Class<?> type) {
-    return Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
-        (proxy, method, args) -> defaultValue(method.getReturnType()));
-  }
+//  private static Object interfaceValue(Class<?> type) {
+//    return Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type },
+//        (proxy, method, args) -> defaultValue(method.getReturnType()));
+//  }
 
   private static Object defaultValue(Class<?> type) {
     if (!type.isPrimitive())

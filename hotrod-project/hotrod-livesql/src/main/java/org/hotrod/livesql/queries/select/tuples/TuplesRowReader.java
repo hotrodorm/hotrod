@@ -28,7 +28,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TuplesRowReader.class.getName());
 
-  private Map<TableOrView<?>, ModelInstance> modelInstances = new HashMap<>();
+  private Map<TableOrView<?, ?>, ModelInstance> modelInstances = new HashMap<>();
   private List<UnboundColumnRetriever> unboundColumnRetrievers = new ArrayList<>();
 
   private static class ModelInstance {
@@ -108,7 +108,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
 
   }
 
-  public TuplesRowReader(final List<Expression> columns, final List<TableOrView<?>> tuples) {
+  public TuplesRowReader(final List<Expression> columns, final List<TableOrView<?, ?>> tuples) {
 
 //    Set<String> usedNS = new HashSet<>();
 //    int ord = 1;
@@ -134,7 +134,7 @@ public class TuplesRowReader<T> implements RowReader<T> {
 //    NSSequence seq = NSUtil.sequence();
 
     char tupleProperty = 'a';
-    for (TableOrView<?> t : tuples) {
+    for (TableOrView<?, ?> t : tuples) {
       Class<?> layoutClass = MDShield.getLayoutClass(t);
       Class<?> modelClass = MDShield.getModelClass(t);
 //      log.info("+ " + layoutClass.getName() + " <- " + modelClass.getName() + " t=" + OUtil.hc(t));

@@ -43,11 +43,7 @@ public class RowCursor<T> implements Cursor<T> {
 
       // 1. Apply parameters
 
-      int n = 1;
-      for (Object obj : q.getParameters().values()) {
-        int i = n++;
-        this.ps.setObject(i, obj);
-      }
+      q.applyParameters(ps, conn);
 
       this.rs = this.ps.executeQuery();
 

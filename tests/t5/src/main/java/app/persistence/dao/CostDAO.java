@@ -37,7 +37,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -405,7 +408,7 @@ public class CostDAO {
     return new CostTable(alias);
   }
 
-  public static class CostTable extends Table<Cost> {
+  public static class CostTable extends Table<Cost, CostUpdateTablePhase> {
 
     public final NumericEntityColumn region = new NumericEntityColumn(this, MetaData.REGION_META_DATA);
     public final NumericEntityColumn amount = new NumericEntityColumn(this, MetaData.AMOUNT_META_DATA);
@@ -425,10 +428,30 @@ public class CostDAO {
       initialize();
     }
 
+    protected CostUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
+      return new CostUpdateTablePhase(context, this);
+    }
+
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.region);
       super.columns.add(this.amount);
+    }
+
+  }
+
+  public static class CostUpdateTablePhase extends UpdateTablePhase {
+
+    public CostUpdateTablePhase(final LiveSQLContext context, final CostTable tableOrView) {
+      super(context, tableOrView);
+    }
+
+  }
+
+  public static class CostUpdateSetPhase extends UpdateSetPhase {
+
+    public CostUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
+      super(context, update);
     }
 
   }

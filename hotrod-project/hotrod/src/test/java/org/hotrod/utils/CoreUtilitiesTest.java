@@ -3,12 +3,9 @@ package org.hotrod.utils;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.hotrod.interfaces.OrderBy;
 import org.junit.jupiter.api.Test;
@@ -64,12 +61,22 @@ public class CoreUtilitiesTest {
   @Test
   public void sqlOrderingRendersAscendingAndDescendingTerms() {
     OrderBy ascending = new OrderBy() {
-      public String getSQLColumnName() { return "name"; }
-      public boolean isAscending() { return true; }
+      public String getSQLColumnName() {
+        return "name";
+      }
+
+      public boolean isAscending() {
+        return true;
+      }
     };
     OrderBy descending = new OrderBy() {
-      public String getSQLColumnName() { return "created"; }
-      public boolean isAscending() { return false; }
+      public String getSQLColumnName() {
+        return "created";
+      }
+
+      public boolean isAscending() {
+        return false;
+      }
     };
     assertEquals("\nORDER BY name, created DESC", SQLUtil.render(new OrderBy[] { ascending, descending }));
     assertEquals("", SQLUtil.render(new OrderBy[0]));

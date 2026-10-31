@@ -1,10 +1,13 @@
 package org.hotrod.livesql.queries;
 
-import java.util.LinkedHashMap;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.livesql.queries.typesolver.TShield;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.utils.CUtil;
@@ -13,10 +16,10 @@ import org.hotrod.utils.HexaUtils;
 public class LiveSQLPreparedQuery {
 
   private String sql;
-  private LinkedHashMap<String, Object> parameters;
+  private List<QueryParameter<?, ?>> parameters;
   private List<Expression> queryColumns;
 
-  public LiveSQLPreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters,
+  public LiveSQLPreparedQuery(final String sql, final List<QueryParameter<?, ?>> parameters,
       final List<Expression> queryColumns) {
     this.sql = sql;
     this.parameters = parameters;
@@ -27,19 +30,24 @@ public class LiveSQLPreparedQuery {
     return sql;
   }
 
-  public LinkedHashMap<String, Object> getParameters() {
-    return this.parameters;
-  }
-
   public List<Expression> getQueryColumns() {
     return this.queryColumns;
   }
 
-  public LinkedHashMap<String, Object> getConsolidatedParameters() {
-    LinkedHashMap<String, Object> c = new LinkedHashMap<String, Object>();
-    c.putAll(this.parameters);
-    c.put("sql", this.sql);
-    return c;
+  public void setFirstParameter(Object value) {
+    if (this.parameters.size() > 0) {
+      QueryParameter<?, ?> first = this.parameters.iterator().next();
+      first.setValue(value);
+    }
+  }
+
+  public void applyParameters(PreparedStatement ps, Connection conn) throws SQLException {
+    int n = 1;
+    for (QueryParameter<?, ?> p : this.parameters) {
+      int i = n++;
+      Object value = p.getValue(conn);
+      ps.setObject(i, value);
+    }
   }
 
   public String getPreview(boolean includeParameters) {
@@ -53,8 +61,12 @@ public class LiveSQLPreparedQuery {
       sb.append("--- SQL ------------------\n");
       sb.append(this.sql);
       sb.append("\n--- Parameters (" + this.parameters.size() + ") -------\n");
-      for (String name : this.parameters.keySet()) {
-        Object value = this.parameters.get(name);
+
+      for (QueryParameter<?, ?> p : this.parameters) {
+        String name = p.getName();
+        Object value = p.getDomainValue();
+
+        // Compute text-format preview of the value, including length if applicable
         Integer length = null;
         String preview = null;
         if (value instanceof String) {
@@ -80,7 +92,8 @@ public class LiveSQLPreparedQuery {
         sb.append(" * " + name
             + (value == null ? ""
                 : " (" + CUtil.renderObjectClass(value) + (length == null ? "" : ", length=" + length) + ")")
-            + ": " + preview + "\n");
+            + ": " + preview + (p.getConverter() != null ? " - converter will be applied during execution" : "")
+            + "\n");
 
       }
 

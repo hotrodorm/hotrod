@@ -276,7 +276,7 @@ public class FlatSelectObject<T> extends BaseSelectObject<T> {
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final Name alias, final TableOrView<?> tov) {
+    public void register(final Name alias, final TableOrView<?, ?> tov) {
       if (alias == null) {
         return;
       }

@@ -35,7 +35,6 @@
   <converter name="coin_type_stored_as_char" type="java.lang.Integer" raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
 
-
   <converter name="active_stored_as_int" type="app.ActiveEnum" raw-type="java.lang.Integer"
     class="app.IntegerActiveConverter" />
 

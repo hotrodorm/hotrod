@@ -1,5 +1,6 @@
 package org.hotrod.livesql.queries.select.tuples.gen;
 
+
 import org.hotrod.livesql.exceptions.LiveSQLException;
 
 public class TupleClassFactory {

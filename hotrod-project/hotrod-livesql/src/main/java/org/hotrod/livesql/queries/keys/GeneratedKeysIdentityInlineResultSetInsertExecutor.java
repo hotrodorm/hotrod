@@ -47,7 +47,7 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
   }
 
   private T executeOne(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
-    super.applyParameters(query, ps);
+    super.applyParameters(query, ps, conn);
     ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
       if (rs.next()) {
@@ -72,7 +72,7 @@ public class GeneratedKeysIdentityInlineResultSetInsertExecutor<T> extends Gener
 
   private InsertResult<T> executeList(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn)
       throws SQLException {
-    super.applyParameters(query, ps);
+    super.applyParameters(query, ps, conn);
     int count = ps.executeUpdate();
     try (ResultSet rs = ps.getGeneratedKeys()) {
       List<T> keys = new ArrayList<>();

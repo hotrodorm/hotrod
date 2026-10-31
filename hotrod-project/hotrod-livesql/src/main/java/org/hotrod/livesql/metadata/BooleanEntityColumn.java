@@ -14,12 +14,12 @@ public class BooleanEntityColumn extends Predicate implements EntityColumn {
 
   // Properties
 
-  private TableOrView<?> objectInstance;
+  private TableOrView<?, ?> objectInstance;
   private EntityColumnMetaData metaData;
 
   // Constructor
 
-  public BooleanEntityColumn(final TableOrView<?> objectInstance, final EntityColumnMetaData metaData) {
+  public BooleanEntityColumn(final TableOrView<?, ?> objectInstance, final EntityColumnMetaData metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
     this.objectInstance = objectInstance;
@@ -63,7 +63,7 @@ public class BooleanEntityColumn extends Predicate implements EntityColumn {
   }
 
   @Override
-  public TableOrView<?> getObjectInstance() {
+  public TableOrView<?, ?> getObjectInstance() {
     return objectInstance;
   }
 

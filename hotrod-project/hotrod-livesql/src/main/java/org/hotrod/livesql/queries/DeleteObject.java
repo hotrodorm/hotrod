@@ -13,14 +13,14 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DeleteObject {
 
-  private TableOrView<?> from;
+  private TableOrView<?, ?> from;
   private Predicate wherePredicate;
 
   DeleteObject() {
     super();
   }
 
-  void setFrom(final TableOrView<?> from) {
+  void setFrom(final TableOrView<?, ?> from) {
     this.from = from;
   }
 
@@ -49,11 +49,7 @@ public class DeleteObject {
 
         // 1. Apply parameters
 
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
+        q.applyParameters(ps, conn);
 
         // 2. Run the query
 

@@ -37,7 +37,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -383,7 +386,7 @@ public class CityNumberDAO {
     return new CityNumberView(alias);
   }
 
-  public static class CityNumberView extends View<CityNumber> {
+  public static class CityNumberView extends View<CityNumber, CityNumberUpdateTablePhase> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
 
@@ -402,9 +405,29 @@ public class CityNumberDAO {
       initialize();
     }
 
+    protected CityNumberUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
+      return new CityNumberUpdateTablePhase(context, this);
+    }
+
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
+    }
+
+  }
+
+  public static class CityNumberUpdateTablePhase extends UpdateTablePhase {
+
+    public CityNumberUpdateTablePhase(final LiveSQLContext context, final CityNumberView tableOrView) {
+      super(context, tableOrView);
+    }
+
+  }
+
+  public static class CityNumberUpdateSetPhase extends UpdateSetPhase {
+
+    public CityNumberUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
+      super(context, update);
     }
 
   }

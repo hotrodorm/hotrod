@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.hotrod.converter.TypeConverter;
+
 public class JDBCParameterWriter implements SQLParameterWriter {
 
   private AtomicLong n;
-  private List<QueryParameter> params;
+  private List<QueryParameter<?, ?>> params;
 
   public JDBCParameterWriter() {
     this.n = new AtomicLong();
@@ -15,14 +17,14 @@ public class JDBCParameterWriter implements SQLParameterWriter {
   }
 
   @Override
-  public RenderedParameter registerParameter(Object value) {
+  public <R> RenderedParameter registerParameter(Object value, TypeConverter<R, Object> converter) {
     String name = "" + this.n.incrementAndGet();
-    this.params.add(new QueryParameter(name, value));
+    this.params.add(QueryParameter.of(name, value, converter));
     return new RenderedParameter(name, "?");
   }
 
   @Override
-  public List<QueryParameter> getParameters() {
+  public List<QueryParameter<?, ?>> getParameters() {
     return params;
   }
 

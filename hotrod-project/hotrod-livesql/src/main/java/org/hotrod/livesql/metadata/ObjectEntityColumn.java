@@ -14,12 +14,12 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
 
   // Properties
 
-  private TableOrView<?> objectInstance;
+  private TableOrView<?, ?> objectInstance;
   private EntityColumnMetaData metaData;
 
   // Constructor
 
-  public ObjectEntityColumn(final TableOrView<?> objectInstance, final EntityColumnMetaData metaData) {
+  public ObjectEntityColumn(final TableOrView<?, ?> objectInstance, final EntityColumnMetaData metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
     this.objectInstance = objectInstance;
@@ -63,7 +63,7 @@ public class ObjectEntityColumn extends ObjectExpression implements EntityColumn
   }
 
   @Override
-  public TableOrView<?> getObjectInstance() {
+  public TableOrView<?, ?> getObjectInstance() {
     return objectInstance;
   }
 

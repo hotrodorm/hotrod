@@ -1,5 +1,7 @@
 package org.hotrod.livesql.queries.select.src;
 
+import org.hotrod.livesql.exceptions.LiveSQLException;
+
 public class TupleClassFactory {
 
   public static Class<?> getTuplesClass(int modelInstancesCount) {

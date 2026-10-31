@@ -1,8 +1,9 @@
 package org.hotrod.livesql.metadata;
 
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
 
-public abstract class TableWithGeneratedKey<M, T> extends AbstractTable<M> {
+public abstract class TableWithGeneratedKey<M, U extends UpdateTablePhase, T> extends AbstractTable<M, U> {
 
   private GeneratedKeysInsertExecutor<T> executor;
 

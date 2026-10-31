@@ -17,10 +17,10 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
 
   private static final Logger log = Logger.getLogger(ConvertedEntityColumn.class.getName());
 
-  private TableOrView<?> objectInstance;
+  private TableOrView<?, ?> objectInstance;
   private ConvertedEntityColumnMetaData<R, D> metaData;
 
-  public ConvertedEntityColumn(final TableOrView<?> objectInstance,
+  public ConvertedEntityColumn(final TableOrView<?, ?> objectInstance,
       final ConvertedEntityColumnMetaData<R, D> metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
@@ -77,7 +77,7 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
   // Converted Entity Column
 
   @Override
-  public TableOrView<?> getObjectInstance() {
+  public TableOrView<?, ?> getObjectInstance() {
     return this.objectInstance;
   }
 

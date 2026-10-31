@@ -38,7 +38,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
@@ -513,7 +516,7 @@ public class K1DAO {
     return new K1Table(alias);
   }
 
-  public static class K1Table extends TableWithGeneratedKey<K1, Byte> {
+  public static class K1Table extends TableWithGeneratedKey<K1, K1UpdateTablePhase, Byte> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final CharEntityColumn name = new CharEntityColumn(this, MetaData.NAME_META_DATA);
@@ -533,10 +536,30 @@ public class K1DAO {
       initialize();
     }
 
+    protected K1UpdateTablePhase getUpdatePhase(LiveSQLContext context) {
+      return new K1UpdateTablePhase(context, this);
+    }
+
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
       super.columns.add(this.name);
+    }
+
+  }
+
+  public static class K1UpdateTablePhase extends UpdateTablePhase {
+
+    public K1UpdateTablePhase(final LiveSQLContext context, final K1Table tableOrView) {
+      super(context, tableOrView);
+    }
+
+  }
+
+  public static class K1UpdateSetPhase extends UpdateSetPhase {
+
+    public K1UpdateSetPhase(LiveSQLContext context, UpdateObject update) {
+      super(context, update);
     }
 
   }

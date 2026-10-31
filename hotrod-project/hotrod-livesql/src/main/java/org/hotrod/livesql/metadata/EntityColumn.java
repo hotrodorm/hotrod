@@ -2,7 +2,7 @@ package org.hotrod.livesql.metadata;
 
 public interface EntityColumn {
 
-  TableOrView<?> getObjectInstance();
+  TableOrView<?, ?> getObjectInstance();
 
   Name getCatalog();
 

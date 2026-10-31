@@ -14,12 +14,12 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
 
   // Properties
 
-  private TableOrView<?> objectInstance;
+  private TableOrView<?, ?> objectInstance;
   private EntityColumnMetaData metaData;
 
   // Constructor
 
-  public NumericEntityColumn(final TableOrView<?> objectInstance, final EntityColumnMetaData metaData) {
+  public NumericEntityColumn(final TableOrView<?, ?> objectInstance, final EntityColumnMetaData metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
     this.objectInstance = objectInstance;
@@ -63,7 +63,7 @@ public class NumericEntityColumn extends NumericExpression implements EntityColu
   }
 
   @Override
-  public TableOrView<?> getObjectInstance() {
+  public TableOrView<?, ?> getObjectInstance() {
     return objectInstance;
   }
 

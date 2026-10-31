@@ -20,7 +20,7 @@ public class DeleteWherePhase implements DMLQuery {
     this.delete.setWherePredicate(predicate);
   }
 
-  public DeleteWherePhase(final LiveSQLContext context, final TableOrView<?> from, final Predicate predicate,
+  public DeleteWherePhase(final LiveSQLContext context, final TableOrView<?, ?> from, final Predicate predicate,
       LiveSQLLogging logger) {
     this.context = context;
     this.delete = new DeleteObject();

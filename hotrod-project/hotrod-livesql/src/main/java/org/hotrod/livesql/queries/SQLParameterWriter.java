@@ -1,26 +1,54 @@
 package org.hotrod.livesql.queries;
 
+import java.sql.Connection;
 import java.util.List;
+
+import org.hotrod.converter.TypeConverter;
 
 public interface SQLParameterWriter {
 
-  public class QueryParameter {
+  public class QueryParameter<R, D> {
 
     private String name;
-    private Object value;
+    private Object domain;
+    private TypeConverter<R, Object> converter;
 
-    public QueryParameter(String name, Object value) {
-      super();
+    private QueryParameter(String name, Object domain, TypeConverter<R, Object> converter) {
       this.name = name;
-      this.value = value;
+      this.domain = domain;
+      this.converter = converter;
+    }
+
+    public static <R> QueryParameter<R, Object> of(String name, Object domain) {
+      return new QueryParameter<>(name, domain, null);
+    }
+
+    public static <R> QueryParameter<R, Object> of(String name, Object domain, TypeConverter<R, Object> converter) {
+      return new QueryParameter<>(name, domain, converter);
     }
 
     public String getName() {
       return name;
     }
 
-    public Object getValue() {
-      return value;
+    public Object getValue(Connection conn) {
+      if (converter == null) {
+        return domain;
+      } else {
+        return converter.encode(domain, conn);
+      }
+    }
+
+    public Object getDomainValue() {
+      return domain;
+    }
+
+    public TypeConverter<R, Object> getConverter() {
+      return converter;
+    }
+
+    void setValue(Object domain) {
+      this.domain = domain;
     }
 
   }
@@ -49,8 +77,8 @@ public interface SQLParameterWriter {
   // 1. Record the parameter in the internal list
   // 2. Return the parameter name: p4
   // 3. Return the rendering of it: #{p4} , ?
-  public RenderedParameter registerParameter(final Object value);
+  public <R> RenderedParameter registerParameter(Object value, TypeConverter<R, Object> converter);
 
-  public List<QueryParameter> getParameters();
+  public List<QueryParameter<?, ?>> getParameters();
 
 }

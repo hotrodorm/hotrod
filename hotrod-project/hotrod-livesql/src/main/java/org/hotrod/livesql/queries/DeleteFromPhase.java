@@ -13,7 +13,7 @@ public class DeleteFromPhase implements DMLQuery {
 
   // Constructor
 
-  public DeleteFromPhase(final LiveSQLContext context, final TableOrView<?> from) {
+  public DeleteFromPhase(final LiveSQLContext context, final TableOrView<?, ?> from) {
     this.context = context;
     this.delete = new DeleteObject();
     this.delete.setFrom(from);

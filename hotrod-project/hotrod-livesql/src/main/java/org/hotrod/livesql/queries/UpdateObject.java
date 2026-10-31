@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.UpdateRenderer;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.MDShield;
 import org.hotrod.livesql.metadata.TableOrView;
@@ -22,7 +24,7 @@ public class UpdateObject {
 
   private static final Logger log = Logger.getLogger(UpdateObject.class.getName());
 
-  private TableOrView<?> tableOrView;
+  private TableOrView<?, ?> tableOrView;
   private List<Assignment> setters = new ArrayList<>();
   private Predicate wherePredicate;
 
@@ -31,12 +33,16 @@ public class UpdateObject {
     log.fine("init");
   }
 
-  void setTableOrView(final TableOrView<?> from) {
+  void setTableOrView(final TableOrView<?, ?> from) {
     this.tableOrView = from;
   }
 
   void addSetter(final EntityColumn c, final Expression e) {
     this.setters.add(new Assignment(c, e));
+  }
+
+  <R, D> void addConvertedColumnSetter(final ConvertedEntityColumn<R, D> c, final D d, TypeConverter<R, D> converter) {
+    this.setters.add(new ConvertedAssignment<>(c, d, converter));
   }
 
   void setWherePredicate(final Predicate predicate) {
@@ -62,13 +68,9 @@ public class UpdateObject {
       conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
 
-        // 1. Apply parameters
+        // 1. Prepare and apply the parameters
 
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
+        q.applyParameters(ps, conn);
 
         // 2. Run the query
 
@@ -143,6 +145,29 @@ public class UpdateObject {
 
     public Expression getExpression() {
       return e;
+    }
+
+  }
+
+  public static class ConvertedAssignment<R, D> extends Assignment {
+
+    private ConvertedEntityColumn<R, D> c;
+    private D d;
+    private TypeConverter<R, D> converter;
+
+    public ConvertedAssignment(final ConvertedEntityColumn<R, D> c, final D d, TypeConverter<R, D> converter) {
+      super(c, null);
+      this.c = c;
+      this.d = d;
+      this.converter = converter;
+    }
+
+    public ConvertedEntityColumn<R, D> getColumn() {
+      return c;
+    }
+
+    public R getRawValue(Connection conn) {
+      return this.converter.encode(d, conn);
     }
 
   }

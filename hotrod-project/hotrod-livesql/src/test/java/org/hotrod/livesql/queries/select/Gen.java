@@ -40,7 +40,7 @@ public class Gen {
       String classnNew = "SelectTuplesFrom" + (i + 1) + "Phase<>";
       String tupleClassc = "Tuple" + i + "<" + tuplesc + ">";
 //      String t = "<T extends TableOrView<" + c + ">, " + c + ">";
-      String t = "<T0 extends TableOrView<" + c + ">, " + c + ">";
+      String t = "<T0 extends TableOrView<" + c + ", ?>, " + c + ">";
 
       String temp = i < MAX_SIZE ? template : templateLast;
       String ready = temp //
@@ -93,8 +93,10 @@ public class Gen {
   private static void genFactory() throws IOException {
     String name = DEST_DIR + "/TupleClassFactory.java";
     try (BufferedWriter w = new BufferedWriter(new FileWriter(new File(name)))) {
-      w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n" + "\n" + "public class TupleClassFactory {\n"
-          + "\n" + "  public static Class<?> getTuplesClass(int modelInstancesCount) {\n"
+      w.write("package org.hotrod.livesql.queries.select.tuples.gen;\n\n" //
+          + "\nimport org.hotrod.livesql.exceptions.LiveSQLException;\n\n" //
+          + "public class TupleClassFactory {\n" + "\n"
+          + "  public static Class<?> getTuplesClass(int modelInstancesCount) {\n"
           + "    switch (modelInstancesCount) {\n");
       IntStream.rangeClosed(1, MAX_SIZE)
           .forEach(x -> write(w, "    case " + x + ":\n" + "      return Tuple" + x + ".class;\n"));

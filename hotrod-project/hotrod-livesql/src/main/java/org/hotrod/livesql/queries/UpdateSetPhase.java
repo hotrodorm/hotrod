@@ -21,8 +21,8 @@ public class UpdateSetPhase implements DMLQuery {
 
   // Properties
 
-  private LiveSQLContext context;
-  private UpdateObject update;
+  protected LiveSQLContext context;
+  protected UpdateObject update;
 
   // Constructor
 

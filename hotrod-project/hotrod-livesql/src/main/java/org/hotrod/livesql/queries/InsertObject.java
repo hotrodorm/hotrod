@@ -19,7 +19,7 @@ import org.hotrod.utils.Separator;
 
 public class InsertObject {
 
-  private TableOrView<?> into;
+  private TableOrView<?, ?> into;
   private List<EntityColumnMetaData> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
@@ -28,7 +28,7 @@ public class InsertObject {
     super();
   }
 
-  void setInto(final TableOrView<?> into) {
+  void setInto(final TableOrView<?, ?> into) {
     this.into = into;
   }
 
@@ -65,11 +65,7 @@ public class InsertObject {
 
         // 1. Apply parameters
 
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
+        q.applyParameters(ps, conn);
 
         // 2. Run the query
 

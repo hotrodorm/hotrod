@@ -9,7 +9,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Function;
-import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.Select;
@@ -149,7 +148,11 @@ public class App {
 //      testFilter();
 //      testWindowFunctions2();
 //      testLiveSQLCursor();
-      testJEXL();
+//      testJEXL();
+      
+      testLiveSQLUpdateWithConverters() ;
+
+      
       //      testInsertSequence();
 //      testInsertIdentity();
 
@@ -395,13 +398,15 @@ public class App {
   }
 
   private void testLiveSQLUpdateWithConverters() {
-    AccountTable t = this.accountDAO.newTable();
-    ConvertedEntityColumn<String, AccountType> ty = t.type;
-//    int count = this.sql.update(t)
-//.set(ty, sql.TRUE)        
-//        .set(t.type, AccountType.PEN1)
-//        .where(t.id.eq(123)).execute(LIVESQL_LOG);
-  }
+    AccountTable t = this.accountDAO.newTable();   
+    
+    int count = this.sql.update(t) //
+        .set(t.type, AccountType.PEN1) //
+        .where(t.balance.ge(150)) //
+        .execute(LIVESQL_LOG);
+    
+    System.out.println("### LiveSQL Update with converters - count="+count);
+    }
 
   private void testConverters() {
     {

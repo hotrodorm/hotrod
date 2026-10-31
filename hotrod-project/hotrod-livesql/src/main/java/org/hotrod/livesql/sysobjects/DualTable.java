@@ -8,7 +8,7 @@ import org.hotrod.livesql.metadata.SQLMetaExpression;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 
-public class DualTable extends Table<String> {
+public class DualTable extends Table<String, NullUpdateTablePhase> {
 
   // Properties
 

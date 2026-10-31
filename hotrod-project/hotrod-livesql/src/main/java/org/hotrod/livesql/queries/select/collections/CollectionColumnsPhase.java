@@ -8,8 +8,8 @@ import org.hotrod.livesql.metadata.TableOrView;
 
 public class CollectionColumnsPhase extends Collection {
 
-  public CollectionColumnsPhase(String property, TableOrView<?> tableOrView, List<LiveSQLExpression> liveSQLExpressions,
-      List<EntityColumnMetaData> parentIds) {
+  public CollectionColumnsPhase(String property, TableOrView<?, ?> tableOrView,
+      List<LiveSQLExpression> liveSQLExpressions, List<EntityColumnMetaData> parentIds) {
     super(property, tableOrView, liveSQLExpressions, parentIds);
   }
 

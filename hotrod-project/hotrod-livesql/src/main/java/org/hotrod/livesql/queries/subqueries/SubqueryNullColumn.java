@@ -54,6 +54,7 @@ public class SubqueryNullColumn extends CharSyntaxExpression implements Subquery
   @Override
   protected TypeHandler getTypeHandler() {
     try {
+      @SuppressWarnings("unused")
       EntityColumn ec = (EntityColumn) this.column;
       return Shield.getTypeHandler(this.column);
     } catch (ClassCastException e) {

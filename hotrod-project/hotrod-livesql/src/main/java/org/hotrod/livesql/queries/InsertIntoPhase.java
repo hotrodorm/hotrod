@@ -18,7 +18,7 @@ public class InsertIntoPhase {
 
   // Constructor
 
-  public InsertIntoPhase(final LiveSQLContext context, final TableOrView<?> into) {
+  public InsertIntoPhase(final LiveSQLContext context, final TableOrView<?,?> into) {
     this.context = context;
     this.insert = new InsertObject();
     this.insert.setInto(into);

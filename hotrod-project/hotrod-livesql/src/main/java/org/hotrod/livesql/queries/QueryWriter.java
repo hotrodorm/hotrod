@@ -1,17 +1,16 @@
 package org.hotrod.livesql.queries;
 
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
-import org.hotrod.livesql.queries.SQLParameterWriter.QueryParameter;
 import org.hotrod.livesql.queries.SQLParameterWriter.RenderedParameter;
 
 public class QueryWriter {
@@ -37,8 +36,12 @@ public class QueryWriter {
     this.paramWriter = new JDBCParameterWriter();
   }
 
-  public RenderedParameter registerParameter(final Object value) {
-    return this.paramWriter.registerParameter(value);
+  public <R, D> RenderedParameter registerParameter(final Object value) {
+    return this.paramWriter.registerParameter(value, null);
+  }
+
+  public <R, D> RenderedParameter registerParameter(final Object value, TypeConverter<R, Object> converter) {
+    return this.paramWriter.registerParameter(value, converter);
   }
 
   public void enterLevel() {
@@ -95,10 +98,10 @@ public class QueryWriter {
   }
 
   public LiveSQLPreparedQuery getPreparedQuery(final List<Expression> columns, boolean excludeTuplesFromUniqueNames) {
-    LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-    for (QueryParameter p : this.paramWriter.getParameters()) {
-      params.put(p.getName(), p.getValue());
-    }
+//    LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//    for (QueryParameter<?, ?> p : this.paramWriter.getParameters()) {
+//      params.put(p.getName(), p.getValue());
+//    }
     Set<String> uniqueNames = null;
     if (columns != null) {
       uniqueNames = new HashSet<>();
@@ -130,7 +133,7 @@ public class QueryWriter {
         ordinal++;
       }
     }
-    return new LiveSQLPreparedQuery(this.sb.toString(), params, columns);
+    return new LiveSQLPreparedQuery(this.sb.toString(), this.paramWriter.getParameters(), columns);
   }
 
 }

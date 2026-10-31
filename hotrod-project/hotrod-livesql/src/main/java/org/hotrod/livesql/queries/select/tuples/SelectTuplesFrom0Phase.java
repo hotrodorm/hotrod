@@ -23,74 +23,74 @@ public class SelectTuplesFrom0Phase {
     this.metadata = metadata;
   }
 
-  public <A> SelectTuplesFrom1Phase<A> semiJoin(TableOrView<A> t, final Predicate on) {
+  public <A> SelectTuplesFrom1Phase<A> semiJoin(TableOrView<A, ?> t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on), false);
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
   // joining TableOrView
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final Predicate on) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> join(T t, final Predicate on) {
     this.metadata.join(new InnerJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> join(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> join(T t, final EntityColumn... using) {
     this.metadata.join(new InnerJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final Predicate on) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final Predicate on) {
     this.metadata.join(new LeftOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> leftJoin(T t, final EntityColumn... using) {
     this.metadata.join(new LeftOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final Predicate on) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final Predicate on) {
     this.metadata.join(new RightOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> rightJoin(T t, final EntityColumn... using) {
     this.metadata.join(new RightOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final Predicate on) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final Predicate on) {
     this.metadata.join(new FullOuterJoin(t, on));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final EntityColumn... using) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> fullJoin(T t, final EntityColumn... using) {
     this.metadata.join(new FullOuterJoin(t, using));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> crossJoin(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> crossJoin(T t) {
     this.metadata.join(new CrossJoin(t));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> naturalJoin(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> naturalJoin(T t) {
     this.metadata.join(new NaturalInnerJoin(t));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> naturalLeftJoin(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> naturalLeftJoin(T t) {
     this.metadata.join(new NaturalLeftOuterJoin(t));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> naturalRightJoin(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> naturalRightJoin(T t) {
     this.metadata.join(new NaturalRightOuterJoin(t));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> naturalFullJoin(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> naturalFullJoin(T t) {
     this.metadata.join(new NaturalFullOuterJoin(t));
     return new SelectTuplesFrom1Phase<>(this.metadata);
   }

@@ -20,6 +20,7 @@ public class TypeRule {
   private String errorMessage; // If test succeeds and there's an error message, a LiveSQLException is thrown
                                // with this message
 
+  @SuppressWarnings("unused")
   private DynamicExpressionFactory factory;
   private DynamicExpression testExpression;
 

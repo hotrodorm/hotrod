@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.QueryWriter;
+import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.Select;
 import org.hotrod.livesql.queries.select.TableReferences;
-import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
@@ -136,7 +136,7 @@ public abstract class Expression extends SQLExpression {
 
   private List<Expression> subExpressions = new ArrayList<>();
   private List<CombinedSelectObject<?>> subqueries = new ArrayList<>();
-  private List<TableOrView<?>> tablesOrViews = new ArrayList<>();
+  private List<TableOrView<?, ?>> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
     this.subExpressions.add(expression);
@@ -146,7 +146,7 @@ public abstract class Expression extends SQLExpression {
     this.subqueries.add(SShield.getCombinedSelect(subquery));
   }
 
-  protected void register(final TableOrView<?> tableOrView) {
+  protected void register(final TableOrView<?, ?> tableOrView) {
     this.tablesOrViews.add(tableOrView);
   }
 
@@ -160,7 +160,7 @@ public abstract class Expression extends SQLExpression {
       }
       s.validateTableReferences(tableReferences, ag);
     }
-    for (TableOrView<?> t : this.tablesOrViews) {
+    for (TableOrView<?, ?> t : this.tablesOrViews) {
       if (t == null) {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }

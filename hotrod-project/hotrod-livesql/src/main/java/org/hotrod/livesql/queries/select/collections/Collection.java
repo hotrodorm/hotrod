@@ -10,7 +10,7 @@ public abstract class Collection extends CollectionsOperator {
 
   protected List<EntityColumnMetaData> parentId;
 
-  public Collection(String property, TableOrView<?> tableOrView, List<LiveSQLExpression> liveSQLExpressions,
+  public Collection(String property, TableOrView<?, ?> tableOrView, List<LiveSQLExpression> liveSQLExpressions,
       List<EntityColumnMetaData> parentId) {
     super(property, tableOrView, liveSQLExpressions);
     this.parentId = parentId;

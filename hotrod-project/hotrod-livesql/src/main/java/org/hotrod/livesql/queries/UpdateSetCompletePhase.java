@@ -46,7 +46,7 @@ public class UpdateSetCompletePhase implements DMLQuery {
     this.update = update;
   }
 
-  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView<?> tableOrView,
+  public UpdateSetCompletePhase(final LiveSQLContext context, final TableOrView<?, ?> tableOrView,
       final List<Setter> setters, final Predicate predicate) {
     this.context = context;
     this.update = new UpdateObject();

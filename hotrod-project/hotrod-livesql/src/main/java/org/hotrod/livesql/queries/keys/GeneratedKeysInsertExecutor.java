@@ -44,12 +44,8 @@ public abstract class GeneratedKeysInsertExecutor<T> {
 
   public abstract InsertSelectRenderingEdits getInsertSelectEdits(List<EntityColumn> columns) throws LiveSQLException;
 
-  public void applyParameters(LiveSQLPreparedQuery query, PreparedStatement ps) throws SQLException {
-    int n = 1;
-    for (Object obj : query.getParameters().values()) {
-      int i = n++;
-      ps.setObject(i, obj);
-    }
+  public void applyParameters(LiveSQLPreparedQuery query, PreparedStatement ps, Connection conn) throws SQLException {
+    query.applyParameters(ps, conn);
   }
 
   public abstract T executeOne(LiveSQLPreparedQuery query, Connection conn) throws SQLException;

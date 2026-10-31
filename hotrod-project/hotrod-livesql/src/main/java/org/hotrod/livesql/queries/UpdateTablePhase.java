@@ -22,12 +22,12 @@ public class UpdateTablePhase {
 
   // Properties
 
-  private LiveSQLContext context;
-  private UpdateObject update;
+  protected LiveSQLContext context;
+  protected UpdateObject update;
 
   // Constructor
 
-  public UpdateTablePhase(final LiveSQLContext context, final TableOrView<?> tableOrView) {
+  public UpdateTablePhase(final LiveSQLContext context, final TableOrView<?,?> tableOrView) {
     this.context = context;
     this.update = new UpdateObject();
     this.update.setTableOrView(tableOrView);

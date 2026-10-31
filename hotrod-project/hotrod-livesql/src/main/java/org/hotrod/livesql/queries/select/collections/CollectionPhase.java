@@ -8,7 +8,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 
 public class CollectionPhase extends Collection {
 
-  public CollectionPhase(String property, TableOrView<?> tableOrView) {
+  public CollectionPhase(String property, TableOrView<?, ?> tableOrView) {
     super(property, tableOrView, null, null);
   }
 

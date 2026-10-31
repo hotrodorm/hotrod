@@ -65,16 +65,15 @@ public class GeneratedKeysSequencePreFetchInsertExecutor<T> extends GeneratedKey
       throw new SQLException("Could not retrieve sequence for INSERT using: " + sequencePreFetchSQL);
     }
 
-    // 2. Apply it to the parameter list
+    // 2. Apply the sequence value as the first parameter of the query (the primary
+    // key column is always the first column in the INSERT statement)
 
-    String sequencePlaceholderName = query.getParameters().keySet().iterator().next();
-    log.info("sequencePlaceholderName=" + sequencePlaceholderName + " -- seq=" + seq);
-    query.getParameters().put(sequencePlaceholderName, seq);
+    query.setFirstParameter(seq);
 
     // 3. Run the INSERT query
 
     try (PreparedStatement ps = conn.prepareStatement(query.getSQL())) {
-      super.applyParameters(query, ps);
+      super.applyParameters(query, ps, conn);
       ps.executeUpdate();
       return seq;
     }

@@ -143,11 +143,7 @@ public abstract class SelectObject<T> {
 
         // 1. Apply parameters
 
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
+        q.applyParameters(ps, conn);
 
         // 2. Run the query
 
@@ -186,11 +182,7 @@ public abstract class SelectObject<T> {
 
         // 1. Apply parameters
 
-        int n = 1;
-        for (Object obj : q.getParameters().values()) {
-          int i = n++;
-          ps.setObject(i, obj);
-        }
+        q.applyParameters(ps, conn);
 
         // 2. Run the query
 

@@ -26,7 +26,7 @@ public class SelectTuplesColumnsPhase {
     this.metadata = new TuplesMetadata(context, ctes, distinct, cols);
   }
 
-  public <T extends TableOrView<A>, A> SelectTuplesFrom1Phase<A> from(T t) {
+  public <T extends TableOrView<A, ?>, A> SelectTuplesFrom1Phase<A> from(T t) {
     this.metadata.from(t);
     return new SelectTuplesFrom1Phase<A>(this.metadata);
   }

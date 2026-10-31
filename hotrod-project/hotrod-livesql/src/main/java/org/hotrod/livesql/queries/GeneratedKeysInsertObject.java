@@ -26,7 +26,7 @@ public class GeneratedKeysInsertObject<T> {
   private static final Logger log = Logger.getLogger(GeneratedKeysInsertObject.class.getName());
 
   private GeneratedKeysInsertExecutor<T> executor;
-  private TableOrView<?> into;
+  private TableOrView<?, ?> into;
   private List<EntityColumn> columns;
   private List<ComparableExpression> values;
   private SelectObject<?> select;
@@ -37,7 +37,7 @@ public class GeneratedKeysInsertObject<T> {
     this.executor = executor;
   }
 
-  void setInto(final TableOrView<?> into) {
+  void setInto(final TableOrView<?, ?> into) {
     this.into = into;
   }
 
@@ -72,7 +72,7 @@ public class GeneratedKeysInsertObject<T> {
     try {
       conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
-        this.executor.applyParameters(q, ps);
+        this.executor.applyParameters(q, ps, conn);
         T key = this.executor.executeOne(q, conn);
         return key;
       }
@@ -96,7 +96,7 @@ public class GeneratedKeysInsertObject<T> {
     try {
       conn = context.getConnection();
       try (PreparedStatement ps = conn.prepareStatement(q.getSQL())) {
-        this.executor.applyParameters(q, ps);
+        this.executor.applyParameters(q, ps, conn);
         InsertResult<T> r = this.executor.executeList(q, conn);
         return r;
       }

@@ -3,7 +3,6 @@ package org.hotrod.generator.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-//import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -28,6 +27,7 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SelectMethodTag.ResultSetType;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.converter.TypeConverter;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.dynamicsql.Cursor;
@@ -59,6 +59,7 @@ import org.hotrod.interfaces.OrderBy;
 import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
+import org.hotrod.livesql.expressions.bool.converter.CShield;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
@@ -73,9 +74,14 @@ import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 import org.hotrod.livesql.metadata.View;
+import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
+import org.hotrod.livesql.queries.SShield;
+import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
+import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.keys.GeneratedKeysIdentityInlineResultSetInsertExecutor;
 import org.hotrod.livesql.queries.keys.GeneratedKeysInsertExecutor;
@@ -84,6 +90,7 @@ import org.hotrod.livesql.queries.keys.GeneratedKeysSequenceInlineKeysResultSetE
 import org.hotrod.livesql.queries.keys.GeneratedKeysSequencePreFetchInsertExecutor;
 import org.hotrod.livesql.queries.keys.KeyReader;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
+//import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.typesolver.TypeHandler;
 import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.CastUtil;
@@ -1607,9 +1614,16 @@ public class DAOWriter {
     w.println("  public ", ec, " new" + entityType + "(final String alias) {");
     w.println("    return new ", ec, "(alias);");
     w.println("  }");
+
+    String updateTablePhaseClass = this.metadata.getId().getJavaClassName() + "UpdateTablePhase";
+    String updateTableSetClass = this.metadata.getId().getJavaClassName() + "UpdateSetPhase";
+    ExternalClass up = ExternalClass.of(updateTablePhaseClass);
+    ExternalClass us = ExternalClass.of(updateTableSetClass);
+
     w.println();
     w.print("  public static class ", ec);
     w.print(" extends ", pc, "<", em);
+    w.print(", ", up);
     if (generatesKeys) {
       w.print(", ", kc);
     }
@@ -1712,6 +1726,15 @@ public class DAOWriter {
     w.println("      initialize();");
     w.println("    }");
 
+    // Custom
+
+    w.println();
+    w.println("    protected ", up, " getUpdatePhase(", LiveSQLContext.class, " context) {");
+    w.println("      return new ", up, "(context, this);");
+    w.println("    }");
+
+    // End Custom
+
     w.println();
     w.println("    private void initialize() {");
     w.println("      super.columns = new ", ArrayList.class, "<>();");
@@ -1722,6 +1745,65 @@ public class DAOWriter {
     w.println("    }");
     w.println();
     w.println("  }");
+
+    w.println();
+    w.println("  public static class ", up, " extends ", UpdateTablePhase.class, " {");
+    w.println();
+    w.print("    public ", up, "(final ", LiveSQLContext.class, " context");
+    w.println(", final ", ec, " tableOrView) {");
+    w.println("      super(context, tableOrView);");
+    w.println("    }");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getResolvedConverter() != null) { // Converted Column
+        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+
+        w.println();
+        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
+        w.println(domainClass, "> column, final ", domainClass, " value) {");
+        w.print("      ", TypeConverter.class, "<?, Object> converter = (");
+        w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
+        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
+            "(value, converter);");
+        w.println("      ", SShield.class, ".addSetter(this.update, column, convertedValue);");
+        w.println("      return new ", us, "(this.context, this.update);");
+        w.println("    }");
+
+      }
+    }
+
+    w.println();
+    w.println("  }");
+
+    w.println();
+    w.println("  public static class ", us, " extends ", UpdateSetPhase.class, " {");
+    w.println();
+    w.print("    public ", us, "(", LiveSQLContext.class, " context, ");
+    w.println(UpdateObject.class, " update) {");
+    w.println("      super(context, update);");
+    w.println("    }");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getResolvedConverter() != null) { // Converted Column
+        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
+
+        w.println();
+        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
+        w.println(domainClass, "> column, final ", domainClass, " value) {");
+        w.print("      ", TypeConverter.class, "<?, Object> converter = (");
+        w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
+        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
+            "(value, converter);");
+        w.println("      ", SShield.class, ".addSetter(super.update, column, convertedValue);");
+        w.println("      return new ", us, "(this.context, this.update);");
+        w.println("    }");
+
+      }
+    }
+
+    w.println();
+    w.println("  }");
+
   }
 
   private String getColumnMetaDataId(ColumnMetadata cm) {
