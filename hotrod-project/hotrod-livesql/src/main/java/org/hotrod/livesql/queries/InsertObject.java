@@ -24,12 +24,12 @@ public class InsertObject {
 
   private TableOrView<?, ?, ?> into;
 
-  private List<EntityColumnMetaData> columns;
-  private List<ComparableExpression> values;
+  private List<EntityColumnMetaData> columns = null;
+  private List<ComparableExpression> values = null;
 
   private List<Assignment> setters = new ArrayList<>();
 
-  private SelectObject<?> select;
+  private SelectObject<?> select = null;
 
   InsertObject() {
     super();
@@ -96,17 +96,33 @@ public class InsertObject {
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
-    if (this.columns != null) {
-      w.write(" (");
+    if (!this.setters.isEmpty()) { // insert using setters
+
+      w.write("\n  (");
       Separator sep = new Separator(", ");
-      for (EntityColumnMetaData c : this.columns) {
+      for (Assignment a : this.setters) {
         w.write(sep.render());
-        w.write(w.getSQLDialect().canonicalToNatural(c.getName().getName()));
+        w.write(context.getLiveSQLDialect().canonicalToNatural(a.getColumn().getObjectName()));
+      }
+      w.write("\n  VALUES (");
+      sep = new Separator(", ");
+      for (Assignment a : this.setters) {
+        w.write(sep.render());
+        Shield.renderTo(a.getExpression(), w);
       }
       w.write(")");
-    }
 
-    if (this.values != null) { // insert using values
+    } else if (this.values != null) { // insert using VALUES
+
+      if (this.columns != null) {
+        w.write(" (");
+        Separator sep = new Separator(", ");
+        for (EntityColumnMetaData c : this.columns) {
+          w.write(sep.render());
+          w.write(w.getSQLDialect().canonicalToNatural(c.getName().getName()));
+        }
+        w.write(")");
+      }
 
       w.write("\nVALUES (");
       for (int i = 0; i < this.values.size(); i++) {
@@ -118,7 +134,7 @@ public class InsertObject {
       }
       w.write(")");
 
-    } else { // insert from query
+    } else { // insert from SELECT query
 
       Set<SelectObject<?>> compiling = new HashSet<>();
       this.select.compileColumns(compiling);
