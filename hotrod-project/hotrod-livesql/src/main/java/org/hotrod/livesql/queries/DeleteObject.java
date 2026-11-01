@@ -13,14 +13,14 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class DeleteObject {
 
-  private TableOrView<?, ?> from;
+  private TableOrView<?, ?, ?> from;
   private Predicate wherePredicate;
 
   DeleteObject() {
     super();
   }
 
-  void setFrom(final TableOrView<?, ?> from) {
+  void setFrom(final TableOrView<?, ?, ?> from) {
     this.from = from;
   }
 

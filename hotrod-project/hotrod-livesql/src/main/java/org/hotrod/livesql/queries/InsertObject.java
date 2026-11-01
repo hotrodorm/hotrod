@@ -3,6 +3,7 @@ package org.hotrod.livesql.queries;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,7 +11,9 @@ import java.util.Set;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
+import org.hotrod.livesql.expressions.Expression;
 import org.hotrod.livesql.expressions.Shield;
+import org.hotrod.livesql.metadata.EntityColumn;
 import org.hotrod.livesql.metadata.EntityColumnMetaData;
 import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
@@ -19,23 +22,32 @@ import org.hotrod.utils.Separator;
 
 public class InsertObject {
 
-  private TableOrView<?, ?> into;
+  private TableOrView<?, ?, ?> into;
+
   private List<EntityColumnMetaData> columns;
   private List<ComparableExpression> values;
+
+  private List<Assignment> setters = new ArrayList<>();
+
   private SelectObject<?> select;
 
   InsertObject() {
     super();
   }
 
-  void setInto(final TableOrView<?, ?> into) {
+  void setInto(final TableOrView<?, ?, ?> into) {
     this.into = into;
+  }
+
+  void addSetter(final EntityColumn c, final Expression e) {
+    this.setters.add(new Assignment(c, e));
   }
 
   void setColumns(final List<EntityColumnMetaData> columns) {
     this.columns = columns;
   }
 
+  @Deprecated
   void setValues(final List<ComparableExpression> values) {
     this.values = values;
   }

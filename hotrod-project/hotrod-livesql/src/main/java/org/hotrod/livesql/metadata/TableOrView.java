@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.InsertIntoPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.UpdateTablePhase;
@@ -16,7 +17,7 @@ import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.sets.SelectObject;
 import org.hotrod.livesql.util.ToString;
 
-public abstract class TableOrView<M, U extends UpdateTablePhase> extends TableExpression {
+public abstract class TableOrView<M, I extends InsertIntoPhase, U extends UpdateTablePhase> extends TableExpression {
 
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TableOrView.class.getName());
@@ -78,6 +79,13 @@ public abstract class TableOrView<M, U extends UpdateTablePhase> extends TableEx
       this.designatedAlias = ag.next();
     }
     tableReferences.register(this.alias, this);
+  }
+
+  // Insert
+
+  @SuppressWarnings("unchecked")
+  protected I getInsertPhase(LiveSQLContext context) {
+    return (I) new InsertIntoPhase(context, this);
   }
 
   // Update

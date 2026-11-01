@@ -155,8 +155,8 @@ public class LiveSQL {
 
   private static final Logger log = Logger.getLogger(LiveSQL.class.getName());
 
-  public final Table<?, ?> DUAL = new DualTable();
-  public final Table<?, ?> SYSDUMMY1 = new SysDummy1Table();
+  public final Table<?, ?, ?> DUAL = new DualTable();
+  public final Table<?, ?, ?> SYSDUMMY1 = new SysDummy1Table();
 
   // Properties
 
@@ -272,28 +272,28 @@ public class LiveSQL {
 
   // Insert
 
-  public InsertIntoPhase insert(final Table<?, ?> into) {
+  public InsertIntoPhase insert(final Table<?, ?, ?> into) {
     return new InsertIntoPhase(this.context, into);
   }
 
-  public <T> GeneratedKeysInsertIntoPhase<T> insert(final TableWithGeneratedKey<?, ?, T> into) {
+  public <T> GeneratedKeysInsertIntoPhase<T> insert(final TableWithGeneratedKey<?, ?, ?, T> into) {
     return new GeneratedKeysInsertIntoPhase<T>(this.context, into);
   }
 
-  public InsertIntoPhase insert(final View<?, ?> into) {
+  public InsertIntoPhase insert(final View<?, ?, ?> into) {
     return new InsertIntoPhase(this.context, into);
   }
 
   // Update
 
   @SuppressWarnings("unchecked")
-  public <U extends UpdateTablePhase> U update(final TableOrView<?, U> tableOrView) {
+  public <U extends UpdateTablePhase> U update(final TableOrView<?, ?, U> tableOrView) {
     return (U) MDShield.getUpdatePhase(this.context, tableOrView);
   }
 
   // Delete
 
-  public DeleteFromPhase delete(final TableOrView<?, ?> from) {
+  public DeleteFromPhase delete(final TableOrView<?, ?, ?> from) {
     return new DeleteFromPhase(this.context, from);
   }
 

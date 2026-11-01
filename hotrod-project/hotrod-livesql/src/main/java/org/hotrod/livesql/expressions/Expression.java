@@ -136,7 +136,7 @@ public abstract class Expression extends SQLExpression {
 
   private List<Expression> subExpressions = new ArrayList<>();
   private List<CombinedSelectObject<?>> subqueries = new ArrayList<>();
-  private List<TableOrView<?, ?>> tablesOrViews = new ArrayList<>();
+  private List<TableOrView<?, ?, ?>> tablesOrViews = new ArrayList<>();
 
   protected void register(final Expression expression) {
     this.subExpressions.add(expression);
@@ -146,7 +146,7 @@ public abstract class Expression extends SQLExpression {
     this.subqueries.add(SShield.getCombinedSelect(subquery));
   }
 
-  protected void register(final TableOrView<?, ?> tableOrView) {
+  protected void register(final TableOrView<?, ?, ?> tableOrView) {
     this.tablesOrViews.add(tableOrView);
   }
 
@@ -160,7 +160,7 @@ public abstract class Expression extends SQLExpression {
       }
       s.validateTableReferences(tableReferences, ag);
     }
-    for (TableOrView<?, ?> t : this.tablesOrViews) {
+    for (TableOrView<?, ?, ?> t : this.tablesOrViews) {
       if (t == null) {
         throw new LiveSQLException("Table referenced in query cannot be null.", null);
       }

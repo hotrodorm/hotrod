@@ -24,7 +24,7 @@ public class UpdateObject {
 
   private static final Logger log = Logger.getLogger(UpdateObject.class.getName());
 
-  private TableOrView<?, ?> tableOrView;
+  private TableOrView<?, ?, ?> tableOrView;
   private List<Assignment> setters = new ArrayList<>();
   private Predicate wherePredicate;
 
@@ -33,7 +33,7 @@ public class UpdateObject {
     log.fine("init");
   }
 
-  void setTableOrView(final TableOrView<?, ?> from) {
+  void setTableOrView(final TableOrView<?, ?, ?> from) {
     this.tableOrView = from;
   }
 
@@ -127,49 +127,6 @@ public class UpdateObject {
     }
     LiveSQLPreparedQuery pq = w.getPreparedQuery(null, false);
     return pq;
-  }
-
-  private static class Assignment {
-
-    private EntityColumn c;
-    private Expression e;
-
-    public Assignment(final EntityColumn c, final Expression e) {
-      this.c = c;
-      this.e = e;
-    }
-
-    public EntityColumn getColumn() {
-      return c;
-    }
-
-    public Expression getExpression() {
-      return e;
-    }
-
-  }
-
-  public static class ConvertedAssignment<R, D> extends Assignment {
-
-    private ConvertedEntityColumn<R, D> c;
-    private D d;
-    private TypeConverter<R, D> converter;
-
-    public ConvertedAssignment(final ConvertedEntityColumn<R, D> c, final D d, TypeConverter<R, D> converter) {
-      super(c, null);
-      this.c = c;
-      this.d = d;
-      this.converter = converter;
-    }
-
-    public ConvertedEntityColumn<R, D> getColumn() {
-      return c;
-    }
-
-    public R getRawValue(Connection conn) {
-      return this.converter.encode(d, conn);
-    }
-
   }
 
 }

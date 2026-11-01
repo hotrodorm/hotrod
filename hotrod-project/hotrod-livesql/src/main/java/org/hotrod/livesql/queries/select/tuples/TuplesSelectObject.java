@@ -109,10 +109,10 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
 
   @Override
   public TuplesRowReader<T> getRowReader() {
-    List<TableOrView<?, ?>> allTables = new ArrayList<>();
+    List<TableOrView<?, ?, ?>> allTables = new ArrayList<>();
 
     try {
-      TableOrView<?, ?> tv = (TableOrView<?, ?>) this.from;
+      TableOrView<?, ?, ?> tv = (TableOrView<?, ?, ?>) this.from;
       allTables.add(tv);
     } catch (ClassCastException e) {
       // Ignore other table expressions
@@ -122,16 +122,13 @@ public class TuplesSelectObject<T> extends BaseSelectObject<T> {
       if (tj.includeInResultSet()) {
         TableExpression te = SShield.getTableExpression(tj.getJoin());
         try {
-          TableOrView<?, ?> tv = (TableOrView<?, ?>) te;
+          TableOrView<?, ?, ?> tv = (TableOrView<?, ?, ?>) te;
           allTables.add(tv);
         } catch (ClassCastException e) {
           // Ignore other table expressions
         }
       }
     }
-//    List<TableOrView<?>> joined = this.joins.stream().map(j -> (TableOrView<?>) SShield.getTableExpression(j))
-//        .collect(Collectors.toList());
-//    allTables.addAll(joined);
     return new TuplesRowReader<>(this.compiledColumns, allTables);
   }
 

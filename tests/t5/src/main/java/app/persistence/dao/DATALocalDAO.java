@@ -41,6 +41,9 @@ import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.DeleteWherePhase;
+import org.hotrod.livesql.queries.InsertIntoPhase;
+import org.hotrod.livesql.queries.InsertObject;
+import org.hotrod.livesql.queries.InsertSetPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.SShield;
 import org.hotrod.livesql.queries.UpdateObject;
@@ -420,7 +423,7 @@ public class DATALocalDAO {
     return new DATALocalTable(alias);
   }
 
-  public static class DATALocalTable extends Table<DATALocal, DATALocalUpdateTablePhase> {
+  public static class DATALocalTable extends Table<DATALocal, DATALocalInsertIntoPhase, DATALocalUpdateTablePhase> {
 
     public final CharEntityColumn NAMELocalToCity = new CharEntityColumn(this, MetaData.NAME_LOCAL_TO_CITY_META_DATA);
     public final ConvertedEntityColumn<Integer, ActiveEnum> active = new ConvertedEntityColumn<>(this, MetaData.ACTIVE_META_DATA);
@@ -440,6 +443,12 @@ public class DATALocalDAO {
       initialize();
     }
 
+    @Override
+    protected DATALocalInsertIntoPhase getInsertPhase(LiveSQLContext context) {
+      return new DATALocalInsertIntoPhase(context, this);
+    }
+
+    @Override
     protected DATALocalUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
       return new DATALocalUpdateTablePhase(context, this);
     }
@@ -448,6 +457,36 @@ public class DATALocalDAO {
       super.columns = new ArrayList<>();
       super.columns.add(this.NAMELocalToCity);
       super.columns.add(this.active);
+    }
+
+  }
+
+  public static class DATALocalInsertIntoPhase extends InsertIntoPhase {
+
+    public DATALocalInsertIntoPhase(final LiveSQLContext context, final DATALocalTable tableOrView) {
+      super(context, tableOrView);
+    }
+
+    public DATALocalInsertSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new DATALocalInsertSetPhase(this.context, this.insert);
+    }
+
+  }
+
+  public static class DATALocalInsertSetPhase extends InsertSetPhase {
+
+    public DATALocalInsertSetPhase(LiveSQLContext context, InsertObject insert) {
+      super(context, insert);
+    }
+
+    public DATALocalInsertSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new DATALocalInsertSetPhase(this.context, this.insert);
     }
 
   }

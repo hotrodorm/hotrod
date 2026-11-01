@@ -23,8 +23,8 @@ public class UpdateWherePhase implements DMLQuery {
     this.update.setWherePredicate(predicate);
   }
 
-  public UpdateWherePhase(final LiveSQLContext context, final TableOrView<?, ?> tableOrView, final List<Setter> setters,
-      final Predicate predicate, LiveSQLLogging logger) {
+  public UpdateWherePhase(final LiveSQLContext context, final TableOrView<?, ?, ?> tableOrView,
+      final List<Setter> setters, final Predicate predicate, LiveSQLLogging logger) {
     this.context = context;
     this.update = new UpdateObject();
     this.update.setTableOrView(tableOrView);

@@ -9,6 +9,10 @@ public abstract class SShield {
     // static class
   }
 
+  public static void addSetter(InsertObject insert, EntityColumn c, Expression e) {
+    insert.addSetter(c, e);
+  }
+
   public static void addSetter(UpdateObject update, EntityColumn c, Expression e) {
     update.addSetter(c, e);
   }

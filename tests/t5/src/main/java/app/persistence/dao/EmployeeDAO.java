@@ -42,10 +42,9 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
+import org.hotrod.livesql.queries.InsertIntoPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
-import org.hotrod.livesql.queries.UpdateObject;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
-import org.hotrod.livesql.queries.UpdateSetPhase;
 import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
@@ -620,7 +619,7 @@ public class EmployeeDAO {
     return new EmployeeTable(alias);
   }
 
-  public static class EmployeeTable extends Table<Employee, EmployeeUpdateTablePhase> {
+  public static class EmployeeTable extends Table<Employee, InsertIntoPhase, UpdateTablePhase> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final NumericEntityColumn amount = new NumericEntityColumn(this, MetaData.AMOUNT_META_DATA);
@@ -645,10 +644,6 @@ public class EmployeeDAO {
       initialize();
     }
 
-    protected EmployeeUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
-      return new EmployeeUpdateTablePhase(context, this);
-    }
-
     private void initialize() {
       super.columns = new ArrayList<>();
       super.columns.add(this.id);
@@ -658,22 +653,6 @@ public class EmployeeDAO {
       super.columns.add(this.active);
       super.columns.add(this.photo);
       super.columns.add(this.region);
-    }
-
-  }
-
-  public static class EmployeeUpdateTablePhase extends UpdateTablePhase {
-
-    public EmployeeUpdateTablePhase(final LiveSQLContext context, final EmployeeTable tableOrView) {
-      super(context, tableOrView);
-    }
-
-  }
-
-  public static class EmployeeUpdateSetPhase extends UpdateSetPhase {
-
-    public EmployeeUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
-      super(context, update);
     }
 
   }

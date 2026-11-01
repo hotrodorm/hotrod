@@ -76,6 +76,9 @@ import org.hotrod.livesql.metadata.TableWithGeneratedKey;
 import org.hotrod.livesql.metadata.View;
 import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.DeleteWherePhase;
+import org.hotrod.livesql.queries.InsertIntoPhase;
+import org.hotrod.livesql.queries.InsertObject;
+import org.hotrod.livesql.queries.InsertSetPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.SShield;
 import org.hotrod.livesql.queries.UpdateObject;
@@ -1615,15 +1618,28 @@ public class DAOWriter {
     w.println("    return new ", ec, "(alias);");
     w.println("  }");
 
+    boolean hasConverters = this.metadata.getColumns().stream().anyMatch(cm -> cm.getResolvedConverter() != null);
+
+    String insertIntoPhaseClass = this.metadata.getId().getJavaClassName() + "InsertIntoPhase";
+    String insertSetPhaseClass = this.metadata.getId().getJavaClassName() + "InsertSetPhase";
+    ExternalClass ip = ExternalClass.of(insertIntoPhaseClass);
+    ExternalClass is = ExternalClass.of(insertSetPhaseClass);
+
     String updateTablePhaseClass = this.metadata.getId().getJavaClassName() + "UpdateTablePhase";
-    String updateTableSetClass = this.metadata.getId().getJavaClassName() + "UpdateSetPhase";
+    String updateSetPhaseClass = this.metadata.getId().getJavaClassName() + "UpdateSetPhase";
     ExternalClass up = ExternalClass.of(updateTablePhaseClass);
-    ExternalClass us = ExternalClass.of(updateTableSetClass);
+    ExternalClass us = ExternalClass.of(updateSetPhaseClass);
 
     w.println();
     w.print("  public static class ", ec);
     w.print(" extends ", pc, "<", em);
-    w.print(", ", up);
+    if (hasConverters) {
+      w.print(", ", ip);
+      w.print(", ", up);
+    } else {
+      w.print(", ", InsertIntoPhase.class);
+      w.print(", ", UpdateTablePhase.class);
+    }
     if (generatesKeys) {
       w.print(", ", kc);
     }
@@ -1726,14 +1742,25 @@ public class DAOWriter {
     w.println("      initialize();");
     w.println("    }");
 
-    // Custom
+    // Converter Insert and Update Phases
 
-    w.println();
-    w.println("    protected ", up, " getUpdatePhase(", LiveSQLContext.class, " context) {");
-    w.println("      return new ", up, "(context, this);");
-    w.println("    }");
+    if (hasConverters) {
 
-    // End Custom
+      w.println();
+      w.println("    @", Override.class);
+      w.println("    protected ", ip, " getInsertPhase(", LiveSQLContext.class, " context) {");
+      w.println("      return new ", ip, "(context, this);");
+      w.println("    }");
+
+      w.println();
+      w.println("    @", Override.class);
+      w.println("    protected ", up, " getUpdatePhase(", LiveSQLContext.class, " context) {");
+      w.println("      return new ", up, "(context, this);");
+      w.println("    }");
+
+    }
+
+    // End of Converter Insert and Update Phases
 
     w.println();
     w.println("    private void initialize() {");
@@ -1746,53 +1773,69 @@ public class DAOWriter {
     w.println();
     w.println("  }");
 
-    w.println();
-    w.println("  public static class ", up, " extends ", UpdateTablePhase.class, " {");
-    w.println();
-    w.print("    public ", up, "(final ", LiveSQLContext.class, " context");
-    w.println(", final ", ec, " tableOrView) {");
-    w.println("      super(context, tableOrView);");
-    w.println("    }");
+    if (hasConverters) {
 
-    writeConvertedSetterMetadata(us);
+      // Insert Phases
 
-    w.println();
-    w.println("  }");
+      w.println();
+      w.println("  public static class ", ip, " extends ", InsertIntoPhase.class, " {");
+      w.println();
+      w.print("    public ", ip, "(final ", LiveSQLContext.class, " context");
+      w.println(", final ", ec, " tableOrView) {");
+      w.println("      super(context, tableOrView);");
+      w.println("    }");
 
-    w.println();
-    w.println("  public static class ", us, " extends ", UpdateSetPhase.class, " {");
-    w.println();
-    w.print("    public ", us, "(", LiveSQLContext.class, " context, ");
-    w.println(UpdateObject.class, " update) {");
-    w.println("      super(context, update);");
-    w.println("    }");
+      writeConvertedSetterMetadata(is, "insert");
 
-    writeConvertedSetterMetadata(us);
+      w.println();
+      w.println("  }");
 
-//    for (ColumnMetadata cm : this.metadata.getColumns()) {
-//      if (cm.getResolvedConverter() != null) { // Converted Column
-//        ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
-//
-//        w.println();
-//        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
-//        w.println(domainClass, "> column, final ", domainClass, " value) {");
-//        w.print("      ", TypeConverter.class, "<?, Object> converter = (");
-//        w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
-//        w.println("      ", ConvertedValue.class, " convertedValue = new ", ConvertedValue.class,
-//            "(value, converter);");
-//        w.println("      ", SShield.class, ".addSetter(super.update, column, convertedValue);");
-//        w.println("      return new ", us, "(this.context, this.update);");
-//        w.println("    }");
-//
-//      }
-//    }
+      w.println();
+      w.println("  public static class ", is, " extends ", InsertSetPhase.class, " {");
+      w.println();
+      w.print("    public ", is, "(", LiveSQLContext.class, " context, ");
+      w.println(InsertObject.class, " insert) {");
+      w.println("      super(context, insert);");
+      w.println("    }");
 
-    w.println();
-    w.println("  }");
+      writeConvertedSetterMetadata(is, "insert");
+
+      w.println();
+      w.println("  }");
+
+      // Update Phases
+
+      w.println();
+      w.println("  public static class ", up, " extends ", UpdateTablePhase.class, " {");
+      w.println();
+      w.print("    public ", up, "(final ", LiveSQLContext.class, " context");
+      w.println(", final ", ec, " tableOrView) {");
+      w.println("      super(context, tableOrView);");
+      w.println("    }");
+
+      writeConvertedSetterMetadata(us, "update");
+
+      w.println();
+      w.println("  }");
+
+      w.println();
+      w.println("  public static class ", us, " extends ", UpdateSetPhase.class, " {");
+      w.println();
+      w.print("    public ", us, "(", LiveSQLContext.class, " context, ");
+      w.println(UpdateObject.class, " update) {");
+      w.println("      super(context, update);");
+      w.println("    }");
+
+      writeConvertedSetterMetadata(us, "update");
+
+      w.println();
+      w.println("  }");
+
+    }
 
   }
 
-  private void writeConvertedSetterMetadata(ExternalClass us) {
+  private void writeConvertedSetterMetadata(ExternalClass us, String queryObjectName) {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getResolvedConverter() != null) { // Converted Column
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
@@ -1803,8 +1846,8 @@ public class DAOWriter {
         w.print("      ", TypeConverter.class, "<?, Object> converter = (");
         w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");
         w.println("      ", ConvertedValue.class, " convertedValue = ", ConvertedValue.class, ".of(value, converter);");
-        w.println("      ", SShield.class, ".addSetter(this.update, column, convertedValue);");
-        w.println("      return new ", us, "(this.context, this.update);");
+        w.println("      ", SShield.class, ".addSetter(this." + queryObjectName + ", column, convertedValue);");
+        w.println("      return new ", us, "(this.context, this." + queryObjectName + ");");
         w.println("    }");
 
       }

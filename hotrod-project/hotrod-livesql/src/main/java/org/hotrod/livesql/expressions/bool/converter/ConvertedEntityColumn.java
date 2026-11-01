@@ -19,10 +19,10 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
 
   private static final Logger log = Logger.getLogger(ConvertedEntityColumn.class.getName());
 
-  private TableOrView<?, ?> objectInstance;
+  private TableOrView<?, ?, ?> objectInstance;
   private ConvertedEntityColumnMetaData<R, D> metaData;
 
-  public ConvertedEntityColumn(final TableOrView<?, ?> objectInstance,
+  public ConvertedEntityColumn(final TableOrView<?, ?, ?> objectInstance,
       final ConvertedEntityColumnMetaData<R, D> metaData) {
     super(Expression.PRECEDENCE_COLUMN);
     log.fine("init");
@@ -49,13 +49,15 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
 
   @SuppressWarnings("unchecked")
   public BooleanSyntaxExpression in(final D... d) {
-    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject())).toArray(ConvertedValue[]::new);
+    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject()))
+        .toArray(ConvertedValue[]::new);
     return new ConvertedIn<R, D>(this, vs);
   }
 
   @SuppressWarnings("unchecked")
   public BooleanSyntaxExpression notIn(final D... d) {
-    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject())).toArray(ConvertedValue[]::new);
+    ConvertedValue[] vs = Arrays.stream(d).map(v -> ConvertedValue.of(v, this.metaData.getConverterToObject()))
+        .toArray(ConvertedValue[]::new);
     return new ConvertedNotIn<R, D>(this, vs);
   }
 
@@ -84,7 +86,7 @@ public class ConvertedEntityColumn<R, D> extends EquatableExpression implements 
   // Converted Entity Column
 
   @Override
-  public TableOrView<?, ?> getObjectInstance() {
+  public TableOrView<?, ?, ?> getObjectInstance() {
     return this.objectInstance;
   }
 

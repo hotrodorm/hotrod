@@ -41,6 +41,9 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.ConvertedValue;
 import org.hotrod.livesql.queries.DeleteWherePhase;
+import org.hotrod.livesql.queries.InsertIntoPhase;
+import org.hotrod.livesql.queries.InsertObject;
+import org.hotrod.livesql.queries.InsertSetPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.SShield;
 import org.hotrod.livesql.queries.UpdateObject;
@@ -461,7 +464,7 @@ public class AccountDAO {
     return new AccountTable(alias);
   }
 
-  public static class AccountTable extends Table<Account, AccountUpdateTablePhase> {
+  public static class AccountTable extends Table<Account, AccountInsertIntoPhase, AccountUpdateTablePhase> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final NumericEntityColumn balance = new NumericEntityColumn(this, MetaData.BALANCE_META_DATA);
@@ -483,6 +486,12 @@ public class AccountDAO {
       initialize();
     }
 
+    @Override
+    protected AccountInsertIntoPhase getInsertPhase(LiveSQLContext context) {
+      return new AccountInsertIntoPhase(context, this);
+    }
+
+    @Override
     protected AccountUpdateTablePhase getUpdatePhase(LiveSQLContext context) {
       return new AccountUpdateTablePhase(context, this);
     }
@@ -493,6 +502,36 @@ public class AccountDAO {
       super.columns.add(this.balance);
       super.columns.add(this.type);
       super.columns.add(this.active);
+    }
+
+  }
+
+  public static class AccountInsertIntoPhase extends InsertIntoPhase {
+
+    public AccountInsertIntoPhase(final LiveSQLContext context, final AccountTable tableOrView) {
+      super(context, tableOrView);
+    }
+
+    public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new AccountInsertSetPhase(this.context, this.insert);
+    }
+
+  }
+
+  public static class AccountInsertSetPhase extends InsertSetPhase {
+
+    public AccountInsertSetPhase(LiveSQLContext context, InsertObject insert) {
+      super(context, insert);
+    }
+
+    public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new AccountInsertSetPhase(this.context, this.insert);
     }
 
   }
