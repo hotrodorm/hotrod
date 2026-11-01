@@ -1,0 +1,15 @@
+<hotrod>
+
+  <generators>
+    <jdbc base-dir="src/gen/java" insert-type="standard">
+    </jdbc>
+  </generators>
+  
+  <converter name="account_type_stored_as_char" type="app.AccountTypeConverter.AccountType"
+    raw-type="java.lang.String" class="app.AccountTypeConverter" />
+
+  <table name="account">
+    <column name="type" converter="account_type_stored_as_char" />
+  </table>
+
+</hotrod>

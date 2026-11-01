@@ -1,9 +1,11 @@
-package org.hotrod.livesql;
+package org.hotrod.livesql.util;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 
+import org.hotrod.livesql.LayerConfiguration;
+import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.dialects.H2Dialect;
 import org.hotrod.livesql.expressions.numeric.NumericConstant;
 import org.hotrod.livesql.queries.typesolver.TypeRule;
@@ -20,7 +22,7 @@ class SelectArithmeticTest {
             new NumericConstant(10).mult(2).as("product"), new NumericConstant(10).div(2).as("quotient"))
         .from(liveSQL.DUAL).getPreview();
 
-    System.out.println(preview);
+//    System.out.println(preview);
     assertTrue(preview.contains("? + ?"));
     assertTrue(preview.contains("? - ?"));
     assertTrue(preview.contains("? * ?"));
@@ -38,7 +40,7 @@ class SelectArithmeticTest {
     String preview = liveSQL.select(new NumericConstant(10).plus(2).mult(3).as("product")).from(liveSQL.DUAL)
         .getPreview(true);
 
-    System.out.println(preview);
+//    System.out.println(preview);
     assertTrue(preview.contains("(? + ?) * ?"));
     assertTrue(preview.contains("--- Parameters (3) -------"));
     assertTrue(preview.contains(" as \"product\""));

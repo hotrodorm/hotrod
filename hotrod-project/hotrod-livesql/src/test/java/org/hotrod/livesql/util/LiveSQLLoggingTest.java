@@ -1,4 +1,4 @@
-package org.hotrod.livesql;
+package org.hotrod.livesql.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.hotrod.livesql.LiveSQLLogging;
 import org.junit.jupiter.api.Test;
 
 class LiveSQLLoggingTest {
