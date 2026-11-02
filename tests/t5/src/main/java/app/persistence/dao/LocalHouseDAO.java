@@ -38,8 +38,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.InsertIntoPhase;
+import org.hotrod.livesql.queries.InsertSetPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
 import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
@@ -576,7 +578,7 @@ public class LocalHouseDAO {
     return new LocalHouseTable(alias);
   }
 
-  public static class LocalHouseTable extends Table<LocalHouse, InsertIntoPhase, UpdateTablePhase> {
+  public static class LocalHouseTable extends Table<LocalHouse, InsertIntoPhase<InsertSetPhase<?>>, UpdateTablePhase<UpdateSetPhase<?>>> {
 
     public final NumericEntityColumn id = new NumericEntityColumn(this, MetaData.ID_META_DATA);
     public final CharEntityColumn zipCode = new CharEntityColumn(this, MetaData.ZIP_CODE_META_DATA);

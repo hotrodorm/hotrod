@@ -273,7 +273,7 @@ public class LiveSQL {
   // Insert
 
   @SuppressWarnings("unchecked")
-  public <I extends InsertIntoPhase> I insert(final Table<?, I, ?> into) {
+  public <I extends InsertIntoPhase<?>> I insert(final Table<?, I, ?> into) {
     return (I) MDShield.getInsertPhase(this.context, into);
   }
 
@@ -282,14 +282,14 @@ public class LiveSQL {
   }
 
   @SuppressWarnings("unchecked")
-  public <I extends InsertIntoPhase> I insert(final View<?, I, ?> into) {
+  public <I extends InsertIntoPhase<?>> I insert(final View<?, I, ?> into) {
     return (I) MDShield.getInsertPhase(this.context, into);
   }
 
   // Update
 
   @SuppressWarnings("unchecked")
-  public <U extends UpdateTablePhase> U update(final TableOrView<?, ?, U> tableOrView) {
+  public <U extends UpdateTablePhase<?>> U update(final TableOrView<?, ?, U> tableOrView) {
     return (U) MDShield.getUpdatePhase(this.context, tableOrView);
   }
 

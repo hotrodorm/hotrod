@@ -1622,8 +1622,8 @@ public class DAOWriter {
       w.print(", ", ip);
       w.print(", ", up);
     } else {
-      w.print(", ", InsertIntoPhase.class);
-      w.print(", ", UpdateTablePhase.class);
+      w.print(", ", InsertIntoPhase.class, "<", InsertSetPhase.class, "<?>>");
+      w.print(", ", UpdateTablePhase.class, "<", UpdateSetPhase.class, "<?>>");
     }
     if (generatesKeys) {
       w.print(", ", kc);

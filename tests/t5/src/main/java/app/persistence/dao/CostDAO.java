@@ -37,8 +37,10 @@ import org.hotrod.livesql.metadata.NumericEntityColumn;
 import org.hotrod.livesql.metadata.Table;
 import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.InsertIntoPhase;
+import org.hotrod.livesql.queries.InsertSetPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.UpdateSetCompletePhase.Setter;
+import org.hotrod.livesql.queries.UpdateSetPhase;
 import org.hotrod.livesql.queries.UpdateTablePhase;
 import org.hotrod.livesql.queries.UpdateWherePhase;
 import org.hotrod.livesql.queries.select.CriteriaWherePhase;
@@ -413,7 +415,7 @@ public class CostDAO {
     return new CostTable(alias);
   }
 
-  public static class CostTable extends Table<Cost, InsertIntoPhase, UpdateTablePhase> {
+  public static class CostTable extends Table<Cost, InsertIntoPhase<InsertSetPhase<?>>, UpdateTablePhase<UpdateSetPhase<?>>> {
 
     public final NumericEntityColumn region = new NumericEntityColumn(this, MetaData.REGION_META_DATA);
     public final NumericEntityColumn amount = new NumericEntityColumn(this, MetaData.AMOUNT_META_DATA);

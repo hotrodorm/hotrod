@@ -2,6 +2,7 @@ package app;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,10 +43,10 @@ public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
 
-//  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
-//      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
-  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> true, msg -> log.info(msg), () -> true,
-      msg -> log.info(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
+      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
+//  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> true, msg -> log.info(msg), () -> true,
+//      msg -> log.info(msg));
 
   static {
 //    JULCustomFormatter.initialize(Level.FINER);
@@ -411,14 +412,60 @@ public class App {
 
   private void testConverters() {
     testConverterLiveSQLUpdateSelectWhere();
-//    testConverterLiveSQLInsertSelectWhere();
-//    testConverterCRUDInsert();
+    testConverterLiveSQLInsertSelectWhere();
+    testConverterCRUDInsert();
 //    testConverterCRUDUpdateSetWhere();
 //    testConverterCRUDSelectListWhere();
 //    testConverterCRUDDeleteWhere();
 //    testConverterNitroSelectWhere();
 //    testConverterNitroInsert();
 //    testConverterNitroSetWhere();
+  }
+  
+  private void logSuccess(String testName) {
+    log.info("Test "+testName+" -- OK");
+  }
+  
+  private void assertEquals(String testName, int expected, int actual) {
+    if (expected != actual) {
+      throw new RuntimeException("Failed test "
+          + testName
+          + ": Expected " + expected + " but got " + actual);
+    }
+    logSuccess(testName );
+  }
+
+  private void assertEquals(String testName, AccountType expected, AccountType actual) {
+    if (expected != actual) {
+      throw new RuntimeException("Failed test "
+          + testName
+          + ": Expected " + expected + " but got " + actual);
+    }
+    logSuccess(testName );
+  }
+
+  private void assertEquals(String testName, Integer[] expected, Integer[] actual) {
+    if (expected == null && actual == null) {
+      return;
+    }
+    if (expected != null && actual == null || expected == null && actual != null) {
+      throw new RuntimeException("Failed test "
+          + testName
+          + ": Expected " + java.util.Arrays.toString(expected) + " but got " + java.util.Arrays.toString(actual));
+    }
+    if (expected.length != actual.length) {
+      throw new RuntimeException("Failed test "
+          + testName
+          + ": Expected " + java.util.Arrays.toString(expected) + " but got " + java.util.Arrays.toString(actual));
+    }
+    for (int i=0; i<expected.length; i++) {
+      if (!expected[i].equals(actual[i])) {
+        throw new RuntimeException("Failed test "
+            + testName
+            + ": Expected " + java.util.Arrays.toString(expected) + " but got " + java.util.Arrays.toString(actual));
+      }
+    }
+    logSuccess(testName );
   }
   
   private static final Integer[] ZIP_CODES = new Integer[] { 123, 456, 789 };
@@ -432,17 +479,21 @@ public class App {
         .set(t.zipCodes, ZIP_CODES) //
         .where(t.type.eq(AccountType.SAV3).and(t.zipCodes.eq(ZIP_CODES))) //
         .execute(LIVESQL_LOG);
-    System.out.println("# testConverterLiveSQLUpdateSelectWhere - count=" + count);
+//    System.out.println("# testConverterLiveSQLUpdateSelectWhere - count=" + count);
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #1" ,1, count);
 
     List<Row> rows = this.sql.select().from(t).execute(LIVESQL_LOG);
-    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rows=" + rows.size());
-    rows.forEach(r -> System.out
-        .println("# - r=" + r + " -- zipCodes=" + java.util.Arrays.toString((Integer[]) r.get("zipCodes"))));
-
-    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).execute(LIVESQL_LOG);
-    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
-    rs.forEach(r -> System.out
-        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString( r.getA().getZipCodes())));
+//    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rows=" + rows.size());
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #2" ,4, rows.size());
+//    rows.forEach(r -> System.out
+//        .println("# - r=" + r + " -- zipCodes=" + java.util.Arrays.toString((Integer[]) r.get("zipCodes"))));
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #3" ,ZIP_CODES, (Integer[]) rows.get(3).get("zipCodes"));
+    
+    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).orderBy(t.id).execute(LIVESQL_LOG);
+//    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
+//    rs.forEach(r -> System.out
+//        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString( r.getA().getZipCodes())));
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #4" ,ZIP_CODES, (Integer[]) rs.get(3).getA().getZipCodes());
   }
 
   private void testConverterLiveSQLInsertSelectWhere() {
@@ -453,12 +504,14 @@ public class App {
         .set(t.type, AccountType.PEN1) //
         .set(t.zipCodes, ZIP_CODES) //
         .execute(LIVESQL_LOG);
-    System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
-
-    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).execute(LIVESQL_LOG);
-    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
-    rs.forEach(r -> System.out
-        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString(r.getA().getZipCodes())));
+//    System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
+    assertEquals("testConverterLiveSQLInsertSelectWhere #1", 1, c);
+    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).orderBy(t.id).execute(LIVESQL_LOG);
+//    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
+//    rs.forEach(r -> System.out
+//        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString(r.getA().getZipCodes())));
+    assertEquals("testConverterLiveSQLInsertSelectWhere #2", 5, rs.size());
+    assertEquals("testConverterLiveSQLInsertSelectWhere #3", ZIP_CODES, (Integer[]) rs.get(4).getA().getZipCodes());
   }
 
   private static final Integer[] ZIP_CODES2 = new Integer[] { 1015, 1049 };
@@ -471,10 +524,12 @@ public class App {
     a.setType(AccountType.INV4);
     a.setZipCodes(ZIP_CODES2);
     Account inserted = this.accountDAO.insert(a);
-    System.out.println("# CRUD insert - r=" + inserted);
+//    System.out.println("# CRUD insert - r=" + inserted);
     Account a2 = this.accountDAO.select(1101);
-    System.out
-        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
+//    System.out
+//        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
+    assertEquals("testConverterCRUDInsert #1", ZIP_CODES2, a2.getZipCodes());
+    assertEquals("testConverterCRUDInsert #2", AccountType.INV4, a2.getType());
   }
   
   private void testConverterCRUDUpdateSetWhere() {
