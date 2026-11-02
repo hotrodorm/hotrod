@@ -18,7 +18,7 @@ import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.util.BoxUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class UpdateTablePhase<U extends UpdateSetPhase> {
+public class UpdateTablePhase<U extends UpdateSetPhase<?>> {
 
   // Properties
 
@@ -33,8 +33,9 @@ public class UpdateTablePhase<U extends UpdateSetPhase> {
     this.update.setTableOrView(tableOrView);
   }
 
+  @SuppressWarnings("unchecked")
   protected U getNextPhase() {
-    return (U) new UpdateSetPhase(this.context, this.update);
+    return (U) new UpdateSetPhase<>(this.context, this.update);
   }
 
   // Next stages

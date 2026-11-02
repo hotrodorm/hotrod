@@ -31,66 +31,71 @@ public class InsertSetPhase<I extends InsertSetPhase<?>> implements DMLQuery {
     this.insert = insert;
   }
 
+  @SuppressWarnings("unchecked")
+  private I getCurrentPhase() {
+    return (I) this;
+  }
+  
   // Current phase
 
   public I set(final NumericEntityColumn column, final NumericExpression expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final NumericEntityColumn column, final Number n) {
     this.insert.addSetter(column, BoxUtil.box(n));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final CharEntityColumn column, final CharExpression expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final CharEntityColumn column, final String s) {
     this.insert.addSetter(column, BoxUtil.box(s));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final DateTimeEntityColumn column, final Date dt) {
     this.insert.addSetter(column, BoxUtil.box(dt));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final BooleanEntityColumn column, final Predicate expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final BooleanEntityColumn column, final boolean b) {
     this.insert.addSetter(column, BoxUtil.box(b));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final BinaryEntityColumn column, final BinaryExpression expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final BinaryEntityColumn column, final byte[] a) {
     this.insert.addSetter(column, BoxUtil.box(a));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final ObjectEntityColumn column, final ObjectExpression expression) {
     this.insert.addSetter(column, expression);
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   public I set(final ObjectEntityColumn column, final Object o) {
     this.insert.addSetter(column, BoxUtil.box(o));
-    return (I) this;
+    return this.getCurrentPhase();
   }
 
   // Next phases

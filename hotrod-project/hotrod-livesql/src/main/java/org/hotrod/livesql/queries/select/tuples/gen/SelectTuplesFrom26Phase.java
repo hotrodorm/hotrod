@@ -6,28 +6,16 @@ import java.util.List;
 import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.metadata.EntityColumn;
-import org.hotrod.livesql.metadata.TableOrView;
 import org.hotrod.livesql.ordering.OrderingTerm;
-import org.hotrod.livesql.queries.select.CrossJoin;
-import org.hotrod.livesql.queries.select.FullOuterJoin;
-import org.hotrod.livesql.queries.select.InnerJoin;
-import org.hotrod.livesql.queries.select.LeftOuterJoin;
 import org.hotrod.livesql.queries.select.LockableSelectLimitPhase;
 import org.hotrod.livesql.queries.select.LockableSelectOffsetPhase;
 import org.hotrod.livesql.queries.select.LockableSelectOrderByPhase;
-import org.hotrod.livesql.queries.select.NaturalFullOuterJoin;
-import org.hotrod.livesql.queries.select.NaturalInnerJoin;
-import org.hotrod.livesql.queries.select.NaturalLeftOuterJoin;
-import org.hotrod.livesql.queries.select.NaturalRightOuterJoin;
-import org.hotrod.livesql.queries.select.RightOuterJoin;
 import org.hotrod.livesql.queries.select.SShield;
 import org.hotrod.livesql.queries.select.SelectGroupByPhase;
 import org.hotrod.livesql.queries.select.SelectWherePhase;
 import org.hotrod.livesql.queries.select.sets.CombinedSelectObject;
 import org.hotrod.livesql.queries.select.tuples.TuplesMetadata;
 import org.hotrod.livesql.queries.select.tuples.TuplesSelectObject;
-import org.hotrod.livesql.queries.subqueries.Subquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class SelectTuplesFrom26Phase<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> {

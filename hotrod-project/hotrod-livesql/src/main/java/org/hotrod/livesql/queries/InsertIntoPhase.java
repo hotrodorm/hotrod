@@ -37,13 +37,15 @@ public class InsertIntoPhase<I extends InsertSetPhase<?>> implements DMLQuery {
   // Constructor
 
   public InsertIntoPhase(final LiveSQLContext context, final TableOrView<?, ?, ?> into) {
+    log.finer("init");
     this.context = context;
     this.insert = new InsertObject();
     this.insert.setInto(into);
   }
 
+  @SuppressWarnings("unchecked")
   protected I getNextPhase() {
-    return (I) new InsertSetPhase(this.context, this.insert);
+    return (I) new InsertSetPhase<>(this.context, this.insert);
   }
 
   // Current phase
@@ -56,7 +58,6 @@ public class InsertIntoPhase<I extends InsertSetPhase<?>> implements DMLQuery {
   public I set(final NumericEntityColumn column, final Number n) {
     this.insert.addSetter(column, BoxUtil.box(n));
     I nextPhase = this.getNextPhase();
-    log.info(">>> nextPhase: " + nextPhase.getClass().getName());
     return nextPhase;
   }
 

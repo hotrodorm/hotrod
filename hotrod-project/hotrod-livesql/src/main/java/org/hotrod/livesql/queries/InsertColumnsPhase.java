@@ -23,6 +23,7 @@ public class InsertColumnsPhase {
 
   // Next stages
 
+  @Deprecated
   public InsertValuesPhase values(final ComparableExpression... values) {
     this.insert.setValues(Arrays.asList(values));
     return new InsertValuesPhase(this.context, this.insert);

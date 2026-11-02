@@ -1,19 +1,23 @@
 package org.hotrod.livesql.queries.select;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.hotrod.utils.SUtil;
-
 public class Gen {
 
-  private static String SRC_DIR = "src/tools/java/org/hotrod/livesql/queries/select/src";
+  private static String SRC_DIR = "src/test/java/org/hotrod/livesql/queries/select/src";
   private static String DEST_DIR = "src/main/java/org/hotrod/livesql/queries/select/tuples/gen";
   private static int MAX_SIZE = 26;
 
@@ -26,8 +30,8 @@ public class Gen {
   }
 
   private static void genSelectTuples() throws IOException {
-    String template = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateSelectTuples.java.template"));
-    String templateLast = SUtil.loadFileAsString(new File(SRC_DIR + "/TemplateLastSelectTuples.java.template"));
+    String template = loadFileAsString(new File(SRC_DIR + "/TemplateSelectTuples.java.template"));
+    String templateLast = loadFileAsString(new File(SRC_DIR + "/TemplateLastSelectTuples.java.template"));
     for (int i = 1; i <= MAX_SIZE; i++) {
       String tuplesc = stream(i).collect(Collectors.joining(", "));
       String tuplesn = stream(i + 1).collect(Collectors.joining(", "));
@@ -54,7 +58,7 @@ public class Gen {
       ;
 
       File dest = new File(DEST_DIR + "/" + classp + ".java");
-      SUtil.saveStringToFile(ready, dest);
+      saveStringToFile(ready, dest);
     }
   }
 
@@ -122,6 +126,39 @@ public class Gen {
 
   static Stream<String> stream(int size) {
     return Stream.iterate((char) 'A', x -> Character.valueOf((char) (x + 1))).map(y -> "" + y).limit(size);
+  }
+
+  static void saveStringToFile(final String txt, final File f) throws IOException {
+    try (Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
+      w.write(txt);
+    }
+  }
+
+  static String loadFileAsString(final File f) throws IOException {
+    return loadFileAsString(f, null);
+  }
+
+  static String loadFileAsString(final File f, final String readerEncoding) throws IOException {
+    if (readerEncoding != null) {
+      try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f), readerEncoding))) {
+        return loadReaderIntoString(r);
+      }
+    } else { // Use UTF-8 as default encoding
+      try (BufferedReader r = new BufferedReader(
+          new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {
+        return loadReaderIntoString(r);
+      }
+    }
+  }
+
+  static String loadReaderIntoString(BufferedReader r) throws IOException {
+    String line;
+    StringBuilder sb = new StringBuilder();
+    while ((line = r.readLine()) != null) {
+      sb.append(line);
+      sb.append("\n");
+    }
+    return sb.toString();
   }
 
 }

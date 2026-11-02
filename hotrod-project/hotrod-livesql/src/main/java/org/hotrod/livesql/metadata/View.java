@@ -3,7 +3,8 @@ package org.hotrod.livesql.metadata;
 import org.hotrod.livesql.queries.InsertIntoPhase;
 import org.hotrod.livesql.queries.UpdateTablePhase;
 
-public abstract class View<M, I extends InsertIntoPhase, U extends UpdateTablePhase> extends AbstractTable<M, I, U> {
+public abstract class View<M, I extends InsertIntoPhase<?>, U extends UpdateTablePhase<?>>
+    extends AbstractTable<M, I, U> {
 
   public View(final Name catalog, final Name schema, final Name name, final String type, final String alias,
       final Class<?> layoutClass, final Class<?> modelClass) {
