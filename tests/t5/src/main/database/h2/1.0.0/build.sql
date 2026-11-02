@@ -131,7 +131,8 @@ create table account (
   balance int,
   type char(3),
   active int,
-  zip_codes integer array
+  zip_codes integer array,
+  branches integer array
 );
   
 insert into account (id, balance, type, active, zip_codes) values

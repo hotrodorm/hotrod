@@ -92,6 +92,7 @@
   <table name="account">
     <column name="type" converter="account_type_stored_as_char" />
     <column name="zip_codes" converter="integer_array" />
+    <column name="branches" converter="integer_array" />
   </table>
 
 <!-- 

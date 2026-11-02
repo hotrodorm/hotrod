@@ -8,8 +8,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -1833,11 +1835,18 @@ public class DAOWriter {
   }
 
   private void writeConvertedSetterMetadata(ExternalClass us, String queryObjectName) {
+    log.fine("* Start *");
+    Set<String> typeCombos = new HashSet<>();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getResolvedConverter() != null) { // Converted Column
         ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
-
+        String typeCombo = cm.getResolvedConverter().getRawClass() + "->" + cm.getResolvedConverter().getDomainClass();
+        log.fine("* Combo: " + typeCombo);
+        if (typeCombos.contains(typeCombo)) {
+          continue;
+        }
+        typeCombos.add(typeCombo);
         w.println();
         w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<");
         w.print(rawClass, ", ");

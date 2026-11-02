@@ -128,6 +128,10 @@ public class AccountDAO {
       Integer[] col5 = converter1.decode(raw5, conn);
       row.setZipCodes(col5);
 
+      Array raw6 = rs.getObject("BRANCHES", Array.class); // BRANCHES
+      Integer[] col6 = converter1.decode(raw6, conn);
+      row.setBranches(col6);
+
       return row;
     }
 
@@ -152,6 +156,7 @@ public class AccountDAO {
     m.setType((AccountType) row.get(p + "type" + s));
     m.setActive(CastUtil.toInteger((Number) row.get(p + "active" + s)));
     m.setZipCodes((Integer[]) row.get(p + "zipCodes" + s));
+    m.setBranches((Integer[]) row.get(p + "branches" + s));
     return m;
   }
 
@@ -164,6 +169,7 @@ public class AccountDAO {
     m.setType(layout.getType());
     m.setActive(layout.getActive());
     m.setZipCodes(layout.getZipCodes());
+    m.setBranches(layout.getBranches());
     return m;
   }
 
@@ -178,7 +184,8 @@ public class AccountDAO {
       .literaln("  balance,")
       .literaln("  type,")
       .literaln("  active,")
-      .literaln("  zip_codes")
+      .literaln("  zip_codes,")
+      .literaln("  branches")
       .literaln("FROM account")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
@@ -219,7 +226,8 @@ public class AccountDAO {
       .literaln("  balance,")
       .literaln("  type,")
       .literaln("  active,")
-      .literaln("  zip_codes")
+      .literaln("  zip_codes,")
+      .literaln("  branches")
       .literaln("FROM account")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
@@ -227,6 +235,7 @@ public class AccountDAO {
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
+        .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -292,6 +301,7 @@ public class AccountDAO {
         .if_("e.type != null").literal("type").endif()
         .if_("e.active != null").literal("active").endif()
         .if_("e.zipCodes != null").literal("zip_codes").endif()
+        .if_("e.branches != null").literal("branches").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -300,6 +310,7 @@ public class AccountDAO {
         .if_("e.type != null").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").parameter("e.active").endif()
         .if_("e.zipCodes != null").parameter("e.zipCodes", this.converter1).endif()
+        .if_("e.branches != null").parameter("e.branches", this.converter1).endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -337,6 +348,7 @@ public class AccountDAO {
         .literal("type")
         .literal("active")
         .literal("zip_codes")
+        .literal("branches")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -345,6 +357,7 @@ public class AccountDAO {
         .parameterNullable("l.type", Types.CHAR, this.converter0)
         .parameterNullable("l.active", Types.INTEGER)
         .parameterNullable("l.zipCodes", Types.ARRAY, this.converter1)
+        .parameterNullable("l.branches", Types.ARRAY, this.converter1)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -382,6 +395,7 @@ public class AccountDAO {
         .begin().literal("type = ").parameterNullable("m.type", Types.CHAR, this.converter0).end()
         .begin().literal("active = ").parameterNullable("m.active", Types.INTEGER).end()
         .begin().literal("zip_codes = ").parameterNullable("m.zipCodes", Types.ARRAY, this.converter1).end()
+        .begin().literal("branches = ").parameterNullable("m.branches", Types.ARRAY, this.converter1).end()
       .endtrim()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
@@ -420,6 +434,7 @@ public class AccountDAO {
         .if_("v.type != null").literal("type = ").parameter("v.type", this.converter0).endif()
         .if_("v.active != null").literal("active = ").parameter("v.active").endif()
         .if_("v.zipCodes != null").literal("zip_codes = ").parameter("v.zipCodes", this.converter1).endif()
+        .if_("v.branches != null").literal("branches = ").parameter("v.branches", this.converter1).endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
@@ -427,6 +442,7 @@ public class AccountDAO {
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
+        .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -461,6 +477,7 @@ public class AccountDAO {
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
     if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
     if (values.getZipCodes() != null) setters.add(new Setter(tableOrView.zipCodes, sql.val(values.getZipCodes())));
+    if (values.getBranches() != null) setters.add(new Setter(tableOrView.branches, sql.val(values.getBranches())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -510,6 +527,7 @@ public class AccountDAO {
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
+        .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -552,7 +570,9 @@ public class AccountDAO {
     ACTIVE("active", true),
     ACTIVE$DESC("active", false),
     ZIP_CODES("zip_codes", true),
-    ZIP_CODES$DESC("zip_codes", false);
+    ZIP_CODES$DESC("zip_codes", false),
+    BRANCHES("branches", true),
+    BRANCHES$DESC("branches", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -588,6 +608,8 @@ public class AccountDAO {
       Name.of("ACTIVE", false), "active", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
     static final TypeHandler<Array, Integer[]> TH1 = TypeHandler.forConverter(new IntegerArrayConverter(), TypeSource.STATIC_DESIGNATED, null);
     static final ConvertedEntityColumnMetaData<Array, Integer[]> ZIP_CODES_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("ZIP_CODES", false), "zipCodes", "INTEGER ARRAY", 65536, 0, TH1, TH1.getConverter());
+    static final TypeHandler<Array, Integer[]> TH2 = TypeHandler.forConverter(new IntegerArrayConverter(), TypeSource.STATIC_DESIGNATED, null);
+    static final ConvertedEntityColumnMetaData<Array, Integer[]> BRANCHES_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("BRANCHES", false), "branches", "INTEGER ARRAY", 65536, 0, TH2, TH2.getConverter());
 
   }
 
@@ -606,10 +628,11 @@ public class AccountDAO {
     public final ConvertedEntityColumn<String, AccountType> type = new ConvertedEntityColumn<>(this, MetaData.TYPE_META_DATA);
     public final NumericEntityColumn active = new NumericEntityColumn(this, MetaData.ACTIVE_META_DATA);
     public final ConvertedEntityColumn<Array, Integer[]> zipCodes = new ConvertedEntityColumn<>(this, MetaData.ZIP_CODES_META_DATA);
+    public final ConvertedEntityColumn<Array, Integer[]> branches = new ConvertedEntityColumn<>(this, MetaData.BRANCHES_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.balance, this.type, this.active, this.zipCodes);
+      return new AllColumns(this.id, this.balance, this.type, this.active, this.zipCodes, this.branches);
     }
 
     AccountTable() {
@@ -639,6 +662,7 @@ public class AccountDAO {
       super.columns.add(this.type);
       super.columns.add(this.active);
       super.columns.add(this.zipCodes);
+      super.columns.add(this.branches);
     }
 
   }
