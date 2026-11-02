@@ -465,10 +465,15 @@ public class DATALocalDAO {
 
   }
 
-  public static class DATALocalInsertIntoPhase extends InsertIntoPhase {
+  public static class DATALocalInsertIntoPhase extends InsertIntoPhase<DATALocalInsertSetPhase> {
 
     public DATALocalInsertIntoPhase(final LiveSQLContext context, final DATALocalTable tableOrView) {
       super(context, tableOrView);
+    }
+
+    @Override
+    protected DATALocalInsertSetPhase getNextPhase() {
+      return new DATALocalInsertSetPhase(this.context, this.insert);
     }
 
     public DATALocalInsertSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
@@ -480,7 +485,7 @@ public class DATALocalDAO {
 
   }
 
-  public static class DATALocalInsertSetPhase extends InsertSetPhase {
+  public static class DATALocalInsertSetPhase extends InsertSetPhase<DATALocalInsertSetPhase> {
 
     public DATALocalInsertSetPhase(LiveSQLContext context, InsertObject insert) {
       super(context, insert);

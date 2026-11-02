@@ -1761,11 +1761,17 @@ public class DAOWriter {
       // Insert Phases
 
       w.println();
-      w.println("  public static class ", ip, " extends ", InsertIntoPhase.class, " {");
+      w.print("  public static class ", ip, " extends ", InsertIntoPhase.class);
+      w.println("<", is, "> {");
       w.println();
       w.print("    public ", ip, "(final ", LiveSQLContext.class, " context");
       w.println(", final ", ec, " tableOrView) {");
       w.println("      super(context, tableOrView);");
+      w.println("    }");
+      w.println();
+      w.println("    @", Override.class);
+      w.println("    protected ", is, " getNextPhase() {");
+      w.println("      return new ", is, "(this.context, this.insert);");
       w.println("    }");
 
       writeConvertedSetterMetadata(is, "insert");
@@ -1774,7 +1780,8 @@ public class DAOWriter {
       w.println("  }");
 
       w.println();
-      w.println("  public static class ", is, " extends ", InsertSetPhase.class, " {");
+      w.print("  public static class ", is, " extends ", InsertSetPhase.class);
+      w.println("<", is, "> {");
       w.println();
       w.print("    public ", is, "(", LiveSQLContext.class, " context, ");
       w.println(InsertObject.class, " insert) {");

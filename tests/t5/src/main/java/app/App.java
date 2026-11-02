@@ -411,9 +411,9 @@ public class App {
 
   private void testConverters() {
 //    testConverterLiveSQLUpdateSelectWhere();
-//    testConverterLiveSQLInsertSelectWhere();
+    testConverterLiveSQLInsertSelectWhere();
 //    testConverterCRUDInsert();
-    testConverterCRUDUpdateSetWhere();
+//    testConverterCRUDUpdateSetWhere();
 //    testConverterCRUDSelectListWhere();
 //    testConverterCRUDDeleteWhere();
 //    testConverterNitroSelectWhere();
@@ -448,9 +448,9 @@ public class App {
     AccountTable t = this.accountDAO.newTable();
 
     int c = this.sql.insert(t) //
+        .set(t.id, 909) //
         .set(t.type, AccountType.PEN1) //
         .set(t.zipCodes, ZIP_CODES) //
-        .set(t.id, 909) //
         .execute(LIVESQL_LOG);
     System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
 

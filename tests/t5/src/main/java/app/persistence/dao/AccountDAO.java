@@ -643,10 +643,15 @@ public class AccountDAO {
 
   }
 
-  public static class AccountInsertIntoPhase extends InsertIntoPhase {
+  public static class AccountInsertIntoPhase extends InsertIntoPhase<AccountInsertSetPhase> {
 
     public AccountInsertIntoPhase(final LiveSQLContext context, final AccountTable tableOrView) {
       super(context, tableOrView);
+    }
+
+    @Override
+    protected AccountInsertSetPhase getNextPhase() {
+      return new AccountInsertSetPhase(this.context, this.insert);
     }
 
     public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
@@ -665,7 +670,7 @@ public class AccountDAO {
 
   }
 
-  public static class AccountInsertSetPhase extends InsertSetPhase {
+  public static class AccountInsertSetPhase extends InsertSetPhase<AccountInsertSetPhase> {
 
     public AccountInsertSetPhase(LiveSQLContext context, InsertObject insert) {
       super(context, insert);

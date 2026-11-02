@@ -17,7 +17,7 @@ import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.util.BoxUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class InsertSetPhase implements DMLQuery {
+public class InsertSetPhase<I extends InsertSetPhase<?>> implements DMLQuery {
 
   // Properties
 
@@ -33,64 +33,64 @@ public class InsertSetPhase implements DMLQuery {
 
   // Current phase
 
-  public InsertSetPhase set(final NumericEntityColumn column, final NumericExpression expression) {
+  public I set(final NumericEntityColumn column, final NumericExpression expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final NumericEntityColumn column, final Number n) {
+  public I set(final NumericEntityColumn column, final Number n) {
     this.insert.addSetter(column, BoxUtil.box(n));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final CharEntityColumn column, final CharExpression expression) {
+  public I set(final CharEntityColumn column, final CharExpression expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final CharEntityColumn column, final String s) {
+  public I set(final CharEntityColumn column, final String s) {
     this.insert.addSetter(column, BoxUtil.box(s));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
+  public I set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final DateTimeEntityColumn column, final Date dt) {
+  public I set(final DateTimeEntityColumn column, final Date dt) {
     this.insert.addSetter(column, BoxUtil.box(dt));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final BooleanEntityColumn column, final Predicate expression) {
+  public I set(final BooleanEntityColumn column, final Predicate expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final BooleanEntityColumn column, final boolean b) {
+  public I set(final BooleanEntityColumn column, final boolean b) {
     this.insert.addSetter(column, BoxUtil.box(b));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final BinaryEntityColumn column, final BinaryExpression expression) {
+  public I set(final BinaryEntityColumn column, final BinaryExpression expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final BinaryEntityColumn column, final byte[] a) {
+  public I set(final BinaryEntityColumn column, final byte[] a) {
     this.insert.addSetter(column, BoxUtil.box(a));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final ObjectEntityColumn column, final ObjectExpression expression) {
+  public I set(final ObjectEntityColumn column, final ObjectExpression expression) {
     this.insert.addSetter(column, expression);
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
-  public InsertSetPhase set(final ObjectEntityColumn column, final Object o) {
+  public I set(final ObjectEntityColumn column, final Object o) {
     this.insert.addSetter(column, BoxUtil.box(o));
-    return new InsertSetPhase(this.context, this.insert);
+    return (I) this;
   }
 
   // Next phases
