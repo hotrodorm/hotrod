@@ -22,7 +22,6 @@ import org.hotrod.livesql.LShield;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.util.DAOExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,6 @@ public class SalesDAO {
 
   private static final Logger log = Logger.getLogger(SalesDAO.class.getName());
 
-  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
@@ -47,7 +45,7 @@ public class SalesDAO {
     this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
     this.dyn = this.context.getDynamicSQL();
-    initializeQueries();
+    this.initializeQueries();
   }
 
   // SEQUENCE ROW READER

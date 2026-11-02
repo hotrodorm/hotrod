@@ -21,7 +21,7 @@ public class ParameterNotNullableUpdatableSegment extends DynamicContentSegment 
 
   public ParameterNotNullableUpdatableSegment(DynamicExpressionFactory factory, String name,
       TypeConverter<?, ?> converter) {
-    log.fine("init");
+    log.finer("init");
     this.factory = factory;
     this.name = name;
     this.converter = converter;
@@ -31,6 +31,7 @@ public class ParameterNotNullableUpdatableSegment extends DynamicContentSegment 
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters params, int loopNestingLevel)
       throws DynamicExpressionException {
+    log.fine("prepare pnnu");
     Object v = this.nameExpression.evaluate(params, Object.class);
     Integer index = params.getIndexAndIncrement(this, loopNestingLevel);
     ParameterNotNullableUpdatableOccurrence is = new ParameterNotNullableUpdatableOccurrence(this.name, index, v,

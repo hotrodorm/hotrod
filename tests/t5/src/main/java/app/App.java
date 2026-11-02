@@ -412,8 +412,8 @@ public class App {
   private void testConverters() {
 //    testConverterLiveSQLUpdateSelectWhere();
 //    testConverterLiveSQLInsertSelectWhere();
-    testConverterCRUDInsert();
-//    testConverterCRUDUpdateSetWhere();
+//    testConverterCRUDInsert();
+    testConverterCRUDUpdateSetWhere();
 //    testConverterCRUDSelectListWhere();
 //    testConverterCRUDDeleteWhere();
 //    testConverterNitroSelectWhere();
@@ -450,6 +450,7 @@ public class App {
     int c = this.sql.insert(t) //
         .set(t.type, AccountType.PEN1) //
         .set(t.zipCodes, ZIP_CODES) //
+        .set(t.id, 909) //
         .execute(LIVESQL_LOG);
     System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
 
@@ -460,17 +461,61 @@ public class App {
   }
 
   private static final Integer[] ZIP_CODES2 = new Integer[] { 1015, 1049 };
+  private static final Integer[] ZIP_CODES3 = new Integer[] { 2020, 2021};
 
   private void testConverterCRUDInsert() {
     AccountLayout a = new AccountLayout();
+    a.setId(1101);
+    a.setBalance(501);
     a.setType(AccountType.INV4);
     a.setZipCodes(ZIP_CODES2);
-   Account inserted = this.accountDAO.insert(a);
-   System.out.println("# CRUD insert - r=" + inserted);
+    Account inserted = this.accountDAO.insert(a);
+    System.out.println("# CRUD insert - r=" + inserted);
+    Account a2 = this.accountDAO.select(1101);
+    System.out
+        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
   }
   
   private void testConverterCRUDUpdateSetWhere() {
-  }
+
+    AccountLayout al = new AccountLayout();
+    al.setId(800);
+    al.setBalance(501);
+    al.setType(AccountType.INV4);
+    al.setZipCodes(ZIP_CODES2);
+    this.accountDAO.insert(al);
+
+    Account a = new Account();
+    a.setId(800);
+    a.setBalance(505);
+    a.setType(AccountType.SAV3);
+    a.setZipCodes(ZIP_CODES3);
+    int count= this.accountDAO.update(a);
+    System.out.println("# CRUD update - count=" + count);
+    Account a2 = this.accountDAO.select(800);
+    System.out
+        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
+    
+    Account example = new Account();
+    example .setType(AccountType.SAV3);
+    example .setZipCodes(ZIP_CODES3);
+    Account v = new Account();
+    v.setBalance(505);
+    int c2 = this.accountDAO.update(example, v);
+    System.out.println("# CRUD update - c2=" + c2);
+    
+    example = new Account();
+    example .setType(AccountType.SAV3);
+    example .setZipCodes(ZIP_CODES3);
+    List<Account> s = this.accountDAO.select(example);
+    System.out.println("# CRUD update select - s.size=" + s.size());
+    for (Account s2: s) {
+      System.out
+      .println("# CRUD inserted & read - r=" + s2 + " -- zipCodes=" + java.util.Arrays.toString(s2.getZipCodes()));
+    }
+    
+}
+
   private void testConverterCRUDSelectListWhere() {
   }
   private void testConverterCRUDDeleteWhere() {

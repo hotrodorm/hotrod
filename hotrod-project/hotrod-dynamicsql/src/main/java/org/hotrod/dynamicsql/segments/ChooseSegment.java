@@ -9,7 +9,6 @@ import org.hotrod.dynamicsql.Parameters;
 
 public class ChooseSegment extends ControlSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ChooseSegment.class.getName());
 
   private List<WhenSegment> whens;
@@ -19,6 +18,7 @@ public class ChooseSegment extends ControlSegment {
 
   public ChooseSegment(List<WhenSegment> whens, OtherwiseSegment otherwise, DynamicExpressionFactory factory) {
     super();
+    log.finer("init");
     this.whens = whens;
     this.otherwise = otherwise;
     this.factory = factory;

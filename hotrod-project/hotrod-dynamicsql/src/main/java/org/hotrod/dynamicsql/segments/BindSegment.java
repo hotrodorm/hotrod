@@ -1,5 +1,7 @@
 package org.hotrod.dynamicsql.segments;
 
+import java.util.logging.Logger;
+
 import org.hotrod.dynamicsql.DShield;
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
@@ -9,6 +11,8 @@ import org.hotrod.dynamicsql.Utl;
 
 public class BindSegment extends ControlSegment {
 
+  private static final Logger log = Logger.getLogger(BindSegment.class.getName());
+
   private String name;
   private String value;
   private DynamicExpressionFactory factory;
@@ -16,6 +20,7 @@ public class BindSegment extends ControlSegment {
   private DynamicExpression valueExpression;
 
   public BindSegment(String name, String value, DynamicExpressionFactory factory) {
+    log.finer("init");
     this.name = name == null ? null : name.trim();
     this.value = value;
     this.factory = factory;

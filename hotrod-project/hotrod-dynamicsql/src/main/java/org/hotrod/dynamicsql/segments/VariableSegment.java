@@ -20,7 +20,7 @@ public class VariableSegment extends DynamicContentSegment {
   private DynamicExpression nameExpression;
 
   public VariableSegment(DynamicExpressionFactory factory, String name, TypeConverter<?, ?> converter) {
-    log.fine("init");
+    log.finer("init");
     this.factory = factory;
     this.name = name;
     this.converter = converter;
@@ -30,6 +30,7 @@ public class VariableSegment extends DynamicContentSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters params, int loopNestingLevel)
       throws DynamicExpressionException {
+    log.fine("prepare v");
     Object v = this.nameExpression.evaluate(params, Object.class);
     Integer index = params.getIndexAndIncrement(this, loopNestingLevel);
     VariableOccurrence is = new VariableOccurrence(this.name, index, v, this.converter);

@@ -11,7 +11,6 @@ import org.hotrod.dynamicsql.assembler.ListProcessor;
 
 public class WhereSegment extends DynamicListSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(WhereSegment.class.getName());
 
   private static final ClauseFormatter DEFAULT_HEADER_FORMATTER = new ClauseFormatter("WHERE", "", " ");
@@ -25,6 +24,7 @@ public class WhereSegment extends DynamicListSegment {
   public WhereSegment(String separator, List<IfSegment> segments, DynamicExpressionFactory factory) {
     super(new ListProcessor(DEFAULT_HEADER_FORMATTER,
         new ClauseFormatter(separator, DEFAULT_MIDDLE_PREFIX, DEFAULT_MIDDLE_SUFFIX), null, null));
+    log.finer("init");
     this.segments = segments;
     this.factory = factory;
   }

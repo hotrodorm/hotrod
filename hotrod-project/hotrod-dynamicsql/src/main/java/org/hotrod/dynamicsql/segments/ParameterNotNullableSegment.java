@@ -1,5 +1,6 @@
 package org.hotrod.dynamicsql.segments;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hotrod.converter.TypeConverter;
@@ -20,7 +21,7 @@ public class ParameterNotNullableSegment extends DynamicContentSegment {
   private DynamicExpression nameExpression;
 
   public ParameterNotNullableSegment(DynamicExpressionFactory factory, String name, TypeConverter<?, ?> converter) {
-    log.fine("init");
+    log.finer("init");
     this.factory = factory;
     this.name = name;
     this.converter = converter;
@@ -30,6 +31,10 @@ public class ParameterNotNullableSegment extends DynamicContentSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters params, int loopNestingLevel)
       throws DynamicExpressionException {
+    log.fine("prepare pnn");
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("-> converter=" + this.converter);
+    }
     Object v = this.nameExpression.evaluate(params, Object.class);
     Integer index = params.getIndexAndIncrement(this, loopNestingLevel);
     ParameterNotNullableOccurrence is = new ParameterNotNullableOccurrence(this.name, index, v, this.converter);

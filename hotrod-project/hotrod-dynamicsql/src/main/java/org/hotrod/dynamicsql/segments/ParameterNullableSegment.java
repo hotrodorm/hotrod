@@ -22,7 +22,7 @@ public class ParameterNullableSegment extends DynamicContentSegment {
 
   public ParameterNullableSegment(DynamicExpressionFactory factory, String name, int sqlType,
       TypeConverter<?, ?> converter) {
-    log.fine("init");
+    log.finer("init");
     this.factory = factory;
     this.name = name;
     this.sqlType = sqlType;
@@ -33,6 +33,7 @@ public class ParameterNullableSegment extends DynamicContentSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters params, int loopNestingLevel)
       throws DynamicExpressionException {
+    log.fine("prepare pn");
     Object v = this.nameExpression.evaluate(params, Object.class);
     Integer index = params.getIndexAndIncrement(this, loopNestingLevel);
     ParameterNullableOccurrence is = new ParameterNullableOccurrence(this.sqlType, this.name, index, v, this.converter);

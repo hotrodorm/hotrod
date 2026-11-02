@@ -11,7 +11,6 @@ import org.hotrod.dynamicsql.assembler.ListProcessor;
 
 public class SettersSegment extends DynamicListSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(SettersSegment.class.getName());
 
   private List<IfSegment> segments;
@@ -23,6 +22,7 @@ public class SettersSegment extends DynamicListSegment {
         new ClauseFormatter("SET", "\n", " "), //
         new ClauseFormatter(",", null, "\n    "), null, new ClauseFormatter("\n", null, null) //
     ));
+    log.finer("init");
     this.segments = segments;
     this.factory = factory;
   }

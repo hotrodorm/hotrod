@@ -52,7 +52,6 @@ import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -70,7 +69,6 @@ public class K1DAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
@@ -83,7 +81,7 @@ public class K1DAO {
     this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
     this.dyn = this.context.getDynamicSQL();
-    initializeQueries();
+    this.initializeQueries();
   }
 
   // ROW READER

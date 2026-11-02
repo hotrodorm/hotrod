@@ -59,7 +59,6 @@ import org.hotrod.livesql.util.CastUtil;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -80,29 +79,26 @@ public class AccountDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
   private DynamicSQL dyn;
+  private AccountTypeConverter converter0;
+  private IntegerArrayConverter converter1;
 
   // CONSTRUCTOR
 
-  public AccountDAO(LiveSQL sql, ApplicationContext applicationContext) {
+  public AccountDAO(LiveSQL sql, ApplicationContext applicationContext,
+      AccountTypeConverter converter0,
+      IntegerArrayConverter converter1) {
     this.sql = sql;
     this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
     this.dyn = this.context.getDynamicSQL();
-    initializeQueries();
+    this.converter0 = converter0;
+    this.converter1 = converter1;
+    this.initializeQueries();
   }
-
-  // CONVERTERS
-
-  @Autowired
-  private AccountTypeConverter converter0;
-
-  @Autowired
-  private IntegerArrayConverter converter1;
 
   // ROW READER
 
@@ -171,7 +167,46 @@ public class AccountDAO {
     return m;
   }
 
-  // SELECT BY PRIMARY KEY -- Not available since the table does not have a primary key.
+  // SELECT BY PRIMARY KEY
+
+  private DynamicSelectQuery selectByPrimaryKey;
+
+  private void initializeSelectbyprimarykey() {
+    this.selectByPrimaryKey = dyn
+      .literaln("SELECT")
+      .literaln("  id,")
+      .literaln("  balance,")
+      .literaln("  type,")
+      .literaln("  active,")
+      .literaln("  zip_codes")
+      .literaln("FROM account")
+      .literal("WHERE id = ").parameter("f.id").literaln()
+      .endSelectQuery();
+  }
+
+  public Account select(Integer id) {
+    if (id == null) return null;
+    Account filter = new Account();
+    filter.setId(id);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedSelectQuery<Account> preparedQuery = this.selectByPrimaryKey.prepare(params, this.rowReader);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      List<Account> rows = preparedQuery.execute(conn);
+      if (rows.size() == 0) return null;
+      if (rows.size() == 1) return rows.get(0);
+      throw new PersistenceException("A single row at most was expected but received " + rows.size() + " rows.");
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+  }
 
   // SELECT BY EXAMPLE
 
@@ -334,7 +369,43 @@ public class AccountDAO {
     return model;
   }
 
-  // UPDATE BY PRIMARY KEY -- Not available since the table does not have a primary key.
+  // UPDATE BY PRIMARY KEY
+
+  private DynamicModificationQuery updateByPK;
+
+  private void initializeUpdatebypk() {
+    this.updateByPK = dyn
+      .literaln("UPDATE account")
+      .literaln("SET")
+      .trim("  ", ",\n  ","\n")
+        .begin().literal("balance = ").parameterNullable("m.balance", Types.INTEGER).end()
+        .begin().literal("type = ").parameterNullable("m.type", Types.CHAR, this.converter0).end()
+        .begin().literal("active = ").parameterNullable("m.active", Types.INTEGER).end()
+        .begin().literal("zip_codes = ").parameterNullable("m.zipCodes", Types.ARRAY, this.converter1).end()
+      .endtrim()
+      .literal("WHERE id = ").parameter("m.id").literaln()
+    .endModificationQuery();
+  }
+
+  public int update(Account model) {
+    if (model.getId() == null) return 0;
+    Parameters params = this.dyn.newParameters();
+    params.add("m", model);
+    PreparedModificationQuery preparedQuery = this.updateByPK.prepare(params);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      int count = preparedQuery.execute(conn);
+      return count;
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+  }
 
   // UPDATE BY EXAMPLE
 
@@ -393,7 +464,38 @@ public class AccountDAO {
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
-  // DELETE BY PRIMARY KEY -- Not available since the table does not have a primary key.
+  // DELETE BY PRIMARY KEY
+
+  private DynamicModificationQuery deleteByPK;
+
+  private void initializeDeletebypk() {
+    this.deleteByPK = dyn
+      .literaln("DELETE FROM account")
+      .literal("WHERE id = ").parameter("f.id").literaln()
+      .endModificationQuery();
+  }
+
+  public int delete(Integer id) {
+    if (id == null) return 0;
+    Account filter = new Account();
+    filter.setId(id);
+    Parameters params = this.dyn.newParameters();
+    params.add("f", filter);
+    PreparedModificationQuery preparedQuery = this.deleteByPK.prepare(params);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      int count = preparedQuery.execute(conn);
+      return count;
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+  }
 
   // DELETE BY EXAMPLE
 
@@ -636,10 +738,14 @@ public class AccountDAO {
   }
 
   private void initializeQueries() {
+    this.initializeSelectbyprimarykey();
     this.initializeSelectbyexample();
     this.initializeInsertExcludingNulls();
     this.initializeInsertIncludingNulls();
+    this.initializeUpdatebypk();
     this.initializeUpdatebyexample();
+    this.initializeDeletebypk();
+    this.initializeDeletebypk();
     this.initializeDeletebyexample();
   }
 

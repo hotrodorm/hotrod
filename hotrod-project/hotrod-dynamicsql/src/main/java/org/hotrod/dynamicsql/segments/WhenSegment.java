@@ -1,6 +1,7 @@
 package org.hotrod.dynamicsql.segments;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hotrod.dynamicsql.DynamicExpression;
 import org.hotrod.dynamicsql.DynamicExpressionException;
@@ -9,12 +10,15 @@ import org.hotrod.dynamicsql.Parameters;
 
 public class WhenSegment extends ControlSegment {
 
+  private static final Logger log = Logger.getLogger(WhenSegment.class.getName());
+
   private String test;
   private List<QuerySegment> segments;
 
   private DynamicExpression testExpression;
 
   public WhenSegment(String test, List<QuerySegment> segments, DynamicExpressionFactory factory) {
+    log.finer("init");
     this.test = test;
     this.segments = segments;
     this.testExpression = factory.expression(this.test);

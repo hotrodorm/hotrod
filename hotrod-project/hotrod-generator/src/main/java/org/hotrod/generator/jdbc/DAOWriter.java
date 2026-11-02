@@ -208,6 +208,8 @@ public class DAOWriter {
 
     writeConverterBeans();
 
+    writeConstructor();
+
     if (!this.isExecutor()) {
 
       writeRowReaderProperty();
@@ -314,20 +316,17 @@ public class DAOWriter {
 
     // Spring properties
 
-    w.println("  @", Const.AUTOWIRED);
-    if (this.layerResources.getLiveSQLQualifier() != null) {
-      w.println("  @", Const.QUALIFIER, "(\"" + this.layerResources.getLiveSQLQualifier() + "\")");
-    }
     w.println("  private ", LiveSQL.class, " sql;");
-
     w.println("  private ", LiveSQLContext.class, " context;");
-
     w.println("  private ", Const.APPLICATION_CONTEXT, " applicationContext;");
     w.println("  private ", DynamicSQL.class, " dyn;");
-    w.println();
+  }
+
+  private void writeConstructor() throws IOException {
 
     // Constructor
 
+    w.println();
     w.println("  // CONSTRUCTOR");
     w.println();
     w.print("  public " + this.getClassName() + "(");
@@ -337,12 +336,27 @@ public class DAOWriter {
     }
     w.print(LiveSQL.class, " sql, ");
 
-    w.println(Const.APPLICATION_CONTEXT, " applicationContext) {");
+    w.print(Const.APPLICATION_CONTEXT, " applicationContext");
+
+    for (String name : this.converterProperty.keySet()) {
+      String ct = this.converterClass.get(name);
+      ExternalClass cc = ExternalClass.of(ct);
+      String property = this.converterProperty.get(name);
+      w.print(",\n      ", cc, " " + property);
+    }
+
+    w.println(") {");
+
     w.println("    this.sql = sql;");
     w.println("    this.context = ", LShield.class, ".getLiveSQLContext(this.sql);");
     w.println("    this.applicationContext = applicationContext;");
     w.println("    this.dyn = this.context.getDynamicSQL();");
-    w.println("    initializeQueries();");
+
+    for (String property : this.converterProperty.values()) {
+      w.println("    this." + property + " = " + property + ";");
+    }
+
+    w.println("    this.initializeQueries();");
     w.println("  }");
 
   }
@@ -357,43 +371,12 @@ public class DAOWriter {
   }
 
   private void writeInternalMethods() {
-//    w.println();
-//    w.println("  // INTERNAL METHODS");
-//    w.println();
-//
-//    if (this.jdbcTag.useJakartaPostConstruct()) {
-//      w.println("  @", Const.JAKARTA_POST_CONSTRUCT);
-//    } else {
-//      w.println("  @", Const.JAVAX_POST_CONSTRUCT);
-//    }
-//
-//    w.println("  private void initializeContext() {");
-//    if (!this.isExecutor()) {
-//      w.println("    ", LiveSQLDialect.class, " liveSQLDialect = ", LShield.class, ".getLiveSQLDialect(this.sql);");
-//      w.println("    this.context = new ", LiveSQLContext.class, "(liveSQLDialect, this.dataSource, new ",
-//          RuntimeTypeSolver.class, "(null, liveSQLDialect));");
-//    }
-//    w.println("    this.dyn = new ", DynamicSQL.class, "();");
-//    for (String ini : this.initializersInPostConstruct) {
-//      w.println("    this." + ini + "();");
-//    }
-//    w.println("  }");
-//    w.println();
-//    w.println("  private void logQuery(", PreparedQuery.class, " preparedQuery) {");
-//    w.println("    if (log.isLoggable(", Level.class, ".FINER)) {");
-//    w.println("      log.finest(\"SQL:\\n\" + preparedQuery.getPreview(true));");
-//    w.println("    } else if (log.isLoggable(", Level.class, ".FINE)) {");
-//    w.println("      log.fine(\"SQL:\\n\" + preparedQuery.getPreview());");
-//    w.println("    }");
-//    w.println("  }");
-
     w.println();
     w.println("  private void initializeQueries() {");
     for (String ini : this.initializersInPostConstruct) {
       w.println("    this." + ini + "();");
     }
     w.println("  }");
-
   }
 
   private void writeClassFooter() throws IOException {
@@ -824,7 +807,7 @@ public class DAOWriter {
       String memId = cm.getId().getJavaMemberName();
       String jdbcType = cm.getType().getJDBCShortType();
       String converterParam = cm.getResolvedConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+          : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
 
       if (!includeNulls) { // by example
 
@@ -1147,7 +1130,7 @@ public class DAOWriter {
           w.print("        .begin()");
           String sqlId = cm.getId().getRenderedSQLName();
           String converterParam = cm.getResolvedConverter() == null ? ""
-              : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+              : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
           if (ol != null && cm.isOLVersionNumberColumn()) {
             w.print(".literal(\"" + SUtil.escapeJavaString(sqlId) + " = " + SUtil.escapeJavaString(sqlId) + " + 1\""
                 + converterParam + ")");
@@ -1986,7 +1969,7 @@ public class DAOWriter {
       if (!cm.isGeneratedAlways()) {
         String sqlId = cm.getId().getRenderedSQLName();
         String converterParam = cm.getResolvedConverter() == null ? ""
-            : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+            : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
         if (ol != null && cm.isOLVersionNumberColumn()) {
           w.println("        .if_(\"true\").literal(\"" + ns + "." + SUtil.escapeJavaString(sqlId) + " = "
               + SUtil.escapeJavaString(sqlId) + " + 1\").endif()");
@@ -2028,7 +2011,7 @@ public class DAOWriter {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String converterParam = cm.getResolvedConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+          : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
       w.println("      .literal(\"" + SUtil.escapeJavaString(sep.render()) + SUtil.escapeJavaString(sqlId)
           + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\"" + converterParam + ").literaln()");
     }
@@ -2041,7 +2024,7 @@ public class DAOWriter {
       String sqlId = cm.getId().getRenderedSQLName();
       String jdbcType = cm.getType().getJDBCShortType();
       String converterParam = cm.getResolvedConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+          : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
       w.println(
           "      .literaln(\"" + SUtil.escapeJavaString(sep.render()) + "\" + \"" + SUtil.escapeJavaString(sqlId)
               + " = \").parameter(\"" + ns + "." + SUtil.escapeJavaString(memId) + "\", ",
@@ -2055,7 +2038,7 @@ public class DAOWriter {
       String memId = cm.getId().getJavaMemberName();
       String sqlId = cm.getId().getRenderedSQLName();
       String converterParam = cm.getResolvedConverter() == null ? ""
-          : ", this." + this.converterProperties.get(cm.getResolvedConverter().getName());
+          : ", this." + this.converterProperty.get(cm.getResolvedConverter().getName());
       w.println("        .if_(\"" + ns + "." + memId + " != null\").literal(\"" + SUtil.escapeJavaString(sqlId)
           + " = \").parameter(\"" + ns + "." + memId + "\"" + converterParam + ").endif()");
     }
@@ -2104,7 +2087,8 @@ public class DAOWriter {
     this.writeReleaseConnection();
   }
 
-  private LinkedHashMap<String, String> converterProperties = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> converterProperty = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> converterClass = new LinkedHashMap<>();
 
   private void writeConverterBeans() {
     int n = 0;
@@ -2125,16 +2109,11 @@ public class DAOWriter {
     for (ColumnMetadata cm : cols) {
       ConverterTag ct = cm.getResolvedConverter();
       if (ct != null) {
-        boolean found = this.converterProperties.containsKey(ct.getName());
+        boolean found = this.converterProperty.containsKey(ct.getName());
         if (!found) {
-          if (n == 0) {
-            w.println();
-            w.println("  // CONVERTERS");
-          }
           String property = "converter" + n++;
-          this.converterProperties.put(ct.getName(), property);
-          w.println();
-          w.println("  @", Const.AUTOWIRED);
+          this.converterProperty.put(ct.getName(), property);
+          this.converterClass.put(ct.getName(), ct.getConverterClass());
           ExternalClass cc = ExternalClass.of(ct.getConverterClass());
           w.println("  private ", cc, " " + property + ";");
         }
@@ -2194,7 +2173,7 @@ public class DAOWriter {
       PrimitiveJDBCGetter g = GetterFactory.primitiveGetterForClassName(rawClass);
       javaClass = ct.getDomainClass();
       ExternalClass mc = ExternalClass.of(javaClass);
-      String property = this.converterProperties.get(ct.getName());
+      String property = this.converterProperty.get(ct.getName());
       if (g != null) {
         if (g.returnsPrimitiveType()) {
           w.println(indent + "      ", rc,

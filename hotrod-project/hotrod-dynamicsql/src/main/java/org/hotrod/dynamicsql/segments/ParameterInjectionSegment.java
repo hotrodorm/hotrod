@@ -9,7 +9,6 @@ import org.hotrod.dynamicsql.Parameters;
 
 public class ParameterInjectionSegment extends DynamicContentSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ParameterInjectionSegment.class.getName());
 
   private DynamicExpressionFactory factory;
@@ -18,6 +17,7 @@ public class ParameterInjectionSegment extends DynamicContentSegment {
   private DynamicExpression nameExpression;
 
   public ParameterInjectionSegment(DynamicExpressionFactory factory, String name) {
+    log.finer("init");
     this.factory = factory;
     this.name = name;
     this.nameExpression = this.factory.expression(this.name);
@@ -26,6 +26,7 @@ public class ParameterInjectionSegment extends DynamicContentSegment {
   @Override
   public boolean prepare(StaticSegmentConsumer sc, Parameters context, int loopNestingLevel)
       throws DynamicExpressionException {
+    log.fine("prepare pi");
     String v = this.nameExpression.evaluate(context, String.class);
     if (v != null) {
       sc.consume(v);

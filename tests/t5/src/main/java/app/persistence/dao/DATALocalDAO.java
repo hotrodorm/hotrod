@@ -57,7 +57,6 @@ import org.hotrod.livesql.queries.typesolver.TypeSource;
 import org.hotrod.livesql.util.DAOExecutor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.utils.SQLUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -77,26 +76,23 @@ public class DATALocalDAO {
       () -> log.isLoggable(Level.FINER), msg -> log.finer(msg)
     );
 
-  @Autowired
   private LiveSQL sql;
   private LiveSQLContext context;
   private ApplicationContext applicationContext;
   private DynamicSQL dyn;
+  private IntegerActiveConverter converter0;
 
   // CONSTRUCTOR
 
-  public DATALocalDAO(LiveSQL sql, ApplicationContext applicationContext) {
+  public DATALocalDAO(LiveSQL sql, ApplicationContext applicationContext,
+      IntegerActiveConverter converter0) {
     this.sql = sql;
     this.context = LShield.getLiveSQLContext(this.sql);
     this.applicationContext = applicationContext;
     this.dyn = this.context.getDynamicSQL();
-    initializeQueries();
+    this.converter0 = converter0;
+    this.initializeQueries();
   }
-
-  // CONVERTERS
-
-  @Autowired
-  private IntegerActiveConverter converter0;
 
   // ROW READER
 

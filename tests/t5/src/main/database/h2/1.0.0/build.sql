@@ -127,7 +127,7 @@ insert into cost (region, amount) values
   (30, 307);
 
 create table account (
-  id int,
+  id int primary key not null,
   balance int,
   type char(3),
   active int,

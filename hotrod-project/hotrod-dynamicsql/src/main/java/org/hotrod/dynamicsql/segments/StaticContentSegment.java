@@ -7,12 +7,12 @@ import org.hotrod.dynamicsql.Parameters;
 
 public class StaticContentSegment extends ContentSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(StaticContentSegment.class.getName());
 
   private String literal;
 
   public StaticContentSegment(String literal) {
+    log.finer("init");
     this.literal = literal;
   }
 

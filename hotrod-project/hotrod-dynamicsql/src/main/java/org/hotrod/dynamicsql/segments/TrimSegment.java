@@ -11,7 +11,6 @@ import org.hotrod.dynamicsql.assembler.ListProcessor;
 
 public class TrimSegment extends DynamicListSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(TrimSegment.class.getName());
 
   private static final String DEFAULT_HEADER_PREFIX = "";
@@ -33,6 +32,7 @@ public class TrimSegment extends DynamicListSegment {
         null, //
         new ClauseFormatter(tail, DEFAULT_TAIL_PREFIX, DEFAULT_TAIL_SUFFIX) //
     ));
+    log.finer("init");
     this.segments = segments;
     this.factory = factory;
   }

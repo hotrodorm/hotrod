@@ -15,7 +15,6 @@ import org.hotrod.dynamicsql.Utl;
 
 public class ForEachSegment extends ControlSegment {
 
-  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(ForEachSegment.class.getName());
 
   private String item;
@@ -32,6 +31,7 @@ public class ForEachSegment extends ControlSegment {
   public ForEachSegment(String item, String collection, String open, String separator, String close,
       List<QuerySegment> segments, DynamicExpressionFactory factory) {
     super();
+    log.finer("init");
 
     this.factory = factory;
 
