@@ -410,8 +410,8 @@ public class App {
   // Nitro: update set/where
 
   private void testConverters() {
-//    testConverterLiveSQLUpdateSelectWhere();
-    testConverterLiveSQLInsertSelectWhere();
+    testConverterLiveSQLUpdateSelectWhere();
+//    testConverterLiveSQLInsertSelectWhere();
 //    testConverterCRUDInsert();
 //    testConverterCRUDUpdateSetWhere();
 //    testConverterCRUDSelectListWhere();
@@ -427,6 +427,7 @@ public class App {
     AccountTable t = this.accountDAO.newTable();
 
     int count = this.sql.update(t) //
+        .set(t.id, 202) //
         .set(t.type, AccountType.PEN1) //
         .set(t.zipCodes, ZIP_CODES) //
         .where(t.type.eq(AccountType.SAV3).and(t.zipCodes.eq(ZIP_CODES))) //

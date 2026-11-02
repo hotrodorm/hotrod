@@ -17,7 +17,7 @@ import org.hotrod.livesql.metadata.ObjectEntityColumn;
 import org.hotrod.livesql.util.BoxUtil;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
-public class UpdateSetPhase implements DMLQuery {
+public class UpdateSetPhase<U extends UpdateSetPhase> implements DMLQuery {
 
   // Properties
 
@@ -33,64 +33,64 @@ public class UpdateSetPhase implements DMLQuery {
 
   // Current phase
 
-  public UpdateSetPhase set(final NumericEntityColumn column, final NumericExpression expression) {
+  public U set(final NumericEntityColumn column, final NumericExpression expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final NumericEntityColumn column, final Number n) {
+  public U set(final NumericEntityColumn column, final Number n) {
     this.update.addSetter(column, BoxUtil.box(n));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final CharEntityColumn column, final CharExpression expression) {
+  public U set(final CharEntityColumn column, final CharExpression expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final CharEntityColumn column, final String s) {
+  public U set(final CharEntityColumn column, final String s) {
     this.update.addSetter(column, BoxUtil.box(s));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
+  public U set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final DateTimeEntityColumn column, final Date dt) {
+  public U set(final DateTimeEntityColumn column, final Date dt) {
     this.update.addSetter(column, BoxUtil.box(dt));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final BooleanEntityColumn column, final Predicate expression) {
+  public U set(final BooleanEntityColumn column, final Predicate expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final BooleanEntityColumn column, final boolean b) {
+  public U set(final BooleanEntityColumn column, final boolean b) {
     this.update.addSetter(column, BoxUtil.box(b));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final BinaryEntityColumn column, final BinaryExpression expression) {
+  public U set(final BinaryEntityColumn column, final BinaryExpression expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final BinaryEntityColumn column, final byte[] a) {
+  public U set(final BinaryEntityColumn column, final byte[] a) {
     this.update.addSetter(column, BoxUtil.box(a));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final ObjectEntityColumn column, final ObjectExpression expression) {
+  public U set(final ObjectEntityColumn column, final ObjectExpression expression) {
     this.update.addSetter(column, expression);
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
-  public UpdateSetPhase set(final ObjectEntityColumn column, final Object o) {
+  public U set(final ObjectEntityColumn column, final Object o) {
     this.update.addSetter(column, BoxUtil.box(o));
-    return new UpdateSetPhase(this.context, this.update);
+    return (U) this;
   }
 
   // Next phases

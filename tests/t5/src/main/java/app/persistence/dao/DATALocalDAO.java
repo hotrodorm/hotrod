@@ -500,10 +500,15 @@ public class DATALocalDAO {
 
   }
 
-  public static class DATALocalUpdateTablePhase extends UpdateTablePhase {
+  public static class DATALocalUpdateTablePhase extends UpdateTablePhase<DATALocalUpdateSetPhase> {
 
     public DATALocalUpdateTablePhase(final LiveSQLContext context, final DATALocalTable tableOrView) {
       super(context, tableOrView);
+    }
+
+    @Override
+    protected DATALocalUpdateSetPhase getNextPhase() {
+      return new DATALocalUpdateSetPhase(this.context, this.update);
     }
 
     public DATALocalUpdateSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
@@ -515,7 +520,7 @@ public class DATALocalDAO {
 
   }
 
-  public static class DATALocalUpdateSetPhase extends UpdateSetPhase {
+  public static class DATALocalUpdateSetPhase extends UpdateSetPhase<DATALocalUpdateSetPhase> {
 
     public DATALocalUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
       super(context, update);

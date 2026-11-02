@@ -692,10 +692,15 @@ public class AccountDAO {
 
   }
 
-  public static class AccountUpdateTablePhase extends UpdateTablePhase {
+  public static class AccountUpdateTablePhase extends UpdateTablePhase<AccountUpdateSetPhase> {
 
     public AccountUpdateTablePhase(final LiveSQLContext context, final AccountTable tableOrView) {
       super(context, tableOrView);
+    }
+
+    @Override
+    protected AccountUpdateSetPhase getNextPhase() {
+      return new AccountUpdateSetPhase(this.context, this.update);
     }
 
     public AccountUpdateSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
@@ -714,7 +719,7 @@ public class AccountDAO {
 
   }
 
-  public static class AccountUpdateSetPhase extends UpdateSetPhase {
+  public static class AccountUpdateSetPhase extends UpdateSetPhase<AccountUpdateSetPhase> {
 
     public AccountUpdateSetPhase(LiveSQLContext context, UpdateObject update) {
       super(context, update);
