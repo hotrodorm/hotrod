@@ -197,7 +197,15 @@ public class DATALocalDAO {
   // INSERT
 
   public DATALocal insert(DATALocalLayout layout) {
-    return insertIncludingNulls(layout);
+    return insertExcludingNulls(layout);
+  }
+
+  public DATALocal insert(DATALocalLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
+    }
   }
 
   // INSERT BY EXAMPLE
@@ -467,7 +475,7 @@ public class DATALocalDAO {
       super(context, tableOrView);
     }
 
-    public DATALocalInsertSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+    public DATALocalInsertSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
@@ -482,7 +490,7 @@ public class DATALocalDAO {
       super(context, insert);
     }
 
-    public DATALocalInsertSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+    public DATALocalInsertSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
@@ -497,7 +505,7 @@ public class DATALocalDAO {
       super(context, tableOrView);
     }
 
-    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.update, column, convertedValue);
@@ -512,7 +520,7 @@ public class DATALocalDAO {
       super(context, update);
     }
 
-    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<String, ActiveEnum> column, final ActiveEnum value) {
+    public DATALocalUpdateSetPhase set(ConvertedEntityColumn<Integer, ActiveEnum> column, final ActiveEnum value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.update, column, convertedValue);

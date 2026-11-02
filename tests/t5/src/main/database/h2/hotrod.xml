@@ -1,7 +1,7 @@
 <hotrod>
 
   <generators>
-    <jdbc insert-type="standard">
+    <jdbc insert-type="legacy">
     <!--
       <discover/>
     -->
@@ -26,11 +26,14 @@
   </runtime-type-solver>
   -->
 
-  <converter name="boolean_stored_as_int" type="java.lang.Boolean" raw-type="java.lang.Integer"
-    class="app.IntegerBooleanConverter" />
-
   <converter name="account_type_stored_as_char" type="app.AccountTypeConverter.AccountType"
     raw-type="java.lang.String" class="app.AccountTypeConverter" />
+
+  <converter name="integer_array" type="Integer[]"
+    raw-type="java.sql.Array" class="app.IntegerArrayConverter" />
+
+  <converter name="boolean_stored_as_int" type="java.lang.Boolean" raw-type="java.lang.Integer"
+    class="app.IntegerBooleanConverter" />
 
   <converter name="coin_type_stored_as_char" type="java.lang.Integer" raw-type="java.lang.String"
     class="app.CoinTypeConverter" />
@@ -88,6 +91,7 @@
   
   <table name="account">
     <column name="type" converter="account_type_stored_as_char" />
+    <column name="zip_codes" converter="integer_array" />
   </table>
 
 <!-- 

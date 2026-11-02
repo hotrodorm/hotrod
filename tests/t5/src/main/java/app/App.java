@@ -31,6 +31,8 @@ import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.EmployeeDAO.EmployeeTable;
+import app.persistence.layout.AccountLayout;
+import app.persistence.model.Account;
 import app.persistence.model.DATALocal;
 import app.persistence.model.Employee;
 
@@ -150,8 +152,7 @@ public class App {
 //      testLiveSQLCursor();
 //      testJEXL();
       
-      testLiveSQLUpdateWithConverters() ;
-
+      testConverters() ;
       
       //      testInsertSequence();
 //      testInsertIdentity();
@@ -397,20 +398,91 @@ public class App {
     }
   }
 
-  private void testLiveSQLUpdateWithConverters() {
-    AccountTable t = this.accountDAO.newTable();   
-    
-    int count = this.sql.update(t) //
-        .set(t.type, AccountType.PEN1) //
-//        .set(t.type,  AccountType.SAV3) //
-        .where(t.balance.ge(150).and(t.type.eq(AccountType.CHK2))) //
-        .execute(LIVESQL_LOG);
-
-    
-    System.out.println("### LiveSQL Update with converters - count="+count);
-    }
+  // === Converters ===
+  // LiveSQL: update + select/where
+  // LiveSQL: insert + select/where
+  // CRUD: insert
+  // CRUD: update set/where
+  // CRUD: select list/where
+  // CRUD: delete/where
+  // Nitro: select/where
+  // Nitro: insert
+  // Nitro: update set/where
 
   private void testConverters() {
+//    testConverterLiveSQLUpdateSelectWhere();
+//    testConverterLiveSQLInsertSelectWhere();
+    testConverterCRUDInsert();
+//    testConverterCRUDUpdateSetWhere();
+//    testConverterCRUDSelectListWhere();
+//    testConverterCRUDDeleteWhere();
+//    testConverterNitroSelectWhere();
+//    testConverterNitroInsert();
+//    testConverterNitroSetWhere();
+  }
+  
+  private static final Integer[] ZIP_CODES = new Integer[] { 123, 456, 789 };
+  
+  private void testConverterLiveSQLUpdateSelectWhere() {
+    AccountTable t = this.accountDAO.newTable();
+
+    int count = this.sql.update(t) //
+        .set(t.type, AccountType.PEN1) //
+        .set(t.zipCodes, ZIP_CODES) //
+        .where(t.type.eq(AccountType.SAV3).and(t.zipCodes.eq(ZIP_CODES))) //
+        .execute(LIVESQL_LOG);
+    System.out.println("# testConverterLiveSQLUpdateSelectWhere - count=" + count);
+
+    List<Row> rows = this.sql.select().from(t).execute(LIVESQL_LOG);
+    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rows=" + rows.size());
+    rows.forEach(r -> System.out
+        .println("# - r=" + r + " -- zipCodes=" + java.util.Arrays.toString((Integer[]) r.get("zipCodes"))));
+
+    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).execute(LIVESQL_LOG);
+    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
+    rs.forEach(r -> System.out
+        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString( r.getA().getZipCodes())));
+  }
+
+  private void testConverterLiveSQLInsertSelectWhere() {
+    AccountTable t = this.accountDAO.newTable();
+
+    int c = this.sql.insert(t) //
+        .set(t.type, AccountType.PEN1) //
+        .set(t.zipCodes, ZIP_CODES) //
+        .execute(LIVESQL_LOG);
+    System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
+
+    List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).execute(LIVESQL_LOG);
+    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
+    rs.forEach(r -> System.out
+        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString(r.getA().getZipCodes())));
+  }
+
+  private static final Integer[] ZIP_CODES2 = new Integer[] { 1015, 1049 };
+
+  private void testConverterCRUDInsert() {
+    AccountLayout a = new AccountLayout();
+    a.setType(AccountType.INV4);
+    a.setZipCodes(ZIP_CODES2);
+   Account inserted = this.accountDAO.insert(a);
+   System.out.println("# CRUD insert - r=" + inserted);
+  }
+  
+  private void testConverterCRUDUpdateSetWhere() {
+  }
+  private void testConverterCRUDSelectListWhere() {
+  }
+  private void testConverterCRUDDeleteWhere() {
+  }
+  private void testConverterNitroSelectWhere() {
+  }
+  private void testConverterNitroInsert() {
+  }
+  private void testConverterNitroSetWhere() {
+  }
+
+  private void testConverters2() {
     {
       System.out.println("### T1 - Plain LiveSQL");
       DATALocalTable t = this.dataLocalDAO.newTable();

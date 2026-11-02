@@ -26,6 +26,9 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
 
   @Override
   public AccountType decode(String raw, Connection conn) {
+    if (conn == null) {
+      throw new RuntimeException("Connection is null");
+    }
     if (raw == null) {
       return null;
     }
@@ -34,6 +37,9 @@ public class AccountTypeConverter implements TypeConverter<String, AccountType> 
 
   @Override
   public String encode(AccountType domain, Connection conn) {
+    if (conn == null) {
+      throw new RuntimeException("Connection is null");
+    }
     return domain == null ? null : domain.name().substring(0, 3);
   }
 

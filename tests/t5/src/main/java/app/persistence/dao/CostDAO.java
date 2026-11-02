@@ -181,7 +181,15 @@ public class CostDAO {
   // INSERT
 
   public Cost insert(CostLayout layout) {
-    return insertIncludingNulls(layout);
+    return insertExcludingNulls(layout);
+  }
+
+  public Cost insert(CostLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
+    }
   }
 
   // INSERT BY EXAMPLE

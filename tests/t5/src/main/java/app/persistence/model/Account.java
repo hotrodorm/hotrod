@@ -22,4 +22,14 @@ public class Account extends AccountLayout {
 
   // Add custom code below.
 
+  public static String toString(Account a) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("- id=" + a.id + "\n");
+    sb.append("- balance=" + a.balance + "\n");
+    sb.append("- type=" + a.type + "\n");
+    sb.append("- active=" + a.active + "\n");
+    sb.append("- zipCodes=" + (a.zipCodes == null ? "null" : java.util.Arrays.toString(a.zipCodes)) + "\n");
+    return sb.toString();
+  }
+
 }

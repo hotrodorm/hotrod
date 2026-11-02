@@ -2,6 +2,7 @@
 
 package app.persistence.dao;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,6 +66,7 @@ import org.springframework.stereotype.Component;
 
 import app.AccountTypeConverter;
 import app.AccountTypeConverter.AccountType;
+import app.IntegerArrayConverter;
 import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 
@@ -99,6 +101,9 @@ public class AccountDAO {
   @Autowired
   private AccountTypeConverter converter0;
 
+  @Autowired
+  private IntegerArrayConverter converter1;
+
   // ROW READER
 
   private final RowReader<Account> rowReader = new RowReader<Account>() {
@@ -123,6 +128,10 @@ public class AccountDAO {
       if (rs.wasNull()) col4 = null;
       row.setActive(col4);
 
+      Array raw5 = rs.getObject("ZIP_CODES", Array.class); // ZIP_CODES
+      Integer[] col5 = converter1.decode(raw5, conn);
+      row.setZipCodes(col5);
+
       return row;
     }
 
@@ -146,6 +155,7 @@ public class AccountDAO {
     m.setBalance(CastUtil.toInteger((Number) row.get(p + "balance" + s)));
     m.setType((AccountType) row.get(p + "type" + s));
     m.setActive(CastUtil.toInteger((Number) row.get(p + "active" + s)));
+    m.setZipCodes((Integer[]) row.get(p + "zipCodes" + s));
     return m;
   }
 
@@ -157,6 +167,7 @@ public class AccountDAO {
     m.setBalance(layout.getBalance());
     m.setType(layout.getType());
     m.setActive(layout.getActive());
+    m.setZipCodes(layout.getZipCodes());
     return m;
   }
 
@@ -172,13 +183,15 @@ public class AccountDAO {
       .literaln("  id,")
       .literaln("  balance,")
       .literaln("  type,")
-      .literaln("  active")
+      .literaln("  active,")
+      .literaln("  zip_codes")
       .literaln("FROM account")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
+        .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -214,7 +227,15 @@ public class AccountDAO {
   // INSERT
 
   public Account insert(AccountLayout layout) {
-    return insertIncludingNulls(layout);
+    return insertExcludingNulls(layout);
+  }
+
+  public Account insert(AccountLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
+    }
   }
 
   // INSERT BY EXAMPLE
@@ -235,6 +256,7 @@ public class AccountDAO {
         .if_("e.balance != null").literal("balance").endif()
         .if_("e.type != null").literal("type").endif()
         .if_("e.active != null").literal("active").endif()
+        .if_("e.zipCodes != null").literal("zip_codes").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -242,6 +264,7 @@ public class AccountDAO {
         .if_("e.balance != null").parameter("e.balance").endif()
         .if_("e.type != null").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").parameter("e.active").endif()
+        .if_("e.zipCodes != null").parameter("e.zipCodes", this.converter1).endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -278,6 +301,7 @@ public class AccountDAO {
         .literal("balance")
         .literal("type")
         .literal("active")
+        .literal("zip_codes")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -285,6 +309,7 @@ public class AccountDAO {
         .parameterNullable("l.balance", Types.INTEGER)
         .parameterNullable("l.type", Types.CHAR, this.converter0)
         .parameterNullable("l.active", Types.INTEGER)
+        .parameterNullable("l.zipCodes", Types.ARRAY, this.converter1)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -323,12 +348,14 @@ public class AccountDAO {
         .if_("v.balance != null").literal("balance = ").parameter("v.balance").endif()
         .if_("v.type != null").literal("type = ").parameter("v.type", this.converter0).endif()
         .if_("v.active != null").literal("active = ").parameter("v.active").endif()
+        .if_("v.zipCodes != null").literal("zip_codes = ").parameter("v.zipCodes", this.converter1).endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
         .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
+        .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -362,6 +389,7 @@ public class AccountDAO {
     if (values.getBalance() != null) setters.add(new Setter(tableOrView.balance, sql.val(values.getBalance())));
     if (values.getType() != null) setters.add(new Setter(tableOrView.type, sql.val(values.getType())));
     if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
+    if (values.getZipCodes() != null) setters.add(new Setter(tableOrView.zipCodes, sql.val(values.getZipCodes())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -379,6 +407,7 @@ public class AccountDAO {
         .if_("e.balance != null").literal("balance = ").parameter("e.balance").endif()
         .if_("e.type != null").literal("type = ").parameter("e.type", this.converter0).endif()
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
+        .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -419,7 +448,9 @@ public class AccountDAO {
     TYPE("type", true),
     TYPE$DESC("type", false),
     ACTIVE("active", true),
-    ACTIVE$DESC("active", false);
+    ACTIVE$DESC("active", false),
+    ZIP_CODES("zip_codes", true),
+    ZIP_CODES$DESC("zip_codes", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -453,6 +484,8 @@ public class AccountDAO {
     static final ConvertedEntityColumnMetaData<String, AccountType> TYPE_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("TYPE", false), "type", "CHARACTER", 3, 0, TH0, TH0.getConverter());
     static final DirectEntityColumnMetaData ACTIVE_META_DATA = new DirectEntityColumnMetaData(
       Name.of("ACTIVE", false), "active", "INTEGER", 32, 0, TypeHandler.forClass(Integer.class, TypeSource.STATIC_DIALECT_RULE, "D9"));
+    static final TypeHandler<Array, Integer[]> TH1 = TypeHandler.forConverter(new IntegerArrayConverter(), TypeSource.STATIC_DESIGNATED, null);
+    static final ConvertedEntityColumnMetaData<Array, Integer[]> ZIP_CODES_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("ZIP_CODES", false), "zipCodes", "INTEGER ARRAY", 65536, 0, TH1, TH1.getConverter());
 
   }
 
@@ -470,10 +503,11 @@ public class AccountDAO {
     public final NumericEntityColumn balance = new NumericEntityColumn(this, MetaData.BALANCE_META_DATA);
     public final ConvertedEntityColumn<String, AccountType> type = new ConvertedEntityColumn<>(this, MetaData.TYPE_META_DATA);
     public final NumericEntityColumn active = new NumericEntityColumn(this, MetaData.ACTIVE_META_DATA);
+    public final ConvertedEntityColumn<Array, Integer[]> zipCodes = new ConvertedEntityColumn<>(this, MetaData.ZIP_CODES_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.balance, this.type, this.active);
+      return new AllColumns(this.id, this.balance, this.type, this.active, this.zipCodes);
     }
 
     AccountTable() {
@@ -502,6 +536,7 @@ public class AccountDAO {
       super.columns.add(this.balance);
       super.columns.add(this.type);
       super.columns.add(this.active);
+      super.columns.add(this.zipCodes);
     }
 
   }
@@ -513,6 +548,13 @@ public class AccountDAO {
     }
 
     public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new AccountInsertSetPhase(this.context, this.insert);
+    }
+
+    public AccountInsertSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
@@ -534,6 +576,13 @@ public class AccountDAO {
       return new AccountInsertSetPhase(this.context, this.insert);
     }
 
+    public AccountInsertSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.insert, column, convertedValue);
+      return new AccountInsertSetPhase(this.context, this.insert);
+    }
+
   }
 
   public static class AccountUpdateTablePhase extends UpdateTablePhase {
@@ -549,6 +598,13 @@ public class AccountDAO {
       return new AccountUpdateSetPhase(this.context, this.update);
     }
 
+    public AccountUpdateSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.update, column, convertedValue);
+      return new AccountUpdateSetPhase(this.context, this.update);
+    }
+
   }
 
   public static class AccountUpdateSetPhase extends UpdateSetPhase {
@@ -558,6 +614,13 @@ public class AccountDAO {
     }
 
     public AccountUpdateSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+      TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
+      ConvertedValue convertedValue = ConvertedValue.of(value, converter);
+      SShield.addSetter(this.update, column, convertedValue);
+      return new AccountUpdateSetPhase(this.context, this.update);
+    }
+
+    public AccountUpdateSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.update, column, convertedValue);

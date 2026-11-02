@@ -3,6 +3,7 @@ package org.hotrod.livesql.metadata;
 import java.util.List;
 
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.queries.InsertIntoPhase;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.QueryWriter;
 import org.hotrod.livesql.queries.UpdateTablePhase;
@@ -39,6 +40,10 @@ public class MDShield {
 
   public static UpdateTablePhase getUpdatePhase(LiveSQLContext context, TableOrView<?, ?, ?> tov) {
     return tov.getUpdatePhase(context);
+  }
+
+  public static InsertIntoPhase getInsertPhase(LiveSQLContext context, TableOrView<?, ?, ?> tov) {
+    return tov.getInsertPhase(context);
   }
 
 }

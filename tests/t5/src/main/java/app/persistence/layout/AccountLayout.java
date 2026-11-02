@@ -18,6 +18,7 @@ public class AccountLayout implements Serializable {
   protected Integer balance = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
   protected AccountType type = null; // Type Source: STATIC_DESIGNATED
   protected Integer active = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
+  protected Integer[] zipCodes = null; // Type Source: STATIC_DESIGNATED
 
   // getters & setters
 
@@ -53,6 +54,14 @@ public class AccountLayout implements Serializable {
     this.active = active;
   }
 
+  public Integer[] getZipCodes() {
+    return this.zipCodes;
+  }
+
+  public void setZipCodes(final Integer[] zipCodes) {
+    this.zipCodes = zipCodes;
+  }
+
   // to string
 
   public String toString() {
@@ -61,7 +70,8 @@ public class AccountLayout implements Serializable {
     sb.append("- id=" + this.id + "\n");
     sb.append("- balance=" + this.balance + "\n");
     sb.append("- type=" + this.type + "\n");
-    sb.append("- active=" + this.active);
+    sb.append("- active=" + this.active + "\n");
+    sb.append("- zipCodes=" + this.zipCodes);
     return sb.toString();
   }
 
@@ -73,6 +83,7 @@ public class AccountLayout implements Serializable {
     obj.addProperty("balance", this.balance);
     obj.addProperty("type", this.type);
     obj.addProperty("active", this.active);
+    obj.addProperty("zipCodes", this.zipCodes);
     return obj;
   }
 

@@ -102,9 +102,9 @@ public class InsertObject {
       Separator sep = new Separator(", ");
       for (Assignment a : this.setters) {
         w.write(sep.render());
-        w.write(context.getLiveSQLDialect().canonicalToNatural(a.getColumn().getObjectName()));
+        w.write(context.getLiveSQLDialect().canonicalToNatural(a.getColumn().getName().getName()));
       }
-      w.write("\n  VALUES (");
+      w.write(")\nVALUES\n  (");
       sep = new Separator(", ");
       for (Assignment a : this.setters) {
         w.write(sep.render());

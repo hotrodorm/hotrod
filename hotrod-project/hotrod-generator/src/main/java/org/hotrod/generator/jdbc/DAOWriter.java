@@ -1838,10 +1838,12 @@ public class DAOWriter {
   private void writeConvertedSetterMetadata(ExternalClass us, String queryObjectName) {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getResolvedConverter() != null) { // Converted Column
+        ExternalClass rawClass = ExternalClass.of(cm.getResolvedConverter().getRawClass());
         ExternalClass domainClass = ExternalClass.of(cm.getResolvedConverter().getDomainClass());
 
         w.println();
-        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<String, ");
+        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<");
+        w.print(rawClass, ", ");
         w.println(domainClass, "> column, final ", domainClass, " value) {");
         w.print("      ", TypeConverter.class, "<?, Object> converter = (");
         w.println(TypeConverter.class, "<?, Object>) ", CShield.class, ".getConverter(column);");

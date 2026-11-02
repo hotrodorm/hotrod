@@ -272,16 +272,18 @@ public class LiveSQL {
 
   // Insert
 
-  public InsertIntoPhase insert(final Table<?, ?, ?> into) {
-    return new InsertIntoPhase(this.context, into);
+  @SuppressWarnings("unchecked")
+  public <I extends InsertIntoPhase> I insert(final Table<?, I, ?> into) {
+    return (I) MDShield.getInsertPhase(this.context, into);
   }
 
   public <T> GeneratedKeysInsertIntoPhase<T> insert(final TableWithGeneratedKey<?, ?, ?, T> into) {
     return new GeneratedKeysInsertIntoPhase<T>(this.context, into);
   }
 
-  public InsertIntoPhase insert(final View<?, ?, ?> into) {
-    return new InsertIntoPhase(this.context, into);
+  @SuppressWarnings("unchecked")
+  public <I extends InsertIntoPhase> I insert(final View<?, I, ?> into) {
+    return (I) MDShield.getInsertPhase(this.context, into);
   }
 
   // Update

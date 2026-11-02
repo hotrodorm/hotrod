@@ -171,7 +171,15 @@ public class CityNumberDAO {
   // INSERT
 
   public CityNumber insert(CityNumberLayout layout) {
-    return insertIncludingNulls(layout);
+    return insertExcludingNulls(layout);
+  }
+
+  public CityNumber insert(CityNumberLayout layout, boolean includeNulls) {
+    if (includeNulls) {
+      return insertIncludingNulls(layout);
+    } else {
+      return insertExcludingNulls(layout);
+    }
   }
 
   // INSERT BY EXAMPLE
