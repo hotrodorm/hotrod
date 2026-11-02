@@ -5,6 +5,7 @@ package app.persistence.dao;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -765,6 +766,145 @@ public class AccountDAO {
 
   }
 
+  // NITRO QUERY: updateEmployees
+
+  private DynamicModificationQuery query0;
+
+  private void initializeQuery0() {
+    this.query0 = dyn
+      .literal("\n      update employee SET id = id\n    ")
+      .endModificationQuery();
+  }
+
+  public int updateEmployees() {
+    Parameters params = this.dyn.newParameters();
+    PreparedModificationQuery preparedQuery = this.query0.prepare(params);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      int count = preparedQuery.execute(conn);
+      return count;
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+  }
+
+  // NITRO SELECT: findAccount
+
+  private DynamicSelectQuery select0;
+
+  private void initializeSelect0() {
+    this.select0 = dyn
+      .literal("\n      ")
+      .literal("\n      ")
+      .literal("\n      ")
+      .literal("\n      ")
+      .literal("\n      SELECT *\n      FROM account\n      WHERE id = ")
+      .parameter("id")
+      .literal("\n    ")
+      .endSelectQuery();
+  }
+
+  public final class RowReader0 implements RowReader<Account> {
+
+    private boolean present1 = false;
+    private boolean present2 = false;
+    private boolean present3 = false;
+    private boolean present4 = false;
+    private boolean present5 = false;
+    private boolean present6 = false;
+
+    @Override
+    public void discoverColumns(ResultSet rs) throws SQLException {
+      ResultSetMetaData m = rs.getMetaData();
+      present1 = false;
+      present2 = false;
+      present3 = false;
+      present4 = false;
+      present5 = false;
+      present6 = false;
+      int n = m.getColumnCount();
+      for (int i = 1; i <= n; i++) {
+        String l = m.getColumnLabel(i);
+        if ("ID".equals(l)) present1 = true;
+        if ("BALANCE".equals(l)) present2 = true;
+        if ("TYPE".equals(l)) present3 = true;
+        if ("ACTIVE".equals(l)) present4 = true;
+        if ("ZIP_CODES".equals(l)) present5 = true;
+        if ("BRANCHES".equals(l)) present6 = true;
+      }
+    }
+
+    @Override
+    public Account readRowFrom(ResultSet rs, Connection conn) throws SQLException {
+      Account row = applicationContext.getBean(Account.class);
+
+      if (this.present1) {
+        Integer col1 = rs.getInt("ID"); // ID
+        if (rs.wasNull()) col1 = null;
+        row.setId(col1);
+      }
+
+      if (this.present2) {
+        Integer col2 = rs.getInt("BALANCE"); // BALANCE
+        if (rs.wasNull()) col2 = null;
+        row.setBalance(col2);
+      }
+
+      if (this.present3) {
+        String raw3 = rs.getString("TYPE"); // TYPE
+        AccountType col3 = converter0.decode(raw3, conn);
+        row.setType(col3);
+      }
+
+      if (this.present4) {
+        Integer col4 = rs.getInt("ACTIVE"); // ACTIVE
+        if (rs.wasNull()) col4 = null;
+        row.setActive(col4);
+      }
+
+      if (this.present5) {
+        Array raw5 = rs.getObject("ZIP_CODES", Array.class); // ZIP_CODES
+        Integer[] col5 = converter1.decode(raw5, conn);
+        row.setZipCodes(col5);
+      }
+
+      if (this.present6) {
+        Array raw6 = rs.getObject("BRANCHES", Array.class); // BRANCHES
+        Integer[] col6 = converter1.decode(raw6, conn);
+        row.setBranches(col6);
+      }
+
+      return row;
+    }
+
+  };
+
+  public Account findAccount(Integer id) {
+    Parameters params = this.dyn.newParameters();
+    params.add("id", id);
+    RowReader0 rr = new RowReader0();
+    PreparedSelectQuery<Account> preparedQuery = this.select0.prepare(params, rr);
+    DAOExecutor.logQuery(preparedQuery, log);
+    Connection conn = null;
+    try {
+      conn = DataSourceUtils.getConnection(this.context.getDataSource());
+      Account row = preparedQuery.executeOne(conn);
+      return row;
+    } catch (DynamicSQLException e) {
+      throw new PersistenceException(e.getCause());
+    } finally {
+      if (conn != null) {
+        DataSourceUtils.releaseConnection(conn, this.context.getDataSource());
+      }
+    }
+  }
+
   // GETTERS
 
   public DataSource getDataSource() {
@@ -781,6 +921,8 @@ public class AccountDAO {
     this.initializeDeletebypk();
     this.initializeDeletebypk();
     this.initializeDeletebyexample();
+    this.initializeQuery0();
+    this.initializeSelect0();
   }
 
 }

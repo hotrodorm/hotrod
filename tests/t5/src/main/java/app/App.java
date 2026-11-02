@@ -10,6 +10,7 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Function;
+import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.Select;
@@ -404,7 +405,6 @@ public class App {
   // LiveSQL: insert + select/where
   // CRUD: insert
   // CRUD: update set/where
-  // CRUD: select list/where
   // CRUD: delete/where
   // Nitro: select/where
   // Nitro: insert
@@ -414,12 +414,9 @@ public class App {
     testConverterLiveSQLUpdateSelectWhere();
     testConverterLiveSQLInsertSelectWhere();
     testConverterCRUDInsert();
-//    testConverterCRUDUpdateSetWhere();
-//    testConverterCRUDSelectListWhere();
-//    testConverterCRUDDeleteWhere();
-//    testConverterNitroSelectWhere();
-//    testConverterNitroInsert();
-//    testConverterNitroSetWhere();
+    testConverterCRUDUpdateSetWhere();
+    testConverterCRUDDeleteWhere();
+    testConverterNitroSelectWhere();
   }
   
   private void logSuccess(String testName) {
@@ -431,6 +428,15 @@ public class App {
       throw new RuntimeException("Failed test "
           + testName
           + ": Expected " + expected + " but got " + actual);
+    }
+    logSuccess(testName );
+  }
+
+  private void assertNotNull(String testName, Object obj) {
+    if (obj == null) {
+      throw new RuntimeException("Failed test "
+          + testName
+          + ": Expected not null but got null");
     }
     logSuccess(testName );
   }
@@ -530,6 +536,19 @@ public class App {
 //        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
     assertEquals("testConverterCRUDInsert #1", ZIP_CODES2, a2.getZipCodes());
     assertEquals("testConverterCRUDInsert #2", AccountType.INV4, a2.getType());
+    
+    AccountTable t = this.accountDAO.newTable();
+
+    Account one = this.accountDAO.select(t, t.id.eq(1101)).executeOne();
+    assertNotNull("testConverterCRUDInsert #3", one);
+    assertEquals("testConverterCRUDInsert #4", ZIP_CODES2, one.getZipCodes());
+    assertEquals("testConverterCRUDInsert #5", AccountType.INV4, one.getType());
+    
+    Tuple1<Account> two = this.sql.select().tuples().from(t).where(t.id.eq(1101)).executeOne();
+    assertNotNull("testConverterCRUDInsert #6", two);
+    assertEquals("testConverterCRUDInsert #7", ZIP_CODES2, two.getA().getZipCodes());
+    assertEquals("testConverterCRUDInsert #8", AccountType.INV4, two.getA().getType());
+    
   }
   
   private void testConverterCRUDUpdateSetWhere() {
@@ -547,10 +566,17 @@ public class App {
     a.setType(AccountType.SAV3);
     a.setZipCodes(ZIP_CODES3);
     int count= this.accountDAO.update(a);
-    System.out.println("# CRUD update - count=" + count);
+    
+//    System.out.println("# CRUD update - count=" + count);
+    assertEquals("testConverterCRUDUpdateSetWhere #0", 1, count);
+    
     Account a2 = this.accountDAO.select(800);
-    System.out
-        .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
+
+//    System.out
+//    .println("# CRUD inserted & read - r=" + a2 + " -- zipCodes=" + java.util.Arrays.toString(a2.getZipCodes()));
+    assertNotNull("testConverterCRUDUpdateSetWhere #1", a2);
+    assertEquals("testConverterCRUDUpdateSetWhere #2", ZIP_CODES3, a2.getZipCodes());
+    assertEquals("testConverterCRUDUpdateSetWhere #3", AccountType.SAV3, a2.getType());
     
     Account example = new Account();
     example .setType(AccountType.SAV3);
@@ -558,29 +584,126 @@ public class App {
     Account v = new Account();
     v.setBalance(505);
     int c2 = this.accountDAO.update(example, v);
-    System.out.println("# CRUD update - c2=" + c2);
+
+//    System.out.println("# CRUD update - c2=" + c2);
+    assertEquals("testConverterCRUDUpdateSetWhere #4", 1, c2);
     
     example = new Account();
     example .setType(AccountType.SAV3);
     example .setZipCodes(ZIP_CODES3);
     List<Account> s = this.accountDAO.select(example);
-    System.out.println("# CRUD update select - s.size=" + s.size());
-    for (Account s2: s) {
-      System.out
-      .println("# CRUD inserted & read - r=" + s2 + " -- zipCodes=" + java.util.Arrays.toString(s2.getZipCodes()));
-    }
+
+//    System.out.println("# CRUD update select - s.size=" + s.size());
+//    for (Account s2: s) {
+//      System.out
+//      .println("# CRUD inserted & read - r=" + s2 + " -- zipCodes=" + java.util.Arrays.toString(s2.getZipCodes()));
+//    }
+    assertEquals("testConverterCRUDUpdateSetWhere #5", 1, s.size());
+    assertEquals("testConverterCRUDUpdateSetWhere #6", ZIP_CODES3, s.get(0).getZipCodes());
+    assertEquals("testConverterCRUDUpdateSetWhere #7", AccountType.SAV3, s.get(0).getType());
+    assertEquals("testConverterCRUDUpdateSetWhere #8", 505, s.get(0).getBalance());
     
 }
-
-  private void testConverterCRUDSelectListWhere() {
-  }
+  
   private void testConverterCRUDDeleteWhere() {
+  
+    Account inserted;
+    AccountLayout example;
+    int d;
+    
+    // Delete CRUD by PK
+  
+    AccountLayout a = new AccountLayout();
+    a.setId(1234);
+    a.setBalance(507);
+    a.setType(AccountType.PEN1);
+    a.setZipCodes(ZIP_CODES2);
+    inserted = this.accountDAO.insert(a);
+    assertNotNull("testConverterCRUDDeleteWhere #1", inserted);
+  
+    int c1 = this.accountDAO.delete(1234);
+    assertEquals("testConverterCRUDDeleteWhere #2", 1, c1);
+  
+    // Delete CRUD by example
+  
+    a = new AccountLayout();
+    a.setId(1234);
+    a.setBalance(507);
+    a.setType(AccountType.PEN1);
+    a.setZipCodes(ZIP_CODES2);
+    inserted = this.accountDAO.insert(a);
+    assertNotNull("testConverterCRUDDeleteWhere #3", inserted);
+  
+    example = new AccountLayout();
+    example.setBalance(507);
+    example.setType(AccountType.PEN1);
+    example.setZipCodes(ZIP_CODES2);
+    int c2 = this.accountDAO.delete(example);
+    assertEquals("testConverterCRUDDeleteWhere #4", 1, c2);
+  
+    // Delete CRUD by example with no match
+    
+    a = new AccountLayout();
+    a.setId(1234);
+    a.setBalance(507);
+    a.setType(AccountType.PEN1);
+    a.setZipCodes(ZIP_CODES2);
+    inserted = this.accountDAO.insert(a);
+    assertNotNull("testConverterCRUDDeleteWhere #5", inserted);
+  
+    example = new AccountLayout();
+    example.setBalance(507);
+    example.setType(AccountType.PEN1);
+    example.setZipCodes(ZIP_CODES);
+    int c3 = this.accountDAO.delete(example);
+    assertEquals("testConverterCRUDDeleteWhere #6", 0, c3);
+    
+    d = this.accountDAO.delete(1234);
+    assertEquals("testConverterCRUDDeleteWhere #7", 1, d);
+  
+    // DELETE CRUD by criteria
+    
+    a = new AccountLayout();
+    a.setId(1234);
+    a.setBalance(507);
+    a.setType(AccountType.PEN1);
+    a.setZipCodes(ZIP_CODES2);
+    inserted = this.accountDAO.insert(a);
+    assertNotNull("testConverterCRUDDeleteWhere #8", inserted);
+  
+    AccountTable t = this.accountDAO.newTable();
+    int c4 = this.accountDAO.delete(t, t.balance.eq(507).and(t.type.eq(AccountType.PEN1)).and(t.zipCodes.eq(ZIP_CODES2)))
+        .execute();
+    assertEquals("testConverterCRUDDeleteWhere #9", 1, c4);
+    d = this.accountDAO.delete(1234);
+    assertEquals("testConverterCRUDDeleteWhere #10", 0, d);
+  
+    // DELETE CRUD by criteria with no match
+    
+    a = new AccountLayout();
+    a.setId(1234);
+    a.setBalance(507);
+    a.setType(AccountType.PEN1);
+    a.setZipCodes(ZIP_CODES2);
+    inserted = this.accountDAO.insert(a);
+    assertNotNull("testConverterCRUDDeleteWhere #11", inserted);
+  
+    int c5 = this.accountDAO.delete(t, t.balance.eq(507).and(t.type.eq(AccountType.PEN1)).and(t.zipCodes.eq(ZIP_CODES)))
+        .execute();
+    assertEquals("testConverterCRUDDeleteWhere #12", 0, c5);
+    
+    d = this.accountDAO.delete(1234);
+    assertEquals("testConverterCRUDDeleteWhere #13", 1, d);
+  
   }
+  
+  private static final Integer[] ZIP_CODES4 = new Integer[] { 200, 300 };
+
   private void testConverterNitroSelectWhere() {
-  }
-  private void testConverterNitroInsert() {
-  }
-  private void testConverterNitroSetWhere() {
+    Account a = this.accountDAO.findAccount(4);
+    assertNotNull("testConverterNitroSelectWhere #1", a);
+    assertEquals("testConverterNitroSelectWhere #2", AccountType.CHK2, a.getType());
+    assertEquals("testConverterNitroSelectWhere #3", ZIP_CODES4, a.getZipCodes());
   }
 
   private void testConverters2() {

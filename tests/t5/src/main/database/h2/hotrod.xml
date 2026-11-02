@@ -93,6 +93,26 @@
     <column name="type" converter="account_type_stored_as_char" />
     <column name="zip_codes" converter="integer_array" />
     <column name="branches" converter="integer_array" />
+
+<!-- 
+//    testConverterNitroSelectWhere();
+//    testConverterNitroInsert();
+//    testConverterNitroSetWhere();
+-->
+    <select method="findAccount" mode="single-row">
+      <parameter name="id" type="Integer" />
+      <column name="type" converter="account_type_stored_as_char" />
+      <column name="zip_codes" converter="integer_array" />
+      <column name="branches" converter="integer_array" />
+      SELECT *
+      FROM account
+      WHERE id = #{id}
+    </select>
+
+    <query method="updateEmployees">
+      update employee SET id = id
+    </query>    
+
   </table>
 
 <!-- 
