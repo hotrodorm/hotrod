@@ -141,3 +141,32 @@ insert into account (id, balance, type, active, zip_codes) values
   (3, 300, 'SAV', 0, array[123]),
   (4, 400, 'CHK', 0, array[200, 300]);
   
+create table log (
+  id int generated always as identity not null,
+  title varchar(20) default 'Event',
+  recorded_at timestamp default current_timestamp()
+);
+
+insert into log () values ();
+
+insert into log () values ();
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

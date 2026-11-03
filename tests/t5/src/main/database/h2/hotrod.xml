@@ -114,6 +114,8 @@
     </query>    
 
   </table>
+  
+  <table name="log" />
 
 <!-- 
   <table name="data" entity="DATALocal">

@@ -1776,7 +1776,7 @@ public class DAOWriter {
       w.println("      return new ", is, "(this.context, this.insert);");
       w.println("    }");
 
-      writeConvertedSetterMetadata(is, "insert");
+      writeConvertedSetterMetadata(is, "insert", "value");
 
       w.println();
       w.println("  }");
@@ -1790,7 +1790,7 @@ public class DAOWriter {
       w.println("      super(context, insert);");
       w.println("    }");
 
-      writeConvertedSetterMetadata(is, "insert");
+      writeConvertedSetterMetadata(is, "insert", "value");
 
       w.println();
       w.println("  }");
@@ -1811,7 +1811,7 @@ public class DAOWriter {
       w.println("      return new ", us, "(this.context, this.update);");
       w.println("    }");
 
-      writeConvertedSetterMetadata(us, "update");
+      writeConvertedSetterMetadata(us, "update", "set");
 
       w.println();
       w.println("  }");
@@ -1825,7 +1825,7 @@ public class DAOWriter {
       w.println("      super(context, update);");
       w.println("    }");
 
-      writeConvertedSetterMetadata(us, "update");
+      writeConvertedSetterMetadata(us, "update", "set");
 
       w.println();
       w.println("  }");
@@ -1834,7 +1834,7 @@ public class DAOWriter {
 
   }
 
-  private void writeConvertedSetterMetadata(ExternalClass us, String queryObjectName) {
+  private void writeConvertedSetterMetadata(ExternalClass us, String queryObjectName, String methodName) {
     log.fine("* Start *");
     Set<String> typeCombos = new HashSet<>();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -1848,7 +1848,7 @@ public class DAOWriter {
         }
         typeCombos.add(typeCombo);
         w.println();
-        w.print("    public ", us, " set(", ConvertedEntityColumn.class, "<");
+        w.print("    public ", us, " " + methodName + "(", ConvertedEntityColumn.class, "<");
         w.print(rawClass, ", ");
         w.println(domainClass, "> column, final ", domainClass, " value) {");
         w.print("      ", TypeConverter.class, "<?, Object> converter = (");

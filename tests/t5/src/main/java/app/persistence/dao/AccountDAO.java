@@ -679,14 +679,14 @@ public class AccountDAO {
       return new AccountInsertSetPhase(this.context, this.insert);
     }
 
-    public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+    public AccountInsertSetPhase value(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
       return new AccountInsertSetPhase(this.context, this.insert);
     }
 
-    public AccountInsertSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
+    public AccountInsertSetPhase value(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
@@ -701,14 +701,14 @@ public class AccountDAO {
       super(context, insert);
     }
 
-    public AccountInsertSetPhase set(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
+    public AccountInsertSetPhase value(ConvertedEntityColumn<String, AccountType> column, final AccountType value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);
       return new AccountInsertSetPhase(this.context, this.insert);
     }
 
-    public AccountInsertSetPhase set(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
+    public AccountInsertSetPhase value(ConvertedEntityColumn<Array, Integer[]> column, final Integer[] value) {
       TypeConverter<?, Object> converter = (TypeConverter<?, Object>) CShield.getConverter(column);
       ConvertedValue convertedValue = ConvertedValue.of(value, converter);
       SShield.addSetter(this.insert, column, convertedValue);

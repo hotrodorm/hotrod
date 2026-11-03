@@ -10,7 +10,6 @@ import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.expressions.Function;
-import org.hotrod.livesql.queries.DeleteWherePhase;
 import org.hotrod.livesql.queries.ctes.CTE;
 import org.hotrod.livesql.queries.ctes.RecursiveCTE;
 import org.hotrod.livesql.queries.select.Select;
@@ -33,6 +32,8 @@ import app.persistence.dao.DATALocalDAO;
 import app.persistence.dao.DATALocalDAO.DATALocalTable;
 import app.persistence.dao.EmployeeDAO;
 import app.persistence.dao.EmployeeDAO.EmployeeTable;
+import app.persistence.dao.LogDAO;
+import app.persistence.dao.LogDAO.LogTable;
 import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 import app.persistence.model.DATALocal;
@@ -55,6 +56,10 @@ public class App {
 
   @Autowired
   private AccountDAO accountDAO;
+
+
+  @Autowired
+  private LogDAO logDAO;
 
 //  @Autowired
 //  private CoinDAO coinDAO;
@@ -413,6 +418,7 @@ public class App {
   private void testConverters() {
     testConverterLiveSQLUpdateSelectWhere();
     testConverterLiveSQLInsertSelectWhere();
+    testConverterLiveSQLInsertWithoutColumns();
     testConverterCRUDInsert();
     testConverterCRUDUpdateSetWhere();
     testConverterCRUDDeleteWhere();
@@ -506,9 +512,9 @@ public class App {
     AccountTable t = this.accountDAO.newTable();
 
     int c = this.sql.insert(t) //
-        .set(t.id, 909) //
-        .set(t.type, AccountType.PEN1) //
-        .set(t.zipCodes, ZIP_CODES) //
+        .value(t.id, 909) //
+        .value(t.type, AccountType.PEN1) //
+        .value(t.zipCodes, ZIP_CODES) //
         .execute(LIVESQL_LOG);
 //    System.out.println("# testConverterLiveSQLUpdateSelectWhere - c=" + c);
     assertEquals("testConverterLiveSQLInsertSelectWhere #1", 1, c);
@@ -518,6 +524,20 @@ public class App {
 //        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString(r.getA().getZipCodes())));
     assertEquals("testConverterLiveSQLInsertSelectWhere #2", 5, rs.size());
     assertEquals("testConverterLiveSQLInsertSelectWhere #3", ZIP_CODES, (Integer[]) rs.get(4).getA().getZipCodes());
+  }
+
+  private void testConverterLiveSQLInsertWithoutColumns() {
+    LogTable t = this.logDAO.newTable();
+
+    Row row = this.sql.select(sql.count().as("cnt").type(Integer.class)).from(t).executeOne();
+    assertEquals("testConverterLiveSQLInsertWithoutColumns #1", 2, row.get("cnt" , Integer.class));
+
+    int c = this.sql.insert(t).execute();
+    assertEquals("testConverterLiveSQLInsertWithoutColumns #2", 1, c);
+
+    row = this.sql.select(sql.count().as("cnt").type(Integer.class)).from(t).executeOne();
+    assertEquals("testConverterLiveSQLInsertWithoutColumns #3", 3,  row.get("cnt", Integer.class));
+
   }
 
   private static final Integer[] ZIP_CODES2 = new Integer[] { 1015, 1049 };

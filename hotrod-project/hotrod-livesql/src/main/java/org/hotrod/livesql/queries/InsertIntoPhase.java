@@ -50,63 +50,63 @@ public class InsertIntoPhase<I extends InsertSetPhase<?>> implements DMLQuery {
 
   // Current phase
 
-  public I set(final NumericEntityColumn column, final NumericExpression expression) {
+  public I value(final NumericEntityColumn column, final NumericExpression expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final NumericEntityColumn column, final Number n) {
+  public I value(final NumericEntityColumn column, final Number n) {
     this.insert.addSetter(column, BoxUtil.box(n));
     I nextPhase = this.getNextPhase();
     return nextPhase;
   }
 
-  public I set(final CharEntityColumn column, final CharExpression expression) {
+  public I value(final CharEntityColumn column, final CharExpression expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final CharEntityColumn column, final String s) {
+  public I value(final CharEntityColumn column, final String s) {
     this.insert.addSetter(column, BoxUtil.box(s));
     return this.getNextPhase();
   }
 
-  public I set(final DateTimeEntityColumn column, final DateTimeExpression expression) {
+  public I value(final DateTimeEntityColumn column, final DateTimeExpression expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final DateTimeEntityColumn column, final Date dt) {
+  public I value(final DateTimeEntityColumn column, final Date dt) {
     this.insert.addSetter(column, BoxUtil.box(dt));
     return this.getNextPhase();
   }
 
-  public I set(final BooleanEntityColumn column, final Predicate expression) {
+  public I value(final BooleanEntityColumn column, final Predicate expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final BooleanEntityColumn column, final boolean b) {
+  public I value(final BooleanEntityColumn column, final boolean b) {
     this.insert.addSetter(column, BoxUtil.box(b));
     return this.getNextPhase();
   }
 
-  public I set(final BinaryEntityColumn column, final BinaryExpression expression) {
+  public I value(final BinaryEntityColumn column, final BinaryExpression expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final BinaryEntityColumn column, final byte[] a) {
+  public I value(final BinaryEntityColumn column, final byte[] a) {
     this.insert.addSetter(column, BoxUtil.box(a));
     return this.getNextPhase();
   }
 
-  public I set(final ObjectEntityColumn column, final ObjectExpression expression) {
+  public I value(final ObjectEntityColumn column, final ObjectExpression expression) {
     this.insert.addSetter(column, expression);
     return this.getNextPhase();
   }
 
-  public I set(final ObjectEntityColumn column, final Object o) {
+  public I value(final ObjectEntityColumn column, final Object o) {
     this.insert.addSetter(column, BoxUtil.box(o));
     return this.getNextPhase();
   }

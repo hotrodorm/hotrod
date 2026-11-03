@@ -34,6 +34,11 @@ public class Row implements Map<String, Object> {
     return this.properties.get(key);
   }
 
+  @SuppressWarnings("unchecked")
+  public <T> T get(String key, Class<T> type) {
+    return (T) this.properties.get(key);
+  }
+
   @Override
   public Object put(String key, Object value) {
     return this.properties.put(key, value);

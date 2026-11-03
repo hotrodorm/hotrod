@@ -96,23 +96,15 @@ public class InsertObject {
     w.write("INSERT INTO ");
     w.write(context.getLiveSQLDialect().canonicalToNatural(this.into));
 
-    if (!this.setters.isEmpty()) { // insert using setters
+    if (this.select != null) { // insert from SELECT query
 
-      w.write("\n  (");
-      Separator sep = new Separator(", ");
-      for (Assignment a : this.setters) {
-        w.write(sep.render());
-        w.write(context.getLiveSQLDialect().canonicalToNatural(a.getColumn().getName().getName()));
-      }
-      w.write(")\nVALUES\n  (");
-      sep = new Separator(", ");
-      for (Assignment a : this.setters) {
-        w.write(sep.render());
-        Shield.renderTo(a.getExpression(), w);
-      }
-      w.write(")");
+      Set<SelectObject<?>> compiling = new HashSet<>();
+      this.select.compileColumns(compiling);
 
-    } else if (this.values != null) { // insert using VALUES
+      w.write("\n");
+      this.select.renderTo(w, null, false);
+
+    } else if (this.values != null) { // insert VALUES using columns and values
 
       if (this.columns != null) {
         w.write(" (");
@@ -134,13 +126,21 @@ public class InsertObject {
       }
       w.write(")");
 
-    } else { // insert from SELECT query
+    } else { // insert VALUES using setters
 
-      Set<SelectObject<?>> compiling = new HashSet<>();
-      this.select.compileColumns(compiling);
-
-      w.write("\n");
-      this.select.renderTo(w, null, false);
+      w.write("\n  (");
+      Separator sep = new Separator(", ");
+      for (Assignment a : this.setters) {
+        w.write(sep.render());
+        w.write(context.getLiveSQLDialect().canonicalToNatural(a.getColumn().getName().getName()));
+      }
+      w.write(")\nVALUES\n  (");
+      sep = new Separator(", ");
+      for (Assignment a : this.setters) {
+        w.write(sep.render());
+        Shield.renderTo(a.getExpression(), w);
+      }
+      w.write(")");
 
     }
 
