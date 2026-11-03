@@ -499,13 +499,13 @@ public class App {
     assertEquals("testConverterLiveSQLUpdateSelectWhere #2" ,4, rows.size());
 //    rows.forEach(r -> System.out
 //        .println("# - r=" + r + " -- zipCodes=" + java.util.Arrays.toString((Integer[]) r.get("zipCodes"))));
-    assertEquals("testConverterLiveSQLUpdateSelectWhere #3" ,ZIP_CODES, (Integer[]) rows.get(3).get("zipCodes"));
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #3" ,ZIP_CODES, rows.get(3).get("zipCodes", Integer[].class));
     
     List<Tuple1<Account>> rs = this.sql.select().tuples().from(t).orderBy(t.id).execute(LIVESQL_LOG);
 //    System.out.println("# testConverterLiveSQLUpdateSelectWhere - rs=" + rs.size());
 //    rs.forEach(r -> System.out
 //        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString( r.getA().getZipCodes())));
-    assertEquals("testConverterLiveSQLUpdateSelectWhere #4" ,ZIP_CODES, (Integer[]) rs.get(3).getA().getZipCodes());
+    assertEquals("testConverterLiveSQLUpdateSelectWhere #4" ,ZIP_CODES,  rs.get(3).getA().getZipCodes());
   }
 
   private void testConverterLiveSQLInsertSelectWhere() {
@@ -523,7 +523,7 @@ public class App {
 //    rs.forEach(r -> System.out
 //        .println("# - r=" + r.getA() + " -- zipCodes=" + java.util.Arrays.toString(r.getA().getZipCodes())));
     assertEquals("testConverterLiveSQLInsertSelectWhere #2", 5, rs.size());
-    assertEquals("testConverterLiveSQLInsertSelectWhere #3", ZIP_CODES, (Integer[]) rs.get(4).getA().getZipCodes());
+    assertEquals("testConverterLiveSQLInsertSelectWhere #3", ZIP_CODES, rs.get(4).getA().getZipCodes());
   }
 
   private void testConverterLiveSQLInsertWithoutColumns() {
