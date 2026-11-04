@@ -20,17 +20,19 @@ It can be written in LiveSQL as:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.update(p)
-   .set(p.price, p.price.mult(1.15))
-   .execute();
+int count = sql.update(p)
+               .set(p.price, p.price.mult(1.15))
+               .execute();
 ```
 
 The next query updates several columns in a subset of the rows:
 
 ```sql
-update product
-set promotion = 'BOGO', sale_price = price * 0.90, sales_code = 704
-where catalog_id = 1015 and type <> 'VIP';
+UPDATE product
+SET promotion = 'BOGO',
+    sale_price = price * 0.90,
+    sales_code = 704
+WHERE catalog_id = 1015 AND type <> 'VIP';
 ```
 
 It can be written as:
@@ -46,6 +48,8 @@ int count = sql.update(p)
 ```
 
 Note that the second parameter of the `set()` method accepts typed LiveSQL Expressions such as `p.price.mult(0.90)` (of type `NumberExpression`) or Java literals such as `704` (an Integer). The type of the second parameter is bound according to the type of the first parameter.
+
+**Note**: The type bounding for columns and values also works for converted columns. LiveSQL receives the converted (domain) value and automatically translates it to the corresponding database value when running the query.
 
 The filtering predicate in the WHERE clause can be as simple or as complex as needed according to the Expression Language.
 

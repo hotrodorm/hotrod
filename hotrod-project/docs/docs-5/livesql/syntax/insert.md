@@ -10,26 +10,48 @@ The inserted values can be provided as direct values in the INSERT query itself 
 select query. The following examples illustrate both cases:
 
 ```sql
-insert into product (id, name, price) values (1007, 'Seiko KL-101', 399.95);
+INSERT INTO product (id, name, price)
+VALUES (1007, 'Seiko KL-101', 399.95);
 
-insert into product (id, name, price)
-select id, name, price from new_catalog where stock > 0
+INSERT INTO product (id, name, price)
+SELECT id, name, price FROM new_catalog WHERE stock > 0
 ```
 
-## 1. Inserting Using VALUES without Generated Keys
+## 1. Inserting Using VALUES &mdash; No Generated Keys
 
-LiveSQL can insert a single row using the `VALUES` variation of the INSERT statement. 
+When the table does not generate primary keys, LiveSQL can insert a single row using the `VALUES` variation of the INSERT statement. This is also valid for inserting data through views.
 
-The follwowing INSERT:
+The following INSERT:
 
 ```sql
-INSERT INTO product (id, name, price) VALUES (1007, 'Seiko KL-101', 399.95);
+INSERT INTO product (id, name, price)
+VALUES (1007, 'Seiko KL-101', 399.95);
 ```
 
 Can be written in LiveSQL as:
 
 ```java
 ProductTable p = this.productDAO.newTable();
+
+int count = sql.insert(p)
+    .value(p.id, 1007)
+    .value(p.name, "Seiko KL-101")
+    .value(p.price, 399.95)
+    .execute();
+```
+
+Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
+or will use a DEFAULT or GENERATED value as specified by the table constraints.
+
+**Note**: The `.value()` method pairs the column with the corresponding type syntactically. For example, in the first case `p.id` must be paired with numeric value; if you specify other type, a string or a date, the code won't compile.
+
+**Note**: The pairing of columns and types also consider converters. If a column uses one, then the corresponding value must be of the converter domain type. For example, if a column is numeric in the database and converted to a boolean in the application, the assignment must use a boolean value.
+
+In this case the `count` will always be 1.
+
+Notice there's also the old-school INSERT syntax that is discouraged. The old syntax cannot handle converters. Using the old syntax the query could be written as:
+
+```java
 int count = sql
     .insert(p)
     .columns(p.id, p.name, p.price)
@@ -37,32 +59,32 @@ int count = sql
     .execute();
 ```
 
-Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
-or will use a DEFAULT value, as specified by the table constraints.
 
-In this case the `count` will always be 1.
 
-## 3. Inserting Using VALUES with Generated Keys
+## 2. Inserting Using VALUES &mdash; With Generated Keys
 
 If the table implements key generation, either with the use of an IDENTITY or a SEQUENCE LiveSQL will retrieve the generated key automatically.
 
-The follwing example assumes the table EMPLOYEE has an IDENTITY primary key. If we assume its type as BIGINT, then the corresponding type in your app will be `Long`. Note that the primary key column (`id` in this case) is omitted in the LiveSQL query, althought it's added automatically behind the scenes when running the actual SQL query:
+The following example assumes the table EMPLOYEE has an IDENTITY primary key. If we assume its type as BIGINT, then the corresponding type in your app will be `Long`. For other database types the application type will be different.
+
+Note that the primary key column (`id` in this case) is omitted in the LiveSQL query, althought it's added automatically behind the scenes when running the actual SQL query:
 
 ```java
 EmployeeTable e = this.employeeDAO.newTable();
+
 Long id = sql
     .insert(e)
-    .columns(e.firstName, e.lastName)
-    .values(sql.val("Clara"), sql.val("Clayton"))
+    .value(e.firstName, "Clara")
+    .value(e.lastName, "Clayton")
     .execute();
 ```
 
 See the [Appendix A - Database Support for Insert with Generated Keys](#appendix-a---database-support-for-insert-with-generated-keys) section below for the list of databases that support this functionality.
 
 
-## 3. Inserting Using a SELECT without Generated Keys
+## 3. Inserting Using a SELECT &mdash; No Generated Keys
 
-LiveSQL can also execute inserts combined with a SELECT statement.
+LiveSQL can also execute inserts combined with a SELECT statement. When the table does not implement primary key generation LiveSQL return the number of inserted rows.
 
 The following SQL statement:
 
@@ -81,7 +103,11 @@ NewCatalogTable c = NewCatalogDAO.newTable();
 int count = sql
     .insert(p)
     .columns(p.id, p.name, p.price)
-    .select(sql.select(c.id, c.name, c.price).from(c).where(c.stock.gt(0)))
+    .select(
+       sql.select(c.id, c.name, c.price)
+          .from(c)
+          .where(c.stock.gt(0))
+       )
     .execute();
 ```
 
@@ -89,7 +115,7 @@ The SELECT statement is a general SQL select that can take any complexity as nee
 
 Since the table does not implement any key generation strategy the INSERT query returns the count of inserted rows.
 
-## 4. Inserting Using a SELECT with Generated Keys
+## 4. Inserting Using a SELECT &mdash; With Generated Keys
 
 If the table implements a key generation strategy, either with the use of an IDENTITY or a SEQUENCE LiveSQL will retrieve the count of inserted rows along with the list of generated keys.
 
@@ -103,7 +129,7 @@ InsertResult<Long> r = sql
     .select(sql
         .select(c.fName, c.lName)
         .from(c)
-        .where(c.approved.eq(1)
+        .where(c.approved.eq(1))
     )
     .execute();
 int count = r.getCount();
@@ -126,10 +152,13 @@ The main difference is that for LiveSQL a view never produces generated keys, ev
 Let's consider the following view and an insertion on it:
 
 ```sql
-create view vip_product as
-select id, name, price, product_type from product where product_type = 'VIP';
+CREATE VIEW vip_product AS
+SELECT id, name, price, product_type 
+FROM product 
+WHERE product_type = 'VIP';
 
-insert into vip_product (id, name, price, product_type) values (2514, 'Tohoku AB', 14.50, 'VIP');
+INSERT INTO vip_product (id, name, price, product_type)
+VALUES (2514, 'Tohoku AB', 14.50, 'VIP');
 ```
 
 In LiveSQL the insertion could take the form:
