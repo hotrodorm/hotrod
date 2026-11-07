@@ -16,11 +16,30 @@ public class IntegerLiteral extends NumericLiteral {
     this.formatted = "" + value;
   }
 
+  public static IntegerLiteral of(final long value) {
+    if (value == 0) {
+      return ZERO;
+    } else if (value == 1) {
+      return ONE;
+    } else {
+      return new IntegerLiteral(value);
+    }
+  }
+
   public IntegerLiteral(final BigInteger value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.formatted = "" + value;
   }
 
+  public static IntegerLiteral of(final BigInteger value) {
+    if (value.equals(BigInteger.ZERO)) {
+      return ZERO;
+    } else if (value.equals(BigInteger.ONE)) {
+      return ONE;
+    } else {
+      return new IntegerLiteral(value);
+    }
+  }
   // Getters
 
   public static IntegerLiteral getZero() {
