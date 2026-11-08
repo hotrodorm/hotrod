@@ -242,36 +242,50 @@ public class LogResistantFormatter {
   // Utilities
 
   public static byte[] compress(byte[] input, int compressionLevel, boolean GZIPFormat) throws IOException {
-    Deflater compressor = new Deflater(compressionLevel, GZIPFormat);
-    compressor.setInput(input);
-    compressor.finish();
-    ByteArrayOutputStream bao = new ByteArrayOutputStream();
-    byte[] readBuffer = new byte[1024];
-    int readCount = 0;
-    while (!compressor.finished()) {
-      readCount = compressor.deflate(readBuffer);
-      if (readCount > 0) {
-        bao.write(readBuffer, 0, readCount);
+    Deflater compressor = null;
+    try {
+      compressor = new Deflater(compressionLevel, GZIPFormat);
+      compressor.setInput(input);
+      compressor.finish();
+      ByteArrayOutputStream bao = new ByteArrayOutputStream();
+      byte[] readBuffer = new byte[1024];
+      int readCount = 0;
+      while (!compressor.finished()) {
+        readCount = compressor.deflate(readBuffer);
+        if (readCount > 0) {
+          bao.write(readBuffer, 0, readCount);
+        }
+      }
+      compressor.end();
+      return bao.toByteArray();
+    } finally {
+      if (compressor != null) {
+        compressor.end();
       }
     }
-    compressor.end();
-    return bao.toByteArray();
   }
 
   public static byte[] decompress(byte[] input, boolean GZIPFormat) throws IOException, DataFormatException {
-    Inflater decompressor = new Inflater(GZIPFormat);
-    decompressor.setInput(input);
-    ByteArrayOutputStream bao = new ByteArrayOutputStream();
-    byte[] readBuffer = new byte[1024];
-    int readCount = 0;
-    while (!decompressor.finished()) {
-      readCount = decompressor.inflate(readBuffer);
-      if (readCount > 0) {
-        bao.write(readBuffer, 0, readCount);
+    Inflater decompressor = null;
+    try {
+      decompressor = new Inflater(GZIPFormat);
+      decompressor.setInput(input);
+      ByteArrayOutputStream bao = new ByteArrayOutputStream();
+      byte[] readBuffer = new byte[1024];
+      int readCount = 0;
+      while (!decompressor.finished()) {
+        readCount = decompressor.inflate(readBuffer);
+        if (readCount > 0) {
+          bao.write(readBuffer, 0, readCount);
+        }
+      }
+      decompressor.end();
+      return bao.toByteArray();
+    } finally {
+      if (decompressor != null) {
+        decompressor.end();
       }
     }
-    decompressor.end();
-    return bao.toByteArray();
   }
 
   private byte[] concat(final byte[] a, final byte[] b) {
