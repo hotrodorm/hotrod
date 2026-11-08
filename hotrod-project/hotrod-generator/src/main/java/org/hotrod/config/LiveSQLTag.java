@@ -2,7 +2,9 @@ package org.hotrod.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -31,8 +33,14 @@ public class LiveSQLTag extends AbstractConfigurationTag {
 
   public void validate(File basedir, final File parentDir, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
+    Set<String> functionNames = new HashSet<String>();
     for (LiveSQLFunctionTag function : this.functions) {
       function.validate(basedir, parentDir, adapter, currentCS);
+      if (functionNames.contains(function.getName())) {
+        throw new InvalidConfigurationFileException(function,
+            "Duplicate function name '" + function.getName() + "' in <livesql> tag.");
+      }
+      functionNames.add(function.getName());
     }
   }
 
