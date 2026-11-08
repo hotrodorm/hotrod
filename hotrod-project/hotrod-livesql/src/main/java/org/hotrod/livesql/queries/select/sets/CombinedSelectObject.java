@@ -13,6 +13,7 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.Expression;
+import org.hotrod.livesql.expressions.character.ChShield;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.livesql.ordering.OHelper;
@@ -20,9 +21,9 @@ import org.hotrod.livesql.queries.GeneratedKeysInsertObject.InsertSelectRenderin
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.LiveSQLPreparedQuery;
 import org.hotrod.livesql.queries.QueryWriter;
-import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.queries.select.FlatSelectObject;
 import org.hotrod.livesql.queries.select.FlatSelectObject.AliasGenerator;
+import org.hotrod.livesql.queries.select.TableReferences;
 import org.hotrod.livesql.util.IdUtil;
 import org.hotrod.livesql.util.ToString;
 
@@ -195,7 +196,7 @@ public class CombinedSelectObject<T> extends SelectObject<T> {
       if (t.getOperator().isUnion()) {
         effectiveEdits = edits;
       } else {
-        effectiveEdits = InsertSelectRenderingEdits.of(null, new CharSQLInjection("0"), null);
+        effectiveEdits = InsertSelectRenderingEdits.of(null, CharSQLInjection.ZERO, null);
       }
 
       t.getOperator().renderTo(w);

@@ -5,13 +5,15 @@ import org.hotrod.livesql.queries.QueryWriter;
 
 public class CharSQLInjection extends CharSyntaxExpression {
 
+  public static final CharSQLInjection ZERO = new CharSQLInjection("0");
+
   // Properties
 
   private String value;
 
   // Constructor
 
-  public CharSQLInjection(final String value) {
+  CharSQLInjection(final String value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
   }
