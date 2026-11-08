@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.LiveSQLFunctionTemplateParser.InvalidLiveSQLFunctionTemplateException;
-import org.hotrod.config.LiveSQLFunctionTemplateParser.Section;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.functions.Section;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "function")
@@ -68,6 +68,10 @@ public class LiveSQLFunctionTag extends AbstractConfigurationTag {
 
   public List<Section> getTemplateSections() {
     return this.templateSections;
+  }
+  
+  public String getOriginalTemplate() {
+    return this.template;
   }
 
   @Override

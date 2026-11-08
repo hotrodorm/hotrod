@@ -11,14 +11,14 @@ import org.hotrod.utils.SUtil;
 
 public class TableReferences {
 
-  private Set<TableOrView> tableReferences = new HashSet<>();
+  private Set<TableOrView<?, ?, ?>> tableReferences = new HashSet<>();
 
   private Set<RecursiveCTE> visitedRecursiveCTEs = new HashSet<>();
   private Set<RecursiveCTE> visitedRecursiveCTEs2 = new HashSet<>();
 
   private Set<String> aliases = new HashSet<String>();
 
-  public void register(final String alias, final TableOrView tableOrView) {
+  public void register(final String alias, final TableOrView<?, ?, ?> tableOrView) {
     if (this.tableReferences.contains(tableOrView)) {
       throw new InvalidLiveSQLStatementException(
           "An instance of the " + tableOrView.getType() + " " + MDShield.renderUnescapedName(tableOrView)
@@ -31,7 +31,7 @@ public class TableReferences {
     this.tableReferences.add(tableOrView);
   }
 
-  public Set<TableOrView> getTableReferences() {
+  public Set<TableOrView<?, ?, ?>> getTableReferences() {
     return tableReferences;
   }
 

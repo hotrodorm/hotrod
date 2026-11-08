@@ -13,7 +13,6 @@ import org.hotrod.livesql.LiveSQLLogging;
 import org.hotrod.livesql.dialects.LiveSQLDialect;
 import org.hotrod.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.character.ChShield;
 import org.hotrod.livesql.expressions.character.CharSQLInjection;
 import org.hotrod.livesql.ordering.CombinedOrderingTerm;
 import org.hotrod.livesql.ordering.OHelper;

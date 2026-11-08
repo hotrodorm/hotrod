@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.JDBCTag;
 import org.hotrod.config.LiveSQLFunctionTag;
-import org.hotrod.config.LiveSQLFunctionTemplateParser.Section;
 import org.hotrod.config.LiveSQLTag;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
@@ -15,7 +14,7 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplateBuilder;
 import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.SUtil;
+import org.hotrod.utils.FunctionUtils;
 
 public class LayerLiveSQLResourcesWriter {
 
@@ -45,17 +44,9 @@ public class LayerLiveSQLResourcesWriter {
       this.w = new ClassWriter(this.jdbcTag.getLayerResources().getAssembledPackage());
 
       this.writeHeader();
+
       this.writeLiveSQLResources();
-//      this.writeConverterBeans();
-//      this.writeLayerConfig();
-//
-//      if (this.jdbcTag.generateQualifierBeans()) {
-//        this.writeDataSourceProperties();
-//        this.writeDataSource();
-//        this.writeDialectProperties();
-//        this.writeLiveSQL();
-//      }
-//
+
       this.writeFooter();
 
       w.writeTo(tw);
@@ -77,14 +68,31 @@ public class LayerLiveSQLResourcesWriter {
     }
     for (LiveSQLFunctionTag f : liveSQLTag.getFunctions()) {
       w.println();
-      w.print("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
-      w.println(LiveSQLFunctionTemplateBuilder.class, ".name(\"" + SUtil.escapeJavaString(f.getName()) + "\")");
-      for (Section s : f.getTemplateSections()) {
-        w.print("      ");
-        s.printTo(w);
-        w.println();
+      w.println("  // Function template: " + f.getOriginalTemplate());
+      w.println("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
+      LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.build(f.getName(), f.getTemplateSections());
+      String serialized = FunctionUtils.render(template);
+
+      w.println("    ", FunctionUtils.class, ".prepare(");
+
+      for (int i = 0; i < serialized.length(); i += 50) {
+        w.print("      \"" + serialized.substring(i, Math.min(i + 50, serialized.length())) + "\"");
+        if (i + 50 < serialized.length()) {
+          w.println(" +");
+        } else {
+          w.println(");");
+        }
       }
-      w.println("      .end();");
+//      w.print("    ", FunctionUtils.class, ".deserialize(\"" + serialized + "\");");
+
+//      w.println("\"" + serialized + "\";");
+//      w.println(LiveSQLFunctionTemplateBuilder.class, ".name(\"" + SUtil.escapeJavaString(f.getName()) + "\")");
+//      for (Section s : f.getTemplateSections()) {
+//        w.print("      ");
+//        s.printTo(w);
+//        w.println();
+//      }
+//      w.println("      .end();");
     }
   }
 

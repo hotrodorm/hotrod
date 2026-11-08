@@ -23,6 +23,7 @@ public class AbstractSelectPhase<R> extends Select<R> {
 
   public AbstractSelectPhase(final LiveSQLContext context, final List<CTE> ctes, final boolean distinct,
       final boolean doNotAliasColumns) {
+    log.finer("init");
     this.context = context;
     FlatSelectObject<R> s = new FlatSelectObject<>(ctes, distinct, doNotAliasColumns);
     this.combined = new CombinedSelectObject<>(s);

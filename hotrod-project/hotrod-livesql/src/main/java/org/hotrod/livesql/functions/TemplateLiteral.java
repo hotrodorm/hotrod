@@ -6,6 +6,8 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 
 public class TemplateLiteral extends TemplateSegment {
 
+  private static final long serialVersionUID = 1L;
+
   private String text;
 
   private TemplateLiteral(String text) {

@@ -3,8 +3,6 @@ package org.hotrod.livesql.queries.select;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.livesql.Available;
-import org.hotrod.livesql.dialects.Const;
 import org.hotrod.livesql.expressions.SQLExpression;
 import org.hotrod.livesql.queries.LiveSQLContext;
 import org.hotrod.livesql.queries.ctes.CTE;
@@ -39,11 +37,6 @@ public class SelectCTEPhase<R> {
 
   public SelectColumnsPhase<R> selectDistinct(final SQLExpression... resultSetColumns) {
     return new SelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
-  }
-
-  @Available(engine = Const.POSTGRESQL, since = Const.PG15)
-  public PGSelectColumnsPhase<R> selectDistinctOn(final SQLExpression... resultSetColumns) {
-    return new PGSelectColumnsPhase<R>(this.context, this.ctes, true, resultSetColumns);
   }
 
 }

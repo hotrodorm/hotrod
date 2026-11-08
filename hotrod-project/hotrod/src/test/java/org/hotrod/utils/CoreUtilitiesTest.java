@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.hotrod.interfaces.OrderBy;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,28 @@ public class CoreUtilitiesTest {
   @Test
   public void hexadecimalConversionRejectsInvalidCharacters() {
     assertThrows(IllegalArgumentException.class, () -> HexaUtils.toByteArray("0g"));
+  }
+
+  @Test
+  public void objectHexadecimalSerializationRoundTripsSerializableObjects() {
+    List<String> value = Arrays.asList("alpha", "beta");
+
+    String serialized = FunctionUtils.render(value);
+
+    assertEquals(value, FunctionUtils.<List<String>>prepare(serialized));
+    assertNull(FunctionUtils.render(null));
+    assertNull(FunctionUtils.prepare(null));
+  }
+
+  @Test
+  public void objectHexadecimalDeserializationRejectsInvalidInput() {
+    assertThrows(IllegalArgumentException.class, () -> FunctionUtils.prepare("0g"));
+    assertThrows(IllegalArgumentException.class, () -> FunctionUtils.prepare("00"));
+  }
+
+  @Test
+  public void objectHexadecimalSerializationRejectsNonSerializableObjects() {
+    assertThrows(IllegalStateException.class, () -> FunctionUtils.render(new Object()));
   }
 
   @Test

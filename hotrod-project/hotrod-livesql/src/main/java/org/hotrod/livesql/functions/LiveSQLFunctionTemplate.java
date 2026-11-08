@@ -1,33 +1,26 @@
 package org.hotrod.livesql.functions;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.hotrod.livesql.exceptions.LiveSQLException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 
-public class LiveSQLFunctionTemplate {
+public class LiveSQLFunctionTemplate implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private String name;
-  private List<TemplateSegment> templates = new ArrayList<>();
+  private TemplateSegment[] segments;
   private boolean sealed = false;
 
-  public LiveSQLFunctionTemplate(String name) {
+  public LiveSQLFunctionTemplate(String name, TemplateSegment[] segments) {
     this.name = name;
-    this.templates = new ArrayList<>();
-  }
-
-  void add(TemplateSegment ts) {
-    if (this.sealed) {
-      throw new LiveSQLException("Cannot add segments to a sealed function template.");
+    this.segments = segments;
+    for (TemplateSegment ts : this.segments) {
+      ts.setTemplate(this);
     }
-    this.templates.add(ts);
-  }
-
-  void seal() {
-    this.sealed = true;
   }
 
   public String getName() {
@@ -37,7 +30,7 @@ public class LiveSQLFunctionTemplate {
   public PreparedFunction prepare(ComparableExpression... arguments) {
     Iterator<ComparableExpression> it = Arrays.asList(arguments).iterator();
     PreparedFunction preparingFunction = new PreparedFunction(this.name);
-    for (TemplateSegment ts : this.templates) {
+    for (TemplateSegment ts : this.segments) {
       ts.prepare(it, preparingFunction);
     }
     if (it.hasNext()) {

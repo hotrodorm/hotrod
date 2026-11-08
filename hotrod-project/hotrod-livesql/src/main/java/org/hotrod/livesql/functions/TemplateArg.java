@@ -7,20 +7,19 @@ import org.hotrod.livesql.expressions.ComparableExpression;
 
 public class TemplateArg extends TemplateSegment {
 
-  private LiveSQLFunctionTemplate template;
+  private static final long serialVersionUID = 1L;
 
-  private TemplateArg(LiveSQLFunctionTemplate template) {
-    this.template = template;
+  private TemplateArg() {
   }
 
-  static TemplateArg of(LiveSQLFunctionTemplate template) {
-    return new TemplateArg(template);
+  static TemplateArg of() {
+    return new TemplateArg();
   }
 
   @Override
   void prepare(Iterator<ComparableExpression> it, PreparedFunction preparingFunction) {
     if (!it.hasNext()) {
-      throw new LiveSQLException("Not enough arguments for the function template: " + this.template.getName());
+      throw new LiveSQLException("Not enough arguments for the function template: " + super.getTemplate().getName());
     }
     ComparableExpression p = it.next();
     preparingFunction.add(PreparedArg.of(p));

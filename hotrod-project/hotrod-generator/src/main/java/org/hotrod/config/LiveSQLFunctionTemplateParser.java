@@ -3,8 +3,10 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.SUtil;
+import org.hotrod.functions.ArgSection;
+import org.hotrod.functions.LiteralSection;
+import org.hotrod.functions.Section;
+import org.hotrod.functions.VarArgSection;
 
 //Arguments:
 //arg: #{}
@@ -93,69 +95,69 @@ public class LiveSQLFunctionTemplateParser {
     }
     return sections;
   }
-
-  public static interface Section {
-    void printTo(ClassWriter w);
-  }
-
-  public static class LiteralSection implements Section {
-
-    private String literal;
-
-    public LiteralSection(String literal) {
-      this.literal = coalesce(literal);
-    }
-
-    public String getLiteral() {
-      return literal;
-    }
-
-    @Override
-    public void printTo(ClassWriter w) {
-      w.print(".literal(\"" + SUtil.escapeJavaString(literal) + "\")");
-    }
-
-  }
-
-  public static class ArgSection implements Section {
-
-    @Override
-    public void printTo(ClassWriter w) {
-      w.print(".arg()");
-    }
-
-  }
-
-  public static class VarArgSection implements Section {
-
-    private String firstPrefix;
-    private String prefix;
-    private String suffix;
-
-    public VarArgSection(String firstPrefix, String prefix, String suffix) {
-      this.firstPrefix = coalesce(firstPrefix);
-      this.prefix = coalesce(prefix);
-      this.suffix = coalesce(suffix);
-    }
-
-    public String getFirstPrefix() {
-      return firstPrefix;
-    }
-
-    public String getPrefix() {
-      return prefix;
-    }
-
-    public String getSuffix() {
-      return suffix;
-    }
-
-    @Override
-    public void printTo(ClassWriter w) {
-      w.print(".vararg()");
-    }
-
-  }
+//
+//  public static interface Section {
+//    void printTo(ClassWriter w);
+//  }
+//
+//  public static class LiteralSection implements Section {
+//
+//    private String literal;
+//
+//    public LiteralSection(String literal) {
+//      this.literal = coalesce(literal);
+//    }
+//
+//    public String getLiteral() {
+//      return literal;
+//    }
+//
+//    @Override
+//    public void printTo(ClassWriter w) {
+//      w.print(".literal(\"" + SUtil.escapeJavaString(literal) + "\")");
+//    }
+//
+//  }
+//
+//  public static class ArgSection implements Section {
+//
+//    @Override
+//    public void printTo(ClassWriter w) {
+//      w.print(".arg()");
+//    }
+//
+//  }
+//
+//  public static class VarArgSection implements Section {
+//
+//    private String firstPrefix;
+//    private String prefix;
+//    private String suffix;
+//
+//    public VarArgSection(String firstPrefix, String prefix, String suffix) {
+//      this.firstPrefix = coalesce(firstPrefix);
+//      this.prefix = coalesce(prefix);
+//      this.suffix = coalesce(suffix);
+//    }
+//
+//    public String getFirstPrefix() {
+//      return firstPrefix;
+//    }
+//
+//    public String getPrefix() {
+//      return prefix;
+//    }
+//
+//    public String getSuffix() {
+//      return suffix;
+//    }
+//
+//    @Override
+//    public void printTo(ClassWriter w) {
+//      w.print(".vararg()");
+//    }
+//
+//  }
 
   public static class InvalidLiveSQLFunctionTemplateException extends Exception {
 
