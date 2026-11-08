@@ -7,6 +7,27 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Core:
     - Seamless compatibility with all versions of Spring Boot. No special configuration needed.
 
+- LiveSQL:
+    - **Compatibility break**: Custom functions must now declare their templates statically in the XML configuration file. Runtime template definitions are no longer supported, to prevent rare but technically possible SQL injection vulnerabilities. This change is not backward-compatible with earlier versions of the LiveSQL functions.
+    - Fixing converters in CRUD write operations in INSERT/UPDATE/DELETE.
+    - Fixing converters in LiveSQL write operations in SELECT/INSERT/UPDATE/DELETE, including free LiveSQL form, tuples, and criteria access.
+    - Implementing INSERT compatibility with version 4 with default as "legacy" instead of the new mode "standard".
+    - Standardizing behavior for empty foreach collections.
+    - Fixing NTILE() function.
+    - Fixing cursor reading database connection management.
+    - Normalizing all exceptions thrown in LiveSQL as LiveSQLException.
+    - Normalization of numeric, char, and aggregation functions.
+
+- Nitro:
+    - All JEXL expressions now run in **Restricted Mode** to prevent Dynamic SQL from accessing the JVM or any objects outside the persistence layer.
+
+- Torcs:
+    - Removing standard deviation values, since they could be unreliable for elapsed times greater than 46 seconds.
+    - Hardening to avoid possible &mdash; although very rare &mdash; collision in hashes.
+    - Ensuring thread safety and implementing pass-through for JVM errors, and scheduler lifecycle cleanup.
+    - Hardening of the Highest Frequency Ranking by adding an internal cache.
+
+
 ## 5.1.26:
 
 - LiveSQL:
