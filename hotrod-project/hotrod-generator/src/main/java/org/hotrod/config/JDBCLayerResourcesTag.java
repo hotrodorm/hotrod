@@ -29,6 +29,7 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
   private String sPackage = null;
   private String sSubPackage = null;
   private String className = null;
+  private String liveSQLFunctionsClassName = "LiveSQLFunctions";
 
   private File baseDir;
   private ClassPackage assembledPackage;
@@ -153,6 +154,10 @@ public class JDBCLayerResourcesTag extends AbstractConfigurationTag {
 
   public String getClassName() {
     return className;
+  }
+
+  public String getLiveSQLFunctionsClassName() {
+    return liveSQLFunctionsClassName;
   }
 
   // Simple Caption

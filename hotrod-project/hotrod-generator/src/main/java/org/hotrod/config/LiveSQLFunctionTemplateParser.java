@@ -3,6 +3,9 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.utils.ClassWriter;
+import org.hotrod.utils.SUtil;
+
 //Arguments:
 //arg: #{}
 //vararg: #{prefix?suffix} or #{firstprefix?prefix?suffix}
@@ -92,7 +95,7 @@ public class LiveSQLFunctionTemplateParser {
   }
 
   public static interface Section {
-
+    void printTo(ClassWriter w);
   }
 
   public static class LiteralSection implements Section {
@@ -107,9 +110,20 @@ public class LiveSQLFunctionTemplateParser {
       return literal;
     }
 
+    @Override
+    public void printTo(ClassWriter w) {
+      w.print(".literal(\"" + SUtil.escapeJavaString(literal) + "\")");
+    }
+
   }
 
   public static class ArgSection implements Section {
+
+    @Override
+    public void printTo(ClassWriter w) {
+      w.print(".arg()");
+    }
+
   }
 
   public static class VarArgSection implements Section {
@@ -134,6 +148,11 @@ public class LiveSQLFunctionTemplateParser {
 
     public String getSuffix() {
       return suffix;
+    }
+
+    @Override
+    public void printTo(ClassWriter w) {
+      w.print(".vararg()");
     }
 
   }

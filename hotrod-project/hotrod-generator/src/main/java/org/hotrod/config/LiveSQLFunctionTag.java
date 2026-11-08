@@ -1,7 +1,9 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -17,10 +19,12 @@ public class LiveSQLFunctionTag extends AbstractConfigurationTag {
 
   private static final String PROPERTY_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*+";
 
+  private static final Logger log = Logger.getLogger(LiveSQLFunctionTag.class.getName());
+
   private String name;
   private String template;
 
-  private List<Section> templateSections;
+  private List<Section> templateSections = new ArrayList<>();
 
   public LiveSQLFunctionTag() {
     super("function");

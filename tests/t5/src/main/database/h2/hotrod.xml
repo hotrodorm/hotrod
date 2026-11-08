@@ -43,6 +43,7 @@
 
   <livesql>
     <function name="random" template="(random(123) * (#{}))" />
+    <function name="addone" template="addone(#{})" />
   </livesql>
 
 <!-- 

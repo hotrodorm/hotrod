@@ -147,6 +147,9 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     this.runtimeTypeSolverTag.validate(this);
 
+    // LiveSQL Functions
+    
+    this.liveSQLTag.validate(basedir, parentDir, adapter, currentCS);
   }
 
   // Apply current catalog/schema to declared tables
