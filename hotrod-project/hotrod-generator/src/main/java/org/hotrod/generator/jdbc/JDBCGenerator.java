@@ -68,7 +68,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private List<LayoutWriter> tableAbstractVOs = new ArrayList<>();
 
   private LayerResourcesBeanWriter layerConfig;
-  private LayerLiveSQLResourcesWriter layerLiveSQLResourcesWriter;
+  private LiveSQLResourcesWriter layerLiveSQLResourcesWriter;
 
   public JDBCGenerator(final HotRodContext hc, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final Feedback feedback)
@@ -104,7 +104,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
     this.jdbcTag = (JDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
     this.layerConfig = new LayerResourcesBeanWriter(this.jdbcTag, this.config.getRuntimeTypeSolverTag());
-    this.layerLiveSQLResourcesWriter = new LayerLiveSQLResourcesWriter(this.config, this.jdbcTag);
+    this.layerLiveSQLResourcesWriter = new LiveSQLResourcesWriter(this.config, this.jdbcTag);
 
     // Add tables
 

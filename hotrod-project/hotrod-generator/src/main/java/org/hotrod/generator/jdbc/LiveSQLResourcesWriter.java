@@ -16,16 +16,18 @@ import org.hotrod.livesql.functions.LiveSQLFunctionTemplateBuilder;
 import org.hotrod.utils.ClassWriter;
 import org.hotrod.utils.FunctionUtils;
 
-public class LayerLiveSQLResourcesWriter {
+public class LiveSQLResourcesWriter {
 
-  private static final Logger log = Logger.getLogger(LayerLiveSQLResourcesWriter.class.getName());
+  private static final int SEGMENT_SIZE = 90;
+
+  private static final Logger log = Logger.getLogger(LiveSQLResourcesWriter.class.getName());
 
   private HotRodConfigTag config;
   private JDBCTag jdbcTag;
   private String className;
   private ClassWriter w;
 
-  public LayerLiveSQLResourcesWriter(final HotRodConfigTag config, JDBCTag jdbcTag) {
+  public LiveSQLResourcesWriter(final HotRodConfigTag config, JDBCTag jdbcTag) {
     log.fine("init");
     this.config = config;
     this.jdbcTag = jdbcTag;
@@ -68,16 +70,16 @@ public class LayerLiveSQLResourcesWriter {
     }
     for (LiveSQLFunctionTag f : liveSQLTag.getFunctions()) {
       w.println();
-      w.println("  // Function template: " + f.getOriginalTemplate());
-      w.println("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
+      w.println("  // Function: " + f.getOriginalTemplate());
+      w.print("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
       LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.build(f.getName(), f.getTemplateSections());
       String serialized = FunctionUtils.render(template);
 
-      w.println("    ", FunctionUtils.class, ".prepare(");
+      w.println(FunctionUtils.class, ".prepare(");
 
-      for (int i = 0; i < serialized.length(); i += 50) {
-        w.print("      \"" + serialized.substring(i, Math.min(i + 50, serialized.length())) + "\"");
-        if (i + 50 < serialized.length()) {
+      for (int i = 0; i < serialized.length(); i += SEGMENT_SIZE) {
+        w.print("      \"" + serialized.substring(i, Math.min(i + SEGMENT_SIZE, serialized.length())) + "\"");
+        if (i + SEGMENT_SIZE < serialized.length()) {
           w.println(" +");
         } else {
           w.println(");");
