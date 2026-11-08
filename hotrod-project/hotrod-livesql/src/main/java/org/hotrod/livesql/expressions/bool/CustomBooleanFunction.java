@@ -1,22 +1,22 @@
 package org.hotrod.livesql.expressions.bool;
 
 import org.hotrod.livesql.expressions.ComparableExpression;
-import org.hotrod.livesql.expressions.Expression;
-import org.hotrod.livesql.expressions.rendering.FunctionTemplate;
+import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
+import org.hotrod.livesql.functions.PreparedFunction;
 import org.hotrod.livesql.queries.QueryWriter;
 
-public abstract class CustomBooleanFunction extends BooleanSyntaxExpression {
+public abstract class CustomBooleanFunction extends BooleanFunction {
 
-  private FunctionTemplate template;
+  private PreparedFunction preparedFunction;
 
-  protected CustomBooleanFunction(final String pattern, final ComparableExpression... parameters) {
-    super(Expression.PRECEDENCE_FUNCTION);
-    this.template = new FunctionTemplate(pattern, parameters);
+  protected CustomBooleanFunction(final LiveSQLFunctionTemplate template, final ComparableExpression... arguments) {
+    super(arguments);
+    this.preparedFunction = template.prepare(arguments);
   }
 
   @Override
   protected void renderTo(final QueryWriter w) {
-    this.template.renderTo(w);
+    this.preparedFunction.renderTo(w);
   }
 
 }

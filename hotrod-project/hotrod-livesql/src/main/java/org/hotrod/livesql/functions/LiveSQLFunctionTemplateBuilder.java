@@ -4,7 +4,7 @@ public class LiveSQLFunctionTemplateBuilder {
 
   private LiveSQLFunctionTemplate template;
 
-  public static LiveSQLFunctionTemplateBuilder begin(String templateName) {
+  public static LiveSQLFunctionTemplateBuilder name(String templateName) {
     LiveSQLFunctionTemplateBuilder b = new LiveSQLFunctionTemplateBuilder();
     b.template = new LiveSQLFunctionTemplate(templateName);
     return b;

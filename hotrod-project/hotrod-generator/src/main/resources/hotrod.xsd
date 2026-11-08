@@ -17,6 +17,7 @@
           <xsd:element name="fragment" type="fragment-type" />
           <xsd:element name="facet" type="facet-type" />
           <xsd:element name="converter" type="converter-type" />
+          <xsd:element name="livesql" type="livesql-type" />
         </xsd:choice>
       </xsd:sequence>
     </xsd:complexType>
@@ -50,6 +51,17 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="when" type="type-solver-when-type" />
     </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="livesql-type">
+    <xsd:sequence>
+      <xsd:element name="function" type="livesql-function-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="livesql-function-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="template" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <xsd:complexType name="type-solver-when-type">

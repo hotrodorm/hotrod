@@ -8,36 +8,43 @@ import org.hotrod.livesql.expressions.character.CustomCharFunction;
 import org.hotrod.livesql.expressions.datetime.CustomDateTimeFunction;
 import org.hotrod.livesql.expressions.numeric.CustomNumericFunction;
 import org.hotrod.livesql.expressions.object.CustomObjectFunction;
+import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
 
 public class Function {
 
-  public static CustomNumericFunction returnsNumeric(final String pattern, final ComparableExpression... parameters) {
-    return new CustomNumericFunction(pattern, parameters) {
+  public static CustomNumericFunction returnsNumeric(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomNumericFunction(template, parameters) {
     };
   }
 
-  public static CustomCharFunction returnsChar(final String pattern, final ComparableExpression... parameters) {
-    return new CustomCharFunction(pattern, parameters) {
+  public static CustomCharFunction returnsChar(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomCharFunction(template, parameters) {
     };
   }
 
-  public static CustomDateTimeFunction returnsDateTime(final String pattern, final ComparableExpression... parameters) {
-    return new CustomDateTimeFunction(pattern, parameters) {
+  public static CustomDateTimeFunction returnsDateTime(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomDateTimeFunction(template, parameters) {
     };
   }
 
-  public static CustomBooleanFunction returnsBoolean(final String pattern, final ComparableExpression... parameters) {
-    return new CustomBooleanFunction(pattern, parameters) {
+  public static CustomBooleanFunction returnsBoolean(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomBooleanFunction(template, parameters) {
     };
   }
 
-  public static CustomBinaryFunction returnsBinary(final String pattern, final ComparableExpression... parameters) {
-    return new CustomBinaryFunction(pattern, parameters) {
+  public static CustomBinaryFunction returnsBinary(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomBinaryFunction(template, parameters) {
     };
   }
 
-  public static CustomObjectFunction returnsObject(final String pattern, final ComparableExpression... parameters) {
-    return new CustomObjectFunction(pattern, parameters) {
+  public static CustomObjectFunction returnsObject(final LiveSQLFunctionTemplate template,
+      final ComparableExpression... parameters) {
+    return new CustomObjectFunction(template, parameters) {
     };
   }
 

@@ -32,6 +32,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   private NameSolverTag nameSolverTag = new NameSolverTag();
   private StaticTypeSolverTag staticTypeSolverTag = new StaticTypeSolverTag();
   private RuntimeTypeSolverTag runtimeTypeSolverTag = new RuntimeTypeSolverTag();
+  private LiveSQLTag liveSQLTag = new LiveSQLTag();
 
   private List<ConverterTag> converters = new ArrayList<ConverterTag>();
   private Map<String, ConverterTag> convertersByName = null;
@@ -65,6 +66,11 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     this.runtimeTypeSolverTag = runtimeTypeSolverTag;
   }
 
+  @XmlElement(name = "livesql")
+  public void setLiveSQL(final LiveSQLTag liveSQLTag) {
+    this.liveSQLTag = liveSQLTag;
+  }
+
   @XmlElement
   public void setConverter(final ConverterTag converter) {
     this.converters.add(converter);
@@ -86,6 +92,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   public final RuntimeTypeSolverTag getRuntimeTypeSolverTag() {
     return runtimeTypeSolverTag;
+  }
+
+  public LiveSQLTag getLiveSQLTag() {
+    return liveSQLTag;
   }
 
   public List<ConverterTag> getConverters() {

@@ -41,6 +41,10 @@
   <converter name="active_stored_as_int" type="app.ActiveEnum" raw-type="java.lang.Integer"
     class="app.IntegerActiveConverter" />
 
+  <livesql>
+    <function name="random" template="(random(123) * (#{}))" />
+  </livesql>
+
 <!-- 
   <table name="product">
     <column name="pid_product" sequence="seq_product" />

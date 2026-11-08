@@ -38,6 +38,7 @@ import app.persistence.layout.AccountLayout;
 import app.persistence.model.Account;
 import app.persistence.model.DATALocal;
 import app.persistence.model.Employee;
+import app.test.functions.H2Functions;
 
 @SpringBootApplication
 @Configuration
@@ -45,10 +46,10 @@ public class App {
 
   private static final Logger log = Logger.getLogger(App.class.getName());
 
-  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
-      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
-//  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> true, msg -> log.info(msg), () -> true,
-//      msg -> log.info(msg));
+//  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> log.isLoggable(Level.FINE),
+//      msg -> log.fine(msg), () -> log.isLoggable(Level.FINER), msg -> log.finer(msg));
+  private static final LiveSQLLogging LIVESQL_LOG = LiveSQLLogging.of(() -> true, msg -> log.info(msg), () -> true,
+      msg -> log.info(msg));
 
   static {
 //    JULCustomFormatter.initialize(Level.FINER);
@@ -138,7 +139,10 @@ public class App {
 
   @Autowired
   private LiveSQL sql;
-
+  
+  @Autowired
+  private H2Functions h2;
+  
   public static void main(String[] args) {
     SpringApplication.run(App.class, args).close();
   }
@@ -159,7 +163,9 @@ public class App {
 //      testLiveSQLCursor();
 //      testJEXL();
       
-      testConverters() ;
+      testFunctions();
+      
+//      testConverters() ;
       
       //      testInsertSequence();
 //      testInsertIdentity();
@@ -402,6 +408,18 @@ public class App {
     example.setName("Anne");   
     for (Employee emp: this.employeeDAO.select(example)) {
         System.out.println("### emp=" + emp);
+    }
+  }
+  
+  private void testFunctions() {
+    AccountTable t = this.accountDAO.newTable();
+    List<Row> row = this.sql.select(t.balance, t.balance.mult(h2.random(100)).as("n"),
+        h2.random(t.balance.plus(t.id)).as("n2")
+        )
+        .from(t)
+        .execute(LIVESQL_LOG);
+    for (Row r : row) {
+      System.out.println("### r=" +r);
     }
   }
 

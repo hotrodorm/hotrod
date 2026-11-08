@@ -19,7 +19,7 @@ class FunctionTemplateTest {
     // Define Bean
 
     LiveSQLFunctionTemplate t = LiveSQLFunctionTemplateBuilder //
-        .begin("testfunction1") //
+        .name("testfunction1") //
         .literal("substring(") //
         .arg() //
         .literal(",") //
@@ -51,7 +51,7 @@ class FunctionTemplateTest {
 
   @Test
   void rendersLiteralOnlyTemplateWithoutArguments() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction1").literal("current_date")
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction1").literal("current_date")
         .end();
 
     assertEquals("current_date", render(template));
@@ -59,7 +59,7 @@ class FunctionTemplateTest {
 
   @Test
   void rendersRegularArgumentsWithoutVarargs() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction1") //
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction1") //
         .literal("pair(") //
         .arg() //
         .literal(",") //
@@ -72,7 +72,7 @@ class FunctionTemplateTest {
 
   @Test
   void omitsVarargSectionWhenNoArgumentsRemain() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction1") //
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction1") //
         .literal("values[") //
         .vararg("(", "),(", ")") //
         .literal("]") //
@@ -83,7 +83,7 @@ class FunctionTemplateTest {
 
   @Test
   void rendersSingleVarargWithFirstPrefix() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction1") //
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction1") //
         .literal("values[") //
         .vararg("(", "),(", ")") //
         .literal("]") //
@@ -94,7 +94,7 @@ class FunctionTemplateTest {
 
   @Test
   void rejectsInsufficientRegularArguments() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction1").arg().arg().end();
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction1").arg().arg().end();
 
     LiveSQLException exception = assertThrows(LiveSQLException.class, () -> template.prepare(IntegerLiteral.getZero()));
 
@@ -103,7 +103,7 @@ class FunctionTemplateTest {
 
   @Test
   void rejectsArgumentsRemainingAfterTemplatePreparation() {
-    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.begin("testfunction2").arg().end();
+    LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.name("testfunction2").arg().end();
 
     LiveSQLException exception = assertThrows(LiveSQLException.class,
         () -> template.prepare(IntegerLiteral.getZero(), IntegerLiteral.getOne()));
@@ -114,9 +114,9 @@ class FunctionTemplateTest {
   @Test
   void rejectsNullVarargPrefixOrSuffix() {
     assertThrows(LiveSQLException.class,
-        () -> LiveSQLFunctionTemplateBuilder.begin("testfunction1").vararg("(", null, ")"));
+        () -> LiveSQLFunctionTemplateBuilder.name("testfunction1").vararg("(", null, ")"));
     assertThrows(LiveSQLException.class,
-        () -> LiveSQLFunctionTemplateBuilder.begin("testfunction1").vararg("(", ",", null));
+        () -> LiveSQLFunctionTemplateBuilder.name("testfunction1").vararg("(", ",", null));
   }
 
   private String render(LiveSQLFunctionTemplate template, ComparableExpression... arguments) {
