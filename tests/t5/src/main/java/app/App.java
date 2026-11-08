@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -413,13 +414,19 @@ public class App {
   
   private void testFunctions() {
     AccountTable t = this.accountDAO.newTable();
-    List<Row> row = this.sql.select(t.balance, t.balance.mult(h2.random(100)).as("n"),
-        h2.random(t.balance.plus(t.id)).as("n2")
-        )
-        .from(t)
-        .execute(LIVESQL_LOG);
+    Select<Row> q = this.sql.select( //
+        t.balance, //
+        t.balance.mult(h2.random(100)).as("n"), //
+        h2.random(t.balance.plus(t.id)).as("n2"),  //
+        h2.addDays(t.openedOn, 365).as("renewalDate"), //
+        h2.addDays(sql.literal( LocalDate.of(2026, 10, 15)), sql.literal(30)).as("trialEndDate") // 
+        ,t.openedOn //
+        ) //
+        .from(t);
+    System.out.println("### q=" + q.getPreview(true));
+    List<Row> row = q.execute(LIVESQL_LOG);
     for (Row r : row) {
-      System.out.println("### r=" +r);
+      System.out.println("### r=" + r);
     }
   }
 

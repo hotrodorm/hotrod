@@ -19,4 +19,12 @@ public class LiveSQLFunctions {
       .literal(")")
       .end();
 
+  public static final LiveSQLFunctionTemplate adddays = LiveSQLFunctionTemplateBuilder.name("adddays")
+      .literal("dateadd(day, ")
+      .arg()
+      .literal("::integer, ")
+      .arg()
+      .literal("::date)")
+      .end();
+
 }

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ import org.hotrod.livesql.expressions.bool.converter.CShield;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumn;
 import org.hotrod.livesql.expressions.bool.converter.ConvertedEntityColumnMetaData;
 import org.hotrod.livesql.metadata.AllColumns;
+import org.hotrod.livesql.metadata.DateTimeEntityColumn;
 import org.hotrod.livesql.metadata.DirectEntityColumnMetaData;
 import org.hotrod.livesql.metadata.Name;
 import org.hotrod.livesql.metadata.NumericEntityColumn;
@@ -133,6 +135,9 @@ public class AccountDAO {
       Integer[] col6 = converter1.decode(raw6, conn);
       row.setBranches(col6);
 
+      LocalDate col7 = rs.getObject("OPENED_ON", LocalDate.class); // OPENED_ON
+      row.setOpenedOn(col7);
+
       return row;
     }
 
@@ -158,6 +163,7 @@ public class AccountDAO {
     m.setActive(CastUtil.toInteger((Number) row.get(p + "active" + s)));
     m.setZipCodes((Integer[]) row.get(p + "zipCodes" + s));
     m.setBranches((Integer[]) row.get(p + "branches" + s));
+    m.setOpenedOn((LocalDate) row.get(p + "openedOn" + s));
     return m;
   }
 
@@ -171,6 +177,7 @@ public class AccountDAO {
     m.setActive(layout.getActive());
     m.setZipCodes(layout.getZipCodes());
     m.setBranches(layout.getBranches());
+    m.setOpenedOn(layout.getOpenedOn());
     return m;
   }
 
@@ -186,7 +193,8 @@ public class AccountDAO {
       .literaln("  type,")
       .literaln("  active,")
       .literaln("  zip_codes,")
-      .literaln("  branches")
+      .literaln("  branches,")
+      .literaln("  opened_on")
       .literaln("FROM account")
       .literal("WHERE id = ").parameter("f.id").literaln()
       .endSelectQuery();
@@ -228,7 +236,8 @@ public class AccountDAO {
       .literaln("  type,")
       .literaln("  active,")
       .literaln("  zip_codes,")
-      .literaln("  branches")
+      .literaln("  branches,")
+      .literaln("  opened_on")
       .literaln("FROM account")
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
@@ -237,6 +246,7 @@ public class AccountDAO {
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
         .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
+        .if_("e.openedOn != null").literal("opened_on = ").parameter("e.openedOn").endif()
       .endwhere()
       .parameterInjection("ordering")
       .endSelectQuery();
@@ -303,6 +313,7 @@ public class AccountDAO {
         .if_("e.active != null").literal("active").endif()
         .if_("e.zipCodes != null").literal("zip_codes").endif()
         .if_("e.branches != null").literal("branches").endif()
+        .if_("e.openedOn != null").literal("opened_on").endif()
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -312,6 +323,7 @@ public class AccountDAO {
         .if_("e.active != null").parameter("e.active").endif()
         .if_("e.zipCodes != null").parameter("e.zipCodes", this.converter1).endif()
         .if_("e.branches != null").parameter("e.branches", this.converter1).endif()
+        .if_("e.openedOn != null").parameter("e.openedOn").endif()
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -350,6 +362,7 @@ public class AccountDAO {
         .literal("active")
         .literal("zip_codes")
         .literal("branches")
+        .literal("opened_on")
       .endtrim()
       .literal("VALUES")
       .trim(" (\n  ", ",\n  ", "\n)")
@@ -359,6 +372,7 @@ public class AccountDAO {
         .parameterNullable("l.active", Types.INTEGER)
         .parameterNullable("l.zipCodes", Types.ARRAY, this.converter1)
         .parameterNullable("l.branches", Types.ARRAY, this.converter1)
+        .parameterNullable("l.openedOn", Types.DATE)
       .endtrim()
       .endInsertQuery(PrimaryKeyRetrievalMode.NO_RETRIEVAL);
   }
@@ -397,6 +411,7 @@ public class AccountDAO {
         .begin().literal("active = ").parameterNullable("m.active", Types.INTEGER).end()
         .begin().literal("zip_codes = ").parameterNullable("m.zipCodes", Types.ARRAY, this.converter1).end()
         .begin().literal("branches = ").parameterNullable("m.branches", Types.ARRAY, this.converter1).end()
+        .begin().literal("opened_on = ").parameterNullable("m.openedOn", Types.DATE).end()
       .endtrim()
       .literal("WHERE id = ").parameter("m.id").literaln()
     .endModificationQuery();
@@ -436,6 +451,7 @@ public class AccountDAO {
         .if_("v.active != null").literal("active = ").parameter("v.active").endif()
         .if_("v.zipCodes != null").literal("zip_codes = ").parameter("v.zipCodes", this.converter1).endif()
         .if_("v.branches != null").literal("branches = ").parameter("v.branches", this.converter1).endif()
+        .if_("v.openedOn != null").literal("opened_on = ").parameter("v.openedOn").endif()
       .endset()
       .where("AND")
         .if_("e.id != null").literal("id = ").parameter("e.id").endif()
@@ -444,6 +460,7 @@ public class AccountDAO {
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
         .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
+        .if_("e.openedOn != null").literal("opened_on = ").parameter("e.openedOn").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -479,6 +496,7 @@ public class AccountDAO {
     if (values.getActive() != null) setters.add(new Setter(tableOrView.active, sql.val(values.getActive())));
     if (values.getZipCodes() != null) setters.add(new Setter(tableOrView.zipCodes, sql.val(values.getZipCodes())));
     if (values.getBranches() != null) setters.add(new Setter(tableOrView.branches, sql.val(values.getBranches())));
+    if (values.getOpenedOn() != null) setters.add(new Setter(tableOrView.openedOn, sql.val(values.getOpenedOn())));
     return new UpdateWherePhase(this.context, tableOrView, setters, predicate, livesql_log);
   }
 
@@ -529,6 +547,7 @@ public class AccountDAO {
         .if_("e.active != null").literal("active = ").parameter("e.active").endif()
         .if_("e.zipCodes != null").literal("zip_codes = ").parameter("e.zipCodes", this.converter1).endif()
         .if_("e.branches != null").literal("branches = ").parameter("e.branches", this.converter1).endif()
+        .if_("e.openedOn != null").literal("opened_on = ").parameter("e.openedOn").endif()
       .endwhere()
       .endModificationQuery();
   }
@@ -573,7 +592,9 @@ public class AccountDAO {
     ZIP_CODES("zip_codes", true),
     ZIP_CODES$DESC("zip_codes", false),
     BRANCHES("branches", true),
-    BRANCHES$DESC("branches", false);
+    BRANCHES$DESC("branches", false),
+    OPENED_ON("opened_on", true),
+    OPENED_ON$DESC("opened_on", false);
 
     private String sqlColumnName;
     private boolean ascending;
@@ -611,6 +632,8 @@ public class AccountDAO {
     static final ConvertedEntityColumnMetaData<Array, Integer[]> ZIP_CODES_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("ZIP_CODES", false), "zipCodes", "INTEGER ARRAY", 65536, 0, TH1, TH1.getConverter());
     static final TypeHandler<Array, Integer[]> TH2 = TypeHandler.forConverter(new IntegerArrayConverter(), TypeSource.STATIC_DESIGNATED, null);
     static final ConvertedEntityColumnMetaData<Array, Integer[]> BRANCHES_META_DATA = new ConvertedEntityColumnMetaData<>(      Name.of("BRANCHES", false), "branches", "INTEGER ARRAY", 65536, 0, TH2, TH2.getConverter());
+    static final DirectEntityColumnMetaData OPENED_ON_META_DATA = new DirectEntityColumnMetaData(
+      Name.of("OPENED_ON", false), "openedOn", "DATE", 10, 0, TypeHandler.forClass(LocalDate.class, TypeSource.STATIC_DIALECT_RULE, "D16"));
 
   }
 
@@ -630,10 +653,11 @@ public class AccountDAO {
     public final NumericEntityColumn active = new NumericEntityColumn(this, MetaData.ACTIVE_META_DATA);
     public final ConvertedEntityColumn<Array, Integer[]> zipCodes = new ConvertedEntityColumn<>(this, MetaData.ZIP_CODES_META_DATA);
     public final ConvertedEntityColumn<Array, Integer[]> branches = new ConvertedEntityColumn<>(this, MetaData.BRANCHES_META_DATA);
+    public final DateTimeEntityColumn openedOn = new DateTimeEntityColumn(this, MetaData.OPENED_ON_META_DATA);
 
     @Override
     public AllColumns star() {
-      return new AllColumns(this.id, this.balance, this.type, this.active, this.zipCodes, this.branches);
+      return new AllColumns(this.id, this.balance, this.type, this.active, this.zipCodes, this.branches, this.openedOn);
     }
 
     AccountTable() {
@@ -664,6 +688,7 @@ public class AccountDAO {
       super.columns.add(this.active);
       super.columns.add(this.zipCodes);
       super.columns.add(this.branches);
+      super.columns.add(this.openedOn);
     }
 
   }
@@ -818,6 +843,7 @@ public class AccountDAO {
     private boolean present4 = false;
     private boolean present5 = false;
     private boolean present6 = false;
+    private boolean present7 = false;
 
     @Override
     public void discoverColumns(ResultSet rs) throws SQLException {
@@ -828,6 +854,7 @@ public class AccountDAO {
       present4 = false;
       present5 = false;
       present6 = false;
+      present7 = false;
       int n = m.getColumnCount();
       for (int i = 1; i <= n; i++) {
         String l = m.getColumnLabel(i);
@@ -837,6 +864,7 @@ public class AccountDAO {
         if ("ACTIVE".equals(l)) present4 = true;
         if ("ZIP_CODES".equals(l)) present5 = true;
         if ("BRANCHES".equals(l)) present6 = true;
+        if ("OPENED_ON".equals(l)) present7 = true;
       }
     }
 
@@ -878,6 +906,11 @@ public class AccountDAO {
         Array raw6 = rs.getObject("BRANCHES", Array.class); // BRANCHES
         Integer[] col6 = converter1.decode(raw6, conn);
         row.setBranches(col6);
+      }
+
+      if (this.present7) {
+        LocalDate col7 = rs.getObject("OPENED_ON", LocalDate.class); // OPENED_ON
+        row.setOpenedOn(col7);
       }
 
       return row;

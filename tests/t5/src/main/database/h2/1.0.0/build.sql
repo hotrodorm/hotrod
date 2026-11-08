@@ -132,14 +132,15 @@ create table account (
   type char(3),
   active int,
   zip_codes integer array,
-  branches integer array
+  branches integer array,
+  opened_on date
 );
   
-insert into account (id, balance, type, active, zip_codes) values
-  (1, 100, 'SAV', 1, array[123, 456, 789]),
-  (2, 200, 'CHK', 1, array[]),
-  (3, 300, 'SAV', 0, array[123]),
-  (4, 400, 'CHK', 0, array[200, 300]);
+insert into account (id, balance, type, active, zip_codes, opened_on) values
+  (1, 100, 'SAV', 1, array[123, 456, 789], '2022-01-01'),
+  (2, 200, 'CHK', 1, array[], '2023-01-01'),
+  (3, 300, 'SAV', 0, array[123], '2024-01-01'),
+  (4, 400, 'CHK', 0, array[200, 300], '2025-01-01');
   
 create table log (
   id int generated always as identity not null,

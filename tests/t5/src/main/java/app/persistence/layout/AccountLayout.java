@@ -3,6 +3,7 @@
 package app.persistence.layout;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import org.hotrod.json.JSONObject;
 
@@ -20,6 +21,7 @@ public class AccountLayout implements Serializable {
   protected Integer active = null; // Type Source: STATIC_DIALECT_RULE, rule #D9
   protected Integer[] zipCodes = null; // Type Source: STATIC_DESIGNATED
   protected Integer[] branches = null; // Type Source: STATIC_DESIGNATED
+  protected LocalDate openedOn = null; // Type Source: STATIC_DIALECT_RULE, rule #D16
 
   // getters & setters
 
@@ -71,6 +73,14 @@ public class AccountLayout implements Serializable {
     this.branches = branches;
   }
 
+  public LocalDate getOpenedOn() {
+    return this.openedOn;
+  }
+
+  public void setOpenedOn(final LocalDate openedOn) {
+    this.openedOn = openedOn;
+  }
+
   // to string
 
   public String toString() {
@@ -81,7 +91,8 @@ public class AccountLayout implements Serializable {
     sb.append("- type=" + this.type + "\n");
     sb.append("- active=" + this.active + "\n");
     sb.append("- zipCodes=" + this.zipCodes + "\n");
-    sb.append("- branches=" + this.branches);
+    sb.append("- branches=" + this.branches + "\n");
+    sb.append("- openedOn=" + this.openedOn);
     return sb.toString();
   }
 
@@ -95,6 +106,7 @@ public class AccountLayout implements Serializable {
     obj.addProperty("active", this.active);
     obj.addProperty("zipCodes", this.zipCodes);
     obj.addProperty("branches", this.branches);
+    obj.addProperty("openedOn", this.openedOn);
     return obj;
   }
 

@@ -44,6 +44,7 @@
   <livesql>
     <function name="random" template="(random(123) * (#{}))" />
     <function name="addone" template="addone(#{})" />
+    <function name="adddays" template="dateadd(day, #{}::integer, #{}::date)" />
   </livesql>
 
 <!-- 
