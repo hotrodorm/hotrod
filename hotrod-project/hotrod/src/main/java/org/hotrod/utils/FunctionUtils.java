@@ -16,27 +16,16 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Serializes Java objects to hexadecimal strings and restores them.
- *
- * <p>The serialized representation uses Java native serialization. Only
- * deserialize hexadecimal values from a trusted source; native Java
- * deserialization must not be used with attacker-controlled input.</p>
- */
 public final class FunctionUtils {
 
   private static final int NONCE_LENGTH = 12;
   private static final int GCM_TAG_LENGTH = 128;
   private static final SecureRandom RANDOM = new SecureRandom();
-  private static final SecretKeySpec ENCRYPTION_KEY = new SecretKeySpec(new byte[] {
-      (byte) 0x62, (byte) 0x53, (byte) 0x37, (byte) 0x8e, (byte) 0xcc,
-      (byte) 0x9b, (byte) 0x50, (byte) 0x3e, (byte) 0x97, (byte) 0x42,
-      (byte) 0x35, (byte) 0x61, (byte) 0x69, (byte) 0xee, (byte) 0xb3,
-      (byte) 0x4f, (byte) 0x65, (byte) 0x36, (byte) 0x66, (byte) 0x60,
-      (byte) 0xef, (byte) 0x4b, (byte) 0x72, (byte) 0x3e, (byte) 0x74,
-      (byte) 0x67, (byte) 0xd0, (byte) 0x8d, (byte) 0xa4, (byte) 0x5c,
-      (byte) 0x53, (byte) 0xbf
-  }, "AES");
+  private static final SecretKeySpec ENCRYPTION_KEY = new SecretKeySpec(new byte[] { (byte) 0x62, (byte) 0x53,
+      (byte) 0x37, (byte) 0x8e, (byte) 0xcc, (byte) 0x9b, (byte) 0x50, (byte) 0x3e, (byte) 0x97, (byte) 0x42,
+      (byte) 0x35, (byte) 0x61, (byte) 0x69, (byte) 0xee, (byte) 0xb3, (byte) 0x4f, (byte) 0x65, (byte) 0x36,
+      (byte) 0x66, (byte) 0x60, (byte) 0xef, (byte) 0x4b, (byte) 0x72, (byte) 0x3e, (byte) 0x74, (byte) 0x67,
+      (byte) 0xd0, (byte) 0x8d, (byte) 0xa4, (byte) 0x5c, (byte) 0x53, (byte) 0xbf }, "AES");
 
   private FunctionUtils() {
   }
@@ -72,8 +61,7 @@ public final class FunctionUtils {
     RANDOM.nextBytes(nonce);
 
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-    cipher.init(Cipher.ENCRYPT_MODE, ENCRYPTION_KEY,
-        new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
+    cipher.init(Cipher.ENCRYPT_MODE, ENCRYPTION_KEY, new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
     byte[] encrypted = cipher.doFinal(bytes);
 
     ByteArrayOutputStream result = new ByteArrayOutputStream(NONCE_LENGTH + encrypted.length);
@@ -90,20 +78,10 @@ public final class FunctionUtils {
     byte[] nonce = Arrays.copyOf(bytes, NONCE_LENGTH);
     byte[] encrypted = Arrays.copyOfRange(bytes, NONCE_LENGTH, bytes.length);
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-    cipher.init(Cipher.DECRYPT_MODE, ENCRYPTION_KEY,
-        new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
+    cipher.init(Cipher.DECRYPT_MODE, ENCRYPTION_KEY, new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
     return cipher.doFinal(encrypted);
   }
 
-  /**
-   * Serializes, compresses, and encrypts an object to a lowercase hexadecimal string.
-   *
-   * @param object the object to serialize; {@code null} is supported
-   * @return the hexadecimal representation, or {@code null} when the object is
-   *         {@code null}
-   * @throws IllegalStateException if the object is not serializable or cannot
-   *         be written
-   */
   public static String render(final Object object) {
     if (object == null) {
       return null;
@@ -119,19 +97,6 @@ public final class FunctionUtils {
     }
   }
 
-  /**
-   * Decrypts, decompresses, and deserializes an object from a hexadecimal string.
-   *
-   * <p>The input must have been produced by {@link #render(Object)} and
-   * must come from a trusted source.</p>
-   *
-   * @param hexa the hexadecimal serialized object; {@code null} is supported
-   * @param <T> the expected object type
-   * @return the deserialized object, or {@code null} when the input is
-   *         {@code null}
-   * @throws IllegalArgumentException if the hexadecimal value is malformed or
-   *         the serialized object cannot be read
-   */
   @SuppressWarnings("unchecked")
   public static <T> T prepare(final String hexa) {
     if (hexa == null) {
