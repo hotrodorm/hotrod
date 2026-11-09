@@ -71,7 +71,7 @@ public class LiveSQLResourcesWriter {
     }
     for (LiveSQLFunctionTag f : liveSQLTag.getFunctions()) {
       w.println();
-      w.println("  // Function: " + ASCIIUtil.sanitize(f.getOriginalTemplate()));
+      w.println("  // SQL template: " + ASCIIUtil.sanitize(f.getOriginalTemplate()));
       w.print("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
       LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.build(f.getName(), f.getTemplateSections());
       String serialized = FunctionUtils.render(template);
