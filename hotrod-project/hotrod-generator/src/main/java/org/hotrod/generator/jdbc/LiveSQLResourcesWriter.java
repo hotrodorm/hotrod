@@ -13,9 +13,9 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplateBuilder;
+import org.hotrod.livesql.functions.FunctionUtils;
 import org.hotrod.utils.ASCIIUtil;
 import org.hotrod.utils.ClassWriter;
-import org.hotrod.utils.FunctionUtils;
 
 public class LiveSQLResourcesWriter {
 
@@ -71,9 +71,10 @@ public class LiveSQLResourcesWriter {
     }
     for (LiveSQLFunctionTag f : liveSQLTag.getFunctions()) {
       w.println();
-      w.println("  // SQL template: " + ASCIIUtil.sanitize(f.getOriginalTemplate()));
+      w.println("  // SQL Template: " + ASCIIUtil.sanitize(f.getOriginalTemplate()));
       w.print("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
       LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.build(f.getName(), f.getTemplateSections());
+
       String serialized = FunctionUtils.render(template);
 
       w.println(FunctionUtils.class, ".prepare(");
@@ -86,16 +87,6 @@ public class LiveSQLResourcesWriter {
           w.println(");");
         }
       }
-//      w.print("    ", FunctionUtils.class, ".deserialize(\"" + serialized + "\");");
-
-//      w.println("\"" + serialized + "\";");
-//      w.println(LiveSQLFunctionTemplateBuilder.class, ".name(\"" + SUtil.escapeJavaString(f.getName()) + "\")");
-//      for (Section s : f.getTemplateSections()) {
-//        w.print("      ");
-//        s.printTo(w);
-//        w.println();
-//      }
-//      w.println("      .end();");
     }
   }
 

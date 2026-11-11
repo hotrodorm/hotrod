@@ -1,22 +1,44 @@
-# Extending LiveSQL Functions
+# Custom LiveSQL Functions
 
-LiveSQL includes the infrastructure to add custom database functions. These functions can represent built-in 
-database functions, or other user-defined functions available in the database.
+LiveSQL includes the infrastructure to add custom database functions. These functions can represent built-in database functions, or other user-defined functions available in the database.
 
-To add new functions, create a `@Component` that include methods for each function. For example:
+## Example
+
+We want to create the new function `random` that produces a random numeric value in the query between zero (included) and a numeric parameter N (excluded).
+
+First, we define the SQL template in the configuration file. We include the following section in the XML file:
+
+```
+<livesql>
+  <function name="random" template="(random() * (#{}))" />
+</livesql>
+```
+
+Note: since the random() function in PostgreSQL produces numbers between 0 and 1 only, this template adds the extra functionality to multiply it by the parameter N we want to supply. If we just wanted a value between 0 and 1 the template would be simply `random()`.
+
+Second, to add the new function create a `@Component` that include the method for the function. For example:
 
 ```java
 @Component
 public class PostgreSQL12Functions {
 
-  public NumericFunction random() {
-    return Function.returnsNumeric("random()");
+  public NumericFunction random(NumericExpression n) {
+    return Function.returnsNumeric(LiveSQLFunctions.random, n);
+  }
+
+  public NumericFunction random(Number n) {
+    return Function.returnsNumeric(LiveSQLFunctions.random, BoxUtil.box(n));
   }
 
 }
 ```
 
-Then, add it to your class:
+The property `LiveSQLFunctions.random` represents the SQL template used in the SQL query, is defined in the configuration file, and is generated/updates during the persistence layer generation.
+
+The function is defined twice to accept database expressions and/or columns, and also literal application numbers. Therefore, we can call this function using  `pg.random(t.queueSize.minus(t.delivered))` as well as with a number `pg.random(100)`.
+
+
+Finally, add it to your class:
 
 ```java
 @Autowired
@@ -26,10 +48,10 @@ private PostgreSQL12Functions pg;
 And use it:
 
 ```java
-sql.select(pg.random()).execute()
+sql.select(pg.random(100)).execute()
 ```
 
-To produce a result such as: `0.796045811049445`
+To produce a result such as: `79.6045811049445`
 
 # Factory methods
 
@@ -37,12 +59,12 @@ LiveSQL groups all SQL parameters into six broad types: numbers, strings, date/t
 
 Therefore, you can use any of the six factory methods available in the `Function` class to create a function with the corresponding LiveSQL return type:
 
-- `Function.returnsNumeric(String pattern, Expression... parameters)` -- to produce a `NumericFunction`
-- `Function.returnsChar(String pattern, Expression... parameters)` -- to produce a `CharFunction`
-- `Function.returnsDateTime(String pattern, Expression... parameters)` -- to produce a `DateTimeFunction`
-- `Function.returnsBoolean(String pattern, Expression... parameters)` -- to produce a `BooleanFunction`
-- `Function.returnsBinary(String pattern, Expression... parameters)` -- to produce a `BinaryFunction`
-- `Function.returnsObject(String pattern, Expression... parameters)` -- to produce a `ObjectFunction`
+- `Function.returnsNumeric(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `NumericFunction`
+- `Function.returnsChar(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `CharFunction`
+- `Function.returnsDateTime(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `DateTimeFunction`
+- `Function.returnsBoolean(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `BooleanFunction`
+- `Function.returnsBinary(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `BinaryFunction`
+- `Function.returnsObject(LiveSQLFunctionTemplate template, Expression... parameters)` -- to produce a `ObjectFunction`
 
 **Note**: The `CURSOR` data type is not supported, either as an IN/OUT parameter or as a return type. Also, the `INTERVAL` type is not implemented yet, but it may be supported in the future.
 
@@ -56,7 +78,7 @@ The abstract function classes must receive parameters that extend `org.hotrod.ru
  - `Predicate` (boolean expression)
  - `BinaryExpression`
  - `ObjectExpression`
- - `Expression` -- to accept any of the above
+ - `Expression` -- A generic type that accepts any of the above
 
 Notice the function factory receives either a vararg (`Expression...`) or a *single* array (`Expression[]`). If your function receives multiple separate parameters that you need to assemble as a single array parameter, you can bundle together using `Function.bundle(a, b)`.
 
@@ -88,18 +110,18 @@ public NumericFunction sin(Number x) { // accepts any java.lang.Number
 
 In this way, the above function can be called with an Expression as in `sin(a.angle)`, or with a primitive value as in `sin(123)`.
 
-# Function Pattern
+# Function Templates
 
-The function pattern specifies the rendering details of the function. For example, `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A pattern can include two types of parameters:
+The function template specifies the SQL rendering details of the function. For example, `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A template can include two types of parameters:
 
  - *Single positional parameters* as `#{}`.
  - *Varargs parameters* as `#{prefix?suffix}` or `#{firstprefix?prefix?suffix}`.
 
-Please note that varargs can only be placed as the last parameter of the pattern; on a vararg parameter `prefix`, `suffix`, and `firstPrefix` can be omitted, as necessary.
+Note that varargs can only be placed as the last parameter of the template; on a vararg parameter `prefix`, `suffix`, and `firstPrefix` can be omitted, as necessary.
 
-## Pattern Examples
+## Template Examples
 
-The following examples illustrate the patterns to use if you want to add a few PostgreSQL built-in functions into the LiveSQL syntax:
+The following examples illustrate the templated to use if you want to add a few PostgreSQL built-in functions into the LiveSQL syntax:
 
  - `localtimestamp` -- function with no parenthesis.
  - `random()` -- no parameters.
@@ -109,7 +131,7 @@ The following examples illustrate the patterns to use if you want to add a few P
  - `coalesce(#{?, ?})` -- vararg: first prefix is empty, main prefix is comma-space, and no suffix.
  - `substring(#{} from #{} for #{})` -- three parameters with custom template.
  - `(#{} || #{})` -- concatenation; parenthesis added to enforce correct precedence.
- - `cast(#{} as numeric)` -- typical cast using custom pattern.
+ - `cast(#{} as numeric)` -- typical cast using custom template.
  - `(#{})::numeric` -- alternative cast; parenthesis added to enforce correct precedence.
  
 # User-Defined Functions
@@ -135,7 +157,8 @@ A class could be used to provide the function to LiveSQL. For example:
 public class MyFunctions {
 
   public NumericFunction addone(NumericExpression a) {
-    return Function.returnsNumeric("addone(#{})", a);
+    // template: addone(#{})
+    return Function.returnsNumeric(LiveSQLFunctions.addone, a);
   }
 
   public NumericFunction addone(Number a) {
@@ -160,16 +183,16 @@ To produce the result `124`.
 
 ## Examples
 
-The examples below were tested in PostgrrSQL 12. PostgreSQL implements functions with varied patterns. Some use the traditional comma as separator 
-while other ones use keywords; most have parentheses, some don't; there are also some functions that use the syntax as of operators.
+The examples below were tested in PostgrrSQL 12 but work in the same way in any other supported database. PostgreSQL implements functions with varied templates. Some use the traditional comma as separator while other ones use keywords; most have parentheses, some don't; there are also some functions that use the syntax as of operators.
 
 - **Example #1:** Function `localtimestamp` with no parameters and no parenthesis.
  
-  This example demonstrate that any pattern can be used, even without parenthesis.
+  This example demonstrate that any template can be used, even without parenthesis.
 
     ```java
     public DateTimeFunction localtimestamp() {
-      return Function.returnsDateTime("localtimestamp");
+      // template specified in the XML configuration: localtimestamp
+      return Function.returnsDateTime(LiveSQLFunctions.localtimestamp);
     };
     ```
 
@@ -179,21 +202,23 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
     ```java
     public NumericFunction random() {
-      return Function.returnsNumeric("random()");
+      // template specified in the XML configuration: random()
+      return Function.returnsNumeric(LiveSQLFunctions.random);
     }
     ```
 
-- **Example #3:** Function `sin(x)` with a single parameter. 
+- **Example #3:** Function `sin(x)` with a single parameter.
 
   Two factory methods are implemented: the first one receives a boxed value (NumberExpression in this case),
   while the second method receives an unboxed `java.lang.Number` (such as `int`, `Integer`, `Double`, etc.).
 
   Notice the second method only deals with the parameter boxing. It boxes it into an Expression by
-  using `BoxUtil.box(x)`. Once done it reuses the first method, to avoid defining the pattern again.
+  using `BoxUtil.box(x)`. Once done it reuses the first method, to avoid defining the template again.
 
     ```java
     public NumericFunction sin(NumericExpression x) {
-      return Function.returnsNumeric("sin(#{})", x);
+      // template specified in the XML configuration: sin(#{})
+      return Function.returnsNumeric(LiveSQLFunctions.sin);
     }
 
     public NumericFunction sin(Number x) {
@@ -203,34 +228,35 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
 - **Example #4:** Function `coalesce(a, ...)` with a vararg.
 
-  Six factory methods are included, one per Expression type. Notice the pattern is a vararg `#{?, ?}`. Also notice that it also
+  Six factory methods are included, one per Expression type. Notice the template is a vararg `#{?, ?}`. Also notice that it also
   bundles the received parameters using `Function.bundle(a, b)` since the factory can only receive one parameter of type `Expression[]`.
 
   Notice that the factory methods need to accept at least one parameter to clearly distinguish the type of the function:
 
     ```java
     public NumericFunction coalesce(NumericExpression a, NumericExpression... b) {
-      return Function.returnsNumeric("coalesce(#{?, ?})", Function.bundle(a, b));
+      // template specified in the XML configuration: coalesce(#{?, ?})
+      return Function.returnsNumeric(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
-  
+
     public CharFunction coalesce(CharExpression a, CharExpression... b) {
-      return Function.returnsChar("coalesce(#{?, ?})", Function.bundle(a, b));
+      return Function.returnsChar(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
-  
+
     public DateTimeFunction coalesce(DateTimeExpression a, DateTimeExpression... b) {
-      return Function.returnsDateTime("coalesce(#{?, ?})", Function.bundle(a, b));
+      return Function.returnsDateTime(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
-  
+
     public BooleanFunction coalesce(Predicate a, Predicate... b) {
-      return Function.returnsBoolean("coalesce(#{?, ?})", Function.bundle(a, b));
+      return Function.returnsBoolean(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
-  
+
     public BinaryFunction coalesce(BinaryExpression a, BinaryExpression... b) {
-      return Function.returnsBinary("coalesce(#{?, ?})", Function.bundle(a, b));
+      return Function.returnsBinary(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
-  
+
     public ObjectFunction coalesce(ObjectExpression a, ObjectExpression... b) {
-      return Function.returnsObject("coalesce(#{?, ?})", Function.bundle(a, b));
+      return Function.returnsObject(LiveSQLFunctions.coalesce, Function.bundle(a, b));
     }
     ```
 
@@ -238,27 +264,28 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
   It includes variations for both parameters being boxed or unboxed to produce four similar methods:
 
-  Again notice that, to avoid redundancy, the pattern is defined in the first variation only. The second, third, and fourth
+  Again notice that, to avoid redundancy, the template is defined in the first variation only. The second, third, and fourth
   methods box the parameters and then reuse the first method.
 
     ```java
     public CharFunction left(CharExpression text, NumericExpression n) {
-      return Function.returnsChar("left(#{}, #{})", text, n);
+      // template specified in the XML configuration: left(#{}, #{})
+      return Function.returnsNumeric(LiveSQLFunctions.left, text, n);
     }
-  
+
     public CharFunction left(String text, NumericExpression n) {
       return left(BoxUtil.box(text), n);
     }
-  
+
     public CharFunction left(CharExpression text, Number n) {
       return left(text, BoxUtil.box(n));
     }
-  
+
     public CharFunction left(String text, Number n) {
       return left(BoxUtil.box(text), BoxUtil.box(n));
     };
     ```
-    
+
 - **Example #6:** Function `format(text, args...)` with one positional parameter and a vararg.
 
   It includes boxed and unboxed variations for the first parameter only. It
@@ -266,9 +293,10 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
     ```java
     public CharFunction format(CharExpression text, Expression... args) {
-      return Function.returnsChar("format(#{}#{, ?})", Function.bundle(text, args));
+      // template specified in the XML configuration: format(#{}#{, ?})
+      return Function.returnsNumeric(LiveSQLFunctions.format, Function.bundle(text, args));
     }
-  
+
     public CharFunction format(final String text, final Expression... args) {
       return format(BoxUtil.box(text), args);
     }
@@ -281,7 +309,8 @@ while other ones use keywords; most have parentheses, some don't; there are also
 
     ```java
     public BinaryFunction set_byte(byte[] string, Number offset, Number newValue) {
-      return Function.returnsBinary("set_byte(#{}, #{}, #{})",
+      // template specified in the XML configuration: set_byte(#{}, #{}, #{})
+      return Function.returnsNumeric(LiveSQLFunctions.setByte,
           Function.bundle(Function.bundle(BoxUtil.box(string), BoxUtil.box(offset)), BoxUtil.box(newValue)));
     }
     ```

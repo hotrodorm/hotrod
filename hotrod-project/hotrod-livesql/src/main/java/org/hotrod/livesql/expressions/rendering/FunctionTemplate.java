@@ -6,9 +6,9 @@ import java.util.List;
 import org.hotrod.livesql.exceptions.InvalidFunctionException;
 import org.hotrod.livesql.expressions.ComparableExpression;
 import org.hotrod.livesql.functions.TemplateArg;
+import org.hotrod.livesql.functions.TemplateLiteral;
 import org.hotrod.livesql.functions.TemplateSegment;
 import org.hotrod.livesql.functions.TemplateVarArg;
-import org.hotrod.livesql.functions.TemplateLiteral;
 import org.hotrod.livesql.queries.QueryWriter;
 
 // Parameters:

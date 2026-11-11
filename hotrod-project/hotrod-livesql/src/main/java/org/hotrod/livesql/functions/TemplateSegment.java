@@ -3,14 +3,17 @@ package org.hotrod.livesql.functions;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.hotrod.functions.ArgSection;
+import org.hotrod.functions.LiteralSection;
 import org.hotrod.functions.Section;
+import org.hotrod.functions.VarArgSection;
 import org.hotrod.livesql.expressions.ComparableExpression;
 
 public abstract class TemplateSegment implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private LiveSQLFunctionTemplate template;
+  private transient LiveSQLFunctionTemplate template;
 
   void setTemplate(LiveSQLFunctionTemplate template) {
     this.template = template;

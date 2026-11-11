@@ -21,7 +21,7 @@ This configuration tag can optionally include any of the following tags, in the 
 
 ## Attributes
 
-This tag includes the following attribute:
+This tag includes the following attributes:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |

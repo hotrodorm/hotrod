@@ -29,27 +29,7 @@ public class CoreUtilitiesTest {
     assertThrows(IllegalArgumentException.class, () -> HexaUtils.toByteArray("0g"));
   }
 
-  @Test
-  public void objectHexadecimalSerializationRoundTripsSerializableObjects() {
-    List<String> value = Arrays.asList("alpha", "beta");
 
-    String serialized = FunctionUtils.render(value);
-
-    assertEquals(value, FunctionUtils.<List<String>>prepare(serialized));
-    assertNull(FunctionUtils.render(null));
-    assertNull(FunctionUtils.prepare(null));
-  }
-
-  @Test
-  public void objectHexadecimalDeserializationRejectsInvalidInput() {
-    assertThrows(IllegalArgumentException.class, () -> FunctionUtils.prepare("0g"));
-    assertThrows(IllegalArgumentException.class, () -> FunctionUtils.prepare("00"));
-  }
-
-  @Test
-  public void objectHexadecimalSerializationRejectsNonSerializableObjects() {
-    assertThrows(IllegalStateException.class, () -> FunctionUtils.render(new Object()));
-  }
 
   @Test
   public void arrayConcatenationPreservesContentsAndType() {

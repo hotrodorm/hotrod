@@ -11,11 +11,10 @@ public class LiveSQLFunctionTemplate implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private String name;
-  private TemplateSegment[] segments;
-  private boolean sealed = false;
+  String name;
+  TemplateSegment[] segments;
 
-  public LiveSQLFunctionTemplate(String name, TemplateSegment[] segments) {
+  LiveSQLFunctionTemplate(String name, TemplateSegment[] segments) {
     this.name = name;
     this.segments = segments;
     for (TemplateSegment ts : this.segments) {

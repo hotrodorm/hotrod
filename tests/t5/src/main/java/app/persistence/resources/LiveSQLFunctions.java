@@ -2,40 +2,25 @@
 
 package app.persistence.resources;
 
+import org.hotrod.livesql.functions.FunctionUtils;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
-import org.hotrod.utils.FunctionUtils;
 
 public class LiveSQLFunctions {
 
-  // SQL template: (random(123) * (#{}))
+  // SQL Template: (random(123) * (#{}))
   public static final LiveSQLFunctionTemplate random = FunctionUtils.prepare(
-      "e6bdc89cf08e53ecf0afc01478fa99048f0724c4db8b7932ab4d0ca5520d2897febae8f184f35a14d250502220" +
-      "defd6022cdd0ac61ab6be5e1612dedaa36dac52a756035ccc37a9fd5b53305be0bb664c5df291893ebf143522b" +
-      "a99c2215d685415c4fd37b6093bd2391ab47cc70f4dd2c4432f2ba4c1d0d3279ad36c16346fb9b1dcd228574bc" +
-      "8f554d81c4927896457fd66963d5970b01934c20dcd935cb7848c51e3b3bc4b4f4d94ff4f9970a59e33f1c2231" +
-      "60585116bfe229ac40ffc533523035542b4d843c58f989ae9e487523dd48a454af174f3b9689a8dc358ad33659" +
-      "9d696ed3adf2cbabce7b50d37d45ee6e564853e5b10a328a8c0b904881d6b1f7e9aa4078c2c1e44080999d2d35" +
-      "524a60148bf085f11b4fe26e8d742b0c4e805765e195d91d5f8422ba48e54ab4c8");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1265fe0c92ca4c6255f67bf4d1d823b0904ba482" +
+      "ef76fdaea241f15638e08b374acc0d8bbe8faba7adb3cacd70c3e1b1826e3ac578225fb36687");
 
-  // SQL template: addone(#{})
+  // SQL Template: addone(#{})
   public static final LiveSQLFunctionTemplate addone = FunctionUtils.prepare(
-      "e051216615a5f41c70dd22f32ee71dbeec8e2d50030048a7fb10a0262e046dbc1345050c9462958e51d44556d5" +
-      "555434fdcef39f6659eb3d682c2b577b3e6da8535866fef1db94b5bab987e2ff160534165ee85ac137b0a308b4" +
-      "83507e0e730f171659d862247457d417c534a6b00d04a6d67a07697ddbeb9438eb39686069487de8ddcdf45079" +
-      "afb35c757031796ca6021bd3b9a2a9086cea9c9832882729a305269bf521f00c81010bf6e8249b7ef7e0bfdde3" +
-      "5b98e277b8aab3b8ae1ac5457f7e040cfd3eed7f308333bcb11d1f2e0fd187d3d8560c65b1376f9de13c409a3c" +
-      "ce8f42686f04d8e06e4b8d217ce1fa83a15d48042301f9750ec72b4e2d1753dc6319ebc6c92776bf46f4aca276" +
-      "5940067968cc9a1973d6b3b866cb41d7e70a120ccc");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1205f88910ccc86255f67bf4d1d8cdba2e7301ab" +
+      "bd6f522c695b93415174c26427726e17c4ffc9a647019e81a9563051");
 
-  // SQL template: dateadd(day, #{}::integer, #{}::date)
+  // SQL Template: dateadd(day, #{}::integer, #{}::date)
   public static final LiveSQLFunctionTemplate adddays = FunctionUtils.prepare(
-      "d4e55f945508da28ab0a729bec6f5a0bf2b3da1c29d1fc8b429f28089b8509c52f2da13a6d9265aa3c18ea6225" +
-      "a5b4db11a1c65f6f45dec485a67c917ff6592ee5d2b8bd0fc9a0224c73d59c6f542aba0bee561f5fe552c55298" +
-      "e23e22ed926ed7dc8345c27ec98717440baa2559be4099103ab02512854d88e3ffbcb9dac2a9b96edffc4853c3" +
-      "2644457977d3875c02258be1e88f0f1527882f6ff3617ae315790b5ac4af630e431c5d68f91800edbe9e606d0c" +
-      "09fb2bb627d816452f450b444e6eec22799cb83920efafef790b39abbda39c399b647af036bc9de5f9350bb854" +
-      "bd15cf7248cc99a0e4f155ee6a00b893140d0663510b7501967f8c3ad8f4cc5cfb6c39c6b36b32010ba21eeb94" +
-      "6080c2745b2318a45d138a142186928be558efcfc3a7d2f35b27700e7881fa4b510e142ab9b84fb4c139d48be4" +
-      "3d96ddf4");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1201f889904a2f2b53f67b6225cb3316a97c078a" +
+      "3ef6568c944df55638fc19ae73fff8784cc035af8773fb1ca3406f69fa79f5f8f703003908bc4f48e309fc8499" +
+      "a6a4fc72a08030f6");
 
 }
