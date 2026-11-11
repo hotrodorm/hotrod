@@ -70,7 +70,7 @@ public class LayoutWriter {
 
     ClassPackage cp = this.jdbcTag.getLayoutPackage(this.fragmentPackage);
 
-    this.w = new ClassWriter(this.classPackage);
+    this.w = new ClassWriter(this.classPackage, true);
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
@@ -138,8 +138,7 @@ public class LayoutWriter {
   }
 
   private String resolveType(final ColumnMetadata cm) {
-    EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());
-    return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
+    return cm.getType().getJavaClassName();
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {

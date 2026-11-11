@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
@@ -18,14 +17,16 @@ import javax.crypto.spec.SecretKeySpec;
 
 public final class FunctionUtils {
 
-  private static final int NONCE_LENGTH = 12;
   private static final int GCM_TAG_LENGTH = 128;
-  private static final SecureRandom RANDOM = new SecureRandom();
   private static final SecretKeySpec ENCRYPTION_KEY = new SecretKeySpec(new byte[] { (byte) 0x62, (byte) 0x53,
       (byte) 0x37, (byte) 0x8e, (byte) 0xcc, (byte) 0x9b, (byte) 0x50, (byte) 0x3e, (byte) 0x97, (byte) 0x42,
       (byte) 0x35, (byte) 0x61, (byte) 0x69, (byte) 0xee, (byte) 0xb3, (byte) 0x4f, (byte) 0x65, (byte) 0x36,
       (byte) 0x66, (byte) 0x60, (byte) 0xef, (byte) 0x4b, (byte) 0x72, (byte) 0x3e, (byte) 0x74, (byte) 0x67,
       (byte) 0xd0, (byte) 0x8d, (byte) 0xa4, (byte) 0x5c, (byte) 0x53, (byte) 0xbf }, "AES");
+  private static final byte[] NONCE = new byte[] { (byte) 0x3e, (byte) 0x4b, (byte) 0x55, (byte) 0x8d, (byte) 0x9f,
+      (byte) 0x2a, (byte) 0xab, (byte) 0x7c, (byte) 0x6b, (byte) 0xef, (byte) 0x4a, (byte) 0x3f };
+  static {
+  }
 
   private FunctionUtils() {
   }
@@ -57,26 +58,24 @@ public final class FunctionUtils {
   }
 
   private static byte[] encrypt(final byte[] bytes) throws GeneralSecurityException, IOException {
-    byte[] nonce = new byte[NONCE_LENGTH];
-    RANDOM.nextBytes(nonce);
 
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-    cipher.init(Cipher.ENCRYPT_MODE, ENCRYPTION_KEY, new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
+    cipher.init(Cipher.ENCRYPT_MODE, ENCRYPTION_KEY, new GCMParameterSpec(GCM_TAG_LENGTH, NONCE));
     byte[] encrypted = cipher.doFinal(bytes);
 
-    ByteArrayOutputStream result = new ByteArrayOutputStream(NONCE_LENGTH + encrypted.length);
-    result.write(nonce);
+    ByteArrayOutputStream result = new ByteArrayOutputStream(NONCE.length + encrypted.length);
+    result.write(NONCE);
     result.write(encrypted);
     return result.toByteArray();
   }
 
   private static byte[] decrypt(final byte[] bytes) throws GeneralSecurityException {
-    if (bytes.length <= NONCE_LENGTH) {
+    if (bytes.length <= NONCE.length) {
       throw new IllegalArgumentException("Encrypted payload is too short");
     }
 
-    byte[] nonce = Arrays.copyOf(bytes, NONCE_LENGTH);
-    byte[] encrypted = Arrays.copyOfRange(bytes, NONCE_LENGTH, bytes.length);
+    byte[] nonce = Arrays.copyOf(bytes, NONCE.length);
+    byte[] encrypted = Arrays.copyOfRange(bytes, NONCE.length, bytes.length);
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
     cipher.init(Cipher.DECRYPT_MODE, ENCRYPTION_KEY, new GCMParameterSpec(GCM_TAG_LENGTH, nonce));
     return cipher.doFinal(encrypted);

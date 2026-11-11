@@ -57,7 +57,7 @@ public class SelectModelWriter {
 
       try (TextWriter tw = fileGenerator.createWriter(vo)) {
 
-        ClassWriter w = new ClassWriter(this.classPackage);
+        ClassWriter w = new ClassWriter(this.classPackage, false);
         writeBody(w);
         w.writeTo(tw);
 

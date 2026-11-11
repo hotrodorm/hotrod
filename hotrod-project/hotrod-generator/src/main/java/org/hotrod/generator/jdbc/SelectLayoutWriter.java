@@ -100,7 +100,7 @@ public class SelectLayoutWriter {
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.classPackage);
+      this.w = new ClassWriter(this.classPackage, true);
 
       writeBody();
       w.writeTo(tw);

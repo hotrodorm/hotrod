@@ -191,7 +191,7 @@ public class DAOWriter {
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.classPackage);
+      this.w = new ClassWriter(this.classPackage, true);
       writeBody(mg);
       this.w.writeTo(tw);
 
@@ -1867,8 +1867,7 @@ public class DAOWriter {
   }
 
   private String resolveType(final ColumnMetadata cm) {
-    EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());
-    return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
+    return cm.getType().getJavaClassName();
   }
 
   private Class<?> toLiveSQLEntityType(final String javaType) {
@@ -2015,14 +2014,7 @@ public class DAOWriter {
     Separator sep = new Separator(", ");
     for (ColumnMetadata cm : pk.getColumns()) {
       w.print(sep.render());
-      EnumDataSetMetadata em = cm.getEnumMetadata();
-      String javaClassName;
-      if (em != null) {
-        EnumClass ec = this.generator.getEnum(em);
-        javaClassName = ec.getFullClassName();
-      } else {
-        javaClassName = cm.getType().getJavaClassName();
-      }
+      String javaClassName = cm.getType().getJavaClassName();
       w.print(ExternalClass.of(javaClassName), " ", cm.getId().getJavaMemberName());
     }
   }

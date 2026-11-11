@@ -21,7 +21,7 @@ public class T2 {
 
     try (TextWriter tw = fileGenerator.createWriter(mc)) {
 
-      ClassWriter w = new ClassWriter(cp);
+      ClassWriter w = new ClassWriter(cp, true);
       writeBody(w);
       w.writeTo(tw);
 
@@ -32,8 +32,6 @@ public class T2 {
   }
 
   private static void writeBody(ClassWriter w) {
-    
-    
 
     w.print("public class VO1 {\n");
 

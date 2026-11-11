@@ -2,8 +2,8 @@ package org.hotrod.utils;
 
 public class ClassWriter extends AbstractClassWriter {
 
-  public ClassWriter(ClassPackage classPackage, String... headerLines) {
-    super(classPackage, headerLines);
+  public ClassWriter(ClassPackage classPackage, boolean generatedComment, String... headerLines) {
+    super(classPackage, generatedComment, headerLines);
   }
 
   // Using 1 parameter(s)

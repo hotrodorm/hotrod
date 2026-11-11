@@ -64,7 +64,6 @@ public class JDBCGenerator implements Generator, LiveGenerator {
   private LinkedHashMap<DataSetMetadata, LayoutWriter> layouts = new LinkedHashMap<>();
   private LinkedHashMap<DataSetMetadata, ModelWriter> models = new LinkedHashMap<>();
   private LinkedHashMap<DataSetMetadata, DAOWriter> daos = new LinkedHashMap<>();
-  private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<>();
   private List<LayoutWriter> tableAbstractVOs = new ArrayList<>();
 
   private LayerResourcesBeanWriter layerConfig;
@@ -122,12 +121,6 @@ public class JDBCGenerator implements Generator, LiveGenerator {
       for (SelectMethodMetadata sm : vm.getSelectsMetadata()) {
         addSelectVOs(sm, entityVOs);
       }
-    }
-
-    // Add enums
-
-    for (EnumDataSetMetadata em : this.md.getEnums()) {
-      this.enumClasses.put(em, new EnumClass(em, this.jdbcTag, this));
     }
 
     // Add executors
@@ -287,10 +280,6 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   }
 
-  public EnumClass getEnum(final DataSetMetadata dataSet) {
-    return this.enumClasses.get(dataSet);
-  }
-
   @Override
   public void display(final String txt) {
     this.feedback.info(SUtil.isEmpty(txt) ? " " : txt);
@@ -298,7 +287,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   @Override
   public VORegistry getVORegistry() {
-    // TODO Auto-generated method stub
+    // No registry; nothing to do
     return null;
   }
 
@@ -309,8 +298,7 @@ public class JDBCGenerator implements Generator, LiveGenerator {
 
   @Override
   public void generate() throws FaultException, ErrorMessageException {
-    // TODO Auto-generated method stub
-
+    // No generation; nothing to do
   }
 
   private void displayGenerationMetadata(final HotRodConfigTag config) {

@@ -70,7 +70,7 @@ public class ModelWriter {
 
       try (TextWriter tw = fileGenerator.createWriter(vo)) {
 
-        ClassWriter w = new ClassWriter(cp);
+        ClassWriter w = new ClassWriter(cp, false);
         writeBody(w);
         w.writeTo(tw);
 

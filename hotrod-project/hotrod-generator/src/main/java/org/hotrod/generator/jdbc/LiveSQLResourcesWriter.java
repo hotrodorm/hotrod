@@ -44,7 +44,7 @@ public class LiveSQLResourcesWriter {
 
     try (TextWriter tw = fileGenerator.createWriter(f)) {
 
-      this.w = new ClassWriter(this.jdbcTag.getLayerResources().getAssembledPackage());
+      this.w = new ClassWriter(this.jdbcTag.getLayerResources().getAssembledPackage(), true);
 
       this.writeHeader();
 
