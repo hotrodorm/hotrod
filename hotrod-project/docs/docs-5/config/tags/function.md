@@ -2,7 +2,7 @@
 
 This tag configures the name and template of a custom LiveSQL function.
 
-As of version 5.1.27 the SQL templates of the custom functions are now defined statically when the persistence layer is generated and cannot be modified at runtime. This is essential to keep the application fully protected from SQL Injection.
+As of version 5.1.28 the SQL templates of the custom functions are now defined statically when the persistence layer is generated and cannot be modified at runtime. This is essential to keep the application fully protected from SQL Injection.
 
 ## Sub Tags
 
