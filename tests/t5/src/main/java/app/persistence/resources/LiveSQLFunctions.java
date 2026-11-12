@@ -9,18 +9,18 @@ public class LiveSQLFunctions {
 
   // SQL Template: (random(123) * (#{}))
   public static final LiveSQLFunctionTemplate random = FunctionUtils.prepare(
-      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1265fe0c92ca4c6255f67bf4d1d823b0904ba482" +
-      "ef76fdaea241f15638e08b374acc0d8bbe8faba7adb3cacd70c3e1b1826e3ac578225fb36687");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464a56b5460d1265fe0c92ca4c6255f67bf4d1d823b0904ba482" +
+      "ef76fdaea241f15638e08b374acc0d8bbe8faba7adb340d215525d1fd66bc4341d0c63d3943e");
 
   // SQL Template: addone(#{})
   public static final LiveSQLFunctionTemplate addone = FunctionUtils.prepare(
-      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1205f88910ccc86255f67bf4d1d8cdba2e7301ab" +
-      "bd6f522c695b93415174c26427726e17c4ffc9a647019e81a9563051");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464a56b5460d1205f88910ccc86255f67bf4d1d8cdba2e7301ab" +
+      "bd6f522c695b93415174c264708510fff7d1f6daff5440c9b5311071");
 
   // SQL Template: dateadd(day, #{}::integer, #{}::date)
   public static final LiveSQLFunctionTemplate adddays = FunctionUtils.prepare(
-      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464aa9b5460d1201f889904a2f2b53f67b6225cb3316a97c078a" +
-      "3ef6568c944df55638fc19ae73fff8784cc035af8773fb1ca3406f69fa79f5f8f703003908bc4f48e309fc8499" +
-      "a6a4fc72a08030f6");
+      "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464a56b5460d1201f889904a2f2b53f67b6225cb3316a97c078a" +
+      "3ef6568c944df55638fc19ae73fff8784cc035af8773fb1ca3406f69fa79f5f8f7030039086d50ad28a88cb44b" +
+      "30f8e4b403ed14d8");
 
 }

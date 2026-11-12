@@ -3,10 +3,10 @@ package app;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.hotrod.dynamicsql.Cursor;
 import org.hotrod.dynamicsql.Row;
 import org.hotrod.livesql.LiveSQL;
 import org.hotrod.livesql.LiveSQLLogging;
@@ -394,7 +394,7 @@ public class App {
     EmployeeTable t = this.employeeDAO.newTable();
     Select<Row> q = this.sql.select().from(t);
     System.out.println("Query: " + q.getPreview(true));
-    try (var cursor = q.executeCursor(LIVESQL_LOG)) {
+    try (Cursor<Row> cursor = q.executeCursor(LIVESQL_LOG)) {
       for (Row r : cursor) {
         System.out.println("### r=" + r);
       }
