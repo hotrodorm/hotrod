@@ -26,6 +26,8 @@ The XLM configuration file includes the following tag structure:
     * [`<runtime-type-solver>`](tags/runtime-type-solver.md)
         * `<when>`
     * [`<converter>`](./tags/converter.md)
+    * [`<livesql>`](tags/livesql.md)
+        * [`<function>`](tags/function.md)
     * [`<table>`](tags/table.md)
         * [`<column>`](tags/column.md)
         * [`<sequence>`](tags/sequence.md)
