@@ -20,10 +20,12 @@ public class TemplateVarArg extends TemplateSegment {
   private TemplateVarArg(String firstPrefix, String prefix, String suffix) {
     this.firstPrefix = firstPrefix;
     if (prefix == null) {
-      throw new LiveSQLException("The prefix for vararg cannot be null in template: " + super.getTemplate().getName());
+      throw new LiveSQLException("The prefix for vararg cannot be null in template"
+          + (super.getTemplate() == null ? "" : ": " + super.getTemplate().getName()));
     }
     if (suffix == null) {
-      throw new LiveSQLException("The suffix for vararg cannot be null in template: " + super.getTemplate().getName());
+      throw new LiveSQLException("The suffix for vararg cannot be null in template"
+          + (super.getTemplate() == null ? "" : ": " + super.getTemplate().getName()));
     }
     this.prefix = prefix;
     this.suffix = suffix;

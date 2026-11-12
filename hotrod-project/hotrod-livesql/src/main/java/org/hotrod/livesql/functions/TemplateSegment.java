@@ -3,10 +3,7 @@ package org.hotrod.livesql.functions;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import org.hotrod.functions.ArgSection;
-import org.hotrod.functions.LiteralSection;
 import org.hotrod.functions.Section;
-import org.hotrod.functions.VarArgSection;
 import org.hotrod.livesql.expressions.ComparableExpression;
 
 public abstract class TemplateSegment implements Serializable {
@@ -16,6 +13,9 @@ public abstract class TemplateSegment implements Serializable {
   private transient LiveSQLFunctionTemplate template;
 
   void setTemplate(LiveSQLFunctionTemplate template) {
+    if (template == null) {
+      throw new IllegalArgumentException("Template cannot be null");
+    }
     this.template = template;
   }
 
