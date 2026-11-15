@@ -4,7 +4,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 5.1.28:
 
-This release focuses on hardening of the persistence layer with changes that prevent security vulnerabilites without losing existing functionality. As a result, it breaks compatibility with previous versions that used the vulnerable functionality and provides alternative safe solutions.
+This release focuses on hardening of the persistence layer with changes that prevent security vulnerabilites without losing existing functionality. As a result, it breaks compatibility with previous versions to provide alternative solutions.
 
 - Core:
     - Seamless compatibility with all versions of Spring Boot. No special configuration needed.
@@ -19,16 +19,17 @@ This release focuses on hardening of the persistence layer with changes that pre
     - Fixing NTILE() function.
     - Fixing cursor reading database connection management.
     - Normalizing all exceptions thrown in LiveSQL as LiveSQLException.
-    - Normalization of numeric, char, and aggregation functions.
+    - Normalizing numeric, char, and aggregation functions.
 
 - Nitro:
-    - **Compatibility break**: due to security concerns, all Dynamic SQL expressions now run in Restricted Mode to prevent Dynamic SQL from accessing (read &amp; write) the JVM or any objects outside the persistence layer. This change may crash existing Dynamic SQL expressions from previous versions, that relied on accessing JVM properties, the file system, or any other resources outside the model classes.
+    - **Compatibility break**: due to security concerns, all Dynamic SQL expressions now run in Restricted Mode to prevent Dynamic SQL from accessing (read &amp; write) the JVM or any objects outside the persistence layer. This change may crash existing Dynamic SQL expressions from previous versions, that relied on directly accessing JVM system, the file system, the network, or any other resources outside the model classes.
 
 - Torcs:
-    - Removing standard deviation values, since they could be unreliable for elapsed times greater than 46 seconds.
-    - Hardening to avoid possible &mdash; although very rare &mdash; collision in hashes.
-    - Ensuring thread safety and implementing pass-through for JVM errors, and scheduler lifecycle cleanup.
-    - Hardening of the Highest Frequency Ranking by adding an internal cache.
+    - Removing the standard deviation metrics, since they could be unreliable for elapsed times greater than 46 seconds.
+    - Hardening to avoid possible &mdash; although very rare &mdash; collision in query identification by hashes.
+    - Ensuring thread safety and implementing pass-through for JVM errors.
+    - Scheduler lifecycle cleanup.
+    - Improvement of the Highest Frequency Ranking by adding an internal cache bigger than the ranking size.
 
 
 ## 5.1.26:
