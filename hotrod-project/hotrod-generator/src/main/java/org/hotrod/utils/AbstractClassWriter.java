@@ -15,7 +15,6 @@ import org.hotrod.metadata.TypeParser.Type;
 
 public class AbstractClassWriter {
 
-  @SuppressWarnings("unused")
   public static final Logger log = Logger.getLogger(AbstractClassWriter.class.getName());
 
   private boolean generatedComment;
@@ -100,6 +99,7 @@ public class AbstractClassWriter {
     }
 
     private void writeListTo(final List<String> list, final TextWriter w) throws IOException {
+      list.removeIf(s -> s.startsWith("java.lang.")); // skip java.lang imports
       if (!list.isEmpty()) {
         Collections.sort(list);
         for (String i : list) {
@@ -161,26 +161,36 @@ public class AbstractClassWriter {
   }
 
   private String registerImportName(String importname, String baseClass, String shortCodeName, String longCodeName) {
-    if (importname.startsWith("java.lang.") || isPrimitive(baseClass)) {
+
+    log.fine(">>> Registering class: " + importname + " - base: " + baseClass + " - short: " + shortCodeName
+        + " - long: " + longCodeName);
+    if (isPrimitive(baseClass)) {
       // skip registering
       return shortCodeName;
     }
 
-    String registeredCodeName = this.importCode.get(importname);
-    if (registeredCodeName != null) {
+    String previouslyRegisteredAs = this.importCode.get(importname);
+    log.fine("> previouslyRegisteredAs: " + previouslyRegisteredAs);
+    if (previouslyRegisteredAs != null) {
       // already registered
-      return shortCodeName;
+      log.fine("> Resolved: " + importname + " as " + previouslyRegisteredAs);
+      return previouslyRegisteredAs;
     }
 
-    // Not registered
+    // it's not yet registered
 
-    String otherSimpleName = this.simpleImport.get(baseClass);
-    if (otherSimpleName == null) {
-      this.importCode.put(importname, baseClass);
+    // find simple name main registration
+
+    String mainRegistation = this.simpleImport.get(baseClass);
+
+    if (mainRegistation == null) {
       this.simpleImport.put(baseClass, importname);
+      this.importCode.put(importname, baseClass);
+      log.fine("> Resolved: " + importname + " as " + shortCodeName);
       return shortCodeName;
     } else {
       this.importCode.put(importname, importname);
+      log.fine("> Resolved: " + importname + " as " + longCodeName);
       return longCodeName;
     }
   }
@@ -198,15 +208,15 @@ public class AbstractClassWriter {
 
   public static class ExternalClass {
 
-    private String original;
-    private String generics;
-    private String arrays;
-    private String importName;
-    private String baseClass;
-    private String shortCodeName;
-    private String longCodeName;
+    private String original; // ------- com.app.Widget<java.lang.String>[][]
+    private String generics; // ------- <java.lang.String>
+    private String arrays; // --------- [][]
+    private String importName; // ----- com.app.Widget
+    private String baseClass; // ------ Widget
+    private String shortCodeName; // -- Widget<java.lang.String>[][]
+    private String longCodeName; // --- com.app.Widget<java.lang.String>[][]
 
-    private Type type;
+    private Type type; // typed type
 
     public static ExternalClass of(String c) {
       return new ExternalClass(c);
