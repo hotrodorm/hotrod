@@ -68,17 +68,19 @@
   <table name="'Local_House'" />
  -->
 
-  <table name="'Local_House'" />
 <!-- 
-  <table name="'local_house'" />
+  <table name="'Local_House'" />
  --> 
 
   <!-- 
+     -->
   <table name="local_house" />
+  <!-- 
     <column name="'zip_code'" property="zipCode2" />
     <column name="'Zip_Code'" property="zipCode3" />
   </table>
-     -->
+   -->
+
   <view name="city_Code" />
 
   <table name="k1" />
@@ -94,6 +96,9 @@
   <table name="employee" >
     <column name="region" type="Object" />
   </table>
+  
+  <table name="log" />
+  
   
   <table name="account">
     <column name="type" converter="account_type_stored_as_char" />
@@ -120,8 +125,6 @@
     </query>    
 
   </table>
-  
-  <table name="log" />
 
 <!-- 
   <table name="data" entity="DATALocal">
@@ -184,20 +187,12 @@ SELECT * FROM other
  -->
 
   <dao name="SalesDAO">
-
     <sequence name="hired_seq" method="getHiredNextValue" />
 
-    <select method="find1" vo="MyAccount">
-      select * from k1
-    </select>
-    
-  </dao> 
- <!--  
-  <dao name="SalesDAO">
-    <sequence name="hired_seq" method="getHiredNextValue" />
-
-    <select method="findMyAccounts" vo="MyAccount">
+    <select method="findMyAccounts" vo="MyUserAccount">
       <parameter name="codigos" type="java.util.List&lt;Integer>" />
+      <column name="zip_codes" converter="integer_array" />
+      <column name="branches" converter="integer_array" />
       select *
       from account
       where active
@@ -206,6 +201,7 @@ SELECT * FROM other
         <foreach item="cod" collection="codigos" open="(" close=")" separator=", ">#{cod}</foreach>
       </complement>
     </select>
+ <!--  
 
     <select method="findBigAccounts" vo="BigAccount">
       <column name="ibt_balance" java-name="grossBalance" />
@@ -215,6 +211,7 @@ SELECT * FROM other
       from account
       where balance >= 200
     </select>
+ -->
 
     <query method="deleteAccounts">
       delete from account where type = 'SAV'
@@ -222,7 +219,6 @@ SELECT * FROM other
 
   </dao>
 
- -->
  
 <!--
   <table name="chars" />

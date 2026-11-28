@@ -130,6 +130,7 @@ public class LayoutWriter {
   private void writeColumnProperties(final List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
+      log.fine("* Writing property for column " + cm.getName() + " with type " + javaType);
       String rn = cm.getType().getRuleNumber();
       w.println("  protected ", ExternalClass.of(javaType), " " + cm.getId().getJavaMemberName()
           + " = null; // Type Source: " + cm.getType().getTypeSource() + (rn == null ? "" : ", rule #" + rn));
@@ -148,6 +149,7 @@ public class LayoutWriter {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
+      log.fine("** Writing getter and setter for column " + cm.getName() + " with type " + javaType);
       String m = cm.getId().getJavaMemberName();
       writeGetter(cm, javaType, m);
       writeSetter(cm, javaType, m);
@@ -157,6 +159,7 @@ public class LayoutWriter {
 
   private void writeGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
     ExternalClass et = ExternalClass.of(javaType);
+    log.fine("*** Writing getter for column " + cm.getName() + " with type " + javaType);
     w.println("  public ", et, " " + cm.getId().getJavaGetter() + "() {");
     w.println("    return this." + m + ";");
     w.println("  }");

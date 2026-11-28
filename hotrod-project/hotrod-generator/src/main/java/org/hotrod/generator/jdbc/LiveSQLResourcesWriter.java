@@ -11,9 +11,10 @@ import org.hotrod.config.LiveSQLTag;
 import org.hotrod.exceptions.FaultException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.livesql.functions.FunctionSerializer;
+import org.hotrod.livesql.functions.FunctionUtils;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplate;
 import org.hotrod.livesql.functions.LiveSQLFunctionTemplateBuilder;
-import org.hotrod.livesql.functions.FunctionUtils;
 import org.hotrod.utils.ASCIIUtil;
 import org.hotrod.utils.ClassWriter;
 
@@ -75,7 +76,7 @@ public class LiveSQLResourcesWriter {
       w.print("  public static final ", LiveSQLFunctionTemplate.class, " ", f.getName(), " = ");
       LiveSQLFunctionTemplate template = LiveSQLFunctionTemplateBuilder.build(f.getName(), f.getTemplateSections());
 
-      String serialized = FunctionUtils.render(template);
+      String serialized = FunctionSerializer.render(template);
 
       w.println(FunctionUtils.class, ".prepare(");
 

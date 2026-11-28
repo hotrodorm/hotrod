@@ -18,40 +18,40 @@ public class LiveSQLFunctionTemplateSerializerTest {
     LiveSQLFunctionTemplate first = template();
     LiveSQLFunctionTemplate second = template();
 
-    String firstSerialized = FunctionUtils.render(first);
-    String secondSerialized = FunctionUtils.render(second);
+    String firstSerialized = FunctionSerializer.render(first);
+    String secondSerialized = FunctionSerializer.render(second);
 
     assertEquals(firstSerialized, secondSerialized);
-    assertEquals(firstSerialized, FunctionUtils.render(first));
+    assertEquals(firstSerialized, FunctionSerializer.render(first));
   }
 
   @Test
   public void serializedTemplateCanBePreparedAgain() {
     LiveSQLFunctionTemplate original = template();
-    String serialized = FunctionUtils.render(original);
+    String serialized = FunctionSerializer.render(original);
 
     LiveSQLFunctionTemplate prepared = FunctionUtils.prepare(serialized);
 
     assertNotNull(prepared);
     assertEquals(original.getName(), prepared.getName());
-    assertEquals(serialized, FunctionUtils.render(prepared));
+    assertEquals(serialized, FunctionSerializer.render(prepared));
   }
 
   @Test
   public void nullValuesAreHandledGracefully() {
-    assertNull(FunctionUtils.render(null));
+    assertNull(FunctionSerializer.render(null));
     assertNull(FunctionUtils.prepare(null));
   }
 
   @Test
   public void emptyTemplatesCanBeSerializedAndPrepared() {
     LiveSQLFunctionTemplate original = new LiveSQLFunctionTemplate("empty", new TemplateSegment[0]);
-    String serialized = FunctionUtils.render(original);
+    String serialized = FunctionSerializer.render(original);
 
     LiveSQLFunctionTemplate prepared = FunctionUtils.prepare(serialized);
 
     assertEquals(original.getName(), prepared.getName());
-    assertEquals(serialized, FunctionUtils.render(prepared));
+    assertEquals(serialized, FunctionSerializer.render(prepared));
   }
 
   @Test
@@ -80,6 +80,15 @@ public class LiveSQLFunctionTemplateSerializerTest {
     assertEquals("Could not deserialize hexadecimal object", exception.getMessage());
   }
 
+  @Test
+  public void originalSerializedPayloadRemainsCompatible() {
+    String serialized = "3e4b558d9f2aab7c6bef4a3feb2fe08ef3fd0d464a56b5460d120379"
+        + "edf1aae70737961ee38ef62caa80f57656fc4585f1e91beb0eb4523bf1d125";
+    LiveSQLFunctionTemplate prepared = FunctionUtils.prepare(serialized);
+    assertEquals("empty", prepared.getName());
+    assertEquals(serialized, FunctionSerializer.render(prepared));
+  }
+
   private static LiveSQLFunctionTemplate template() {
     return new LiveSQLFunctionTemplate("concat", new TemplateSegment[] { TemplateLiteral.of("préfix("),
         TemplateArg.of(), TemplateVarArg.of(null, ", ", ")"), TemplateLiteral.of("::suffix") });
@@ -100,11 +109,11 @@ public class LiveSQLFunctionTemplateSerializerTest {
     LiveSQLFunctionTemplate first = randomTemplate(seed);
     LiveSQLFunctionTemplate second = randomTemplate(seed);
 
-    String firstSerialized = FunctionUtils.render(first);
-    String secondSerialized = FunctionUtils.render(second);
+    String firstSerialized = FunctionSerializer.render(first);
+    String secondSerialized = FunctionSerializer.render(second);
 
     assertEquals(firstSerialized, secondSerialized);
-    assertEquals(firstSerialized, FunctionUtils.render(first));
+    assertEquals(firstSerialized, FunctionSerializer.render(first));
   }
 
   private static LiveSQLFunctionTemplate randomTemplate(long seed) {

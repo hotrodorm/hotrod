@@ -119,7 +119,8 @@ public class AbstractClassWriter {
       String baseClass = pc.getBaseClass();
       String shortCodeName = pc.getShortCodeName();
       String longCodeName = pc.getLongCodeName();
-      return registerImportName(importName, baseClass, shortCodeName, longCodeName);
+      String r = registerImportName(importName, baseClass, shortCodeName, longCodeName);
+      return r;
 
     } else {
 
@@ -165,33 +166,29 @@ public class AbstractClassWriter {
     log.fine(">>> Registering class: " + importname + " - base: " + baseClass + " - short: " + shortCodeName
         + " - long: " + longCodeName);
     if (isPrimitive(baseClass)) {
-      // skip registering
+      // do not register; cannot import
       return shortCodeName;
     }
 
-    String previouslyRegisteredAs = this.importCode.get(importname);
-    log.fine("> previouslyRegisteredAs: " + previouslyRegisteredAs);
-    if (previouslyRegisteredAs != null) {
-      // already registered
-      log.fine("> Resolved: " + importname + " as " + previouslyRegisteredAs);
-      return previouslyRegisteredAs;
-    }
+    // find if already registered
 
-    // it's not yet registered
+    String registeredImportName = this.simpleImport.get(baseClass);
 
-    // find simple name main registration
-
-    String mainRegistation = this.simpleImport.get(baseClass);
-
-    if (mainRegistation == null) {
+    if (registeredImportName == null) { // base class is not yet registered
       this.simpleImport.put(baseClass, importname);
       this.importCode.put(importname, baseClass);
-      log.fine("> Resolved: " + importname + " as " + shortCodeName);
+      log.fine("2> Resolved: " + importname + " as " + shortCodeName);
       return shortCodeName;
-    } else {
-      this.importCode.put(importname, importname);
-      log.fine("> Resolved: " + importname + " as " + longCodeName);
-      return longCodeName;
+    } else { // base class is already registered
+      if (registeredImportName.equals(importname)) {
+        // same class, just return short name
+        log.fine("2> Resolved: " + importname + " as " + shortCodeName);
+        return shortCodeName;
+      } else {
+        // different class with same simple name, return long name
+        log.fine("3> Resolved: " + importname + " as " + longCodeName);
+        return longCodeName;
+      }
     }
   }
 

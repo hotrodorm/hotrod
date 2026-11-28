@@ -26,6 +26,20 @@ public class AbstractClassWriterTest {
   }
 
   @Test
+  public void simpleResolution0() throws Exception {
+    JULCustomFormatter.initialize(java.util.logging.Level.INFO);
+    AbstractClassWriter writer = new AbstractClassWriter(ClassPackage.parse("example"), false, (String[]) null);
+    assertEquals("A[]", writer.registerClass(ExternalClass.of("com.app.A[]")));
+    assertEquals("A[]", writer.registerClass(ExternalClass.of("com.app.A[]")));
+    assertEquals("A<B>", writer.registerClass(ExternalClass.of("com.app.A<B>")));
+    assertEquals("A<B>", writer.registerClass(ExternalClass.of("com.app.A<B>")));
+    assertEquals("A<B>[]", writer.registerClass(ExternalClass.of("com.app.A<B>[]")));
+    assertEquals("other.A<B>[]", writer.registerClass(ExternalClass.of("other.A<B>[]")));
+    assertEquals("A<B>[]", writer.registerClass(ExternalClass.of("com.app.A<B>[]")));
+    assertEquals("other.A<B>[]", writer.registerClass(ExternalClass.of("other.A<B>[]")));
+  }
+
+  @Test
   public void simpleResolution1() throws Exception {
 
     JULCustomFormatter.initialize(java.util.logging.Level.INFO);
@@ -41,6 +55,25 @@ public class AbstractClassWriterTest {
     assertEquals("com.app.List", writer.registerClass(ExternalClass.of("com.app.List")));
     assertEquals("List", writer.registerClass(ExternalClass.of("java.util.List")));
     assertEquals("com.app.List", writer.registerClass(ExternalClass.of("com.app.List")));
+  }
+
+  @Test
+  public void simpleResolution2() throws Exception {
+
+    JULCustomFormatter.initialize(java.util.logging.Level.INFO);
+
+    AbstractClassWriter writer = new AbstractClassWriter(ClassPackage.parse("example"), false, (String[]) null);
+    assertEquals("List[]", writer.registerClass(ExternalClass.of("com.app.List[]")));
+    assertEquals("java.util.List[]", writer.registerClass(ExternalClass.of("java.util.List[]")));
+    ExternalClass et2 = ExternalClass.of("com.app.List[]");
+    assertEquals("List[]", writer.registerClass(et2));
+    assertEquals("java.util.List[]", writer.registerClass(ExternalClass.of("java.util.List[]")));
+
+    writer = new AbstractClassWriter(ClassPackage.parse("example"), false, (String[]) null);
+    assertEquals("List[]", writer.registerClass(ExternalClass.of("java.util.List[]")));
+    assertEquals("com.app.List[]", writer.registerClass(ExternalClass.of("com.app.List[]")));
+    assertEquals("List[]", writer.registerClass(ExternalClass.of("java.util.List[]")));
+    assertEquals("com.app.List[]", writer.registerClass(ExternalClass.of("com.app.List[]")));
   }
 
   @Test
