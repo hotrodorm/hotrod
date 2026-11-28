@@ -2,6 +2,15 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 5.1.29 (unreleased):
+
+- CRUD:
+    - Fixing DAO imports for duplicate simple names.
+    - Fixing imports with arrays and generics.
+
+- LiveSQL:
+    - Separating function serializer from function deserializer.
+
 ## 5.1.28:
 
 This release focuses on hardening of the persistence layer with changes that prevent security vulnerabilites without losing existing functionality. As a result, it breaks compatibility with previous versions to provide alternative solutions.
